@@ -907,7 +907,7 @@ function showTurnSelectScreen(
             // =========================
             // ゲーム開始
             // =========================
-
+            gameStarted = true;
             showGameScreen(
                 players,
                 maxTurns
@@ -4121,6 +4121,8 @@ function showGameResult() {
     // 結果画面表示
     // =========================
 
+    gameStarted = false;
+
     resultPopup.style.display =
         "block";
 
@@ -5204,3 +5206,19 @@ function showMultiDiceRoulette(
         );
 
 }
+
+// =========================
+// ゲーム中のページ離脱確認
+// =========================
+
+let gameStarted = false;
+
+window.addEventListener("beforeunload", function (event) {
+
+    if (!gameStarted) {
+        return;
+    }
+
+    event.preventDefault();
+    event.returnValue = "";
+});
