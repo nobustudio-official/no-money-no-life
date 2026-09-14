@@ -1818,7 +1818,7 @@ function renderPlayers() {
 `;
 
             }
-            
+
             ).join("");
 
 
@@ -4445,20 +4445,12 @@ function centerCurrentPlayerOnMap() {
         playerCenter -
         mapCenter;
 
-    mapArea.scrollTop +=
-        scrollAmount;
+    mapArea.scrollTo({
+    top: mapArea.scrollTop + scrollAmount,
+    behavior: "smooth"
+});
 }
 
-
-// =========================
-// 初期表示
-// =========================
-
-renderMap();
-
-renderPlayers();
-
-renderTurn();
 
 // =========================
 // 初期表示
