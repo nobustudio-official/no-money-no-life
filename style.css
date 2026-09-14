@@ -3155,20 +3155,6 @@ button {
 }
 
 
-.battle-magic-item-detail {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 12px;
-
-    margin-top: 4px;
-
-    font-size: 0.9rem;
-}
-
 
 .battle-magic-item-effect {
     white-space: nowrap;
@@ -3182,7 +3168,6 @@ button {
     align-items: center;
     line-height: 1;
 
-    transform: translateY(-10px);
 }
 
 
@@ -3816,6 +3801,20 @@ button {
 
     .map-arrow-symbol {
         font-size: 1rem;
+    }
+
+}
+
+/* =========================================================
+   スマホ：ゲームタイトル
+   ========================================================= */
+
+@media (max-width: 500px) {
+
+    .game-title {
+        font-size: 28px;
+        letter-spacing: 1px;
+        white-space: nowrap;
     }
 
 }
