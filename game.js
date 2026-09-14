@@ -1610,6 +1610,7 @@ document
                 node.className =
                     "map-node";
 
+                node.dataset.squareId = square.id;
 
                 node.style.left =
                     `${square.x}%`;
@@ -1745,80 +1746,80 @@ document
             }
         );
 
+        // =========================
+        // 現在プレイヤーを中央へ
+        // =========================
+
+        centerCurrentPlayerOnMap();
+
     }
 
 
     // =========================
-    // プレイヤー情報表示
-    // =========================
+// プレイヤー情報表示
+// =========================
 
-    function renderPlayers() {
+function renderPlayers() {
 
-        const status =
-            document.getElementById(
-                "playerStatus"
-            );
-
-
-        status.innerHTML =
-            players.map(
-                function (
-                    player,
-                    index
-                ) {
-
-                    const isCurrent =
-                        index ===
-                        currentPlayer;
+    const status =
+        document.getElementById(
+            "playerStatus"
+        );
 
 
-                    return `
+    status.innerHTML =
+        players.map(
+            function (
+                player,
+                index
+            ) {
 
-                        <div
-                            class="
-                                player-card
-                                ${
-                                    isCurrent
-                                        ? "current-player"
-                                        : ""
-                                }
+                const isCurrent =
+                    index ===
+                    currentPlayer;
+
+
+                return `
+
+                    <div
+                        class="
+                            player-card
+                            ${
+                                isCurrent
+                                    ? "current-player"
+                                    : ""
+                            }
+                        "
+                    >
+
+                        <span
+                            class="player-icon"
+                            style="
+                                background-color:
+                                ${player.color} !important;
                             "
-                        >
-
-                            <strong>
-
-                                <span
-                                    class="player-icon"
-                                    style="
-                                        background-color:
-                                        ${player.color} !important;
-                                    "
-                                ></span>
-
-                                ${player.name}
-
-                            </strong>
+                        ></span>
 
 
-                            <span></span>
+                        <span></span>
 
 
-<span>
-    💰${player.money}G
-</span>
+                        <span>
+                            💰${player.money}G
+                        </span>
 
-<span>
-    🔮${player.magicPower}
-</span>
+                        <span>
+                            🔮${player.magicPower}
+                        </span>
 
-                        </div>
+                    </div>
 
-                    `;
+                `;
 
-                }
-            ).join("");
+            }
+        ).join("");
 
-    }
+}
 
 
    // =========================
@@ -4327,6 +4328,65 @@ inventoryButton.disabled = false;
 
 }
 
+// =========================
+// 現在プレイヤーをマップ中央へ
+// =========================
+
+function centerCurrentPlayerOnMap() {
+
+    const mapArea =
+        document.querySelector(
+            ".game-screen .map-area"
+        );
+
+    const player =
+        players[currentPlayer];
+
+    if (!mapArea || !player) {
+        return;
+    }
+
+    const playerNode =
+        mapArea.querySelector(
+            `.map-node[data-square-id="${player.position}"]`
+        );
+
+    if (!playerNode) {
+        return;
+    }
+
+    const mapRect =
+        mapArea.getBoundingClientRect();
+
+    const playerRect =
+        playerNode.getBoundingClientRect();
+
+    const mapCenter =
+        mapRect.top +
+        mapRect.height / 2;
+
+    const playerCenter =
+        playerRect.top +
+        playerRect.height / 2;
+
+    const scrollAmount =
+        playerCenter -
+        mapCenter;
+
+    mapArea.scrollTop +=
+        scrollAmount;
+}
+
+
+// =========================
+// 初期表示
+// =========================
+
+renderMap();
+
+renderPlayers();
+
+renderTurn();
 
 // =========================
 // 初期表示
