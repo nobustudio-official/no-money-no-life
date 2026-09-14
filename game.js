@@ -1286,16 +1286,12 @@ window.showBattleMagicPopup = function (
             ${magic.icon} ${magic.name}
         </div>
 
-        <div class="battle-magic-item-detail">
+        <div class="battle-magic-item-effect">
+            ${magic.effect}
+        </div>
 
-            <span class="battle-magic-item-effect">
-                ${magic.effect}
-            </span>
-
-            <span class="battle-magic-item-cost">
-                💰${magic.cost}G
-            </span>
-
+        <div class="battle-magic-item-cost">
+            💰 ${magic.cost}G
         </div>
 
     </div>
