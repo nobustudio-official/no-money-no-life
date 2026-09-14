@@ -2225,10 +2225,7 @@ button {
     }
 
 
-    .player-card strong {
-        min-width:
-            90px;
-    }
+
 
 
     .player-count {
@@ -3557,7 +3554,7 @@ button {
     .game-screen .roulette-area {
         flex-shrink: 0;
 
-        padding-bottom: 70px;
+        padding-bottom: 5px;
     }
 
 }
@@ -3702,10 +3699,10 @@ button {
     }
 
     .roulette-area {
-        gap: 8px;
-        padding-top: 6px;
-        padding-bottom: 10px;
-    }
+    gap: 8px;
+    padding-top: 6px;
+    padding-bottom: 5px;
+}
 
 }
 
@@ -3722,10 +3719,7 @@ button {
         gap: 8px;
     }
 
-    /* プレイヤー名を非表示 */
-    .player-card strong {
-        display: none;
-    }
+
 
 }
 
@@ -3741,7 +3735,7 @@ button {
     }
 
     .map-board {
-        height: 750px;
+        height: 850px;
         padding: 0;
     }
 
