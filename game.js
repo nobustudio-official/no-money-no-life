@@ -1280,45 +1280,33 @@ window.showBattleMagicPopup = function (
 
 
             magicElement.innerHTML = `
+    <div class="battle-magic-item-info">
 
-                <div
-                    class="battle-magic-item-name"
-                >
+        <div class="battle-magic-item-name">
+            ${magic.icon} ${magic.name}
+        </div>
 
-                    ${magic.icon}
-                    ${magic.name}
+        <div class="battle-magic-item-detail">
 
-                </div>
+            <span class="battle-magic-item-effect">
+                ${magic.effect}
+            </span>
 
+            <span class="battle-magic-item-cost">
+                💰${magic.cost}G
+            </span>
 
-                <div
-                    class="battle-magic-item-effect"
-                >
+        </div>
 
-                    ${magic.effect}
+    </div>
 
-                </div>
-
-
-                <div
-                    class="battle-magic-item-cost"
-                >
-
-                    💰 ${magic.cost}G
-
-                </div>
-
-
-                <button
-                    class="battle-magic-use-button"
-                    type="button"
-                >
-
-                    使う
-
-                </button>
-
-            `;
+    <button
+        class="battle-magic-use-button"
+        type="button"
+    >
+        使う
+    </button>
+`;
 
 
             const useButton =
