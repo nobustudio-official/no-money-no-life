@@ -3113,6 +3113,225 @@ function startMonsterBattle(
             attackButton.style.display =
                 "none";
 
+  // =========================
+// 攻撃を諦める＝逃げるボタン
+// =========================
+
+let battleResultButton =
+    document.getElementById(
+        "battleResultButton"
+    );
+
+if (!battleResultButton) {
+
+    battleResultButton =
+        document.createElement(
+            "button"
+        );
+
+    battleResultButton.id =
+        "battleResultButton";
+
+    battleResultButton.className =
+        "battle-magic-button";
+
+    battlePopup.appendChild(
+        battleResultButton
+    );
+
+}
+
+battleResultButton.textContent =
+    "🏃 逃げる";
+
+battleResultButton.disabled =
+    false;
+
+battleResultButton.style.display =
+    "block";
+
+
+// =========================
+// 逃げるボタン
+// =========================
+
+battleResultButton.onclick =
+    function () {
+
+        // =========================
+        // 二重クリック防止
+        // =========================
+
+        battleResultButton.disabled =
+            true;
+
+
+        // =========================
+        // 現実から目を背ける
+        // =========================
+
+        showEventPopup(
+            "🏃 逃げる",
+
+            `${player.name}は現実から目を背けた……！`,
+
+            function () {
+
+                // =========================
+                // モンスターの攻撃
+                // =========================
+
+                const monsterDamage =
+                    monster.attack;
+
+                player.money -=
+                    monsterDamage;
+
+
+                if (player.money < 0) {
+
+                    player.money = 0;
+
+                }
+
+
+                // =========================
+                // プレイヤー表示更新
+                // =========================
+
+                document.getElementById(
+                    "battlePlayerStats"
+                ).innerHTML =
+                    `💰${player.money}G<br>` +
+                    `🔮魔力 ${player.magicPower}`;
+
+
+                renderPlayers();
+
+
+                // =========================
+                // 0Gになった場合
+                // =========================
+
+                if (player.money <= 0) {
+
+                    document.getElementById(
+                        "battleMessage"
+                    ).textContent =
+                        `👾 ${monster.name}の攻撃！ ` +
+                        `${monsterDamage}Gのダメージ！`;
+
+
+                    battleResultButton.style.display =
+                        "none";
+
+
+                    battlePopup.style.display =
+                        "none";
+
+
+                    checkPlayerRespawn(
+                        player,
+
+                        function () {
+
+                            finishTurn(
+                                player
+                            );
+
+                        }
+                    );
+
+                    return;
+
+                }
+
+
+                // =========================
+                // モンスター攻撃結果
+                // =========================
+
+                document.getElementById(
+                    "battleMessage"
+                ).textContent =
+                    `追いかけてきた 👾 ${monster.name}の攻撃！ ` +
+                    `${monsterDamage}Gのダメージ！`;
+
+
+                // =========================
+                // 3ラウンド終了
+                // =========================
+
+                if (
+                    currentRound >= 3
+                ) {
+
+                    document.getElementById(
+                        "battleMessage"
+                    ).textContent +=
+                        "　⚔️ 3ラウンド終了！";
+
+
+                    battleResultButton.style.display =
+                        "none";
+
+
+                    // =========================
+                    // 戦闘終了結果を表示
+                    // =========================
+
+                    showEventPopup(
+                        "⚔️ 戦闘終了",
+
+                        `${player.name}は3回の攻撃から逃げ続けた……！<br><br>` +
+                        `🏃 現実から目を背けた結果、<br>` +
+                        `追撃を受けた。<br><br>` +
+                        `💰 現在の所持金：<strong>${player.money}G</strong>`,
+
+                        function () {
+
+                            battlePopup.style.display =
+                                "none";
+
+
+                            finishTurn(
+                                player
+                            );
+
+                        }
+                    );
+
+
+                    return;
+
+                }
+
+
+                // =========================
+                // 次のラウンド
+                // =========================
+
+                currentRound +=
+                    1;
+
+
+                document.getElementById(
+                    "battleRound"
+                ).textContent =
+                    `ROUND ${currentRound} / 3`;
+
+
+                // =========================
+                // 逃げるボタンを再び有効化
+                // =========================
+
+                battleResultButton.disabled =
+                    false;
+
+            }
+        );
+
+    };
 
             // =========================
             // 魔法ボタン
@@ -3348,54 +3567,7 @@ if (player.money <= 0) {
 battleMessage.textContent =
     `👾 ${monster.name}の攻撃！ ${monsterDamage}Gのダメージ！`;
 
-// 戦闘画面に諦めるボタンを表示
-let battleResultButton =
-    document.getElementById("battleResultButton");
 
-if (!battleResultButton) {
-
-    battleResultButton =
-        document.createElement("button");
-
-    battleResultButton.id =
-        "battleResultButton";
-
-    battleResultButton.className =
-        "battle-magic-button";
-
-    battlePopup.appendChild(
-        battleResultButton
-    );
-}
-
-battleResultButton.textContent =
-    "諦める";
-
-battleResultButton.style.display =
-    "block";
-
-battleResultButton.onclick =
-    function () {
-
-        battleResultButton.style.display =
-            "none";
-
-        battlePopup.style.display =
-            "none";
-
-        checkPlayerRespawn(
-            player,
-
-            function () {
-
-                finishTurn(
-                    player
-                );
-
-            }
-        );
-
-    };
 }
 
 
