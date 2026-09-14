@@ -177,6 +177,21 @@ const itemData = [
 ];
 
 // =========================
+// 所持品データ、持っているだけで効果があるもの
+// =========================
+
+const possessionData = [
+
+    {
+        id: 1,
+        name: "お守り",
+        effect: "モンスターから受けるダメージ -10%",
+        damageReduction: 0.10
+    }
+
+];
+
+// =========================
 // 魔法データ
 // =========================
 
@@ -746,6 +761,7 @@ startButton.addEventListener(
     position: 0,
     color: playerColors[index],
     inventory: [],
+    possessions: [1],
     magic: [1],
 
     // バイト関連
@@ -989,26 +1005,30 @@ function showGameScreen(
 
 
     <!-- =========================
-         サイコロ・所持品・魔法
+         サイコロ・アイテム・所持品・魔法
     ========================= -->
 
     <div class="roulette-area">
 
-        <div id="rouletteNumber"></div>
+    <div id="rouletteNumber"></div>
 
-        <button id="rouletteButton">
-            🎲 サイコロ
-        </button>
+    <button id="rouletteButton">
+        🎲サイコロ
+    </button>
 
-        <button id="inventoryButton">
-            🎒 所持品
-        </button>
+    <button id="inventoryButton">
+        🎒
+    </button>
 
-        <button id="magicButton">
-            🔮 魔法
-        </button>
+    <button id="possessionButton">
+        🏆
+    </button>
 
-    </div>
+    <button id="magicButton">
+        🔮
+    </button>
+
+</div>
 
 
     <!-- =========================
@@ -1413,7 +1433,7 @@ document
     );
 
     // =========================
-    // 所持品ボタン
+    // アイテムボタン
     // =========================
 
     document
@@ -1434,7 +1454,7 @@ document
 
 
     // =========================
-    // 所持品画面を閉じる
+    // アイテム画面を閉じる
     // =========================
 
     document
@@ -1454,6 +1474,48 @@ document
 
             }
         );
+
+// =========================
+// 🏆 所持品ボタン
+// =========================
+
+document
+    .getElementById(
+        "possessionButton"
+    )
+    .addEventListener(
+        "click",
+        function () {
+
+            showPossessionPopup(
+                players[currentPlayer]
+            );
+
+        }
+    );
+
+
+// =========================
+// 🏆 所持品画面を閉じる
+// =========================
+
+document
+    .getElementById(
+        "possessionCloseButton"
+    )
+    .addEventListener(
+        "click",
+        function () {
+
+            document
+                .getElementById(
+                    "possessionPopup"
+                )
+                .style.display =
+                    "none";
+
+        }
+    );
 
     // =========================
     // マップ表示
@@ -2615,6 +2677,8 @@ function showEventPopup(
             "eventPopupButton"
         );
 
+        popupButton.textContent =
+    "OK";
 
     // =========================
     // 内容を設定
@@ -3182,7 +3246,10 @@ battleResultButton.onclick =
                 // =========================
 
                 const monsterDamage =
-                    monster.attack;
+    getMonsterDamage(
+        player,
+        monster.attack
+    );
 
                 player.money -=
                     monsterDamage;
@@ -3209,42 +3276,93 @@ battleResultButton.onclick =
                 renderPlayers();
 
 
-                // =========================
-                // 0Gになった場合
-                // =========================
+  // =========================
+// 0Gになった場合
+// =========================
 
-                if (player.money <= 0) {
+if (player.money <= 0) {
 
-                    document.getElementById(
-                        "battleMessage"
-                    ).textContent =
-                        `👾 ${monster.name}の攻撃！ ` +
-                        `${monsterDamage}Gのダメージ！`;
+    player.money = 0;
 
 
-                    battleResultButton.style.display =
-                        "none";
+    // =========================
+    // 戦闘画面の表示更新
+    // =========================
+
+    document.getElementById(
+        "battlePlayerStats"
+    ).innerHTML =
+        `💰${player.money}G<br>` +
+        `🔮魔力 ${player.magicPower}`;
 
 
-                    battlePopup.style.display =
-                        "none";
+    renderPlayers();
 
 
-                    checkPlayerRespawn(
-                        player,
+    // =========================
+    // 逃げるボタンを非活性化
+    // =========================
 
-                        function () {
+    battleResultButton.disabled =
+        true;
 
-                            finishTurn(
-                                player
-                            );
+    battleResultButton.style.display =
+        "none";
 
-                        }
+
+    // =========================
+    // 戦闘結果を表示
+    // =========================
+
+    showEventPopup(
+        "⚔️ 戦闘終了",
+
+        `${player.name}は戦闘から逃げた……！<br><br>` +
+        `現実から目を背けた結果、<br>` +
+        `背中に追撃を受けた。<br><br>` +
+        `👾 ${monster.name}から<strong>${monsterDamage}G</strong>の追撃！<br>` +
+        `💰 所持金は<strong>0G</strong>になった……。`,
+
+        function () {
+
+            // =========================
+            // 戦闘画面を閉じる
+            // =========================
+
+            battlePopup.style.display =
+                "none";
+
+
+            // =========================
+            // リスポーン
+            // =========================
+
+            checkPlayerRespawn(
+                player,
+
+                function () {
+
+                    finishTurn(
+                        player
                     );
 
-                    return;
-
                 }
+            );
+
+        }
+    );
+
+
+    // ボタンを「次へ」に変更
+    document.getElementById(
+        "eventPopupButton"
+    ).textContent =
+        "次へ";
+
+
+    return;
+
+}
 
 
                 // =========================
@@ -3271,6 +3389,13 @@ battleResultButton.onclick =
                     ).textContent +=
                         "　⚔️ 3ラウンド終了！";
 
+// =========================
+// 逃げるボタンを非活性化
+// =========================
+
+battleResultButton.disabled =
+    true;
+
 
                     battleResultButton.style.display =
                         "none";
@@ -3283,9 +3408,8 @@ battleResultButton.onclick =
                     showEventPopup(
                         "⚔️ 戦闘終了",
 
-                        `${player.name}は3回の攻撃から逃げ続けた……！<br><br>` +
-                        `🏃 現実から目を背けた結果、<br>` +
-                        `追撃を受けた。<br><br>` +
+                        `${player.name}は戦闘から逃げだした……！<br><br>` +
+                        `👾 ${monster.name}から<strong>${monsterDamage}G</strong>の追撃！<br><br>` +
                         `💰 現在の所持金：<strong>${player.money}G</strong>`,
 
                         function () {
@@ -3489,62 +3613,80 @@ battleResultButton.onclick =
                             renderPlayers();
 
 
-                            // =========================
-                            // モンスター撃破
-                            // =========================
+// =========================
+// モンスター撃破
+// =========================
 
-                            if (
-                                monsterHP === 0
-                            ) {
+if (
+    monsterHP === 0
+) {
 
-                                document.getElementById(
-                                    "battleMessage"
-                                ).textContent =
-                                    `${magic.icon} ${magic.name}！` +
-                                    ` ${magicDamage}ダメージ！` +
-                                    `　👾 ${monster.name}を倒した！`;
-
-
-                                magicButton.textContent =
-                                    "戦闘終了";
+    document.getElementById(
+        "battleMessage"
+    ).textContent =
+        `${magic.icon} ${magic.name}！` +
+        ` ${magicDamage}ダメージ！` +
+        `　👾 ${monster.name}を倒した！`;
 
 
-                                magicButton.onclick =
-                                    function () {
+    // =========================
+    // 逃げるボタンを無効化
+    // =========================
 
-                                        magicButton.disabled =
-                                            true;
+    battleResultButton.disabled =
+        true;
 
-
-                                        battlePopup.style.display =
-                                            "none";
-
-
-                                        showRewardPopup(
-                                            player,
-
-                                            function () {
-
-                                                finishTurn(
-                                                    player
-                                                );
-
-                                            }
-                                        );
-
-                                    };
+    battleResultButton.style.display =
+        "none";
 
 
-                                return;
+    // =========================
+    // 戦闘終了ボタン
+    // =========================
 
-                            }
+    magicButton.textContent =
+        "戦闘終了";
+
+
+    magicButton.onclick =
+        function () {
+
+            magicButton.disabled =
+                true;
+
+
+            battlePopup.style.display =
+                "none";
+
+
+            showRewardPopup(
+                player,
+
+                function () {
+
+                    finishTurn(
+                        player
+                    );
+
+                }
+            );
+
+        };
+
+
+    return;
+
+}
 
  // =========================
 // モンスター反撃
 // =========================
 
 const monsterDamage =
-    monster.attack;
+    getMonsterDamage(
+        player,
+        monster.attack
+    );
 
 player.money -=
     monsterDamage;
@@ -5440,3 +5582,174 @@ window.addEventListener("beforeunload", function (event) {
     event.preventDefault();
     event.returnValue = true;
 });
+
+// =========================
+// 所持品によるダメージ軽減
+// =========================
+
+function getMonsterDamage(
+    player,
+    damage
+) {
+
+    let reduction = 0;
+
+
+    player.possessions.forEach(
+        function (possessionId) {
+
+            const possession =
+                possessionData.find(
+                    function (data) {
+
+                        return data.id ===
+                            possessionId;
+
+                    }
+                );
+
+
+            if (!possession) {
+                return;
+            }
+
+
+            if (
+                possession.damageReduction
+            ) {
+
+                reduction +=
+                    possession.damageReduction;
+
+            }
+
+        }
+    );
+
+
+    const finalDamage =
+        Math.floor(
+            damage *
+            (1 - reduction)
+        );
+
+
+    return finalDamage;
+
+}
+
+// =========================
+// 所持品画面
+// 持っているだけで効果があるもの
+// =========================
+
+function showPossessionPopup(
+    player
+) {
+
+    const possessionPopup =
+        document.getElementById(
+            "possessionPopup"
+        );
+
+    const possessionList =
+        document.getElementById(
+            "possessionList"
+        );
+
+
+    // =========================
+    // 一覧を初期化
+    // =========================
+
+    possessionList.innerHTML =
+        "";
+
+
+    // =========================
+    // 所持品がない場合
+    // =========================
+
+    if (
+        player.possessions.length === 0
+    ) {
+
+        possessionList.innerHTML = `
+
+            <div class="inventory-empty">
+                所持品はありません。
+            </div>
+
+        `;
+
+    }
+
+
+    // =========================
+    // 所持品を表示
+    // =========================
+
+    player.possessions.forEach(
+        function (possessionId) {
+
+            const possession =
+                possessionData.find(
+                    function (data) {
+
+                        return data.id ===
+                            possessionId;
+
+                    }
+                );
+
+
+            if (!possession) {
+
+                return;
+
+            }
+
+
+            const possessionElement =
+                document.createElement(
+                    "div"
+                );
+
+
+            possessionElement.className =
+                "inventory-item";
+
+
+            possessionElement.innerHTML = `
+
+                <div
+                    class="inventory-item-name"
+                >
+                     ${possession.name}
+                </div>
+
+                <div
+                    class="inventory-item-effect"
+                >
+                    ${possession.effect}
+                </div>
+
+            `;
+
+
+            possessionList.appendChild(
+                possessionElement
+            );
+
+        }
+    );
+
+
+    // =========================
+    // 表示
+    // =========================
+
+    possessionPopup.style.display =
+        "block";
+
+}
