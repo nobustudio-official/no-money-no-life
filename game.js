@@ -935,82 +935,104 @@ function showGameScreen(
 
     gameContainer.innerHTML = `
 
-        <div class="game-screen">
+       <div class="game-screen">
 
+    <!-- =========================
+         TURN ＋ 次の目的地
+    ========================= -->
 
-            <!-- 目的地 -->
+    <div class="game-top-row">
 
-            <div class="destination">
-
-                🎯 次の目的地：王都
-
-            </div>
-
-
-            <!-- マップ -->
-
-            <div class="map-area">
-
-                <h2>
-                    🗺️ 異世界マップ
-                </h2>
-
-                <div
-                    id="mapBoard"
-                    class="map-board">
-                </div>
-
-            </div>
-
-
-            <!-- 現在のターン -->
-
-            <div
-                id="turnDisplay"
-                class="turn-display">
-            </div>
-
-
-            <!-- プレイヤー情報 -->
-
-            <div
-                id="playerStatus"
-                class="player-status">
-            </div>
-
-
-            <!-- ルーレット -->
-
-            <div class="roulette-area">
-
-                <div id="rouletteNumber">
-                    
-                </div>
-
-                <button id="rouletteButton">
-                    🎲サイコロ
-                </button>
-
-                <button id="inventoryButton">
-                 🎒 所持品
-                </button>
-
-                <button id="magicButton">
-                🔮 魔法
-                </button>
-
-            </div>
-
-
-            <!-- 分岐・方向選択 -->
-
-            <div
-                id="choiceArea"
-                class="choice-area">
-            </div>
-
-
+        <div
+            id="turnDisplay"
+            class="turn-display">
         </div>
+
+        <div class="destination">
+            🎯 次の目的地：王都
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         現在プレイヤー ＋ 残りマス
+    ========================= -->
+
+    <div class="current-player-row">
+
+        <div
+            id="currentPlayerInfo"
+            class="current-player-info">
+        </div>
+
+        <div
+            id="remainingStepsInfo"
+            class="remaining-steps-info">
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         マップ
+    ========================= -->
+
+    <div class="map-area">
+
+        <div
+            id="mapBoard"
+            class="map-board">
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         サイコロ・所持品・魔法
+    ========================= -->
+
+    <div class="roulette-area">
+
+        <div id="rouletteNumber"></div>
+
+        <button id="rouletteButton">
+            🎲 サイコロ
+        </button>
+
+        <button id="inventoryButton">
+            🎒 所持品
+        </button>
+
+        <button id="magicButton">
+            🔮 魔法
+        </button>
+
+    </div>
+
+
+    <!-- =========================
+         全プレイヤー情報
+    ========================= -->
+
+    <div
+        id="playerStatus"
+        class="player-status">
+    </div>
+
+
+    <!-- =========================
+         分岐・方向選択
+    ========================= -->
+
+    <div
+        id="choiceArea"
+        class="choice-area">
+    </div>
+
+
+</div>
+
 
     `;
 
@@ -1034,11 +1056,12 @@ function showGameScreen(
     ) {
 
         // =========================
-        // サイコロボタンを無効化
+        // サイコロボタン、所持品ボタン無効化
         // =========================
 
-        rouletteButton.disabled =
-            true;
+        rouletteButton.disabled =   true;
+
+        inventoryButton.disabled = true;
 
 
         // =========================
@@ -1798,28 +1821,57 @@ document
     }
 
 
-    // =========================
-    // 現在のターン表示
-    // =========================
+   // =========================
+// 現在のターン表示
+// =========================
 
-   function renderTurn() {
+function renderTurn() {
 
     const turnDisplay =
-        document.getElementById("turnDisplay");
+        document.getElementById(
+            "turnDisplay"
+        );
 
+    const currentPlayerInfo =
+        document.getElementById(
+            "currentPlayerInfo"
+        );
+
+    const remainingStepsInfo =
+        document.getElementById(
+            "remainingStepsInfo"
+        );
+
+
+    // =========================
+    // ターン表示
+    // =========================
 
     turnDisplay.textContent =
-        `TURN ${currentTurn} / ${maxTurns}　🎮 ${players[currentPlayer].name}`;
+        `TURN ${currentTurn} / ${maxTurns}`;
 
 
-    if (
-        remainingSteps > 0
-    ) {
+// =========================
+// 現在のプレイヤー
+// =========================
+    const playerIcons = [
+    "🔴",
+    "🔵",
+    "🟢",
+    "🟡",
+    "🟣",
+    "🟠"
+];
 
-        turnDisplay.textContent +=
-            `　🚶 残り ${remainingSteps} マス`;
+    currentPlayerInfo.textContent =
+    `${playerIcons[currentPlayer]} ${players[currentPlayer].name}`;
+    
+    // =========================
+    // 残りマス
+    // =========================
 
-    }
+    remainingStepsInfo.textContent =
+        `🎲 残り${remainingSteps}マス`;
 
 }
 
@@ -2401,17 +2453,19 @@ document
             "rouletteNumber"
         );
 
+    inventoryButton.disabled = false;
 
     rouletteButton.addEventListener(
         "click",
         function () {
 
             // =========================
-            // 二重クリック防止
+            // 二重クリック防止、所持品非活性化
             // =========================
 
-            rouletteButton.disabled =
-                true;
+            rouletteButton.disabled = true;
+
+            inventoryButton.disabled = true;
 
 
             // =========================
@@ -4153,6 +4207,8 @@ function finishTurn(
         %
         players.length;
 
+// 所持品ボタンを再び有効化
+inventoryButton.disabled = false;
 
     const nextPlayer =
         players[currentPlayer];
