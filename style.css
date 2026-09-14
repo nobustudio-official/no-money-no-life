@@ -3629,3 +3629,60 @@ button {
     font-size: 18px;
     font-weight: bold;
 }
+/* =========================
+   スマホ版 上部情報 横並び
+   ========================= */
+
+@media (max-width: 600px) {
+
+    /* TURN ＋ 次の目的地 */
+    .game-top-row {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        gap: 8px !important;
+    }
+
+    .game-top-row .turn-display {
+        width: auto !important;
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+    }
+
+    .game-top-row .destination {
+        width: auto !important;
+        flex: 1 1 auto !important;
+        white-space: nowrap !important;
+        text-align: center !important;
+    }
+
+
+    /* 現在プレイヤー ＋ 残りマス */
+    .current-player-row {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        gap: 25px !important;
+        margin: 8px 0 !important;
+    }
+
+    .current-player-info {
+        width: auto !important;
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+        font-size: 18px !important;
+    }
+
+    .remaining-steps-info {
+        width: auto !important;
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+        font-size: 18px !important;
+    }
+}
