@@ -3686,3 +3686,72 @@ button {
         font-size: 18px !important;
     }
 }
+
+/* =========================
+   スマホ版：ゲームボタン縮小
+========================= */
+
+@media (max-width: 600px) {
+
+    #rouletteButton,
+    #inventoryButton,
+    #magicButton {
+        height: 32px;
+        width: 100px;
+        font-size: 13px;
+    }
+
+    .roulette-area {
+        gap: 8px;
+        padding-top: 6px;
+        padding-bottom: 10px;
+    }
+
+}
+
+/* =========================
+   スマホ版：プレイヤー一覧
+========================= */
+
+@media (max-width: 600px) {
+
+    .player-card {
+        height: 42px;
+        min-height: 42px;
+        padding: 6px 12px;
+        gap: 8px;
+    }
+
+    /* プレイヤー名を非表示 */
+    .player-card strong {
+        display: none;
+    }
+
+}
+
+/* =========================
+   スマホ版：マップ拡大
+========================= */
+
+@media (max-width: 600px) {
+
+    .game-screen .map-area {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .map-board {
+        height: 750px;
+        padding: 0;
+    }
+
+    .map-node {
+        width: 68px;
+        height: 68px;
+    }
+
+    .square-icon {
+        font-size: 1.5rem;
+    }
+
+}
