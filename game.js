@@ -1781,43 +1781,111 @@ function renderPlayers() {
 
                 return `
 
-                    <div
-                        class="
-                            player-card
-                            ${
-                                isCurrent
-                                    ? "current-player"
-                                    : ""
-                            }
-                        "
-                    >
+    <div
+        class="
+            player-card
+            ${
+                isCurrent
+                    ? "current-player"
+                    : ""
+            }
+        "
+        data-player-index="${index}"
+    >
 
-                        <span
-                            class="player-icon"
-                            style="
-                                background-color:
-                                ${player.color} !important;
-                            "
-                        ></span>
-
-
-                        <span></span>
+        <span
+            class="player-icon"
+            style="
+                background-color:
+                ${player.color} !important;
+            "
+        ></span>
 
 
-                        <span>
-                            💰${player.money}G
-                        </span>
+        <span></span>
 
-                        <span>
-                            🔮${player.magicPower}
-                        </span>
 
-                    </div>
+        <span>
+            💰${player.money}G
+        </span>
 
-                `;
+        <span>
+            🔮${player.magicPower}
+        </span>
+
+    </div>
+
+`;
 
             }
         ).join("");
+
+        // =========================
+// プレイヤーカードをタップしたら
+// そのプレイヤーの位置へ移動
+// =========================
+
+const playerCards =
+    status.querySelectorAll(
+        ".player-card"
+    );
+
+playerCards.forEach(
+    function (card) {
+
+        card.addEventListener(
+            "click",
+            function () {
+
+                const playerIndex =
+                    Number(
+                        card.dataset.playerIndex
+                    );
+
+                const player =
+                    players[playerIndex];
+
+                if (!player) {
+                    return;
+                }
+
+                const mapNode =
+                    document.querySelector(
+                        `.map-node[data-position="${player.position}"]`
+                    );
+
+                if (!mapNode) {
+                    return;
+                }
+
+                const mapArea =
+                    document.querySelector(
+                        ".map-area"
+                    );
+
+                const targetTop =
+                    mapNode.offsetTop
+                    -
+                    (
+                        mapArea.clientHeight
+                        / 2
+                    )
+                    +
+                    (
+                        mapNode.offsetHeight
+                        / 2
+                    );
+
+                mapArea.scrollTo({
+                    top: targetTop,
+                    behavior: "smooth"
+                });
+
+            }
+        );
+
+    }
+);
 
 }
 
