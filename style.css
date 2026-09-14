@@ -544,6 +544,7 @@ button {
 
 #rouletteButton,
 #inventoryButton,
+#possessionButton,
 #magicButton {
     width: 110px;
     height: 46px;
