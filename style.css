@@ -3113,33 +3113,81 @@ button {
 
 
 .battle-magic-item {
-    display:
-        flex;
+    display: flex;
 
-    align-items:
-        center;
+    align-items: center;
 
-    justify-content:
-        space-between;
+    justify-content: space-between;
 
-    gap:
-        12px;
+    gap: 12px;
 
-    padding:
-        12px 14px;
+    padding: 10px 14px;
 
-    border:
-        1px solid
+    border: 1px solid
         rgba(255, 255, 255, 0.2);
 
-    border-radius:
-        12px;
+    border-radius: 12px;
 
     background:
         rgba(255, 255, 255, 0.06);
 
-    box-sizing:
-        border-box;
+    box-sizing: border-box;
+}
+
+
+.battle-magic-item-info {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.battle-magic-item-info {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+}
+
+
+.battle-magic-item-name {
+    font-weight: bold;
+
+    line-height: 1.2;
+}
+
+
+.battle-magic-item-detail {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-top: 4px;
+
+    font-size: 0.9rem;
+}
+
+
+.battle-magic-item-effect {
+    white-space: nowrap;
+}
+
+
+.battle-magic-item-cost {
+    white-space: nowrap;
+
+    display: flex;
+    align-items: center;
+    line-height: 1;
+
+    transform: translateY(-10px);
+}
+
+
+.battle-magic-use-button {
+    flex-shrink: 0;
 }
 
 
