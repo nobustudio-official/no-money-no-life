@@ -185,6 +185,7 @@ const possessionData = [
     {
         id: 1,
         name: "お守り",
+        price: 1000,
         effect: "モンスターから受けるダメージ -10%",
         damageReduction: 0.10
     }
