@@ -1895,6 +1895,187 @@ document
     }
 
 // =========================
+// スマホ：マップ ピンチズーム
+// =========================
+
+let mapZoom = 1;
+
+let mapPinchStartDistance = 0;
+let mapPinchStartZoom = 1;
+let mapPinchInitialized = false;
+
+
+function getMapPinchDistance(touch1, touch2) {
+
+    const dx =
+        touch1.clientX -
+        touch2.clientX;
+
+    const dy =
+        touch1.clientY -
+        touch2.clientY;
+
+    return Math.sqrt(
+        dx * dx +
+        dy * dy
+    );
+}
+
+
+function applyMapZoom() {
+
+    const mapBoard =
+        document.getElementById(
+            "mapBoard"
+        );
+
+    if (!mapBoard) {
+        return;
+    }
+
+    mapBoard.style.transform =
+        `scale(${mapZoom})`;
+
+    mapBoard.style.transformOrigin =
+        "center center";
+}
+
+
+function setupMapPinchZoom() {
+
+    if (mapPinchInitialized) {
+        return;
+    }
+
+
+    const mapArea =
+        document.querySelector(
+            ".map-area"
+        );
+
+    if (!mapArea) {
+        return;
+    }
+
+
+    mapPinchInitialized = true;
+
+
+    // =========================
+    // ピンチ開始
+    // =========================
+
+    mapArea.addEventListener(
+        "touchstart",
+        function (event) {
+
+            if (event.touches.length !== 2) {
+                return;
+            }
+
+
+            mapPinchStartDistance =
+                getMapPinchDistance(
+                    event.touches[0],
+                    event.touches[1]
+                );
+
+
+            mapPinchStartZoom =
+                mapZoom;
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    // =========================
+    // ピンチ中
+    // =========================
+
+    mapArea.addEventListener(
+        "touchmove",
+        function (event) {
+
+            if (event.touches.length !== 2) {
+                return;
+            }
+
+
+            const currentDistance =
+                getMapPinchDistance(
+                    event.touches[0],
+                    event.touches[1]
+                );
+
+
+            if (mapPinchStartDistance <= 0) {
+                return;
+            }
+
+
+            const zoomRatio =
+                currentDistance /
+                mapPinchStartDistance;
+
+
+            mapZoom =
+                mapPinchStartZoom *
+                zoomRatio;
+
+
+            // 最小70%・最大200%
+            mapZoom =
+                Math.max(
+                    0.7,
+                    Math.min(
+                        mapZoom,
+                        2.0
+                    )
+                );
+
+
+            applyMapZoom();
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    // =========================
+    // ピンチ終了
+    // =========================
+
+    mapArea.addEventListener(
+        "touchend",
+        function (event) {
+
+            if (event.touches.length < 2) {
+
+                mapPinchStartDistance = 0;
+
+            }
+
+        },
+        {
+            passive: true
+        }
+    );
+
+}
+
+
+// =========================
+// ピンチズーム開始
+// =========================
+
+setupMapPinchZoom();
+    
+// =========================
 // 資産一覧画面
 // =========================
 
