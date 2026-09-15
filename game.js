@@ -984,367 +984,166 @@ function showGameScreen(
 
     gameContainer.innerHTML = `
 
-    <div class="game-screen">
+       <div class="game-screen">
 
-        <!-- =================================================
-             レイヤー1：マップ
-        ================================================== -->
+    <!-- =========================
+         TURN ＋ 次の目的地
+    ========================= -->
 
-        <div class="map-layer">
+    <div class="game-top-row">
 
-            <div class="map-area">
-
-                <div class="map-board-zoom">
-
-                    <div
-                        id="mapBoard"
-                        class="map-board">
-                    </div>
-
-                </div>
-
-            </div>
-
+        <div
+            id="turnDisplay"
+            class="turn-display">
         </div>
 
-
-        <!-- =================================================
-             レイヤー2：ゲームUI
-        ================================================== -->
-
-        <div class="ui-layer">
-
-            <!-- TURN ＋ 次の目的地 -->
-
-            <div class="game-top-row">
-
-                <div
-                    id="turnDisplay"
-                    class="turn-display">
-                </div>
-
-                <div class="destination">
-                    🎯 次の目的地：王都
-                </div>
-
-            </div>
-
-
-            <!-- 現在プレイヤー ＋ 残りマス -->
-
-            <div class="current-player-row">
-
-                <div
-                    id="currentPlayerInfo"
-                    class="current-player-info">
-                </div>
-
-                <div
-                    id="remainingStepsInfo"
-                    class="remaining-steps-info">
-                </div>
-
-            </div>
-
-
-            <!-- 下部UI -->
-
-            <div class="game-bottom-fixed">
-
-                <!-- 全プレイヤー情報 -->
-
-                <div
-                    id="playerStatus"
-                    class="player-status">
-                </div>
-
-
-                <!-- サイコロ・アイテム・所持品・魔法 -->
-
-                <div class="roulette-area">
-
-                    <div id="rouletteNumber"></div>
-
-                    <button id="rouletteButton">
-                        🎲サイコロ
-                    </button>
-
-                    <button id="inventoryButton">
-                        🎒
-                    </button>
-
-                    <button id="possessionButton">
-                        🏆
-                    </button>
-
-                    <button id="magicButton">
-                        🔮
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <!-- 分岐・方向選択 -->
-
-            <div
-                id="choiceArea"
-                class="choice-area">
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
-             レイヤー3：ゲーム内オーバーレイ
-        ================================================== -->
-
-        <div class="overlay-layer">
-
-            <!-- 資産一覧 -->
-
-            <div
-                id="assetPopup"
-                class="inventory-popup">
-
-                <div class="inventory-popup-title">
-                    👩 資産一覧
-                </div>
-
-                <div
-                    id="assetList"
-                    class="inventory-list">
-                </div>
-
-                <button
-                    id="assetCloseButton"
-                    class="inventory-close-button"
-                    type="button">
-                    閉じる
-                </button>
-
-            </div>
-
-
-            <!-- 資産購入 -->
-
-            <div
-                id="assetPurchasePopup"
-                class="inventory-popup">
-
-                <div class="inventory-popup-title">
-                    👩 資産購入
-                </div>
-
-                <div
-                    id="assetPurchaseList"
-                    class="inventory-list">
-                </div>
-
-                <button
-                    id="assetPurchaseCloseButton"
-                    class="inventory-close-button"
-                    type="button">
-                    閉じる
-                </button>
-
-            </div>
-
+        <div class="destination">
+            🎯 次の目的地：王都
         </div>
 
     </div>
-`;
-
-// =========================================================
-// マップ専用ズーム
-// =========================================================
-
-function setupMapZoom() {
-
-    const mapArea =
-        document.querySelector(
-            ".game-screen .map-area"
-        );
-
-    const mapBoard =
-        document.querySelector(
-            ".game-screen .map-board"
-        );
-
-    const mapBoardZoom =
-        document.querySelector(
-            ".game-screen .map-board-zoom"
-        );
-
-    if (
-        !mapArea ||
-        !mapBoard ||
-        !mapBoardZoom
-    ) {
-        return;
-    }
 
 
-    const baseWidth = 1200;
-    const baseHeight = 800;
+    <!-- =========================
+         現在プレイヤー ＋ 残りマス
+    ========================= -->
 
-    let currentScale = 0.82;
+    <div class="current-player-row">
 
-    let startDistance = 0;
-    let startScale = currentScale;
+        <div
+            id="currentPlayerInfo"
+            class="current-player-info">
+        </div>
 
+        <div
+            id="remainingStepsInfo"
+            class="remaining-steps-info">
+        </div>
 
-    function updateZoom(scale) {
-
-        currentScale =
-            Math.min(
-                2.0,
-                Math.max(
-                    0.55,
-                    scale
-                )
-            );
+    </div>
 
 
-        mapBoard.style.transform =
-            `scale(${currentScale})`;
+    <!-- =========================
+         マップ
+    ========================= -->
+
+    <div class="map-area">
+
+        <div
+            id="mapBoard"
+            class="map-board">
+        </div>
+
+    </div>
 
 
-        mapBoardZoom.style.width =
-            `${baseWidth * currentScale}px`;
+    <!-- =========================
+         サイコロ・アイテム・所持品・魔法
+    ========================= -->
+
+    <div class="roulette-area">
+
+    <div id="rouletteNumber"></div>
+
+    <button id="rouletteButton">
+        🎲サイコロ
+    </button>
+
+    <button id="inventoryButton">
+        🎒
+    </button>
+
+    <button id="possessionButton">
+        🏆
+    </button>
+
+    <button id="magicButton">
+        🔮
+    </button>
+
+</div>
 
 
-        mapBoardZoom.style.height =
-            `${baseHeight * currentScale}px`;
+    <!-- =========================
+         全プレイヤー情報
+    ========================= -->
 
-    }
-
-
-    function getDistance(
-        touch1,
-        touch2
-    ) {
-
-        const dx =
-            touch1.clientX -
-            touch2.clientX;
-
-        const dy =
-            touch1.clientY -
-            touch2.clientY;
-
-        return Math.sqrt(
-            dx * dx +
-            dy * dy
-        );
-
-    }
+    <div
+        id="playerStatus"
+        class="player-status">
+    </div>
 
 
-    // 初期倍率
+    <!-- =========================
+         分岐・方向選択
+    ========================= -->
 
-    updateZoom(currentScale);
+    <div
+        id="choiceArea"
+        class="choice-area">
+    </div>
 
+    <!-- =========================
+     資産一覧
+========================= -->
 
-    // =========================
-    // ピンチ開始
-    // =========================
+<div
+    id="assetPopup"
+    class="inventory-popup"
+>
 
-    mapArea.addEventListener(
-        "touchstart",
-        function (event) {
-
-            if (
-                event.touches.length !== 2
-            ) {
-                return;
-            }
-
-
-            startDistance =
-                getDistance(
-                    event.touches[0],
-                    event.touches[1]
-                );
+    <div class="inventory-popup-title">
+        👩 資産一覧
+    </div>
 
 
-            startScale =
-                currentScale;
-
-        },
-        {
-            passive: true
-        }
-    );
+    <div
+        id="assetList"
+        class="inventory-list"
+    ></div>
 
 
-    // =========================
-    // ピンチ中
-    // =========================
+    <button
+        id="assetCloseButton"
+        class="inventory-close-button"
+        type="button"
+    >
+        閉じる
+    </button>
 
-    mapArea.addEventListener(
-        "touchmove",
-        function (event) {
+</div>
 
-            if (
-                event.touches.length !== 2
-            ) {
-                return;
-            }
+<!-- =========================
+     資産購入
+========================= -->
 
+<div
+    id="assetPurchasePopup"
+    class="inventory-popup">
 
-            event.preventDefault();
+    <div class="inventory-popup-title">
+        👩 資産購入
+    </div>
 
+    <div
+        id="assetPurchaseList"
+        class="inventory-list">
+    </div>
 
-            if (
-                startDistance <= 0
-            ) {
-                return;
-            }
+    <button
+        id="assetPurchaseCloseButton"
+        class="inventory-close-button"
+        type="button">
+        閉じる
+    </button>
 
+</div>
 
-            const currentDistance =
-                getDistance(
-                    event.touches[0],
-                    event.touches[1]
-                );
-
-
-            const scale =
-                startScale *
-                (
-                    currentDistance /
-                    startDistance
-                );
-
-
-            updateZoom(scale);
-
-        },
-        {
-            passive: false
-        }
-    );
+</div>
 
 
-    // =========================
-    // ピンチ終了
-    // =========================
+    `;
 
-    mapArea.addEventListener(
-        "touchend",
-        function () {
-
-            startDistance = 0;
-
-        }
-    );
-
-}
-
-
-setupMapZoom();
 
     // =========================
     // ターン管理
