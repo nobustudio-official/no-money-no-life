@@ -2620,24 +2620,51 @@ function renderPlayers() {
                         );
 
 
-                    const targetTop =
-                        mapNode.offsetTop
-                        -
-                        (
-                            mapArea.clientHeight
-                            / 2
-                        )
-                        +
-                        (
-                            mapNode.offsetHeight
-                            / 2
-                        );
+                    const mapRect =
+    mapArea.getBoundingClientRect();
+
+const playerRect =
+    mapNode.getBoundingClientRect();
 
 
-                    mapArea.scrollTo({
-                        top: targetTop,
-                        behavior: "smooth"
-                    });
+const mapCenterX =
+    mapRect.left +
+    mapRect.width / 2;
+
+const mapCenterY =
+    mapRect.top +
+    mapRect.height / 2;
+
+
+const playerCenterX =
+    playerRect.left +
+    playerRect.width / 2;
+
+const playerCenterY =
+    playerRect.top +
+    playerRect.height / 2;
+
+
+const scrollAmountX =
+    playerCenterX -
+    mapCenterX;
+
+const scrollAmountY =
+    playerCenterY -
+    mapCenterY;
+
+
+mapArea.scrollTo({
+    left:
+        mapArea.scrollLeft +
+        scrollAmountX,
+
+    top:
+        mapArea.scrollTop +
+        scrollAmountY,
+
+    behavior: "smooth"
+});
 
                 }
             );
@@ -6108,20 +6135,33 @@ function centerCurrentPlayerOnMap() {
     const playerRect =
         playerNode.getBoundingClientRect();
 
-    const mapCenter =
-        mapRect.top +
-        mapRect.height / 2;
+    const mapCenterX =
+    mapRect.left +
+    mapRect.width / 2;
 
-    const playerCenter =
-        playerRect.top +
-        playerRect.height / 2;
+const mapCenterY =
+    mapRect.top +
+    mapRect.height / 2;
 
-    const scrollAmount =
-        playerCenter -
-        mapCenter;
+const playerCenterX =
+    playerRect.left +
+    playerRect.width / 2;
 
-    mapArea.scrollTo({
-    top: mapArea.scrollTop + scrollAmount,
+const playerCenterY =
+    playerRect.top +
+    playerRect.height / 2;
+
+const scrollAmountX =
+    playerCenterX -
+    mapCenterX;
+
+const scrollAmountY =
+    playerCenterY -
+    mapCenterY;
+
+mapArea.scrollTo({
+    left: mapArea.scrollLeft + scrollAmountX,
+    top: mapArea.scrollTop + scrollAmountY,
     behavior: "smooth"
 });
 }
@@ -6136,6 +6176,18 @@ renderMap();
 renderPlayers();
 
 renderTurn();
+
+
+// =========================
+// ゲーム開始時
+// プレイヤー1をマップ中央へ
+// =========================
+
+setTimeout(function () {
+
+    centerCurrentPlayerOnMap();
+
+}, 10);
 
 
 // =========================
