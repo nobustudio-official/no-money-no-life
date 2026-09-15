@@ -235,9 +235,7 @@ const magicData = [
         duration:
             0,
 
-        // 使用に必要な魔力
-        requiredMagicPower:
-            0
+        
     },
 
 
@@ -278,10 +276,41 @@ const magicData = [
         duration:
             0,
 
-        // 使用に必要な魔力
-        requiredMagicPower:
-            0
+        
     }
+
+];
+
+// =========================
+// 資産マスター
+// =========================
+
+const assetData = [
+
+    {
+        id: 1,
+        name: "素朴な嫁",
+        price: 100,
+        yield: 100,
+        owner: null
+    },
+
+    {
+        id: 2,
+        name: "素朴な嫁",
+        price: 100,
+        yield: 100,
+        owner: null
+    },
+
+    {
+        id: 3,
+        name: "エミリア",
+        price: 5000000000,
+        yield: 2,
+        owner: null
+    },
+
 
 ];
 
@@ -323,9 +352,10 @@ const mapData = [
 
     {
         id: 3,
-        name: "遺跡",
-        icon: "💰",
-        type: "money",
+        name: "案内所",
+        icon: "👩",
+        type: "asset",
+        assetIds: [1,3],
         next: [4],
         x: 58,
         y: 88
@@ -403,9 +433,10 @@ const mapData = [
 
     {
         id: 11,
-        name: "城門",
-        icon: "💰",
-        type: "money",
+        name: "案内所",
+        icon: "👩",
+        type: "asset",
+        assetIds: [2],
         next: [12],
         x: 90,
         y: 70
@@ -762,6 +793,7 @@ startButton.addEventListener(
     position: 0,
     color: playerColors[index],
     inventory: [],
+    assets: [],
     possessions: [1],
     magic: [1],
 
@@ -1051,6 +1083,61 @@ function showGameScreen(
         class="choice-area">
     </div>
 
+    <!-- =========================
+     資産一覧
+========================= -->
+
+<div
+    id="assetPopup"
+    class="inventory-popup"
+>
+
+    <div class="inventory-popup-title">
+        👩 資産一覧
+    </div>
+
+
+    <div
+        id="assetList"
+        class="inventory-list"
+    ></div>
+
+
+    <button
+        id="assetCloseButton"
+        class="inventory-close-button"
+        type="button"
+    >
+        閉じる
+    </button>
+
+</div>
+
+<!-- =========================
+     資産購入
+========================= -->
+
+<div
+    id="assetPurchasePopup"
+    class="inventory-popup">
+
+    <div class="inventory-popup-title">
+        👩 資産購入
+    </div>
+
+    <div
+        id="assetPurchaseList"
+        class="inventory-list">
+    </div>
+
+    <button
+        id="assetPurchaseCloseButton"
+        class="inventory-close-button"
+        type="button">
+        閉じる
+    </button>
+
+</div>
 
 </div>
 
@@ -1801,8 +1888,503 @@ document
 
     }
 
+// =========================
+// 資産一覧画面
+// =========================
+
+function showAssetPopup(
+    player
+) {
+
+    const assetPopup =
+        document.getElementById(
+            "assetPopup"
+        );
+
+
+    const assetList =
+        document.getElementById(
+            "assetList"
+        );
+
 
     // =========================
+    // 一覧を初期化
+    // =========================
+
+    assetList.innerHTML =
+        "";
+
+
+    // =========================
+    // 資産がない場合
+    // =========================
+
+    if (
+        !player.assets ||
+        player.assets.length === 0
+    ) {
+
+        assetList.innerHTML = `
+
+            <div class="inventory-empty">
+
+                保有資産はありません。
+
+            </div>
+
+        `;
+
+    }
+
+
+    // =========================
+    // 資産を表示
+    // =========================
+
+    if (
+        player.assets &&
+        player.assets.length > 0
+    ) {
+
+        player.assets.forEach(
+            function (assetId) {
+
+                const asset =
+                    assetData.find(
+                        function (data) {
+
+                            return data.id ===
+                                assetId;
+
+                        }
+                    );
+
+
+                if (!asset) {
+                    return;
+                }
+
+
+                const assetElement =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                assetElement.className =
+                    "inventory-item";
+
+
+                assetElement.innerHTML = `
+
+                    <div
+                        class="inventory-item-name"
+                    >
+
+                        ${asset.name}
+
+                    </div>
+
+
+                    <div
+                        class="inventory-item-effect"
+                    >
+
+                        取得額：
+                        ${asset.price.toLocaleString()}G
+
+                        <br>
+
+                        利回り：
+                        ${asset.yield}%
+
+                    </div>
+
+                `;
+
+
+                assetList.appendChild(
+                    assetElement
+                );
+
+            }
+        );
+
+    }
+
+
+    // =========================
+    // Popup表示
+    // =========================
+
+    assetPopup.style.display =
+        "block";
+
+
+    // =========================
+    // 閉じるボタン
+    // =========================
+
+    document.getElementById(
+        "assetCloseButton"
+    ).onclick =
+        function () {
+
+            assetPopup.style.display =
+                "none";
+
+        };
+
+}
+
+// =========================
+// 資産購入画面
+// =========================
+
+function showAssetPurchasePopup(
+    player,
+    assetIds,
+    callback
+) {
+
+    const popup =
+        document.getElementById(
+            "assetPurchasePopup"
+        );
+
+
+    const list =
+        document.getElementById(
+            "assetPurchaseList"
+        );
+
+
+    const closeButton =
+        document.getElementById(
+            "assetPurchaseCloseButton"
+        );
+
+
+    // =========================
+    // 一覧を初期化
+    // =========================
+
+    list.innerHTML = "";
+
+
+    // =========================
+    // 現在の所持金
+    // =========================
+
+    const moneyDisplay =
+        document.createElement("div");
+
+    moneyDisplay.className =
+        "asset-purchase-money";
+
+    moneyDisplay.innerHTML =
+        `💰 所持金：<strong>${player.money.toLocaleString()}G</strong>`;
+
+    list.appendChild(
+        moneyDisplay
+    );
+
+
+    // =========================
+    // 資産一覧
+    // =========================
+
+    assetIds.forEach(
+        function (assetId) {
+
+            const asset =
+                assetData.find(
+                    function (data) {
+
+                        return data.id ===
+                            assetId;
+
+                    }
+                );
+
+
+            if (!asset) {
+                return;
+            }
+
+
+            const item =
+                document.createElement("div");
+
+
+            item.className =
+                "asset-purchase-item";
+
+
+ // =========================
+// 所有者アイコン
+// =========================
+
+let ownerIcon = "";
+
+const ownerIcons = [
+    "🔴",
+    "🔵",
+    "🟢",
+    "🟡",
+    "🟣",
+    "🟠"
+];
+
+
+if (
+    asset.owner !== null &&
+    asset.owner !== undefined
+) {
+
+    ownerIcon =
+        ownerIcons[asset.owner] || "";
+
+}
+
+
+            // =========================
+            // すでに所有されている
+            // =========================
+
+            if (
+                asset.owner !== null &&
+                asset.owner !== undefined
+            ) {
+
+                item.innerHTML = `
+
+                    <div
+                        class="asset-purchase-info">
+
+                        <div
+                            class="asset-purchase-name">
+
+                            ${asset.name}
+
+                        </div>
+
+                        <div
+                            class="asset-purchase-detail">
+
+                            💰 ${asset.price.toLocaleString()}G
+                           　
+                            📈 ${asset.yield}%
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="asset-purchase-owner">
+
+                        ${ownerIcon}
+
+                    </div>
+
+
+                    <button
+                        class="asset-purchase-button"
+                        type="button"
+                        disabled>
+
+                        所有済
+
+                    </button>
+
+                `;
+
+            }
+
+
+            // =========================
+            // 未所有
+            // =========================
+
+            else {
+
+                item.innerHTML = `
+
+                    <div
+                        class="asset-purchase-info">
+
+                        <div
+                            class="asset-purchase-name">
+
+                            ${asset.name}
+
+                        </div>
+
+                        <div
+                            class="asset-purchase-detail">
+
+                            💰 ${asset.price.toLocaleString()}G
+                           　
+                            📈 ${asset.yield}%
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="asset-purchase-owner">
+
+                    </div>
+
+
+                    <button
+                        class="asset-purchase-button"
+                        type="button">
+
+                        購入する
+
+                    </button>
+
+                `;
+
+
+                const buyButton =
+                    item.querySelector(
+                        ".asset-purchase-button"
+                    );
+
+
+                buyButton.addEventListener(
+                    "click",
+                    function () {
+
+                        // =========================
+                        // お金が足りない
+                        // =========================
+
+                        if (
+                            player.money <
+                            asset.price
+                        ) {
+
+                            showEventPopup(
+                                "💰 ゴールド不足",
+
+                                `
+                                この資産を購入するには
+                                <strong>
+                                ${asset.price.toLocaleString()}G
+                                </strong>
+                                必要です。<br><br>
+
+                                現在の所持金：
+                                <strong>
+                                ${player.money.toLocaleString()}G
+                                </strong>
+                                `,
+
+                                function () {
+
+                                    showAssetPurchasePopup(
+                                        player,
+                                        assetIds,
+                                        callback
+                                    );
+
+                                }
+                            );
+
+                            return;
+
+                        }
+
+
+  // =========================
+// 購入処理
+// =========================
+
+player.money -= asset.price;
+
+
+// 資産の所有者を設定
+asset.owner =
+    players.indexOf(player);
+
+
+// プレイヤーの保有資産にも追加
+if (!player.assets) {
+    player.assets = [];
+}
+
+if (!player.assets.includes(asset.id)) {
+    player.assets.push(asset.id);
+}
+
+
+// =========================
+// プレイヤー情報更新
+// =========================
+
+renderPlayers();
+
+
+// =========================
+// 購入後の一覧を再表示
+// =========================
+
+showAssetPurchasePopup(
+    player,
+    assetIds,
+    callback
+);
+
+                    }
+                );
+
+            }
+
+
+            list.appendChild(
+                item
+            );
+
+        }
+    );
+
+
+    // =========================
+    // Popup表示
+    // =========================
+
+    popup.style.display =
+        "block";
+
+
+    // =========================
+    // 閉じる
+    // =========================
+
+    closeButton.onclick =
+        function () {
+
+            popup.style.display =
+                "none";
+
+
+            if (callback) {
+
+                callback();
+
+            }
+
+        };
+
+}
+
+ // =========================
 // プレイヤー情報表示
 // =========================
 
@@ -1828,45 +2410,60 @@ function renderPlayers() {
 
                 return `
 
-    <div
-        class="
-            player-card
-            ${
-                isCurrent
-                    ? "current-player"
-                    : ""
+                    <div
+                        class="
+                            player-card
+                            ${
+                                isCurrent
+                                    ? "current-player"
+                                    : ""
+                            }
+                        "
+                        data-player-index="${index}"
+                    >
+
+                        <span
+                            class="player-icon"
+                            style="
+                                background-color:
+                                ${player.color} !important;
+                            "
+                        ></span>
+
+
+                        <span></span>
+
+
+                        <!-- 資産ボタン -->
+
+                        <button
+                            class="player-asset-button"
+                            type="button"
+                        >
+                            👩
+                        </button>
+
+
+                        <!-- 魔力 -->
+
+                        <span>
+                            🔮${player.magicPower}
+                        </span>
+
+
+                        <!-- ゴールド -->
+
+                        <span>
+                            💰${player.money}G
+                        </span>
+
+                    </div>
+
+                `;
+
             }
-        "
-        data-player-index="${index}"
-    >
 
-        <span
-            class="player-icon"
-            style="
-                background-color:
-                ${player.color} !important;
-            "
-        ></span>
-
-
-        <span></span>
-
-
-        <span>
-            💰${player.money}G
-        </span>
-
-        <span>
-            🔮${player.magicPower}
-        </span>
-
-    </div>
-
-`;
-
-            }
-
-            ).join("");
+        ).join("");
 
 
     // =========================
@@ -1878,6 +2475,7 @@ function renderPlayers() {
         status.querySelectorAll(
             ".player-card"
         );
+
 
     playerCards.forEach(
         function (card) {
@@ -1891,26 +2489,32 @@ function renderPlayers() {
                             card.dataset.playerIndex
                         );
 
+
                     const player =
                         players[playerIndex];
+
 
                     if (!player) {
                         return;
                     }
+
 
                     const mapNode =
                         document.querySelector(
                             `.map-node[data-square-id="${player.position}"]`
                         );
 
+
                     if (!mapNode) {
                         return;
                     }
+
 
                     const mapArea =
                         document.querySelector(
                             ".map-area"
                         );
+
 
                     const targetTop =
                         mapNode.offsetTop
@@ -1925,10 +2529,79 @@ function renderPlayers() {
                             / 2
                         );
 
+
                     mapArea.scrollTo({
                         top: targetTop,
                         behavior: "smooth"
                     });
+
+                }
+            );
+
+        }
+    );
+
+
+    // =========================
+    // 👩 資産ボタン
+    // =========================
+
+    const assetButtons =
+        status.querySelectorAll(
+            ".player-asset-button"
+        );
+
+
+    assetButtons.forEach(
+        function (button) {
+
+            button.addEventListener(
+                "click",
+                function (event) {
+
+                    // カード全体のクリック処理を止める
+                    event.stopPropagation();
+
+
+                    const card =
+                        button.closest(
+                            ".player-card"
+                        );
+
+
+                    if (!card) {
+                        return;
+                    }
+
+
+                    const playerIndex =
+                        Number(
+                            card.dataset.playerIndex
+                        );
+
+
+                    const player =
+                        players[playerIndex];
+
+
+                    if (!player) {
+                        return;
+                    }
+
+                // 資産を持っていなければ何もしない
+                if (
+                    !player.assets ||
+                    player.assets.length === 0
+                ) {
+                    return;
+                }
+
+
+                // 資産を持っている場合だけ一覧を表示
+
+                    showAssetPopup(
+                        player
+                    );
 
                 }
             );
@@ -3877,6 +4550,24 @@ function handleSquareEvent(
         currentSquare.type
     ) {
 
+// =========================
+// 資産マス
+// =========================
+
+case "asset":
+
+    showAssetPurchasePopup(
+        player,
+        currentSquare.assetIds || [],
+        function () {
+
+            finishTurn(player);
+
+        }
+    );
+
+    break;
+        
        // =========================
         // お金マス
         // =========================
@@ -4329,6 +5020,8 @@ magicData.forEach(
         };
 
 }
+
+
 
 // =========================
 // 資産0時のリスポーン
