@@ -4067,3 +4067,410 @@ button {
 .asset-summary-item strong {
     font-size: 18px;
 }
+
+/* =========================================================
+   30. 横画面ゲームレイアウト v2
+   ---------------------------------------------------------
+   ・ゲーム本体は16:9の横画面を基準にする
+   ・マップは画面より大きくできる
+   ・マップ領域だけ縦横スクロール
+   ・上部/下部UIは画面に固定
+   ・既存のゲームロジックには触れない
+   ========================================================= */
+
+/* ゲーム画面はPC/モニターでも横長に使う */
+.game-screen {
+    width: 100%;
+    max-width: 1600px;
+    min-height: 100dvh;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* 上部情報 */
+.game-top-row {
+    width: 100%;
+    min-height: 52px;
+    box-sizing: border-box;
+}
+
+/* 現在プレイヤー情報 */
+.current-player-row {
+    min-height: 38px;
+}
+
+/* マップ領域
+   ※マップ自体を大きくして、ここだけスクロールできる構成 */
+.game-screen .map-area {
+    width: 100%;
+    box-sizing: border-box;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+/* マップそのものは画面幅に縛らない */
+.map-board {
+    width: 1200px;
+    max-width: none;
+    height: 800px;
+    margin: 0 auto;
+    flex-shrink: 0;
+}
+
+/* =========================================================
+   PC・モニター：ゲームUI
+   ========================================================= */
+
+@media (min-width: 601px) {
+
+    .game-screen {
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        padding: 10px 18px 0;
+        box-sizing: border-box;
+    }
+
+    .game-screen .map-area {
+        flex: 1 1 auto;
+        min-height: 0;
+        margin-bottom: 0;
+        padding: 8px 12px 80px;
+    }
+
+    .game-screen .player-status {
+        flex-shrink: 0;
+        margin: 0;
+    }
+
+    .game-bottom-fixed {
+        position: fixed;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: min(100%, 1600px);
+        box-sizing: border-box;
+        z-index: 5000;
+    }
+
+}
+
+/* =========================================================
+   スマホ横画面：メインレイアウト
+   ========================================================= */
+
+@media (max-width: 900px) and (orientation: landscape) {
+
+    body {
+        overflow: hidden;
+    }
+
+    .game-container {
+        width: 100%;
+        min-height: 100dvh;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .game-screen {
+        width: 100%;
+        max-width: none;
+        height: 100dvh;
+        min-height: 100dvh;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+
+        padding: 4px 6px 0;
+        box-sizing: border-box;
+    }
+
+    /* -------------------------
+       上部UI
+       ------------------------- */
+
+    .game-top-row {
+        flex: 0 0 auto;
+
+        min-height: 38px;
+
+        padding: 6px 10px;
+
+        border-radius: 10px;
+
+        gap: 8px;
+    }
+
+    .game-top-row .turn-display,
+    .game-top-row .destination {
+        font-size: 13px !important;
+        line-height: 1.2;
+    }
+
+    /* -------------------------
+       現在プレイヤー情報
+       ------------------------- */
+
+    .current-player-row {
+        flex: 0 0 auto;
+
+        min-height: 28px;
+
+        margin: 2px 0;
+
+        gap: 18px;
+    }
+
+    .current-player-info,
+    .remaining-steps-info {
+        font-size: 13px !important;
+    }
+
+    /* -------------------------
+       マップ
+       ------------------------- */
+
+    .game-screen .map-area {
+        flex: 1 1 auto;
+
+        min-height: 0;
+
+        width: 100%;
+
+        margin: 0;
+
+        padding:
+            4px 4px 58px;
+
+        overflow:
+            auto;
+
+        -webkit-overflow-scrolling: touch;
+
+        scrollbar-width: none;
+    }
+
+    .game-screen .map-area::-webkit-scrollbar {
+        display: none;
+    }
+
+    .map-board {
+        width: 1200px;
+        height: 800px;
+
+        max-width: none;
+
+        margin: 0;
+
+        padding: 0;
+    }
+
+    /* -------------------------
+       下部固定UI
+       ------------------------- */
+
+    .game-bottom-fixed {
+        position: fixed;
+
+        left: 0;
+        bottom: 0;
+
+        width: 100%;
+
+        min-height: 48px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding:
+            5px 8px;
+
+        box-sizing: border-box;
+
+        background:
+            rgba(20, 30, 55, 0.96);
+
+        border-top:
+            1px solid
+            rgba(255, 255, 255, 0.25);
+
+        border-radius:
+            12px 12px 0 0;
+
+        z-index: 5000;
+    }
+
+    /* ボタンを横画面用に少し小さく */
+    .game-screen .roulette-area {
+        gap: 5px;
+        padding: 2px 0;
+    }
+
+    #rouletteButton,
+    #inventoryButton,
+    #possessionButton,
+    #magicButton {
+        width: 72px;
+        height: 36px;
+
+        font-size: 11px;
+    }
+
+    /* プレイヤー一覧がある場合も横画面で圧縮 */
+    .game-screen .player-status {
+        gap: 3px;
+        margin: 0;
+    }
+
+    .game-screen .player-card {
+        min-height: 30px;
+        height: 30px;
+
+        padding: 3px 7px;
+
+        gap: 5px;
+
+        font-size: 11px;
+    }
+
+    .game-screen .player-card strong {
+        min-width: 55px;
+        font-size: 11px;
+    }
+
+    .game-screen .player-icon {
+        width: 11px;
+        height: 11px;
+
+        margin-right: 3px;
+    }
+
+    .player-asset-button {
+        font-size: 1rem;
+        padding: 1px 3px;
+    }
+
+    /* -------------------------
+       ポップアップ
+       横画面では縦を使いすぎない
+       ------------------------- */
+
+    .event-popup,
+    .monster-choice-popup,
+    .reward-popup,
+    .job-popup,
+    .result-popup,
+    .magic-shop-popup,
+    .item-roulette,
+    .multi-dice-roulette {
+        max-height: 88dvh;
+        overflow-y: auto;
+    }
+
+    .event-popup {
+        width: min(78vw, 560px);
+        top: 50%;
+        padding: 18px 20px;
+    }
+
+    .monster-choice-popup {
+        width: min(78vw, 560px);
+        padding: 18px 20px;
+    }
+
+    .reward-popup,
+    .job-popup,
+    .result-popup {
+        width: min(78vw, 560px);
+        padding: 18px 20px;
+    }
+
+    .magic-shop-popup {
+        width: min(82vw, 620px);
+        max-height: 82dvh;
+    }
+
+    /* 所持品/魔法一覧も横画面向け */
+    .inventory-popup,
+    .magic-popup {
+        top: 50%;
+        left: 50%;
+
+        transform:
+            translate(-50%, -50%);
+
+        width: min(88vw, 850px);
+
+        height: 82dvh;
+        max-height: 82dvh;
+
+        padding: 18px 20px;
+    }
+
+    .inventory-list,
+    .magic-list {
+        height: calc(100% - 85px);
+    }
+
+    /* 戦闘画面は16:9に近い横長サイズへ */
+    .battle-popup {
+        width: min(92vw, 1000px);
+        height: min(82dvh, 560px);
+
+        padding: 18px 24px;
+
+        box-sizing: border-box;
+    }
+
+    .battle-status {
+        height: auto;
+    }
+
+    .battle-player,
+    .battle-monster {
+        width: 40%;
+    }
+
+    .battle-magic-popup {
+        width: min(86vw, 700px);
+        height: auto;
+        max-height: 72dvh;
+
+        top: 50%;
+        transform:
+            translate(-50%, -50%);
+    }
+
+}
+
+/* =========================================================
+   スマホ縦画面
+   ---------------------------------------------------------
+   横画面を基本とするが、縦向きでもゲームが壊れないように
+   最低限のフォールバックを用意する。
+   ========================================================= */
+
+@media (max-width: 600px) and (orientation: portrait) {
+
+    .game-screen {
+        width: 100%;
+        min-height: 100dvh;
+    }
+
+    .game-screen .map-area {
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .map-board {
+        width: 900px;
+        max-width: none;
+        height: 850px;
+    }
+
+}
