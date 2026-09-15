@@ -309,9 +309,8 @@ button {
     scrollbar-width: none;
 
     touch-action:
-        pan-x
-        pan-y
-        pinch-zoom;
+    pan-x
+    pan-y;
 }
 
 
