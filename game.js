@@ -2029,7 +2029,7 @@ function setupMapPinchZoom() {
             // 最小70%・最大200%
             mapZoom =
                 Math.max(
-                    0.7,
+                    0.05,
                     Math.min(
                         mapZoom,
                         2.0
