@@ -963,7 +963,7 @@ button {
         center;
 
     z-index:
-        11000;
+        14000;
 
     display:
         none;
@@ -3818,4 +3818,221 @@ button {
         white-space: nowrap;
     }
 
+}
+/* =========================
+   プレイヤーカード 資産ボタン
+========================= */
+
+.player-asset-button {
+    border: none;
+    background: transparent;
+    padding: 2px 6px;
+    margin: 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.player-asset-button:hover {
+    transform: scale(1.1);
+}
+
+.player-asset-button:active {
+    transform: scale(0.95);
+}
+
+/* =========================
+   資産購入
+========================= */
+
+.asset-purchase-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    width: 100%;
+
+    min-height: 60px;
+
+    padding: 12px 10px;
+
+    box-sizing: border-box;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius: 12px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================
+   資産情報
+========================= */
+
+.asset-purchase-info {
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    text-align: left;
+}
+
+
+.asset-purchase-name {
+    font-size: 17px;
+
+    font-weight: bold;
+
+    white-space: normal;
+
+    word-break: break-word;
+}
+
+
+.asset-purchase-detail {
+    margin-top: 4px;
+
+    font-size: 14px;
+
+    line-height: 1.4;
+
+    color:
+        rgba(255, 255, 255, 0.9);
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   所有者アイコン
+========================= */
+
+.asset-purchase-owner {
+    flex:
+        0 0 30px;
+
+    font-size: 1.3rem;
+
+    text-align: center;
+}
+
+
+/* =========================
+   購入ボタン
+========================= */
+
+.asset-purchase-button {
+    flex:
+        0 0 85px;
+
+    height: 38px;
+
+    padding: 6px 8px;
+
+    border:
+        1px solid
+        rgba(245, 215, 110, 0.7);
+
+    border-radius: 999px;
+
+    background:
+        rgba(245, 215, 110, 0.15);
+
+    color:
+        #ffffff;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+}
+
+
+.asset-purchase-button:hover {
+    background:
+        rgba(245, 215, 110, 0.28);
+}
+
+
+.asset-purchase-button:active {
+    transform:
+        scale(0.96);
+}
+
+
+.asset-purchase-button:disabled {
+    opacity: 0.5;
+
+    cursor: default;
+}
+
+
+/* =========================
+   スマホ版：資産購入
+========================= */
+
+@media (max-width: 500px) {
+
+    .asset-purchase-item {
+        gap: 6px;
+
+        padding: 10px 8px;
+    }
+
+
+    .asset-purchase-name {
+        font-size: 15px;
+    }
+
+
+    .asset-purchase-detail {
+        font-size: 13px;
+    }
+
+
+    .asset-purchase-owner {
+        flex-basis: 26px;
+
+        font-size: 1.1rem;
+    }
+
+
+    .asset-purchase-button {
+        flex-basis: 75px;
+
+        height: 36px;
+
+        font-size: 12px;
+    }
+
+}
+/* =========================
+   資産購入：所持金
+========================= */
+
+.asset-purchase-money {
+    padding: 8px 4px;
+
+    margin-bottom: 4px;
+
+    text-align: center;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    color: #f5d76e;
+
+    flex-shrink: 0;
 }
