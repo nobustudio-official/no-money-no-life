@@ -1154,6 +1154,12 @@ function showGameScreen(
     let currentTurn = 1;
 
     // =========================
+// 配当サイクル
+// =========================
+
+const dividendCycle = 3;
+
+    // =========================
     // 所持品の移動アイテム使用処理
     // showGameScreen内の移動関数へ接続する
     // =========================
@@ -5302,6 +5308,232 @@ function showGameResult() {
 }
 
 // =========================
+// 資産配当計算
+// =========================
+
+function calculateAssetDividend(player) {
+
+    let dividend = 0;
+
+
+    // 資産を持っていなければ0G
+    if (
+        !player.assets ||
+        player.assets.length === 0
+    ) {
+
+        return 0;
+
+    }
+
+
+    // 保有している資産を1つずつ計算
+    player.assets.forEach(
+        function (assetId) {
+
+            const asset =
+                assetData.find(
+                    function (data) {
+
+                        return data.id === assetId;
+
+                    }
+                );
+
+
+            if (!asset) {
+
+                return;
+
+            }
+
+
+            // 取得額 × 利回り
+            dividend +=
+                asset.price *
+                (asset.yield / 100);
+
+        }
+    );
+
+
+    // 小数点以下を切り捨て
+    return Math.floor(dividend);
+
+}
+
+
+// =========================
+// 配当結果表示
+// =========================
+
+function showDividendPopup(
+    dividendResults,
+    callback
+) {
+
+    const message =
+        dividendResults
+            .map(
+                function (result) {
+
+                    return `
+                        <div style="
+                            display:flex;
+                            justify-content:space-between;
+                            align-items:center;
+                            padding:10px 4px;
+                            border-bottom:1px solid rgba(255,255,255,0.15);
+                        ">
+
+                            <span>
+                                ${result.name}
+                            </span>
+
+                            <strong style="
+                                color:#f5d76e;
+                                font-size:18px;
+                            ">
+                                ＋${result.dividend.toLocaleString()}G
+                            </strong>
+
+                        </div>
+                    `;
+
+                }
+            )
+            .join("");
+
+
+    showEventPopup(
+        "📈 配当",
+
+        `
+            <div style="
+                margin-bottom:10px;
+                text-align:center;
+            ">
+                資産から配当金を受け取りました！
+            </div>
+
+            ${message}
+        `,
+
+        function () {
+
+            if (callback) {
+
+                callback();
+
+            }
+
+        }
+    );
+
+
+    // =========================
+    // ボタンを「次へ」に変更
+    // =========================
+
+    const popupButton =
+        document.getElementById(
+            "eventPopupButton"
+        );
+
+
+    popupButton.textContent =
+        "次へ";
+
+}
+
+// 総資産を計算
+function calculateTotalAssetValue(player) {
+    let assetValue = 0;
+
+    if (player.assets && player.assets.length > 0) {
+        player.assets.forEach(function (assetId) {
+            const asset = assetData.find(function (data) {
+                return data.id === assetId;
+            });
+
+            if (asset) {
+                assetValue += asset.price;
+            }
+        });
+    }
+
+    return player.money + assetValue;
+}
+
+
+// 総資産ランキングを表示
+function showAssetRankingPopup(callback) {
+    const ranking = players.map(function (player) {
+        return {
+            name: player.name,
+            totalAsset: calculateTotalAssetValue(player)
+        };
+    }).sort(function (a, b) {
+        return b.totalAsset - a.totalAsset;
+    });
+
+    const rankingHtml = `
+        <div style="
+            display:grid;
+            grid-template-columns:60px 1fr 120px;
+            gap:8px;
+            align-items:center;
+            font-size:14px;
+        ">
+            <div style="font-weight:bold;text-align:center;">順位</div>
+            <div style="font-weight:bold;">名前</div>
+            <div style="font-weight:bold;text-align:right;">💰＋👩</div>
+
+            ${ranking.map(function (result, index) {
+                return `
+                    <div style="
+                        padding:10px 4px;
+                        text-align:center;
+                        border-top:1px solid rgba(255,255,255,0.15);
+                    ">
+                        ${index + 1}位
+                    </div>
+
+                    <div style="
+                        padding:10px 4px;
+                        border-top:1px solid rgba(255,255,255,0.15);
+                    ">
+                        ${result.name}
+                    </div>
+
+                    <div style="
+                        padding:10px 4px;
+                        text-align:right;
+                        border-top:1px solid rgba(255,255,255,0.15);
+                        color:#f5d76e;
+                        font-weight:bold;
+                    ">
+                        ${result.totalAsset.toLocaleString()}G
+                    </div>
+                `;
+            }).join("")}
+        </div>
+    `;
+
+    showEventPopup(
+        "🏆 総資産ランキング",
+        rankingHtml,
+        function () {
+            if (callback) callback();
+        }
+    );
+
+    const popupButton = document.getElementById("eventPopupButton");
+    popupButton.textContent = "次へ";
+}
+
+
+// =========================
 // ターン終了
 // =========================
 
@@ -5314,17 +5546,26 @@ function finishTurn(
         currentPlayer
     );
 
+
     // =========================
     // 資産0Gならリスポーン
     // =========================
 
-    if (player.money <= 0) {
+    if (
+        player.money <= 0
+    ) {
 
-        checkPlayerRespawn(player, function () {
-            finishTurn(player);
-        });
+        checkPlayerRespawn(
+            player,
+            function () {
+
+                finishTurn(player);
+
+            }
+        );
 
         return;
+
     }
 
 
@@ -5337,8 +5578,253 @@ function finishTurn(
         players.length - 1
     ) {
 
+        // =========================
+        // 今終了したターン
+        // =========================
+
+        const completedTurn =
+            currentTurn;
+
+
+        // =========================
+        // 次のターンへ
+        // =========================
+
         currentTurn +=
             1;
+
+
+        // =========================
+        // 配当タイミング
+        // =========================
+
+        if (
+            completedTurn %
+            dividendCycle ===
+            0
+        ) {
+
+            console.log(
+                `📈 配当タイミング：${completedTurn}ターン終了`
+            );
+
+
+            // =========================
+            // 配当結果を保存
+            // =========================
+
+            const dividendResults = [];
+
+
+            // =========================
+            // 全プレイヤーへ配当
+            // =========================
+
+            players.forEach(
+                function (targetPlayer) {
+
+                    const dividend =
+                        calculateAssetDividend(
+                            targetPlayer
+                        );
+
+
+                    // 配当金を支給
+                    targetPlayer.money +=
+                        dividend;
+
+
+                    // 表示用に保存
+                    dividendResults.push({
+
+                        name:
+                            targetPlayer.name,
+
+                        dividend:
+                            dividend
+
+                    });
+
+
+                    console.log(
+                        `📈 ${targetPlayer.name}：${dividend.toLocaleString()}G`
+                    );
+
+                }
+            );
+
+
+            // プレイヤー表示更新
+            renderPlayers();
+
+
+            // =========================
+            // 配当画面
+            // =========================
+
+            showDividendPopup(dividendResults, 
+                function () {
+    showAssetRankingPopup(function () {
+
+        currentPlayer = (currentPlayer + 1) % 
+        players.length;
+        inventoryButton.disabled = false;
+
+        });
+
+
+                    // =========================
+                    // 最大ターン数終了
+                    // =========================
+
+                    if (
+                        currentTurn >
+                        maxTurns
+                    ) {
+
+                        showGameResult();
+
+                        return;
+
+                    }
+
+
+                    // =========================
+                    // 次のプレイヤー
+                    // =========================
+
+                    const nextPlayer =
+                        players[currentPlayer];
+
+
+                    // =========================
+                    // 次のプレイヤーが
+                    // 仕事中か確認
+                    // =========================
+
+                    if (
+                        nextPlayer.jobTurnsRemaining > 0
+                    ) {
+
+                        nextPlayer.jobTurnsRemaining -=
+                            1;
+
+
+                        renderTurn();
+                        renderPlayers();
+
+
+                        // =========================
+                        // 仕事終了
+                        // =========================
+
+                        if (
+                            nextPlayer.jobTurnsRemaining === 0
+                        ) {
+
+                            const reward =
+                                nextPlayer.jobReward;
+
+
+                            nextPlayer.money +=
+                                reward;
+
+
+                            nextPlayer.jobReward =
+                                0;
+
+
+                            renderPlayers();
+
+
+                            showEventPopup(
+                                "💰 バイト終了！",
+
+                                `${nextPlayer.name}は仕事を終えて<br>` +
+                                `<strong>${reward}G</strong>を獲得！`,
+
+                                function () {
+
+                                    finishTurn(
+                                        nextPlayer
+                                    );
+
+                                }
+                            );
+
+
+                            return;
+
+                        }
+
+
+                        // =========================
+                        // まだ仕事中
+                        // =========================
+
+                        showEventPopup(
+                            "💼 仕事中",
+
+                            `${nextPlayer.name}は現在仕事中です。<br>` +
+                            `残り ${nextPlayer.jobTurnsRemaining} ターン`,
+
+                            function () {
+
+                                finishTurn(
+                                    nextPlayer
+                                );
+
+                            }
+                        );
+
+
+                        return;
+
+                    }
+
+
+                    // =========================
+                    // 通常プレイヤー
+                    // =========================
+
+                    renderTurn();
+                    renderPlayers();
+
+
+                    // ルーレット使用可能
+                    rouletteButton.disabled =
+                        false;
+
+                }
+            );
+
+
+            // =========================
+            // 配当画面を表示したら
+            // ここで一旦終了
+            // =========================
+
+            return;
+
+        }
+
+
+        // =========================
+        // 配当がない場合
+        // =========================
+
+        // 次のプレイヤーへ
+        currentPlayer =
+            (
+                currentPlayer + 1
+            )
+            %
+            players.length;
+
+
+        // 所持品ボタンを再び有効化
+        inventoryButton.disabled =
+            false;
 
 
         // =========================
@@ -5346,21 +5832,130 @@ function finishTurn(
         // =========================
 
         if (
-    currentTurn >
-    maxTurns
-) {
+            currentTurn >
+            maxTurns
+        ) {
 
-    showGameResult();
+            showGameResult();
 
-    return;
+            return;
 
-}
+        }
+
+
+        // =========================
+        // 次のプレイヤー
+        // =========================
+
+        const nextPlayer =
+            players[currentPlayer];
+
+
+        // =========================
+        // 次のプレイヤーが
+        // 仕事中か確認
+        // =========================
+
+        if (
+            nextPlayer.jobTurnsRemaining > 0
+        ) {
+
+            nextPlayer.jobTurnsRemaining -=
+                1;
+
+
+            renderTurn();
+            renderPlayers();
+
+
+            // =========================
+            // 仕事終了
+            // =========================
+
+            if (
+                nextPlayer.jobTurnsRemaining === 0
+            ) {
+
+                const reward =
+                    nextPlayer.jobReward;
+
+
+                nextPlayer.money +=
+                    reward;
+
+
+                nextPlayer.jobReward =
+                    0;
+
+
+                renderPlayers();
+
+
+                showEventPopup(
+                    "💰 バイト終了！",
+
+                    `${nextPlayer.name}は仕事を終えて<br>` +
+                    `<strong>${reward}G</strong>を獲得！`,
+
+                    function () {
+
+                        finishTurn(
+                            nextPlayer
+                        );
+
+                    }
+                );
+
+
+                return;
+
+            }
+
+
+            // =========================
+            // まだ仕事中
+            // =========================
+
+            showEventPopup(
+                "💼 仕事中",
+
+                `${nextPlayer.name}は現在仕事中です。<br>` +
+                `残り ${nextPlayer.jobTurnsRemaining} ターン`,
+
+                function () {
+
+                    finishTurn(
+                        nextPlayer
+                    );
+
+                }
+            );
+
+
+            return;
+
+        }
+
+
+        // =========================
+        // 通常プレイヤー
+        // =========================
+
+        renderTurn();
+        renderPlayers();
+
+
+        // ルーレット使用可能
+        rouletteButton.disabled =
+            false;
+
+        return;
 
     }
 
 
     // =========================
-    // 次のプレイヤー
+    // 次のプレイヤーへ
     // =========================
 
     currentPlayer =
@@ -5370,8 +5965,11 @@ function finishTurn(
         %
         players.length;
 
-// 所持品ボタンを再び有効化
-inventoryButton.disabled = false;
+
+    // 所持品ボタンを再び有効化
+    inventoryButton.disabled =
+        false;
+
 
     const nextPlayer =
         players[currentPlayer];
@@ -5386,21 +5984,16 @@ inventoryButton.disabled = false;
         nextPlayer.jobTurnsRemaining > 0
     ) {
 
-        // =========================
-        // 仕事ターンを1消費
-        // =========================
-
         nextPlayer.jobTurnsRemaining -=
             1;
 
 
         renderTurn();
-
         renderPlayers();
 
 
         // =========================
-        // 仕事が終了した
+        // 仕事終了
         // =========================
 
         if (
@@ -5424,13 +6017,11 @@ inventoryButton.disabled = false;
 
             showEventPopup(
                 "💰 バイト終了！",
-                `${nextPlayer.name}は仕事を終えて<br><strong>${reward}G</strong>を獲得！`,
-                function () {
 
-                    // =========================
-                    // このプレイヤーの
-                    // ターンは仕事で終了
-                    // =========================
+                `${nextPlayer.name}は仕事を終えて<br>` +
+                `<strong>${reward}G</strong>を獲得！`,
+
+                function () {
 
                     finishTurn(
                         nextPlayer
@@ -5446,18 +6037,16 @@ inventoryButton.disabled = false;
 
 
         // =========================
-        // まだ仕事が残っている
+        // まだ仕事中
         // =========================
 
         showEventPopup(
             "💼 仕事中",
+
             `${nextPlayer.name}は現在仕事中です。<br>` +
             `残り ${nextPlayer.jobTurnsRemaining} ターン`,
-            function () {
 
-                // =========================
-                // このターンも消費
-                // =========================
+            function () {
 
                 finishTurn(
                     nextPlayer
@@ -5477,14 +6066,10 @@ inventoryButton.disabled = false;
     // =========================
 
     renderTurn();
-
     renderPlayers();
 
 
-    // =========================
     // ルーレット使用可能
-    // =========================
-
     rouletteButton.disabled =
         false;
 
