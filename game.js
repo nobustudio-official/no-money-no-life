@@ -1917,12 +1917,40 @@ function showAssetPopup(
 
 
     // =========================
+    // 保有資産を取得
+    // =========================
+
+    const ownedAssets =
+        (player.assets || [])
+            .map(
+                function (assetId) {
+
+                    return assetData.find(
+                        function (data) {
+
+                            return data.id ===
+                                assetId;
+
+                        }
+                    );
+
+                }
+            )
+            .filter(
+                function (asset) {
+
+                    return asset !== undefined;
+
+                }
+            );
+
+
+    // =========================
     // 資産がない場合
     // =========================
 
     if (
-        !player.assets ||
-        player.assets.length === 0
+        ownedAssets.length === 0
     ) {
 
         assetList.innerHTML = `
@@ -1935,83 +1963,153 @@ function showAssetPopup(
 
         `;
 
+
+        assetPopup.style.display =
+            "block";
+
+
+        document.getElementById(
+            "assetCloseButton"
+        ).onclick =
+            function () {
+
+                assetPopup.style.display =
+                    "none";
+
+            };
+
+
+        return;
+
     }
 
 
     // =========================
-    // 資産を表示
+    // 資産額合計
     // =========================
 
-    if (
-        player.assets &&
-        player.assets.length > 0
-    ) {
-
-        player.assets.forEach(
-            function (assetId) {
-
-                const asset =
-                    assetData.find(
-                        function (data) {
-
-                            return data.id ===
-                                assetId;
-
-                        }
-                    );
+    let totalAssetValue =
+        0;
 
 
-                if (!asset) {
-                    return;
-                }
+    // =========================
+    // 加重平均利回り
+    // =========================
+
+    let weightedYieldTotal =
+        0;
 
 
-                const assetElement =
-                    document.createElement(
-                        "div"
-                    );
+    ownedAssets.forEach(
+        function (asset) {
+
+            totalAssetValue +=
+                asset.price;
 
 
-                assetElement.className =
-                    "inventory-item";
+            weightedYieldTotal +=
+                asset.price *
+                asset.yield;
+
+        }
+    );
 
 
-                assetElement.innerHTML = `
-
-                    <div
-                        class="inventory-item-name"
-                    >
-
-                        ${asset.name}
-
-                    </div>
+    const weightedAverageYield =
+        weightedYieldTotal /
+        totalAssetValue;
 
 
-                    <div
-                        class="inventory-item-effect"
-                    >
+    // =========================
+    // 資産サマリー
+    // =========================
 
-                        取得額：
-                        ${asset.price.toLocaleString()}G
-
-                        <br>
-
-                        利回り：
-                        ${asset.yield}%
-
-                    </div>
-
-                `;
-
-
-                assetList.appendChild(
-                    assetElement
-                );
-
-            }
+    const summary =
+        document.createElement(
+            "div"
         );
 
-    }
+
+    summary.className =
+        "asset-summary";
+
+
+    summary.innerHTML = `
+
+        <div class="asset-summary-item">
+
+            💰
+            <strong>
+                ${totalAssetValue.toLocaleString()}G
+            </strong>
+
+        </div>
+
+
+        <div class="asset-summary-item">
+
+            📈
+            <strong>
+                ${weightedAverageYield.toFixed(1)}%
+            </strong>
+
+        </div>
+
+    `;
+
+
+    assetList.appendChild(
+        summary
+    );
+
+
+    // =========================
+    // 資産一覧
+    // =========================
+
+    ownedAssets.forEach(
+        function (asset) {
+
+            const assetElement =
+                document.createElement(
+                    "div"
+                );
+
+
+            assetElement.className =
+                "inventory-item";
+
+
+            assetElement.innerHTML = `
+
+                <div
+                    class="inventory-item-name"
+                >
+
+                    ${asset.name}
+
+                </div>
+
+
+                <div
+                    class="inventory-item-effect"
+                >
+
+                    💰 ${asset.price.toLocaleString()}G
+                    　
+                    📈 ${asset.yield}%
+
+                </div>
+
+            `;
+
+
+            assetList.appendChild(
+                assetElement
+            );
+
+        }
+    );
 
 
     // =========================
