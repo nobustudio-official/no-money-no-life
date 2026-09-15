@@ -3730,17 +3730,19 @@ button {
 
     #rouletteButton,
     #inventoryButton,
+    #possessionButton,
     #magicButton {
         height: 32px;
         width: 100px;
         font-size: 13px;
     }
 
+
     .roulette-area {
-    gap: 8px;
-    padding-top: 6px;
-    padding-bottom: 5px;
-}
+        gap: 8px;
+        padding-top: 6px;
+        padding-bottom: 5px;
+    }
 
 }
 
@@ -4035,4 +4037,33 @@ button {
     color: #f5d76e;
 
     flex-shrink: 0;
+}
+/* =========================
+   保有資産サマリー
+========================= */
+
+.asset-summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+
+    width: 100%;
+    padding: 8px 4px;
+    box-sizing: border-box;
+
+    flex-shrink: 0;
+}
+
+.asset-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    font-size: 17px;
+    white-space: nowrap;
+}
+
+.asset-summary-item strong {
+    font-size: 18px;
 }
