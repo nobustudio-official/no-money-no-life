@@ -2765,9 +2765,21 @@ function renderPlayers() {
     playerCards.forEach(
         function (card) {
 
+                        let lastTapTime = 0;
+
             card.addEventListener(
                 "click",
                 function () {
+
+                    const now =
+                        Date.now();
+
+                    const isDoubleTap =
+                        now - lastTapTime < 300;
+
+                    lastTapTime =
+                        now;
+
 
                     const playerIndex =
                         Number(
@@ -2783,6 +2795,24 @@ function renderPlayers() {
                         return;
                     }
 
+
+                    // =========================
+                    // ダブルタップ
+                    // マップを100%に戻す
+                    // =========================
+
+                    if (isDoubleTap) {
+
+                        mapZoom = 1;
+
+                        applyMapZoom();
+
+                    }
+
+
+                    // =========================
+                    // プレイヤー位置を中央へ
+                    // =========================
 
                     const mapNode =
                         document.querySelector(
@@ -2801,53 +2831,61 @@ function renderPlayers() {
                         );
 
 
+                    if (!mapArea) {
+                        return;
+                    }
+
+
                     const mapRect =
-    mapArea.getBoundingClientRect();
+                        mapArea.getBoundingClientRect();
 
-const playerRect =
-    mapNode.getBoundingClientRect();
-
-
-const mapCenterX =
-    mapRect.left +
-    mapRect.width / 2;
-
-const mapCenterY =
-    mapRect.top +
-    mapRect.height / 2;
+                    const playerRect =
+                        mapNode.getBoundingClientRect();
 
 
-const playerCenterX =
-    playerRect.left +
-    playerRect.width / 2;
+                    const mapCenterX =
+                        mapRect.left +
+                        mapRect.width / 2;
 
-const playerCenterY =
-    playerRect.top +
-    playerRect.height / 2;
-
-
-const scrollAmountX =
-    playerCenterX -
-    mapCenterX;
-
-const scrollAmountY =
-    playerCenterY -
-    mapCenterY;
+                    const mapCenterY =
+                        mapRect.top +
+                        mapRect.height / 2;
 
 
-mapArea.scrollTo({
-    left:
-        mapArea.scrollLeft +
-        scrollAmountX,
+                    const playerCenterX =
+                        playerRect.left +
+                        playerRect.width / 2;
 
-    top:
-        mapArea.scrollTop +
-        scrollAmountY,
+                    const playerCenterY =
+                        playerRect.top +
+                        playerRect.height / 2;
 
-    behavior: "smooth"
-});
 
-                }
+                    const scrollAmountX =
+                        playerCenterX -
+                        mapCenterX;
+
+                    const scrollAmountY =
+                        playerCenterY -
+                        mapCenterY;
+
+
+                    mapArea.scrollTo({
+
+                        left:
+                            mapArea.scrollLeft +
+                            scrollAmountX,
+
+                        top:
+                            mapArea.scrollTop +
+                            scrollAmountY,
+
+                        behavior:
+                            "smooth"
+
+                    });
+
+                   }
             );
 
         }
@@ -3144,25 +3182,6 @@ function renderTurn() {
         }
 
 
-        // =========================
-        // メッセージ
-        // =========================
-
-        choiceArea.innerHTML = `
-
-            <div class="branch-message">
-
-                ↔️ 進む方向を選択してください
-
-                <div class="branch-hint">
-
-                    行きたい方向の矢印をタップ
-
-                </div>
-
-            </div>
-
-        `;
 
 
         // =========================
