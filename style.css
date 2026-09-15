@@ -3611,63 +3611,7 @@ button {
     font-size: 18px;
     font-weight: bold;
 }
-/* =========================
-   スマホ版 上部情報 横並び
-   ========================= */
 
-@media (max-width: 600px) {
-
-    /* TURN ＋ 次の目的地 */
-    .game-top-row {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100% !important;
-        gap: 8px !important;
-    }
-
-    .game-top-row .turn-display {
-        width: auto !important;
-        flex: 0 0 auto !important;
-        white-space: nowrap !important;
-    }
-
-    .game-top-row .destination {
-        width: auto !important;
-        flex: 1 1 auto !important;
-        white-space: nowrap !important;
-        text-align: center !important;
-    }
-
-
-    /* 現在プレイヤー ＋ 残りマス */
-    .current-player-row {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100% !important;
-        gap: 25px !important;
-        margin: 8px 0 !important;
-    }
-
-    .current-player-info {
-        width: auto !important;
-        flex: 0 0 auto !important;
-        white-space: nowrap !important;
-        font-size: 18px !important;
-    }
-
-    .remaining-steps-info {
-        width: auto !important;
-        flex: 0 0 auto !important;
-        white-space: nowrap !important;
-        font-size: 18px !important;
-    }
-}
 
 /* =========================
    スマホ版：ゲームボタン縮小
@@ -4015,13 +3959,128 @@ button {
     font-size: 18px;
 }
 
+/* =========================================================
+   スマホ版：ゲーム画面の横幅調整
+========================================================= */
+
 @media (max-width: 600px) {
 
-    .roulette-area {
-        gap: 6px;
-        padding: 6px 4px 5px;
-        box-sizing: border-box;
+    /* ゲーム画面そのもの */
+    .game-screen {
         width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+
+    /* =========================
+       上部：TURN ＋ 次の目的地
+    ========================= */
+
+    .game-top-row {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 8px;
+        padding-right: 8px;
+        gap: 4px;
+    }
+
+    .game-top-row .turn-display {
+        font-size: 15px;
+    }
+
+    .game-top-row .destination {
+        font-size: 15px;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    /* =========================
+       現在プレイヤー ＋ 残りマス
+    ========================= */
+
+    .current-player-row {
+        width: 100%;
+        max-width: 100%;
+        gap: 12px;
+    }
+
+    .current-player-info,
+    .remaining-steps-info {
+        font-size: 16px !important;
+    }
+
+
+    /* =========================
+       ゲームメニューボタン
+    ========================= */
+
+    .roulette-area {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 4px;
+        padding-right: 4px;
+        gap: 5px;
+        box-sizing: border-box;
+    }
+
+    #rouletteButton,
+    #inventoryButton,
+    #possessionButton,
+    #magicButton {
+        width: auto;
+        flex: 1 1 0;
+        min-width: 0;
+        height: 38px;
+        padding: 0 4px;
+        font-size: 12px;
+    }
+
+
+    /* =========================
+       プレイヤー一覧：横スクロール
+    ========================= */
+
+    .player-status {
+        width: 100%;
+        max-width: 100%;
+
+        display: flex;
+        flex-direction: row;
+
+        gap: 8px;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        justify-content: flex-start;
+
+        padding: 0 4px;
+
+        box-sizing: border-box;
+
+        scrollbar-width: none;
+
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .player-status::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    .player-card {
+        flex: 0 0 auto;
+
+        width: 260px;
+        min-width: 260px;
+
+        height: 42px;
+        min-height: 42px;
+
+        padding: 6px 12px;
     }
 
 }
