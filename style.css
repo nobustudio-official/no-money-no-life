@@ -228,10 +228,24 @@ button {
 
 .game-screen {
     width: 100%;
+    max-width: 1400px;
 
-    max-width: 600px;
+    height: 100dvh;
 
     margin: 0 auto;
+
+    display: grid;
+
+    grid-template-rows:
+        auto
+        auto
+        minmax(0, 1fr)
+        auto
+        auto;
+
+    overflow: hidden;
+
+    position: relative;
 }
 
 
@@ -270,6 +284,13 @@ button {
    ========================================================= */
 
 .map-area {
+    grid-row: 3;
+
+    min-height: 0;
+
+    width: 100%;
+    height: 100%;
+
     background:
         rgba(0, 0, 0, 0.15);
 
@@ -277,9 +298,26 @@ button {
 
     padding: 15px;
 
-    margin-bottom: 15px;
+    margin: 0;
+
+    overflow: auto;
+
+    box-sizing: border-box;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: none;
+
+    touch-action:
+        pan-x
+        pan-y
+        pinch-zoom;
 }
 
+
+.map-area::-webkit-scrollbar {
+    display: none;
+}
 
 .map-area h2 {
     margin-top: 0;
@@ -293,15 +331,16 @@ button {
 .map-board {
     position: relative;
 
-    width: 100%;
+    width: 1200px;
+    height: 800px;
 
-    max-width: 560px;
-
-    height: 650px;
+    max-width: none;
 
     margin: 0 auto;
 
     padding: 0;
+
+    flex-shrink: 0;
 
     background-image: url("images/map_sample.jpg");
     background-size: cover;
@@ -3440,161 +3479,69 @@ button {
     min-height: 35px;
 
 }
+
 /* =========================================================
-   スマホ版：ゲーム画面レイアウト
+   ゲーム画面：レイヤー構造
 ========================================================= */
 
-@media (max-width: 600px) {
+.game-screen > .game-top-row {
+    grid-row: 1;
+}
 
-    /* ゲーム画面全体 */
-    .game-screen {
-        height: 100dvh;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        position: relative;
-    }
+.game-screen > .current-player-row {
+    grid-row: 2;
+}
 
+.game-screen > .map-area {
+    grid-row: 3;
+}
 
-    /* =========================
-       上部固定
-    ========================= */
+.game-screen > .roulette-area {
+    grid-row: 4;
+}
 
-    .game-top-fixed {
-        position: fixed;
-
-        top: 0;
-        left: 0;
-
-        width: 100%;
-
-        display: flex;
-        align-items: center;
-
-        gap: 8px;
-
-        padding: 8px 10px;
-
-        box-sizing: border-box;
-
-        z-index: 5000;
-    }
+.game-screen > .player-status {
+    grid-row: 5;
+}
 
 
-    .game-top-fixed .turn-display {
-        flex-shrink: 0;
+/* =========================================================
+   マップレイヤー
+========================================================= */
 
-        margin: 0;
-        padding: 9px 10px;
+.game-screen > .map-area {
+    min-height: 0;
 
-        font-size: 0.8rem;
+    overflow: auto;
 
-        white-space: nowrap;
-    }
+    box-sizing: border-box;
 
+    scrollbar-width: none;
 
-    .game-top-fixed .destination {
-        flex: 1;
-
-        margin: 0;
-        padding: 9px 10px;
-
-        font-size: 0.8rem;
-
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+    -webkit-overflow-scrolling: touch;
+}
 
 
-    /* =========================
-       マップだけスクロール
-    ========================= */
-
-    .game-screen .map-area {
-        flex: 1;
-
-        min-height: 0;
-
-        height: auto;
-
-        overflow-y: auto;
-        overflow-x: hidden;
-
-        box-sizing: border-box;
-
-        padding-top: 60px;
-        padding-bottom: 10px;
-
-        -webkit-overflow-scrolling: touch;
-
-        scrollbar-width: none;
-    }
+.game-screen > .map-area::-webkit-scrollbar {
+    display: none;
+}
 
 
-    .game-screen .map-area::-webkit-scrollbar {
-        display: none;
-    }
+/* =========================================================
+   下部UI
+========================================================= */
+
+.game-screen > .roulette-area {
+    flex-shrink: 0;
+
+    margin: 0;
+}
 
 
-    /* =========================
-       下部の現在プレイヤー情報
-    ========================= */
+.game-screen > .player-status {
+    flex-shrink: 0;
 
-    .game-bottom-fixed {
-        position: fixed;
-
-        left: 0;
-        bottom: 0;
-
-        width: 100%;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        box-sizing: border-box;
-
-        padding: 12px 18px;
-
-        background:
-            rgba(25, 35, 60, 0.96);
-
-        border-top:
-            1px solid
-            rgba(255, 255, 255, 0.25);
-
-        border-radius:
-            18px 18px 0 0;
-
-        font-size: 0.95rem;
-        font-weight: bold;
-
-        z-index: 5000;
-    }
-
-
-    /* =========================
-       プレイヤー情報
-    ========================= */
-
-    .game-screen .player-status {
-        flex-shrink: 0;
-
-        margin-bottom: 0;
-    }
-
-
-    /* =========================
-       サイコロ・所持品・魔法
-    ========================= */
-
-    .game-screen .roulette-area {
-        flex-shrink: 0;
-
-        padding-bottom: 5px;
-    }
-
+    margin: 0;
 }
 
 /* =========================
