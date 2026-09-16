@@ -631,20 +631,22 @@ const mapData = [
 //サイコロ
 const diceSound =
     new Audio("sounds/サイコロ.wav");
-
 diceSound.preload = "auto";
 
 //開始音
 const startSound =
     new Audio("sounds/シャララン.wav");
-
 startSound.preload = "auto";
 
 //決定音
 const buttonSound =
     new Audio("sounds/決定ボタン.mp3");
-
 buttonSound.preload = "auto";
+
+//プレイヤー切り替え
+const switchingSound =
+    new Audio("sounds/プレイヤー切り替え.mp3");
+switchingSound.preload = "auto";
 
 // =========================
 // ゲーム開始
@@ -995,45 +997,7 @@ function showTurnSelectScreen(
 
 }
 
-// =========================
-// ボタン自動決定音
-// =========================
 
-document.addEventListener(
-    "click",
-    function (event) {
-
-        if (
-            event.target.tagName !== "BUTTON"
-        ) {
-            return;
-        }
-
-        if (
-            event.target.id === "rouletteButton"
-        ) {
-            return;
-        }
-
-        if (
-            event.target.id === "confirmTurnButton"
-        ) {
-            return;
-        }
-
-        buttonSound.currentTime = 0;
-
-        buttonSound.play().catch(
-            function (error) {
-                console.error(
-                    "ボタン音の再生に失敗しました:",
-                    error
-                );
-            }
-        );
-
-    }
-);
 
 // =========================
 // ゲーム画面
@@ -1055,40 +1019,31 @@ function showGameScreen(
        <div class="game-screen">
 
     <!-- =========================
-         TURN ＋ 次の目的地
+     TURN ＋ プレイヤー ＋ 残りマス ＋ 目的地
     ========================= -->
 
-    <div class="game-top-row">
+<div class="game-top-row">
 
-        <div
-            id="turnDisplay"
-            class="turn-display">
-        </div>
-
-        <div class="destination">
-            🎯 次の目的地：王都
-        </div>
-
+    <div
+        id="turnDisplay"
+        class="turn-display">
     </div>
 
-
-    <!-- =========================
-         現在プレイヤー ＋ 残りマス
-    ========================= -->
-
-    <div class="current-player-row">
-
-        <div
-            id="currentPlayerInfo"
-            class="current-player-info">
-        </div>
-
-        <div
-            id="remainingStepsInfo"
-            class="remaining-steps-info">
-        </div>
-
+    <div
+        id="currentPlayerInfo"
+        class="current-player-info">
     </div>
+
+    <div
+        id="remainingStepsInfo"
+        class="remaining-steps-info">
+    </div>
+
+    <div class="destination">
+        🎯
+    </div>
+
+</div>
 
 
     <!-- =========================
@@ -1245,15 +1200,11 @@ const dividendCycle = 3;
 
         inventoryButton.disabled = true;
 
-        // =========================
+        
 // SE:サイコロ
-// =========================
-
 diceSound.currentTime = 0;
-
 diceSound.play()
     
-
         // =========================
         // 複数サイコロを振る
         // =========================
@@ -1290,6 +1241,10 @@ diceSound.play()
 // =========================
 // 魔法ステータス画面
 // =========================
+
+//ボタン音
+buttonSound.currentTime = 0;
+buttonSound.play();
 
 window.showMagicPopup = function (player) {
 
@@ -1555,28 +1510,12 @@ document
             showMagicPopup(
                 players[currentPlayer]
             );
-
+//決定音
+buttonSound.currentTime = 0;
+buttonSound.play()
         }
     );
 
-// =========================
-// 魔法ボタン
-// =========================
-
-document
-    .getElementById(
-        "magicButton"
-    )
-    .addEventListener(
-        "click",
-        function () {
-
-            showMagicPopup(
-                players[currentPlayer]
-            );
-
-        }
-    );
 
     
 
@@ -1617,7 +1556,9 @@ document
                 showInventoryPopup(
                     players[currentPlayer]
                 );
-
+//決定音
+buttonSound.currentTime = 0;
+buttonSound.play()
             }
         );
 
@@ -1660,7 +1601,9 @@ document
             showPossessionPopup(
                 players[currentPlayer]
             );
-
+//決定音
+buttonSound.currentTime = 0;
+buttonSound.play()
         }
     );
 
@@ -3429,210 +3372,706 @@ function renderTurn() {
 
     }
 
-
     // =========================
-    // プレイヤー移動
-    // =========================
+// サイコロの出目で
+// 止まれるマスを取得
+// =========================
 
-   function movePlayer(
-    player,
-    diceNumber,
-    movementPath = [player.position]
+function getReachableStopSquares(
+    startPosition,
+    steps
 ) {
 
-    // =========================
-    // 消費したマス数
-    // =========================
+    const results = new Map();
 
-    const usedSteps =
-        movementPath.length - 1;
+    const queue = [
+        {
+            position: startPosition,
+            previousPosition: null,
+            stepsUsed: 0,
+            path: [startPosition]
+        }
+    ];
 
-
-    // =========================
-    // 残りマス
-    // =========================
-
-    remainingSteps =
-        diceNumber - usedSteps;
+    const visited = new Set();
 
 
-    renderTurn();
+    while (
+        queue.length > 0
+    ) {
+
+        const state =
+            queue.shift();
 
 
-    // =========================
-    // 移動終了
-    // =========================
+        // =========================
+        // 指定マス数に到達
+        // =========================
 
-    if (
-    remainingSteps <= 0
-) {
+        if (
+            state.stepsUsed ===
+            steps
+        ) {
 
-    remainingSteps = 0;
+            if (
+                !results.has(
+                    state.position
+                )
+            ) {
 
-    renderTurn();
+                results.set(
+                    state.position,
+                    state.path
+                );
 
-    // =========================
-    // マスに止まったら
-    // 方向選択メッセージを消す
-    // =========================
+            }
 
-    document.getElementById(
-        "choiceArea"
-    ).innerHTML = "";
+            continue;
 
-    handleSquareEvent(player);
+        }
 
-    return;
+
+        // =========================
+        // 現在地から行けるマス
+        // =========================
+
+        const options =
+            getConnectedOptions(
+                state.position
+            );
+
+
+        // =========================
+        // 行ける場所がない
+        // =========================
+
+        if (
+            options.length === 0
+        ) {
+
+            if (
+                !results.has(
+                    state.position
+                )
+            ) {
+
+                results.set(
+                    state.position,
+                    state.path
+                );
+
+            }
+
+            continue;
+
+        }
+
+
+        options.forEach(
+            function (nextPosition) {
+
+                // =========================
+                // 直前のマスへ戻るのは禁止
+                // =========================
+
+                if (
+                    nextPosition ===
+                    state.previousPosition
+                ) {
+
+                    return;
+
+                }
+
+
+                const nextKey =
+                    `${state.position}-${nextPosition}-${state.stepsUsed + 1}`;
+
+
+                if (
+                    visited.has(
+                        nextKey
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                visited.add(
+                    nextKey
+                );
+
+
+                queue.push({
+
+                    position:
+                        nextPosition,
+
+                    previousPosition:
+                        state.position,
+
+                    stepsUsed:
+                        state.stepsUsed + 1,
+
+                    path:
+                        [
+                            ...state.path,
+                            nextPosition
+                        ]
+
+                });
+
+            }
+        );
+
+    }
+
+
+    return results;
+
 }
 
 
-    // =========================
-    // 現在地から行ける場所
-    // =========================
+// =========================
+// 止まれるマスを強調表示
+// =========================
 
-    const options =
-        getConnectedOptions(
-            player.position
+function highlightReachableSquares(
+    player,
+    steps
+) {
+
+    const reachable =
+        getReachableStopSquares(
+            player.position,
+            steps
         );
 
 
     // =========================
-    // 行ける場所がない
+    // 強調表示
+    // =========================
+
+    reachable.forEach(
+        function (path, squareId) {
+
+            const node =
+                document.querySelector(
+                    `.map-node[data-square-id="${squareId}"]`
+                );
+
+
+            if (!node) {
+                return;
+            }
+
+
+            // =========================
+            // 光らせる
+            // =========================
+
+            node.style.boxShadow =
+                "0 0 0 5px rgba(255,215,0,0.95), 0 0 25px rgba(255,215,0,0.9)";
+
+            node.style.cursor =
+                "pointer";
+
+
+            // =========================
+            // タップできることを表示
+            // =========================
+
+            node.addEventListener(
+                "click",
+                function () {
+
+                    // =========================
+                    // 強調表示を解除
+                    // =========================
+
+                    clearReachableHighlights();
+
+
+                    // =========================
+                    // 分岐矢印を削除
+                    // =========================
+
+                    document
+                        .querySelectorAll(
+                            ".branch-arrow-map"
+                        )
+                        .forEach(
+                            function (element) {
+
+                                element.remove();
+
+                            }
+                        );
+
+
+                    // =========================
+                    // 選択したマスへ移動
+                    // =========================
+
+                    movePlayerToSquare(
+                        player,
+                        path
+                    );
+
+                },
+                {
+                    once: true
+                }
+            );
+
+        }
+    );
+
+
+    return reachable;
+
+}
+
+
+// =========================
+// 止まれるマスの強調を解除
+// =========================
+
+function clearReachableHighlights() {
+
+    document
+        .querySelectorAll(
+            ".map-node"
+        )
+        .forEach(
+            function (node) {
+
+                node.style.boxShadow =
+                    "";
+
+                node.style.cursor =
+                    "";
+
+            }
+        );
+
+}// =========================
+// サイコロの出目で
+// 止まれるマスを取得
+// =========================
+
+function getReachableStopSquares(
+    startPosition,
+    steps
+) {
+
+    const results = new Map();
+
+    const queue = [
+        {
+            position: startPosition,
+            previousPosition: null,
+            stepsUsed: 0,
+            path: [startPosition]
+        }
+    ];
+
+    const visited = new Set();
+
+
+    while (
+        queue.length > 0
+    ) {
+
+        const state =
+            queue.shift();
+
+
+        // =========================
+        // 指定マス数に到達
+        // =========================
+
+        if (
+            state.stepsUsed ===
+            steps
+        ) {
+
+            if (
+                !results.has(
+                    state.position
+                )
+            ) {
+
+                results.set(
+                    state.position,
+                    state.path
+                );
+
+            }
+
+            continue;
+
+        }
+
+
+        // =========================
+        // 現在地から行けるマス
+        // =========================
+
+        const options =
+            getConnectedOptions(
+                state.position
+            );
+
+
+        // =========================
+        // 行ける場所がない
+        // =========================
+
+        if (
+            options.length === 0
+        ) {
+
+            if (
+                !results.has(
+                    state.position
+                )
+            ) {
+
+                results.set(
+                    state.position,
+                    state.path
+                );
+
+            }
+
+            continue;
+
+        }
+
+
+        options.forEach(
+            function (nextPosition) {
+
+                // =========================
+                // 直前のマスへ戻るのは禁止
+                // =========================
+
+                if (
+                    nextPosition ===
+                    state.previousPosition
+                ) {
+
+                    return;
+
+                }
+
+
+                const nextKey =
+                    `${state.position}-${nextPosition}-${state.stepsUsed + 1}`;
+
+
+                if (
+                    visited.has(
+                        nextKey
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                visited.add(
+                    nextKey
+                );
+
+
+                queue.push({
+
+                    position:
+                        nextPosition,
+
+                    previousPosition:
+                        state.position,
+
+                    stepsUsed:
+                        state.stepsUsed + 1,
+
+                    path:
+                        [
+                            ...state.path,
+                            nextPosition
+                        ]
+
+                });
+
+            }
+        );
+
+    }
+
+
+    return results;
+
+}
+
+
+// =========================
+// 止まれるマスを強調表示
+// =========================
+
+function highlightReachableSquares(
+    player,
+    steps
+) {
+
+    const reachable =
+        getReachableStopSquares(
+            player.position,
+            steps
+        );
+
+
+    // =========================
+    // 強調表示
+    // =========================
+
+    reachable.forEach(
+        function (path, squareId) {
+
+            const node =
+                document.querySelector(
+                    `.map-node[data-square-id="${squareId}"]`
+                );
+
+
+            if (!node) {
+                return;
+            }
+
+
+            // =========================
+            // 光らせる
+            // =========================
+
+            node.style.boxShadow =
+                "0 0 0 5px rgba(255,215,0,0.95), 0 0 25px rgba(255,215,0,0.9)";
+
+            node.style.cursor =
+                "pointer";
+
+
+            // =========================
+            // タップできることを表示
+            // =========================
+
+            node.addEventListener(
+                "click",
+                function () {
+
+                    // =========================
+                    // 強調表示を解除
+                    // =========================
+
+                    clearReachableHighlights();
+
+
+                    // =========================
+                    // 分岐矢印を削除
+                    // =========================
+
+                    document
+                        .querySelectorAll(
+                            ".branch-arrow-map"
+                        )
+                        .forEach(
+                            function (element) {
+
+                                element.remove();
+
+                            }
+                        );
+
+
+                    // =========================
+                    // 選択したマスへ移動
+                    // =========================
+
+                    movePlayerToSquare(
+                        player,
+                        path
+                    );
+
+                },
+                {
+                    once: true
+                }
+            );
+
+        }
+    );
+
+
+    return reachable;
+
+}
+
+
+// =========================
+// 止まれるマスの強調を解除
+// =========================
+
+function clearReachableHighlights() {
+
+    document
+        .querySelectorAll(
+            ".map-node"
+        )
+        .forEach(
+            function (node) {
+
+                node.style.boxShadow =
+                    "";
+
+                node.style.cursor =
+                    "";
+
+            }
+        );
+
+}
+
+// =========================
+// 選択したマスまで自動移動
+// =========================
+
+function movePlayerToSquare(
+    player,
+    path
+) {
+
+    let index = 1;
+
+
+    function moveNext() {
+
+        // =========================
+        // 移動完了
+        // =========================
+
+        if (
+            index >= path.length
+        ) {
+
+            remainingSteps = 0;
+
+            renderTurn();
+
+            document.getElementById(
+                "choiceArea"
+            ).innerHTML = "";
+
+            handleSquareEvent(
+                player
+            );
+
+            return;
+
+        }
+
+
+        // =========================
+        // 残りマス表示
+        // =========================
+
+        remainingSteps =
+            path.length -
+            index;
+
+        renderTurn();
+
+
+        // =========================
+        // 1マス移動
+        // =========================
+
+        moveOneStep(
+            player,
+            path[index]
+        );
+
+
+        index += 1;
+
+
+        // =========================
+        // 次のマスへ
+        // =========================
+
+        setTimeout(
+            moveNext,
+            350
+        );
+
+    }
+
+
+    moveNext();
+
+}
+
+    // =========================
+// プレイヤー移動
+// =========================
+
+function movePlayer(
+    player,
+    diceNumber
+) {
+
+    // =========================
+    // 現在の残りマス
+    // =========================
+
+    remainingSteps =
+        diceNumber;
+
+    renderTurn();
+
+
+    // =========================
+    // 止まれるマスを強調
+    // =========================
+
+    const reachable =
+        highlightReachableSquares(
+            player,
+            diceNumber
+        );
+
+
+    // =========================
+    // 行けるマスがない
     // =========================
 
     if (
-        options.length === 0
+        reachable.size === 0
     ) {
 
         remainingSteps = 0;
 
         renderTurn();
 
-        finishTurn(player);
-
-        return;
-
-    }
-
-
-    // =========================
-    // 現在地を記録
-    // =========================
-
-    const currentPosition =
-        player.position;
-
-
-    // =========================
-    // 1マス移動
-    // =========================
-
-    const moveTo =
-        function (nextPosition) {
-
-            // 直前のマス
-            const previousPosition =
-                movementPath[
-                    movementPath.length - 2
-                ];
-
-
-            // 戻るかどうか
-            const isBacktracking =
-                nextPosition === previousPosition;
-
-
-            // 移動履歴をコピー
-            let nextPath =
-                [...movementPath];
-
-
-            // =========================
-            // 戻る
-            // =========================
-
-            if (
-                isBacktracking
-            ) {
-
-                nextPath.pop();
-
-            }
-
-            // =========================
-            // 前へ進む
-            // =========================
-
-            else {
-
-                nextPath.push(
-                    nextPosition
-                );
-
-            }
-
-
-            // =========================
-            // 実際に移動
-            // =========================
-
-            moveOneStep(
-                player,
-                nextPosition
-            );
-
-
-            // =========================
-            // 次の移動
-            // =========================
-
-            setTimeout(
-                function () {
-
-                    movePlayer(
-                        player,
-                        diceNumber,
-                        nextPath
-                    );
-
-                },
-                350
-            );
-
-        };
-
-
-    // =========================
-    // 一本道
-    // =========================
-
-    if (
-        options.length === 1
-    ) {
-
-        moveTo(
-            options[0]
+        finishTurn(
+            player
         );
 
         return;
 
     }
-
-
-    // =========================
-    // 分岐
-    // =========================
-
-    showBranchChoice(
-        options,
-        function (selectedPosition) {
-
-            moveTo(
-                selectedPosition
-            );
-
-        }
-    );
 
 }
 
@@ -5962,288 +6401,32 @@ function finishTurn(
                 function () {
     showAssetRankingPopup(function () {
 
-        currentPlayer = (currentPlayer + 1) % 
+    // =========================
+    // 次のプレイヤーへ
+    // =========================
+
+    currentPlayer =
+        (currentPlayer + 1) %
         players.length;
-        inventoryButton.disabled = false;
 
-        });
+        //SE:プレイヤー切り替え
+        switchingSound.currentTime = 0;
+        switchingSound.play()
 
+    inventoryButton.disabled =
+        false;
 
-                    // =========================
-                    // 最大ターン数終了
-                    // =========================
 
-                    if (
-                        currentTurn >
-                        maxTurns
-                    ) {
+    // =========================
+    // 最大ターン数終了
+    // =========================
 
-                        showGameResult();
+    if (
+        currentTurn >
+        maxTurns
+    ) {
 
-                        return;
-
-                    }
-
-
-                    // =========================
-                    // 次のプレイヤー
-                    // =========================
-
-                    const nextPlayer =
-                        players[currentPlayer];
-
-
-                    // =========================
-                    // 次のプレイヤーが
-                    // 仕事中か確認
-                    // =========================
-
-                    if (
-                        nextPlayer.jobTurnsRemaining > 0
-                    ) {
-
-                        nextPlayer.jobTurnsRemaining -=
-                            1;
-
-
-                        renderTurn();
-                        renderPlayers();
-
-
-                        // =========================
-                        // 仕事終了
-                        // =========================
-
-                        if (
-                            nextPlayer.jobTurnsRemaining === 0
-                        ) {
-
-                            const reward =
-                                nextPlayer.jobReward;
-
-
-                            nextPlayer.money +=
-                                reward;
-
-
-                            nextPlayer.jobReward =
-                                0;
-
-
-                            renderPlayers();
-
-
-                            showEventPopup(
-                                "💰 バイト終了！",
-
-                                `${nextPlayer.name}は仕事を終えて<br>` +
-                                `<strong>${reward}G</strong>を獲得！`,
-
-                                function () {
-
-                                    finishTurn(
-                                        nextPlayer
-                                    );
-
-                                }
-                            );
-
-
-                            return;
-
-                        }
-
-
-                        // =========================
-                        // まだ仕事中
-                        // =========================
-
-                        showEventPopup(
-                            "💼 仕事中",
-
-                            `${nextPlayer.name}は現在仕事中です。<br>` +
-                            `残り ${nextPlayer.jobTurnsRemaining} ターン`,
-
-                            function () {
-
-                                finishTurn(
-                                    nextPlayer
-                                );
-
-                            }
-                        );
-
-
-                        return;
-
-                    }
-
-
-                    // =========================
-                    // 通常プレイヤー
-                    // =========================
-
-                    renderTurn();
-                    renderPlayers();
-
-
-                    // ルーレット使用可能
-                    rouletteButton.disabled =
-                        false;
-
-                }
-            );
-
-
-            // =========================
-            // 配当画面を表示したら
-            // ここで一旦終了
-            // =========================
-
-            return;
-
-        }
-
-
-        // =========================
-        // 配当がない場合
-        // =========================
-
-        // 次のプレイヤーへ
-        currentPlayer =
-            (
-                currentPlayer + 1
-            )
-            %
-            players.length;
-
-
-        // 所持品ボタンを再び有効化
-        inventoryButton.disabled =
-            false;
-
-
-        // =========================
-        // 最大ターン数終了
-        // =========================
-
-        if (
-            currentTurn >
-            maxTurns
-        ) {
-
-            showGameResult();
-
-            return;
-
-        }
-
-
-        // =========================
-        // 次のプレイヤー
-        // =========================
-
-        const nextPlayer =
-            players[currentPlayer];
-
-
-        // =========================
-        // 次のプレイヤーが
-        // 仕事中か確認
-        // =========================
-
-        if (
-            nextPlayer.jobTurnsRemaining > 0
-        ) {
-
-            nextPlayer.jobTurnsRemaining -=
-                1;
-
-
-            renderTurn();
-            renderPlayers();
-
-
-            // =========================
-            // 仕事終了
-            // =========================
-
-            if (
-                nextPlayer.jobTurnsRemaining === 0
-            ) {
-
-                const reward =
-                    nextPlayer.jobReward;
-
-
-                nextPlayer.money +=
-                    reward;
-
-
-                nextPlayer.jobReward =
-                    0;
-
-
-                renderPlayers();
-
-
-                showEventPopup(
-                    "💰 バイト終了！",
-
-                    `${nextPlayer.name}は仕事を終えて<br>` +
-                    `<strong>${reward}G</strong>を獲得！`,
-
-                    function () {
-
-                        finishTurn(
-                            nextPlayer
-                        );
-
-                    }
-                );
-
-
-                return;
-
-            }
-
-
-            // =========================
-            // まだ仕事中
-            // =========================
-
-            showEventPopup(
-                "💼 仕事中",
-
-                `${nextPlayer.name}は現在仕事中です。<br>` +
-                `残り ${nextPlayer.jobTurnsRemaining} ターン`,
-
-                function () {
-
-                    finishTurn(
-                        nextPlayer
-                    );
-
-                }
-            );
-
-
-            return;
-
-        }
-
-
-        // =========================
-        // 通常プレイヤー
-        // =========================
-
-        renderTurn();
-        renderPlayers();
-
-
-        // ルーレット使用可能
-        rouletteButton.disabled =
-            false;
+        showGameResult();
 
         return;
 
@@ -6251,21 +6434,8 @@ function finishTurn(
 
 
     // =========================
-    // 次のプレイヤーへ
+    // 次のプレイヤー
     // =========================
-
-    currentPlayer =
-        (
-            currentPlayer + 1
-        )
-        %
-        players.length;
-
-
-    // 所持品ボタンを再び有効化
-    inventoryButton.disabled =
-        false;
-
 
     const nextPlayer =
         players[currentPlayer];
@@ -6286,6 +6456,7 @@ function finishTurn(
 
         renderTurn();
         renderPlayers();
+        centerCurrentPlayerOnMap();
 
 
         // =========================
@@ -6364,6 +6535,294 @@ function finishTurn(
     renderTurn();
     renderPlayers();
 
+
+    // ルーレット使用可能
+    rouletteButton.disabled =
+        false;
+
+});
+
+                }
+            );
+
+
+            // =========================
+            // 配当画面を表示したら
+            // ここで一旦終了
+            // =========================
+
+            return;
+
+        }
+
+
+        // =========================
+        // 配当がない場合
+        // =========================
+
+        // 次のプレイヤーへ
+        currentPlayer =
+            (
+                currentPlayer + 1
+            )
+            %
+            players.length;
+
+         //SE:プレイヤー切り替え
+        switchingSound.currentTime = 0;
+        switchingSound.play()
+        // 所持品ボタンを再び有効化
+        inventoryButton.disabled =
+            false;
+
+
+        // =========================
+        // 最大ターン数終了
+        // =========================
+
+        if (
+            currentTurn >
+            maxTurns
+        ) {
+
+            showGameResult();
+
+            return;
+
+        }
+
+
+        // =========================
+        // 次のプレイヤー
+        // =========================
+
+        const nextPlayer =
+            players[currentPlayer];
+
+
+        // =========================
+        // 次のプレイヤーが
+        // 仕事中か確認
+        // =========================
+
+        if (
+            nextPlayer.jobTurnsRemaining > 0
+        ) {
+
+            nextPlayer.jobTurnsRemaining -=
+                1;
+
+
+            renderTurn();
+            renderPlayers();
+            centerCurrentPlayerOnMap();
+
+
+            // =========================
+            // 仕事終了
+            // =========================
+
+            if (
+                nextPlayer.jobTurnsRemaining === 0
+            ) {
+
+                const reward =
+                    nextPlayer.jobReward;
+
+
+                nextPlayer.money +=
+                    reward;
+
+
+                nextPlayer.jobReward =
+                    0;
+
+
+                renderPlayers();
+
+
+                showEventPopup(
+                    "💰 バイト終了！",
+
+                    `${nextPlayer.name}は仕事を終えて<br>` +
+                    `<strong>${reward}G</strong>を獲得！`,
+
+                    function () {
+
+                        finishTurn(
+                            nextPlayer
+                        );
+
+                    }
+                );
+
+
+                return;
+
+            }
+
+
+            // =========================
+            // まだ仕事中
+            // =========================
+
+            showEventPopup(
+                "💼 仕事中",
+
+                `${nextPlayer.name}は現在仕事中です。<br>` +
+                `残り ${nextPlayer.jobTurnsRemaining} ターン`,
+
+                function () {
+
+                    finishTurn(
+                        nextPlayer
+                    );
+
+                }
+            );
+
+
+            return;
+
+        }
+
+
+        // =========================
+        // 通常プレイヤー
+        // =========================
+
+        renderTurn();
+        renderPlayers();
+        centerCurrentPlayerOnMap();
+
+
+        // ルーレット使用可能
+        rouletteButton.disabled =
+            false;
+
+        return;
+
+    }
+
+
+    // =========================
+    // 次のプレイヤーへ
+    // =========================
+
+    currentPlayer =
+        (
+            currentPlayer + 1
+        )
+        %
+        players.length;
+
+//SE:プレイヤー切り替え
+switchingSound.currentTime = 0;
+switchingSound.play()
+
+    // 所持品ボタンを再び有効化
+    inventoryButton.disabled =
+        false;
+
+
+    const nextPlayer =
+        players[currentPlayer];
+
+
+    // =========================
+    // 次のプレイヤーが
+    // 仕事中か確認
+    // =========================
+
+    if (
+        nextPlayer.jobTurnsRemaining > 0
+    ) {
+
+        nextPlayer.jobTurnsRemaining -=
+            1;
+
+
+        renderTurn();
+        renderPlayers();
+        centerCurrentPlayerOnMap();
+
+
+        // =========================
+        // 仕事終了
+        // =========================
+
+        if (
+            nextPlayer.jobTurnsRemaining === 0
+        ) {
+
+            const reward =
+                nextPlayer.jobReward;
+
+
+            nextPlayer.money +=
+                reward;
+
+
+            nextPlayer.jobReward =
+                0;
+
+
+            renderPlayers();
+
+
+            showEventPopup(
+                "💰 バイト終了！",
+
+                `${nextPlayer.name}は仕事を終えて<br>` +
+                `<strong>${reward}G</strong>を獲得！`,
+
+                function () {
+
+                    finishTurn(
+                        nextPlayer
+                    );
+
+                }
+            );
+
+
+            return;
+
+        }
+
+
+        // =========================
+        // まだ仕事中
+        // =========================
+
+        showEventPopup(
+            "💼 仕事中",
+
+            `${nextPlayer.name}は現在仕事中です。<br>` +
+            `残り ${nextPlayer.jobTurnsRemaining} ターン`,
+
+            function () {
+
+                finishTurn(
+                    nextPlayer
+                );
+
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    // =========================
+    // 通常プレイヤー
+    // =========================
+
+    renderTurn();
+    renderPlayers();
+    centerCurrentPlayerOnMap();
 
     // ルーレット使用可能
     rouletteButton.disabled =
