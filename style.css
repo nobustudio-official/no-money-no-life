@@ -238,7 +238,6 @@ button {
 
     grid-template-rows:
         auto
-        auto
         minmax(0, 1fr)
         auto
         auto;
@@ -3487,22 +3486,17 @@ button {
     grid-row: 1;
 }
 
-.game-screen > .current-player-row {
+.game-screen > .map-area {
     grid-row: 2;
 }
 
-.game-screen > .map-area {
+.game-screen > .roulette-area {
     grid-row: 3;
 }
 
-.game-screen > .roulette-area {
+.game-screen > .player-status {
     grid-row: 4;
 }
-
-.game-screen > .player-status {
-    grid-row: 5;
-}
-
 
 /* =========================================================
    マップレイヤー
@@ -3549,15 +3543,29 @@ button {
 
 .game-top-row {
     display: flex;
+
     align-items: center;
     justify-content: center;
+
     width: 100%;
-    gap: 0;
+
+    gap: 24px;
+
     padding: 10px 14px;
+
     box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.25);
+
+    border-radius:
+        12px;
+
+    white-space: nowrap;
 }
 
 .game-top-row .turn-display {
@@ -3976,24 +3984,24 @@ button {
        上部：TURN ＋ 次の目的地
     ========================= */
 
-    .game-top-row {
-        width: 100%;
-        max-width: 100%;
-        padding-left: 8px;
-        padding-right: 8px;
-        gap: 4px;
-    }
+   .game-top-row {
+    width: 100%;
+    max-width: 100%;
 
-    .game-top-row .turn-display {
-        font-size: 15px;
-    }
+    padding-left: 8px;
+    padding-right: 8px;
 
-    .game-top-row .destination {
-        font-size: 15px;
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+    gap: 8px;
+
+    white-space: nowrap;
+}
+
+.game-top-row .turn-display,
+.game-top-row .current-player-info,
+.game-top-row .remaining-steps-info,
+.game-top-row .destination {
+    font-size: 15px;
+}
 
 
     /* =========================
@@ -4083,3 +4091,58 @@ button {
     }
 
 }
+
+.game-top-row .current-player-info {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    margin: 0;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+
+.game-top-row .remaining-steps-info {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: 0;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+
+.game-top-row .destination {
+    flex: 0 0 auto;
+
+    margin: 0;
+
+    padding: 0;
+
+    background: transparent !important;
+
+    border: none !important;
+
+    box-shadow: none !important;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
