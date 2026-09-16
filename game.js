@@ -623,6 +623,29 @@ const mapData = [
     }
 
 ];
+
+// =========================
+// SE
+// =========================
+
+//サイコロ
+const diceSound =
+    new Audio("sounds/サイコロ.wav");
+
+diceSound.preload = "auto";
+
+//開始音
+const startSound =
+    new Audio("sounds/シャララン.wav");
+
+startSound.preload = "auto";
+
+//決定音
+const buttonSound =
+    new Audio("sounds/決定ボタン.mp3");
+
+buttonSound.preload = "auto";
+
 // =========================
 // ゲーム開始
 // =========================
@@ -957,15 +980,60 @@ function showTurnSelectScreen(
             // ゲーム開始
             // =========================
             gameStarted = true;
+            
+            //開始音    
+            startSound.currentTime = 0;
+            startSound.play()
+            
             showGameScreen(
                 players,
                 maxTurns
             );
-
+            
         }
     );
 
 }
+
+// =========================
+// ボタン自動決定音
+// =========================
+
+document.addEventListener(
+    "click",
+    function (event) {
+
+        if (
+            event.target.tagName !== "BUTTON"
+        ) {
+            return;
+        }
+
+        if (
+            event.target.id === "rouletteButton"
+        ) {
+            return;
+        }
+
+        if (
+            event.target.id === "confirmTurnButton"
+        ) {
+            return;
+        }
+
+        buttonSound.currentTime = 0;
+
+        buttonSound.play().catch(
+            function (error) {
+                console.error(
+                    "ボタン音の再生に失敗しました:",
+                    error
+                );
+            }
+        );
+
+    }
+);
 
 // =========================
 // ゲーム画面
@@ -1177,6 +1245,14 @@ const dividendCycle = 3;
 
         inventoryButton.disabled = true;
 
+        // =========================
+// SE:サイコロ
+// =========================
+
+diceSound.currentTime = 0;
+
+diceSound.play()
+    
 
         // =========================
         // 複数サイコロを振る
@@ -3836,14 +3912,7 @@ function showGoldRoulette(
 
 }
 
-// =========================
-// サイコロSE
-// =========================
 
-const diceSound =
-    new Audio("sounds/サイコロ.wav");
-
-diceSound.preload = "auto";
 
 // =========================
 // サイコロルーレット演出
