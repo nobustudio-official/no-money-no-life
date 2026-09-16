@@ -21,6 +21,20 @@ const playerColors = [
 ];
 
 // =========================
+// Gの3桁区切り表示
+// =========================
+
+function formatG(
+    amount
+) {
+
+    return amount.toLocaleString(
+        "ja-JP"
+    );
+
+}
+
+// =========================
 // お金マス報酬設定
 // =========================
 
@@ -313,6 +327,49 @@ const assetData = [
 
 
 ];
+
+// =========================
+// ボス管理
+// =========================
+
+let currentBossSquareId = null;
+let previousBossSquareId = null;
+
+// =========================
+// ボスデータ
+// =========================
+
+const bossData = {
+    name: "デーモンロード",
+    icon: "👹",
+    hp: 200,
+    attack: 50
+};
+
+
+// =========================
+// 現在のボスHP
+// =========================
+
+let currentBossHP =
+    bossData.hp;
+
+let bossFirstPlayer = null;
+
+let bossRewardGiven = false;
+
+// =========================
+// ボス報酬設定
+// =========================
+
+const BOSS_FIRST_REWARD =
+    10000;
+
+const BOSS_DAMAGE_MULTIPLIER =
+    3;
+
+const BOSS_DEFEAT_REWARD =
+    10000;
 
 // =========================
 // マップデータ
@@ -625,6 +682,144 @@ const mapData = [
 ];
 
 // =========================
+// ボス出現マスを決定
+// =========================
+
+function selectBossSquare() {
+
+    const bossCandidates =
+        mapData.filter(function (square) {
+
+            return (
+                square.type === "monster" &&
+                square.id !== previousBossSquareId
+            );
+
+        });
+
+    if (bossCandidates.length === 0) {
+        return;
+    }
+
+    const randomIndex =
+        Math.floor(
+            Math.random() * bossCandidates.length
+        );
+
+    const selectedBoss =
+        bossCandidates[randomIndex];
+
+    currentBossSquareId =
+        selectedBoss.id;
+
+    previousBossSquareId =
+        null;
+}
+
+// =========================
+// ボス決定演出
+// =========================
+
+function showBossDestinationPopup() {
+
+    const boss =
+        mapData.find(function (square) {
+            return square.id === currentBossSquareId;
+        });
+
+    if (!boss) {
+        return;
+    }
+
+    // =========================
+    // ボス位置へカメラ移動
+    // =========================
+
+    setTimeout(function () {
+
+        const mapArea =
+            document.querySelector(
+                ".game-screen .map-area"
+            );
+
+        const bossNode =
+            document.querySelector(
+                `.map-node[data-square-id="${boss.id}"]`
+            );
+
+        if (!mapArea || !bossNode) {
+            return;
+        }
+
+        const mapRect =
+            mapArea.getBoundingClientRect();
+
+        const bossRect =
+            bossNode.getBoundingClientRect();
+
+        const mapCenterX =
+            mapRect.left +
+            mapRect.width / 2;
+
+        const mapCenterY =
+            mapRect.top +
+            mapRect.height / 2;
+
+        const bossCenterX =
+            bossRect.left +
+            bossRect.width / 2;
+
+        const bossCenterY =
+            bossRect.top +
+            bossRect.height / 2;
+
+        const scrollAmountX =
+            bossCenterX -
+            mapCenterX;
+
+        const scrollAmountY =
+            bossCenterY -
+            mapCenterY;
+
+        mapArea.scrollTo({
+
+            left:
+                mapArea.scrollLeft +
+                scrollAmountX,
+
+            top:
+                mapArea.scrollTop +
+                scrollAmountY,
+
+            behavior:
+                "smooth"
+
+        });
+
+    }, 50);
+
+    showEventPopup(
+        "👹 次の目的地が決定！",
+        
+        `
+        <div style="font-size: 1.2em; margin-bottom: 10px;">
+    🎯 次の目的地は……
+</div>
+
+<div style="font-size: 1.5em; font-weight: bold;">
+    👹 ${boss.name}
+</div>
+
+<div style="margin-top: 10px;">
+    このマスにボスが待ち受けている！
+</div>
+        `,
+        
+        
+    );
+}
+
+// =========================
 // SE
 // =========================
 
@@ -815,6 +1010,7 @@ startButton.addEventListener(
     name: name,
     money: 500,
     magicPower: 100,
+    bossDamage: 0,
     position: 0,
     color: playerColors[index],
     inventory: [],
@@ -982,15 +1178,23 @@ function showTurnSelectScreen(
             // ゲーム開始
             // =========================
             gameStarted = true;
-            
-            //開始音    
-            startSound.currentTime = 0;
-            startSound.play()
-            
-            showGameScreen(
-                players,
-                maxTurns
-            );
+
+// 最初のボスを決定
+selectBossSquare();
+
+//開始音    
+startSound.currentTime = 0;
+startSound.play()
+
+showGameScreen(
+    players,
+    maxTurns
+);
+
+// ボス決定演出
+setTimeout(function () {
+    showBossDestinationPopup();
+}, 500);
             
         }
     );
@@ -1323,7 +1527,7 @@ window.showMagicPopup = function (player) {
 
                 <div class="magic-item-cost">
 
-                    💰 ${magic.cost}G
+                    💰 ${formatG(magic.cost)}G
 
                 </div>
 
@@ -1436,7 +1640,7 @@ window.showBattleMagicPopup = function (
         </div>
 
         <div class="battle-magic-item-cost">
-            💰 ${magic.cost}G
+            💰 ${formatG(magic.cost)}G
         </div>
 
     </div>
@@ -1779,27 +1983,46 @@ document
                     `${square.y}%`;
 
 
-                // =========================
-                // マスのアイコン
-                // =========================
+ // =========================
+// マスのアイコン
+// =========================
 
-                const squareIcon =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                squareIcon.className =
-                    "square-icon";
+const squareIcon =
+    document.createElement(
+        "div"
+    );
 
 
-                squareIcon.textContent =
-                    square.icon;
+squareIcon.className =
+    "square-icon";
 
 
-                node.appendChild(
-                    squareIcon
-                );
+// =========================
+// ボスマスならボスアイコン
+// =========================
+
+if (
+    square.id === currentBossSquareId
+) {
+
+    squareIcon.textContent =
+        "👹";
+
+    node.classList.add(
+        "boss-node"
+    );
+
+} else {
+
+    squareIcon.textContent =
+        square.icon;
+
+}
+
+
+node.appendChild(
+    squareIcon
+);
 
 
                 // =========================
@@ -2246,7 +2469,7 @@ function showAssetPopup(
 
             💰
             <strong>
-                ${totalAssetValue.toLocaleString()}G
+                ${formatG(totalAssetValue)}G
             </strong>
 
         </div>
@@ -2301,7 +2524,7 @@ function showAssetPopup(
                     class="inventory-item-effect"
                 >
 
-                    💰 ${asset.price.toLocaleString()}G
+                    💰 ${formatG(asset.price)}G
                     　
                     📈 ${asset.yield}%
 
@@ -2388,7 +2611,7 @@ function showAssetPurchasePopup(
         "asset-purchase-money";
 
     moneyDisplay.innerHTML =
-        `💰 所持金：<strong>${player.money.toLocaleString()}G</strong>`;
+        `💰 所持金：<strong>${formatG(player.money)}G</strong>`;
 
     list.appendChild(
         moneyDisplay
@@ -2477,7 +2700,7 @@ if (
                         <div
                             class="asset-purchase-detail">
 
-                            💰 ${asset.price.toLocaleString()}G
+                            💰 ${formatG(asset.price)}G
                            　
                             📈 ${asset.yield}%
 
@@ -2529,7 +2752,7 @@ if (
                         <div
                             class="asset-purchase-detail">
 
-                            💰 ${asset.price.toLocaleString()}G
+                            💰 ${formatG(asset.price)}G
                            　
                             📈 ${asset.yield}%
 
@@ -2580,13 +2803,13 @@ if (
                                 `
                                 この資産を購入するには
                                 <strong>
-                                ${asset.price.toLocaleString()}G
+                                ${formatG(asset.price)}G
                                 </strong>
                                 必要です。<br><br>
 
                                 現在の所持金：
                                 <strong>
-                                ${player.money.toLocaleString()}G
+                                ${formatG(player.money)}G
                                 </strong>
                                 `,
 
@@ -2758,7 +2981,7 @@ function renderPlayers() {
                         <!-- ゴールド -->
 
                         <span>
-                            💰${player.money}G
+                            💰${formatG(player.money)}G
                         </span>
 
                     </div>
@@ -3008,7 +3231,7 @@ function renderTurn() {
     // =========================
 
     turnDisplay.textContent =
-        `TURN ${currentTurn} / ${maxTurns}`;
+    `TURN ${currentTurn}/${maxTurns}`;
 
 
 // =========================
@@ -3031,7 +3254,7 @@ function renderTurn() {
     // =========================
 
     remainingStepsInfo.textContent =
-        `🎲 残り${remainingSteps}マス`;
+        `🎲 残${remainingSteps}マス`;
 
 }
 
@@ -3657,291 +3880,6 @@ function clearReachableHighlights() {
             }
         );
 
-}// =========================
-// サイコロの出目で
-// 止まれるマスを取得
-// =========================
-
-function getReachableStopSquares(
-    startPosition,
-    steps
-) {
-
-    const results = new Map();
-
-    const queue = [
-        {
-            position: startPosition,
-            previousPosition: null,
-            stepsUsed: 0,
-            path: [startPosition]
-        }
-    ];
-
-    const visited = new Set();
-
-
-    while (
-        queue.length > 0
-    ) {
-
-        const state =
-            queue.shift();
-
-
-        // =========================
-        // 指定マス数に到達
-        // =========================
-
-        if (
-            state.stepsUsed ===
-            steps
-        ) {
-
-            if (
-                !results.has(
-                    state.position
-                )
-            ) {
-
-                results.set(
-                    state.position,
-                    state.path
-                );
-
-            }
-
-            continue;
-
-        }
-
-
-        // =========================
-        // 現在地から行けるマス
-        // =========================
-
-        const options =
-            getConnectedOptions(
-                state.position
-            );
-
-
-        // =========================
-        // 行ける場所がない
-        // =========================
-
-        if (
-            options.length === 0
-        ) {
-
-            if (
-                !results.has(
-                    state.position
-                )
-            ) {
-
-                results.set(
-                    state.position,
-                    state.path
-                );
-
-            }
-
-            continue;
-
-        }
-
-
-        options.forEach(
-            function (nextPosition) {
-
-                // =========================
-                // 直前のマスへ戻るのは禁止
-                // =========================
-
-                if (
-                    nextPosition ===
-                    state.previousPosition
-                ) {
-
-                    return;
-
-                }
-
-
-                const nextKey =
-                    `${state.position}-${nextPosition}-${state.stepsUsed + 1}`;
-
-
-                if (
-                    visited.has(
-                        nextKey
-                    )
-                ) {
-
-                    return;
-
-                }
-
-
-                visited.add(
-                    nextKey
-                );
-
-
-                queue.push({
-
-                    position:
-                        nextPosition,
-
-                    previousPosition:
-                        state.position,
-
-                    stepsUsed:
-                        state.stepsUsed + 1,
-
-                    path:
-                        [
-                            ...state.path,
-                            nextPosition
-                        ]
-
-                });
-
-            }
-        );
-
-    }
-
-
-    return results;
-
-}
-
-
-// =========================
-// 止まれるマスを強調表示
-// =========================
-
-function highlightReachableSquares(
-    player,
-    steps
-) {
-
-    const reachable =
-        getReachableStopSquares(
-            player.position,
-            steps
-        );
-
-
-    // =========================
-    // 強調表示
-    // =========================
-
-    reachable.forEach(
-        function (path, squareId) {
-
-            const node =
-                document.querySelector(
-                    `.map-node[data-square-id="${squareId}"]`
-                );
-
-
-            if (!node) {
-                return;
-            }
-
-
-            // =========================
-            // 光らせる
-            // =========================
-
-            node.style.boxShadow =
-                "0 0 0 5px rgba(255,215,0,0.95), 0 0 25px rgba(255,215,0,0.9)";
-
-            node.style.cursor =
-                "pointer";
-
-
-            // =========================
-            // タップできることを表示
-            // =========================
-
-            node.addEventListener(
-                "click",
-                function () {
-
-                    // =========================
-                    // 強調表示を解除
-                    // =========================
-
-                    clearReachableHighlights();
-
-
-                    // =========================
-                    // 分岐矢印を削除
-                    // =========================
-
-                    document
-                        .querySelectorAll(
-                            ".branch-arrow-map"
-                        )
-                        .forEach(
-                            function (element) {
-
-                                element.remove();
-
-                            }
-                        );
-
-
-                    // =========================
-                    // 選択したマスへ移動
-                    // =========================
-
-                    movePlayerToSquare(
-                        player,
-                        path
-                    );
-
-                },
-                {
-                    once: true
-                }
-            );
-
-        }
-    );
-
-
-    return reachable;
-
-}
-
-
-// =========================
-// 止まれるマスの強調を解除
-// =========================
-
-function clearReachableHighlights() {
-
-    document
-        .querySelectorAll(
-            ".map-node"
-        )
-        .forEach(
-            function (node) {
-
-                node.style.boxShadow =
-                    "";
-
-                node.style.cursor =
-                    "";
-
-            }
-        );
-
 }
 
 // =========================
@@ -4171,7 +4109,7 @@ showDiceRoulette(
 // イベントポップアップ表示
 // =========================
 
-function showEventPopup(
+window.showEventPopup = function (
     title,
     message,
     callback
@@ -4314,7 +4252,7 @@ function showGoldRoulette(
                     // 最終結果
 
                     number.textContent =
-                        `${reward}G`;
+                        `${formatG(reward)}G`;
 
 
                     roulette.classList.remove(
@@ -4637,7 +4575,7 @@ function startMonsterBattle(
             document.getElementById(
                 "battlePlayerStats"
             ).innerHTML =
-                `💰${player.money}G<br>` +
+                `💰${formatG(player.money)}G<br>` +
                 `🔮魔力 ${player.magicPower}`;
 
 
@@ -4678,177 +4616,103 @@ function startMonsterBattle(
                 "👾 モンスターが現れた！";
 
 
-            // =========================
-            // 攻撃ボタンは使用しない
-            // =========================
-
-            const attackButton =
-                document.getElementById(
-                    "battleAttackButton"
-                );
-
-            attackButton.style.display =
-                "none";
 
   // =========================
-// 攻撃を諦める＝逃げるボタン
+// パスボタン
 // =========================
 
-let battleResultButton =
+const passButton =
     document.getElementById(
-        "battleResultButton"
+        "battlePassButton"
     );
 
-if (!battleResultButton) {
-
-    battleResultButton =
-        document.createElement(
-            "button"
-        );
-
-    battleResultButton.id =
-        "battleResultButton";
-
-    battleResultButton.className =
-        "battle-magic-button";
-
-    battlePopup.appendChild(
-        battleResultButton
-    );
-
-}
-
-battleResultButton.textContent =
-    "🏃 逃げる";
-
-battleResultButton.disabled =
-    false;
-
-battleResultButton.style.display =
+passButton.style.display =
     "block";
 
+passButton.disabled =
+    false;
+
+passButton.textContent =
+    "⏭️ パス";
+
 
 // =========================
-// 逃げるボタン
+// パス
 // =========================
 
-battleResultButton.onclick =
+passButton.onclick =
     function () {
 
         // =========================
         // 二重クリック防止
         // =========================
 
-        battleResultButton.disabled =
+        passButton.disabled =
+            true;
+
+        magicButton.disabled =
             true;
 
 
         // =========================
-        // 現実から目を背ける
+        // モンスターの反撃
         // =========================
 
-        showEventPopup(
-            "🏃 逃げる",
-
-            `${player.name}は現実から目を背けた……！`,
-
-            function () {
-
-                // =========================
-                // モンスターの攻撃
-                // =========================
-
-                const monsterDamage =
-    getMonsterDamage(
-        player,
-        monster.attack
-    );
-
-                player.money -=
-                    monsterDamage;
+        const monsterDamage =
+            getMonsterDamage(
+                player,
+                monster.attack
+            );
 
 
-                if (player.money < 0) {
-
-                    player.money = 0;
-
-                }
+        player.money -=
+            monsterDamage;
 
 
-                // =========================
-                // プレイヤー表示更新
-                // =========================
+        if (
+            player.money < 0
+        ) {
 
-                document.getElementById(
-                    "battlePlayerStats"
-                ).innerHTML =
-                    `💰${player.money}G<br>` +
-                    `🔮魔力 ${player.magicPower}`;
+            player.money =
+                0;
 
-
-                renderPlayers();
+        }
 
 
-  // =========================
-// 0Gになった場合
-// =========================
+        // =========================
+        // プレイヤー表示更新
+        // =========================
 
-if (player.money <= 0) {
-
-    player.money = 0;
-
-
-    // =========================
-    // 戦闘画面の表示更新
-    // =========================
-
-    document.getElementById(
-        "battlePlayerStats"
-    ).innerHTML =
-        `💰${player.money}G<br>` +
-        `🔮魔力 ${player.magicPower}`;
+        document.getElementById(
+            "battlePlayerStats"
+        ).innerHTML =
+            `💰${formatG(player.money)}G<br>` +
+            `🔮魔力 ${player.magicPower}`;
 
 
-    renderPlayers();
+        renderPlayers();
 
 
-    // =========================
-    // 逃げるボタンを非活性化
-    // =========================
+        // =========================
+        // 0Gになった場合
+        // =========================
 
-    battleResultButton.disabled =
-        true;
+        if (
+            player.money <= 0
+        ) {
 
-    battleResultButton.style.display =
-        "none";
+            document.getElementById(
+                "battleMessage"
+            ).innerHTML =
+                `⏭️ パスした！` +
+                `<br>` +
+                `👾 ${monster.name}の攻撃！ ` +
+                `${formatG(monsterDamage)}Gのダメージ！`;
 
-
-    // =========================
-    // 戦闘結果を表示
-    // =========================
-
-    showEventPopup(
-        "⚔️ 戦闘終了",
-
-        `${player.name}は戦闘から逃げた……！<br><br>` +
-        `現実から目を背けた結果、<br>` +
-        `背中に追撃を受けた。<br><br>` +
-        `👾 ${monster.name}から<strong>${monsterDamage}G</strong>の追撃！<br>` +
-        `💰 所持金は<strong>0G</strong>になった……。`,
-
-        function () {
-
-            // =========================
-            // 戦闘画面を閉じる
-            // =========================
 
             battlePopup.style.display =
                 "none";
 
-
-            // =========================
-            // リスポーン
-            // =========================
 
             checkPlayerRespawn(
                 player,
@@ -4862,111 +4726,98 @@ if (player.money <= 0) {
                 }
             );
 
+
+            return;
+
         }
-    );
 
 
-    // ボタンを「次へ」に変更
-    document.getElementById(
-        "eventPopupButton"
-    ).textContent =
-        "次へ";
+        // =========================
+        // パス結果
+        // =========================
+
+        document.getElementById(
+            "battleMessage"
+        ).innerHTML =
+            `⏭️ パスした！` +
+            `<br>` +
+            `👾 ${monster.name}の反撃！ ` +
+            `${formatG(monsterDamage)}Gのダメージ！`;
 
 
-    return;
+        // =========================
+        // 3ラウンド終了
+        // =========================
 
-}
+        if (
+            currentRound >= 3
+        ) {
 
-
-                // =========================
-                // モンスター攻撃結果
-                // =========================
-
-                document.getElementById(
-                    "battleMessage"
-                ).textContent =
-                    `追いかけてきた 👾 ${monster.name}の攻撃！ ` +
-                    `${monsterDamage}Gのダメージ！`;
+            document.getElementById(
+                "battleMessage"
+            ).innerHTML +=
+                "⚔️ 3ラウンド終了！";
 
 
-                // =========================
-                // 3ラウンド終了
-                // =========================
+            passButton.textContent =
+                "戦闘終了";
 
-                if (
-                    currentRound >= 3
-                ) {
+            magicButton.disabled =
+                 true;
 
-                    document.getElementById(
-                        "battleMessage"
-                    ).textContent +=
-                        "　⚔️ 3ラウンド終了！";
-
-// =========================
-// 逃げるボタンを非活性化
-// =========================
-
-battleResultButton.disabled =
-    true;
+            passButton.disabled =
+                false;
 
 
-                    battleResultButton.style.display =
+            passButton.onclick =
+                function () {
+
+                    passButton.disabled =
+                        true;
+
+
+                    battlePopup.style.display =
                         "none";
 
-
-                    // =========================
-                    // 戦闘終了結果を表示
-                    // =========================
-
-                    showEventPopup(
-                        "⚔️ 戦闘終了",
-
-                        `${player.name}は戦闘から逃げだした……！<br><br>` +
-                        `👾 ${monster.name}から<strong>${monsterDamage}G</strong>の追撃！<br><br>` +
-                        `💰 現在の所持金：<strong>${player.money}G</strong>`,
-
-                        function () {
-
-                            battlePopup.style.display =
-                                "none";
+                    passButton.style.display =
+                      "none";
 
 
-                            finishTurn(
-                                player
-                            );
+                    finishTurn(
+    player
+);
 
-                        }
-                    );
-
-
-                    return;
-
-                }
+                };
 
 
-                // =========================
-                // 次のラウンド
-                // =========================
+            return;
 
-                currentRound +=
-                    1;
+        }
 
 
-                document.getElementById(
-                    "battleRound"
-                ).textContent =
-                    `ROUND ${currentRound} / 3`;
+        // =========================
+        // 次のラウンド
+        // =========================
+
+        currentRound +=
+            1;
 
 
-                // =========================
-                // 逃げるボタンを再び有効化
-                // =========================
+        document.getElementById(
+            "battleRound"
+        ).textContent =
+            `ROUND ${currentRound} / 3`;
 
-                battleResultButton.disabled =
-                    false;
 
-            }
-        );
+        // =========================
+        // 次のラウンドの操作を有効化
+        // =========================
+
+        magicButton.disabled =
+            false;
+
+        passButton.disabled =
+            false;
 
     };
 
@@ -5054,9 +4905,9 @@ battleResultButton.disabled =
 
                                     `${magic.icon} ${magic.name}を使うには` +
                                     `<br><br>` +
-                                    `💰 ${magic.cost}G 必要です。` +
+                                    `💰 ${formatG(magic.cost)}G 必要です。` +
                                     `<br>` +
-                                    `現在の所持金：${player.money}G`,
+                                    `現在の所持金：${formatG(player.money)}G`,
 
                                     function () {
 
@@ -5112,7 +4963,7 @@ battleResultButton.disabled =
                             document.getElementById(
                                 "battlePlayerStats"
                             ).innerHTML =
-                                `💰${player.money}G<br>` +
+                                `💰${formatG(player.money)}G<br>` +
                                 `🔮魔力 ${player.magicPower}`;
 
 
@@ -5142,16 +4993,7 @@ if (
         `　👾 ${monster.name}を倒した！`;
 
 
-    // =========================
-    // 逃げるボタンを無効化
-    // =========================
-
-    battleResultButton.disabled =
-        true;
-
-    battleResultButton.style.display =
-        "none";
-
+    
 
     // =========================
     // 戦闘終了ボタン
@@ -5160,6 +5002,8 @@ if (
     magicButton.textContent =
         "戦闘終了";
 
+passButton.style.display =
+    "none";
 
     magicButton.onclick =
         function () {
@@ -5212,15 +5056,15 @@ if (player.money <= 0) {
 
     // 戦闘画面に攻撃結果を表示
     battlePlayerStats.innerHTML =
-        `💰${player.money}G<br>🔮${player.magicPower}`;
+        `💰${formatG(player.money)}G<br>🔮${player.magicPower}`;
 
     battleMessage.textContent =
-        `👾 ${monster.name}の攻撃！ ${monsterDamage}Gのダメージ！`;
+        `👾 ${monster.name}の攻撃！ ${formatG(monsterDamage)}Gのダメージ！`;
 
     // すぐに閉じず、戦闘画面を見せる
     // 戦闘結果を表示したまま待つ
 battleMessage.textContent =
-    `👾 ${monster.name}の攻撃！ ${monsterDamage}Gのダメージ！`;
+    `👾 ${monster.name}の攻撃！ ${formatG(monsterDamage)}Gのダメージ！`;
 
 
 }
@@ -5233,7 +5077,7 @@ battleMessage.textContent =
                             document.getElementById(
                                 "battlePlayerStats"
                             ).innerHTML =
-                                `💰${player.money}G<br>` +
+                                `💰${formatG(player.money)}G<br>` +
                                 `🔮魔力 ${player.magicPower}`;
 
 
@@ -5281,6 +5125,8 @@ battleMessage.textContent =
                                         battlePopup.style.display =
                                             "none";
 
+                                             passButton.style.display =
+                                             "none";
 
                                         finishTurn(
                                             player
@@ -5352,6 +5198,979 @@ battleMessage.textContent =
 
 }
 
+// =========================
+// ボス戦開始
+// =========================
+
+function startBossBattle(
+    player
+) {
+
+    // =========================
+    // ボスがすでに倒されている場合
+    // =========================
+
+    if (
+        currentBossHP <= 0
+    ) {
+
+        currentBossHP =
+            bossData.hp;
+
+    }
+
+
+    // =========================
+    // 戦闘画面
+    // =========================
+
+    const battlePopup =
+        document.getElementById(
+            "battlePopup"
+        );
+
+    battlePopup.style.display =
+        "block";
+
+
+    // =========================
+    // ラウンド
+    // =========================
+
+    let currentRound =
+        1;
+
+
+    // =========================
+    // プレイヤー表示
+    // =========================
+
+    document.getElementById(
+        "battlePlayerName"
+    ).textContent =
+        player.name;
+
+
+    document.getElementById(
+        "battlePlayerStats"
+    ).innerHTML =
+        `💰${formatG(player.money)}G<br>` +
+        `🔮魔力 ${player.magicPower}`;
+
+
+    // =========================
+    // ボス表示
+    // =========================
+
+    document.getElementById(
+        "battleMonsterName"
+    ).textContent =
+        `${bossData.icon} ${bossData.name}`;
+
+
+    document.getElementById(
+        "battleMonsterStats"
+    ).innerHTML =
+        `❤️${currentBossHP}<br>` +
+        `⚔️攻撃 ${bossData.attack}`;
+
+
+    // =========================
+    // ラウンド表示
+    // =========================
+
+    document.getElementById(
+        "battleRound"
+    ).textContent =
+        "ROUND 1 / 3";
+
+
+    // =========================
+    // 戦闘メッセージ
+    // =========================
+
+    document.getElementById(
+        "battleMessage"
+    ).textContent =
+        "👹 デーモンロードとの戦闘開始！";
+
+
+       
+    // =========================
+    // 魔法ボタン
+    // =========================
+
+    const magicButton =
+        document.getElementById(
+            "battleMagicButton"
+        );
+
+    magicButton.style.display =
+        "block";
+
+    magicButton.disabled =
+        false;
+
+    magicButton.textContent =
+        "🔮 魔法";
+
+
+// =========================
+// パスボタン
+// =========================
+
+const passButton =
+    document.getElementById(
+        "battlePassButton"
+    );
+
+passButton.style.display =
+    "block";
+
+passButton.disabled =
+    false;
+
+passButton.textContent =
+    "⏭️ パス";
+
+
+// =========================
+// パスボタン
+// =========================
+
+passButton.onclick =
+    function () {
+
+        // =========================
+        // 二重クリック防止
+        // =========================
+
+        passButton.disabled =
+            true;
+
+        magicButton.disabled =
+            true;
+
+
+        // =========================
+        // ボスの反撃
+        // =========================
+
+        const bossDamage =
+            bossData.attack;
+
+
+        player.money -=
+            bossDamage;
+
+
+        if (
+            player.money < 0
+        ) {
+
+            player.money =
+                0;
+
+        }
+
+
+        // =========================
+        // プレイヤー表示更新
+        // =========================
+
+        document.getElementById(
+            "battlePlayerStats"
+        ).innerHTML =
+            `💰${formatG(player.money)}G<br>` +
+            `🔮魔力 ${player.magicPower}`;
+
+
+        renderPlayers();
+
+
+        // =========================
+        // プレイヤーが0G
+        // =========================
+
+        if (
+            player.money <= 0
+        ) {
+
+            document.getElementById(
+                "battleMessage"
+            ).textContent =
+                `⏭️ パスした！` +
+                `<br>` +
+                `👹 ${bossData.name}の反撃！ ` +
+                `${bossDamage}Gのダメージ！`;
+
+
+            battlePopup.style.display =
+                "none";
+
+
+            checkPlayerRespawn(
+                player,
+
+                function () {
+
+                    finishTurn(
+                        player
+                    );
+
+                }
+            );
+
+            return;
+
+        }
+
+
+        // =========================
+        // パス結果
+        // =========================
+
+        document.getElementById(
+            "battleMessage"
+        ).innerHTML =
+            `⏭️ パスした！` +
+            `<br>` +
+            `👹 ${bossData.name}の反撃！ ` +
+            `${bossDamage}Gのダメージ！`;
+
+
+        // =========================
+        // 3ラウンド終了
+        // =========================
+
+        if (
+            currentRound >= 3
+        ) {
+
+            document.getElementById(
+                "battleMessage"
+            ).innerHTML +=
+                "⚔️ 3ラウンド終了！";
+
+
+            passButton.textContent =
+                "戦闘終了";
+
+            passButton.disabled =
+                false;
+
+
+            passButton.onclick =
+                function () {
+
+                    magicButton.disabled =
+                    true;
+
+                    passButton.disabled =
+                        true;
+
+
+                    battlePopup.style.display =
+                        "none";
+
+                     passButton.style.display =
+                      "none";
+
+                    finishTurn(
+                        player
+                    );
+
+                };
+
+
+            return;
+
+        }
+
+
+        // =========================
+        // 次のラウンド
+        // =========================
+
+        currentRound +=
+            1;
+
+
+        document.getElementById(
+            "battleRound"
+        ).textContent =
+            `ROUND ${currentRound} / 3`;
+
+
+        // =========================
+        // 次のラウンドの操作を有効化
+        // =========================
+
+        magicButton.disabled =
+            false;
+
+        passButton.disabled =
+            false;
+
+    };
+
+    // =========================
+    // 魔法ボタン
+    // =========================
+
+    magicButton.onclick =
+        function () {
+
+            magicButton.disabled =
+                true;
+
+
+            showBattleMagicPopup(
+                player,
+                bossData,
+
+                function (magic) {
+
+                    // =========================
+                    // 魔法選択画面を閉じる
+                    // =========================
+
+                    document.getElementById(
+                        "battleMagicPopup"
+                    ).style.display =
+                        "none";
+
+
+                    // =========================
+                    // 使用コストチェック
+                    // =========================
+
+                    if (
+                        player.money <
+                        magic.cost
+                    ) {
+
+                        magicButton.disabled =
+                            false;
+
+                        showEventPopup(
+                            "💰 G不足",
+
+                            `${magic.icon} ${magic.name}を使うには` +
+                            `<br><br>` +
+                            `💰 ${formatG(magic.cost)}G 必要です。` +
+                            `<br>` +
+                            `現在の所持金：${formatG(player.money)}G`,
+
+                            function () {
+
+                            }
+                        );
+
+                        return;
+
+                    }
+
+
+                    // =========================
+                    // 魔法コストを支払う
+                    // =========================
+
+                    player.money -=
+                        magic.cost;
+
+
+                    // =========================
+                    // ダメージ計算
+                    // =========================
+
+                    const magicDamage =
+                        Math.floor(
+                            player.magicPower *
+                            magic.powerRate
+                        );
+
+
+ // =========================
+// ボスへの実ダメージ計算
+// =========================
+
+const actualDamage =
+    Math.min(
+        magicDamage,
+        currentBossHP
+    );
+
+
+// =========================
+// ボスHPを減らす
+// =========================
+
+currentBossHP -=
+    actualDamage;
+
+
+// =========================
+// ボスへの累計ダメージを記録
+// =========================
+
+player.bossDamage +=
+    actualDamage;
+
+                    
+
+
+                    // =========================
+                    // 表示更新
+                    // =========================
+
+                    document.getElementById(
+                        "battlePlayerStats"
+                    ).innerHTML =
+                        `💰${formatG(player.money)}G<br>` +
+                        `🔮魔力 ${player.magicPower}`;
+
+
+                    document.getElementById(
+                        "battleMonsterStats"
+                    ).innerHTML =
+                        `❤️${currentBossHP}<br>` +
+                        `⚔️攻撃 ${bossData.attack}`;
+
+
+                    renderPlayers();
+
+
+                    // =========================
+                    // ボス撃破
+                    // =========================
+
+                    if (
+                        currentBossHP === 0
+                    ) {
+
+                        passButton.style.display =
+                        "none";
+
+                        // =========================
+// ボス報酬を計算・配布
+// =========================
+
+if (
+    bossRewardGiven === false
+) {
+
+    players.forEach(
+        function (p) {
+
+            // ダメージ報酬
+            const damageReward =
+                p.bossDamage *
+                BOSS_DAMAGE_MULTIPLIER;
+
+            p.money +=
+                damageReward;
+
+            // 先着報酬
+            if (
+                p === bossFirstPlayer
+            ) {
+
+                p.money +=
+                    BOSS_FIRST_REWARD;
+
+            }
+
+        }
+    );
+
+    // 撃破報酬
+    player.money +=
+        BOSS_DEFEAT_REWARD;
+
+    // 報酬配布済みにする
+    bossRewardGiven =
+        true;
+
+}
+
+
+                        document.getElementById(
+                            "battleMessage"
+                        ).textContent =
+                            `${magic.icon} ${magic.name}！ ` +
+                            `${magicDamage}ダメージ！` +
+                            `　👹 ${bossData.name}を倒した！`;
+
+
+                        magicButton.textContent =
+                            "戦闘終了";
+
+
+                        magicButton.disabled =
+                            false;
+
+
+                        magicButton.onclick =
+                            function () {
+
+                                magicButton.disabled =
+                                    true;
+
+                                battlePopup.style.display =
+                                    "none";
+
+                                // =========================
+// ボス報酬表示
+// =========================
+
+let bossRewardMessage =
+    `${bossData.name}を倒した！<br>`;
+
+
+// =========================
+// 先着報酬
+// =========================
+
+bossRewardMessage +=
+    `🥇 先着報酬<br>`;
+
+bossRewardMessage +=
+    `${bossFirstPlayer.name}：+${formatG(BOSS_FIRST_REWARD)}G<br>`;
+
+
+// =========================
+// ダメージ報酬
+// =========================
+
+bossRewardMessage +=
+    `⚔️ ダメージ報酬<br>`;
+
+players.forEach(
+    function (p) {
+
+        const damageReward =
+            p.bossDamage *
+            BOSS_DAMAGE_MULTIPLIER;
+
+        bossRewardMessage +=
+            `${p.name}：+${formatG(damageReward)}G`;
+
+    }
+);
+
+
+bossRewardMessage +=
+    `<br>`;
+
+
+// =========================
+// 撃破報酬
+// =========================
+
+bossRewardMessage +=
+    `👑 撃破報酬<br>`;
+
+bossRewardMessage +=
+    `${player.name}：+${formatG(BOSS_DEFEAT_REWARD)}G`;
+
+
+// =========================
+// ポップアップ表示
+// =========================
+
+showEventPopup(
+    "👹 ボス撃破！",
+    bossRewardMessage,
+    function () {
+
+        // =========================
+        // 現在のボスを記録
+        // =========================
+
+        previousBossSquareId =
+            currentBossSquareId;
+
+
+        // =========================
+        // 次のボス位置を決定
+        // =========================
+
+        selectBossSquare();
+
+
+        // =========================
+        // ボス報酬データをリセット
+        // =========================
+
+        bossFirstPlayer =
+            null;
+
+        bossRewardGiven =
+            false;
+
+
+        players.forEach(
+            function (p) {
+
+                p.bossDamage =
+                    0;
+
+            }
+        );
+
+
+        // =========================
+        // マップ表示を更新
+        // =========================
+
+        renderMap();
+
+
+        // =========================
+        // 次のボス決定演出
+        // =========================
+
+        showBossDestinationPopup();
+
+
+        // =========================
+        // ターン終了
+        // =========================
+
+        finishTurn(
+            player
+        );
+
+    }
+);
+
+                            };
+
+
+                        return;
+
+                    }
+
+
+                    // =========================
+                    // ボスの反撃
+                    // =========================
+
+                    const bossDamage =
+                        bossData.attack;
+
+
+                    player.money -=
+                        bossDamage;
+
+
+                    if (
+                        player.money < 0
+                    ) {
+
+                        player.money =
+                            0;
+
+                    }
+
+
+                    // =========================
+                    // プレイヤー表示更新
+                    // =========================
+
+                    document.getElementById(
+                        "battlePlayerStats"
+                    ).innerHTML =
+                        `💰${formatG(player.money)}G<br>` +
+                        `🔮魔力 ${player.magicPower}`;
+
+
+                    renderPlayers();
+
+
+                    // =========================
+                    // プレイヤーが0G
+                    // =========================
+
+                    if (
+                        player.money <= 0
+                    ) {
+
+                        battlePopup.style.display =
+                            "none";
+
+                        checkPlayerRespawn(
+                            player,
+
+                            function () {
+
+                                finishTurn(
+                                    player
+                                );
+
+                            }
+                        );
+
+                        return;
+
+                    }
+
+
+                    // =========================
+                    // 戦闘メッセージ
+                    // =========================
+
+                    document.getElementById(
+                        "battleMessage"
+                    ).textContent =
+                        `${magic.icon} ${magic.name}！ ` +
+                        `${magicDamage}ダメージ！` +
+                        `　👹 ${bossData.name}の反撃！ ` +
+                        `${bossDamage}Gのダメージ！`;
+
+
+                    // =========================
+                    // 3ラウンド終了
+                    // =========================
+
+                    if (
+                        currentRound >= 3
+                    ) {
+
+                        document.getElementById(
+                            "battleMessage"
+                        ).textContent +=
+                            "⚔️ 3ラウンド終了！";
+
+                         passButton.style.display =
+                                  "none";
+
+                        magicButton.textContent =
+                            "戦闘終了";
+
+                        magicButton.disabled =
+                            false;
+
+                        magicButton.onclick =
+                            function () {
+
+                                magicButton.disabled =
+                                    true;
+
+                                battlePopup.style.display =
+                                    "none";
+
+                                
+
+
+                                finishTurn(
+                                    player
+                                );
+
+                            };
+
+                        return;
+
+                    }
+
+
+                    // =========================
+                    // 次のラウンド
+                    // =========================
+
+                    currentRound +=
+                        1;
+
+
+                    document.getElementById(
+                        "battleRound"
+                    ).textContent =
+                        `ROUND ${currentRound} / 3`;
+
+
+                    // =========================
+                    // 魔法ボタンを再び有効化
+                    // =========================
+
+                    magicButton.disabled =
+                        false;
+
+                }
+            );
+
+        };
+
+}
+
+// =========================
+// ボス挑戦確認
+// =========================
+
+function showBossChallengePopup(
+    player,
+    isRechallenge = false
+) {
+
+    // =========================
+    // ボス先着プレイヤーを記録
+    // =========================
+
+    if (
+        bossFirstPlayer === null
+    ) {
+
+        bossFirstPlayer =
+            player;
+
+    }
+
+
+    const popup =
+        document.getElementById(
+            "monsterChoicePopup"
+        );
+
+    const message =
+        document.getElementById(
+            "monsterChoiceMessage"
+        );
+
+    const fightButton =
+        document.getElementById(
+            "monsterFightButton"
+        );
+
+    const escapeButton =
+        document.getElementById(
+            "monsterEscapeButton"
+        );
+
+
+    // =========================
+    // メッセージ
+    // =========================
+
+    message.innerHTML =
+        `
+        <div style="
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        ">
+            👹
+        </div>
+
+        <div style="
+        font-size: 1.5em;
+        font-weight: bold;
+    ">
+        ${isRechallenge ? "ボスが待っている！" : "ボスが現れた！"}
+    </div>
+
+           <div style="
+        margin-top: 15px;
+        line-height: 1.8;
+    ">
+        ${isRechallenge
+            ? "ボスに再挑戦しますか？"
+            : "この先へ進むには<br>このボスを倒さなければならない。"
+        }
+    </div>
+        `;
+
+
+    // =========================
+    // ボタン表示
+    // =========================
+
+    fightButton.textContent =
+        "⚔️ 挑戦する";
+
+    escapeButton.textContent =
+        "🏃 今回はやめる";
+
+
+    // =========================
+    // ポップアップ表示
+    // =========================
+
+    popup.style.display =
+        "block";
+
+
+    // =========================
+    // 挑戦する
+    // =========================
+
+    fightButton.onclick =
+        function () {
+
+            popup.style.display =
+                "none";
+
+            startBossBattle(
+                player
+            );
+
+        };
+
+
+    // =========================
+    // 今回はやめる
+    // =========================
+
+    escapeButton.onclick =
+    function () {
+
+        popup.style.display =
+            "none";
+
+
+        // =========================
+        // 初回到着
+        // =========================
+
+        if (
+            !isRechallenge
+        ) {
+
+            showEventPopup(
+                "👹 ボスから撤退",
+
+                `
+                ${player.name}は
+                今回はボスへの挑戦を見送った。
+                `,
+
+                function () {
+
+                    finishTurn(
+                        player
+                    );
+
+                }
+            );
+
+            return;
+
+        }
+
+
+        // =========================
+        // 再戦を見送る
+        // =========================
+
+        renderTurn();
+        renderPlayers();
+        centerCurrentPlayerOnMap();
+
+
+        rouletteButton.disabled =
+            false;
+
+    };
+
+}
 
 // =========================
 // マスイベント
@@ -5449,7 +6268,7 @@ case "asset":
                         "💰 " +
                         currentSquare.name,
 
-                        `${reward}G 獲得！`,
+                        `${formatG(reward)}G 獲得！`,
 
                         function () {
 
@@ -5479,17 +6298,34 @@ case "asset":
              break;
 
              
-        // =========================
-        // モンスターマス
-        // =========================
+// =========================
+// モンスターマス
+// =========================
 
-        case "monster":
+case "monster":
 
-            startMonsterBattle(
-                player
-            );
+    // =========================
+    // ボスマスか確認
+    // =========================
 
-            break;
+    if (
+        player.position ===
+        currentBossSquareId
+    ) {
+
+        showBossChallengePopup(
+            player
+        );
+
+    } else {
+
+        startMonsterBattle(
+            player
+        );
+
+    }
+
+    break;
 
 
         // =========================
@@ -5522,7 +6358,7 @@ case "worst":
         "💀 最悪マス",
         `${player.name}は最悪のマスに止まってしまった……。<br><br>
         💸 <strong>10,000G</strong>を失った！<br>
-        💰 残り ${player.money}G`,
+        💰 残り ${formatG(player.money)}G`,
         function () {
             finishTurn(player);
         }
@@ -5607,7 +6443,7 @@ function showMagicShopPopup(
     // =========================
 
     magicShopMoney.textContent =
-        `💰 所持金：${player.money}G`;
+        `💰 所持金：${formatG(player.money)}G`;
 
 
     // =========================
@@ -5674,7 +6510,7 @@ magicData.forEach(
                     class="magic-shop-item-price"
                 >
 
-                    💰 ${magic.price}G
+                    💰 ${formatG(magic.price)}G
 
                 </div>
 
@@ -5742,14 +6578,14 @@ magicData.forEach(
                                 <br>
 
                                 <strong>
-                                    ${magic.price}G
+                                    ${formatG(magic.price)}G
                                 </strong>
                                 必要です。
                                 <br><br>
 
                                 現在の所持金：
                                 <strong>
-                                    ${player.money}G
+                                    ${formatG(player.money)}G
                                 </strong>
 
                                 `,
@@ -5803,7 +6639,7 @@ magicData.forEach(
                             <br><br>
 
                             💰
-                            ${magic.price}G
+                            ${formatG(magic.price)}G
                             を支払った。
 
                             `,
@@ -6005,7 +6841,7 @@ function showGameResult() {
             </span>
 
             <span class="result-rank-money">
-                💰 ${player.money}G
+                💰 ${formatG(player.money)}G
             </span>
 
         `;
@@ -6248,7 +7084,7 @@ function showAssetRankingPopup(callback) {
                         color:#f5d76e;
                         font-weight:bold;
                     ">
-                        ${result.totalAsset.toLocaleString()}G
+                        ${formatG(result.totalAsset)}G
                     </div>
                 `;
             }).join("")}
@@ -6382,7 +7218,7 @@ function finishTurn(
 
 
                     console.log(
-                        `📈 ${targetPlayer.name}：${dividend.toLocaleString()}G`
+                        `📈 ${targetPlayer.name}：${formatG(dividend)}G`
                     );
 
                 }
@@ -6486,7 +7322,7 @@ function finishTurn(
                 "💰 バイト終了！",
 
                 `${nextPlayer.name}は仕事を終えて<br>` +
-                `<strong>${reward}G</strong>を獲得！`,
+                `<strong>${formatG(reward)}G</strong>を獲得！`,
 
                 function () {
 
@@ -6534,6 +7370,25 @@ function finishTurn(
 
     renderTurn();
     renderPlayers();
+
+    // =========================
+// ボスマスにいる場合
+// 再戦確認
+// =========================
+
+if (
+    nextPlayer.position ===
+    currentBossSquareId
+) {
+
+    showBossChallengePopup(
+        nextPlayer,
+        true
+    );
+
+    return;
+
+}
 
 
     // ルーレット使用可能
@@ -6645,7 +7500,7 @@ function finishTurn(
                     "💰 バイト終了！",
 
                     `${nextPlayer.name}は仕事を終えて<br>` +
-                    `<strong>${reward}G</strong>を獲得！`,
+                    `<strong>${formatG(reward)}G</strong>を獲得！`,
 
                     function () {
 
@@ -6694,6 +7549,25 @@ function finishTurn(
         renderTurn();
         renderPlayers();
         centerCurrentPlayerOnMap();
+
+ // =========================
+// ボスマスにいる場合
+// 再戦確認
+// =========================
+
+if (
+    nextPlayer.position ===
+    currentBossSquareId
+) {
+
+    showBossChallengePopup(
+        nextPlayer,
+        true
+    );
+
+    return;
+
+}
 
 
         // ルーレット使用可能
@@ -6774,7 +7648,7 @@ switchingSound.play()
                 "💰 バイト終了！",
 
                 `${nextPlayer.name}は仕事を終えて<br>` +
-                `<strong>${reward}G</strong>を獲得！`,
+                `<strong>${formatG(reward)}G</strong>を獲得！`,
 
                 function () {
 
@@ -6823,6 +7697,26 @@ switchingSound.play()
     renderTurn();
     renderPlayers();
     centerCurrentPlayerOnMap();
+
+// =========================
+// ボスマスにいる場合
+// 再戦確認
+// =========================
+
+if (
+    nextPlayer.position ===
+    currentBossSquareId
+) {
+
+    showBossChallengePopup(
+        nextPlayer,
+        true
+    );
+
+    return;
+
+}
+
 
     // ルーレット使用可能
     rouletteButton.disabled =
@@ -6894,6 +7788,85 @@ mapArea.scrollTo({
 });
 }
 
+// =========================
+// 🎯 目的地をクリックしたら
+// ボスマスを中央へ
+// =========================
+
+const destinationButton =
+    document.querySelector(
+        ".destination"
+    );
+
+if (destinationButton) {
+
+    destinationButton.addEventListener(
+        "click",
+        function () {
+
+            const mapArea =
+                document.querySelector(
+                    ".game-screen .map-area"
+                );
+
+            const bossNode =
+                document.querySelector(
+                    `.map-node[data-square-id="${currentBossSquareId}"]`
+                );
+
+            if (!mapArea || !bossNode) {
+                return;
+            }
+
+            const mapRect =
+                mapArea.getBoundingClientRect();
+
+            const bossRect =
+                bossNode.getBoundingClientRect();
+
+            const mapCenterX =
+                mapRect.left +
+                mapRect.width / 2;
+
+            const mapCenterY =
+                mapRect.top +
+                mapRect.height / 2;
+
+            const bossCenterX =
+                bossRect.left +
+                bossRect.width / 2;
+
+            const bossCenterY =
+                bossRect.top +
+                bossRect.height / 2;
+
+            const scrollAmountX =
+                bossCenterX -
+                mapCenterX;
+
+            const scrollAmountY =
+                bossCenterY -
+                mapCenterY;
+
+            mapArea.scrollTo({
+
+                left:
+                    mapArea.scrollLeft +
+                    scrollAmountX,
+
+                top:
+                    mapArea.scrollTop +
+                    scrollAmountY,
+
+                behavior:
+                    "smooth"
+
+            });
+
+        }
+    );
+
+}
 
 // =========================
 // 初期表示
@@ -7111,7 +8084,7 @@ function startJob(
 
                 showEventPopup(
                     "💰 バイト報酬",
-                    `${rewardAmount}G 獲得！`,
+                    `${formatG(rewardAmount)}G 獲得！`,
                     function () {
 
                         finishCallback();
