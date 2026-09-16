@@ -414,6 +414,30 @@ button {
     font-size: 1.6rem;
 }
 
+/* =========================
+   ボスマス
+   ========================= */
+
+.boss-node {
+    transform:
+        translate(-50%, -50%)
+        scale(1.15);
+
+    background:
+        rgba(247, 177, 177, 0.9);
+        
+    box-shadow:
+        0 0 0 4px rgba(255, 80, 80, 0.9),
+        0 0 25px rgba(255, 80, 80, 0.9);
+
+    border-color:
+        rgba(255, 80, 80, 0.9);
+}
+
+
+.boss-node .square-icon {
+    font-size: 2rem;
+}
 
 .square-number {
     position: absolute;
@@ -3513,7 +3537,7 @@ button {
 
     -webkit-overflow-scrolling: touch;
 
-    margin-top: 4px;
+    margin-top: 5px;
 }
 
 
