@@ -3512,6 +3512,8 @@ button {
     scrollbar-width: none;
 
     -webkit-overflow-scrolling: touch;
+
+    margin-top: 8px;
 }
 
 
