@@ -3543,29 +3543,15 @@ button {
 
 .game-top-row {
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     width: 100%;
-
-    gap: 24px;
-
+    gap: 0;
     padding: 10px 14px;
-
     box-sizing: border-box;
-
-    background:
-        rgba(255, 255, 255, 0.08);
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.25);
-
-    border-radius:
-        12px;
-
-    white-space: nowrap;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
 }
 
 .game-top-row .turn-display {
@@ -3984,24 +3970,24 @@ button {
        上部：TURN ＋ 次の目的地
     ========================= */
 
-   .game-top-row {
-    width: 100%;
-    max-width: 100%;
+    .game-top-row {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 8px;
+        padding-right: 8px;
+        gap: 4px;
+    }
 
-    padding-left: 8px;
-    padding-right: 8px;
+    .game-top-row .turn-display {
+        font-size: 15px;
+    }
 
-    gap: 8px;
-
-    white-space: nowrap;
-}
-
-.game-top-row .turn-display,
-.game-top-row .current-player-info,
-.game-top-row .remaining-steps-info,
-.game-top-row .destination {
-    font-size: 15px;
-}
+    .game-top-row .destination {
+        font-size: 15px;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
 
     /* =========================
@@ -4091,58 +4077,3 @@ button {
     }
 
 }
-
-.game-top-row .current-player-info {
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    gap: 6px;
-
-    margin: 0;
-
-    font-size: 18px;
-
-    font-weight: bold;
-
-    white-space: nowrap;
-}
-
-
-.game-top-row .remaining-steps-info {
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    margin: 0;
-
-    font-size: 18px;
-
-    font-weight: bold;
-
-    white-space: nowrap;
-}
-
-
-.game-top-row .destination {
-    flex: 0 0 auto;
-
-    margin: 0;
-
-    padding: 0;
-
-    background: transparent !important;
-
-    border: none !important;
-
-    box-shadow: none !important;
-
-    font-size: 18px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-}
-
