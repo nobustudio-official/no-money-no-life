@@ -325,9 +325,9 @@ const mapData = [
         name: "START",
         icon: "🏕️",
         type: "start",
-        next: [1, 17],
-        x: 10,
-        y: 88
+        next: [1, 6],
+        x: 30,
+        y: 80
     },
 
     {
@@ -335,9 +335,9 @@ const mapData = [
         name: "草原",
         icon: "💰",
         type: "money",
-        next: [2],
-        x: 26,
-        y: 88
+        next: [2,7],
+        x: 38,
+        y: 80
     },
 
     {
@@ -345,9 +345,9 @@ const mapData = [
         name: "居酒屋のバイト",
         icon: "💼",
         type: "job",
-        next: [3, 7],
-        x: 42,
-        y: 88
+        next: [3],
+        x: 46,
+        y: 80
     },
 
     {
@@ -357,8 +357,8 @@ const mapData = [
         type: "asset",
         assetIds: [1,3],
         next: [4],
-        x: 58,
-        y: 88
+        x: 54,
+        y: 80
     },
 
     {
@@ -367,28 +367,28 @@ const mapData = [
         icon: "💀",
         type: "worst",
         next: [5],
-        x: 74,
-        y: 88
+        x: 62,
+        y: 80
     },
 
     {
         id: 5,
-        name: "森",
+        name: "モンスター",
         icon: "👾",
         type: "monster",
         next: [11],
-        x: 90,
-        y: 88
+        x: 70,
+        y: 80
     },
 
     {
         id: 6,
-        name: "洞窟",
-        icon: "📖",
-        type: "event",
-        next: [],
-        x: 90,
-        y: 70
+        name: "モンスター",
+        icon: "👾",
+        type: "monster",
+        next: [17],
+        x: 30,
+        y: 65
     },
 
     {
@@ -397,18 +397,18 @@ const mapData = [
         icon: "💰",
         type: "money",
         next: [8],
-        x: 42,
-        y: 70
+        x: 38,
+        y: 65
     },
 
     {
         id: 8,
-        name: "森",
+        name: "モンスター",
         icon: "👾",
         type: "monster",
         next: [9],
-        x: 54,
-        y: 70
+        x: 46,
+        y: 65
     },
 
     {
@@ -417,18 +417,18 @@ const mapData = [
         icon: "🔮",
         type: "magic_shop",
         next: [10],
-        x: 66,
-        y: 70
+        x: 54,
+        y: 65
     },
 
     {
         id: 10,
         name: "宝箱",
         icon: "🎁",
-        type: "treasure",       
+        type: "treasure",
         next: [11],
-        x: 78,
-        y: 70
+        x: 62,
+        y: 65
     },
 
     {
@@ -438,18 +438,18 @@ const mapData = [
         type: "asset",
         assetIds: [2],
         next: [12],
-        x: 90,
-        y: 70
+        x: 70,
+        y: 65
     },
 
     {
         id: 12,
-        name: "丘",
+        name: "モンスター",
         icon: "👾",
         type: "monster",
         next: [13,23],
-        x: 90,
-        y: 52
+        x: 70,
+        y: 50
     },
 
     {
@@ -458,8 +458,8 @@ const mapData = [
         icon: "💰",
         type: "money",
         next: [14],
-        x: 74,
-        y: 52
+        x: 62,
+        y: 50
     },
 
     {
@@ -467,9 +467,9 @@ const mapData = [
         name: "運び屋のバイト",
         icon: "💼",
         type: "job",
-        next: [15, 19],
-        x: 58,
-        y: 52
+        next: [15,21],
+        x: 54,
+        y: 50
     },
 
     {
@@ -478,8 +478,8 @@ const mapData = [
         icon: "💰",
         type: "money",
         next: [16],
-        x: 42,
-        y: 52
+        x: 46,
+        y: 50
     },
 
     {
@@ -488,8 +488,8 @@ const mapData = [
         icon: "🔮",
         type: "magic_shop",
         next: [17],
-        x: 26,
-        y: 52
+        x: 38,
+        y: 50
     },
 
     {
@@ -498,18 +498,18 @@ const mapData = [
         icon: "💰",
         type: "money",
         next: [18],
-        x: 10,
-        y: 52
+        x: 30,
+        y: 50
     },
 
     {
         id: 18,
-        name: "門",
+        name: "モンスター",
         icon: "👾",
         type: "monster",
         next: [19],
-        x: 10,
-        y: 34
+        x: 30,
+        y: 35
     },
 
     {
@@ -517,9 +517,9 @@ const mapData = [
         name: "魔法店",
         icon: "🔮",
         type: "magic_shop",
-        next: [20],
-        x: 26,
-        y: 34
+        next: [20,25],
+        x: 38,
+        y: 35
     },
 
     {
@@ -528,8 +528,8 @@ const mapData = [
         icon: "🎁",
         type: "treasure",
         next: [21],
-        x: 42,
-        y: 34
+        x: 46,
+        y: 35
     },
 
     {
@@ -538,8 +538,8 @@ const mapData = [
         icon: "💼",
         type: "job",
         next: [22],
-        x: 58,
-        y: 34
+        x: 54,
+        y: 35
     },
 
     {
@@ -548,18 +548,18 @@ const mapData = [
         icon: "💰",
         type: "money",
         next: [23],
-        x: 74,
-        y: 34
+        x: 62,
+        y: 35
     },
 
     {
         id: 23,
-        name: "山道",
+        name: "モンスター",
         icon: "👾",
         type: "monster",
         next: [29],
-        x: 90,
-        y: 34
+        x: 70,
+        y: 35
     },
 
     {
@@ -567,9 +567,9 @@ const mapData = [
         name: "宝箱",
         icon: "🎁",
         type: "treasure",
-        next: [25, 18],
-        x: 10,
-        y: 16
+        next: [25,18],
+        x: 30,
+        y: 20
     },
 
     {
@@ -578,8 +578,8 @@ const mapData = [
         icon: "💰",
         type: "money",
         next: [26],
-        x: 26,
-        y: 16
+        x: 38,
+        y: 20
     },
 
     {
@@ -588,18 +588,18 @@ const mapData = [
         icon: "🔮",
         type: "magic_shop",
         next: [27],
-        x: 42,
-        y: 16
+        x: 46,
+        y: 20
     },
 
     {
         id: 27,
-        name: "炎の地",
+        name: "モンスター",
         icon: "👾",
         type: "monster",
         next: [28],
-        x: 58,
-        y: 16
+        x: 54,
+        y: 20
     },
 
     {
@@ -608,8 +608,8 @@ const mapData = [
         icon: "🔮",
         type: "magic_shop",
         next: [29],
-        x: 74,
-        y: 16
+        x: 62,
+        y: 20
     },
 
     {
@@ -618,8 +618,8 @@ const mapData = [
         icon: "💼",
         type: "job",
         next: [],
-        x: 90,
-        y: 16
+        x: 70,
+        y: 20
     }
 
 ];
