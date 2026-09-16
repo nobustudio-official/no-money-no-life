@@ -3979,11 +3979,11 @@ button {
     }
 
     .game-top-row .turn-display {
-        font-size: 15px;
+        font-size: 13px;
     }
 
     .game-top-row .destination {
-        font-size: 15px;
+        font-size: 13px;
         min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -3997,12 +3997,12 @@ button {
     .current-player-row {
         width: 100%;
         max-width: 100%;
-        gap: 12px;
+        gap: 13px;
     }
 
     .current-player-info,
     .remaining-steps-info {
-        font-size: 16px !important;
+        font-size: 13px !important;
     }
 
 
