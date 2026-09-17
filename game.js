@@ -935,10 +935,80 @@ const SE_VOLUME = 0.7;
 const adventureBGM =
     new Audio("BGM/冒険.mp3");
 
+let bgmAudioContext = null;
+let adventureBGMGain = null;
+
 adventureBGM.loop = true;
-adventureBGM.volume = BGM_VOLUME;
+adventureBGM.volume = 1.0;
 adventureBGM.preload = "auto";
 
+        // 冒険BGM 音量コントロール
+        function setupAdventureBGM() {
+
+    // =========================
+    // ローカル環境
+    // =========================
+
+    if (location.protocol === "file:") {
+
+        adventureBGM.volume =
+            BGM_VOLUME;
+
+        adventureBGM.currentTime = 0;
+
+        adventureBGM.play();
+
+        return;
+    }
+
+
+    // =========================
+    // Web環境
+    // =========================
+
+    if (!bgmAudioContext) {
+
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        bgmAudioContext =
+            new AudioContext();
+
+        adventureBGMGain =
+            bgmAudioContext.createGain();
+
+        const source =
+            bgmAudioContext.createMediaElementSource(
+                adventureBGM
+            );
+
+        source.connect(
+            adventureBGMGain
+        );
+
+        adventureBGMGain.connect(
+            bgmAudioContext.destination
+        );
+
+        adventureBGMGain.gain.value =
+            BGM_VOLUME;
+    }
+
+    adventureBGM.currentTime = 0;
+
+    // 再生開始
+    adventureBGM.play();
+
+    // AudioContextを再開
+    if (
+        bgmAudioContext.state ===
+        "suspended"
+    ) {
+        bgmAudioContext.resume();
+    }
+}
+        
 //街
 const townBGM =
     new Audio("BGM/街.mp3");
@@ -1325,7 +1395,7 @@ function showTurnSelectScreen(
             gameStarted = true;
 
 // 冒険BGM開始
-adventureBGM.play();
+setupAdventureBGM();
 
 // 最初のボスを決定
 selectBossSquare();
