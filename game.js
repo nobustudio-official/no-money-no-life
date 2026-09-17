@@ -296,7 +296,7 @@ const magicData = [
 ];
 
 // =========================
-// 資産マスター
+// 資産データ
 // =========================
 
 const assetData = [
@@ -329,15 +329,96 @@ const assetData = [
 ];
 
 // =========================
+// バイトデータ
+// =========================
+
+const JOB_DATA = [
+    {
+        id: 1,
+        name: "居酒屋",
+        unitPrice: 1000
+    },
+    {
+        id: 2,
+        name: "叩き",
+        unitPrice: 50000,
+        specialEffect: "arrest"
+    },
+    {
+        id: 3,
+        name: "パン屋",
+        unitPrice: 1500
+    },
+    {
+        id: 4,
+        name: "引っ越し",
+        unitPrice: 2000
+    }
+];
+
+// バイト単価の割増設定
+
+const JOB_WAGE_MAX_TURN = 8;
+
+const JOB_WAGE_RATE_PER_TURN =
+    0.10;
+
+// 現在のバイト単価割増率を取得
+
+function getJobWageRate(turn) {
+    const wageTurn =
+        Math.min(
+            Math.max(turn - 1, 0),
+            JOB_WAGE_MAX_TURN
+        );
+
+    return wageTurn * JOB_WAGE_RATE_PER_TURN;
+}
+
+// 現在のバイト単価を取得
+
+function getCurrentJobWage(
+    baseWage,
+    turn
+) {
+
+    const wageRate =
+        getJobWageRate(
+            turn
+        );
+
+
+    return Math.floor(
+        baseWage *
+        (1 + wageRate)
+    );
+}
+
+
+// バイトIDからデータを取得
+
+function getJobData(jobId) {
+
+    return JOB_DATA.find(
+        function (job) {
+
+            return job.id ===
+                jobId;
+
+        }
+    );
+
+}
+
+
+// =========================
 // ボス管理
 // =========================
 
 let currentBossSquareId = null;
 let previousBossSquareId = null;
 
-// =========================
 // ボスデータ
-// =========================
 
 const bossData = {
     name: "デーモンロード",
@@ -346,10 +427,7 @@ const bossData = {
     attack: 50
 };
 
-
-// =========================
 // 現在のボスHP
-// =========================
 
 let currentBossHP =
     bossData.hp;
@@ -358,9 +436,7 @@ let bossFirstPlayer = null;
 
 let bossRewardGiven = false;
 
-// =========================
 // ボス報酬設定
-// =========================
 
 const BOSS_FIRST_REWARD =
     10000;
@@ -370,6 +446,7 @@ const BOSS_DAMAGE_MULTIPLIER =
 
 const BOSS_DEFEAT_REWARD =
     10000;
+
 
 // =========================
 // マップデータ
@@ -402,6 +479,7 @@ const mapData = [
         name: "居酒屋のバイト",
         icon: "💼",
         type: "job",
+        jobWage: 1000,
         next: [3],
         x: 46,
         y: 80
@@ -524,6 +602,7 @@ const mapData = [
         name: "運び屋のバイト",
         icon: "💼",
         type: "job",
+        jobWage: 1500,
         next: [15,21],
         x: 54,
         y: 50
@@ -591,9 +670,10 @@ const mapData = [
 
     {
         id: 21,
-        name: "パン屋のバイト",
+        name: "パン屋",
         icon: "💼",
         type: "job",
+        jobWage: 1500,
         next: [22],
         x: 54,
         y: 35
@@ -674,6 +754,7 @@ const mapData = [
         name: "引っ越しバイト",
         icon: "💼",
         type: "job",
+        jobWage:2000,
         next: [],
         x: 70,
         y: 20
@@ -5946,10 +6027,6 @@ players.forEach(
 );
 
 
-bossRewardMessage +=
-    `<br>`;
-
-
 // =========================
 // 撃破報酬
 // =========================
@@ -6522,15 +6599,14 @@ case "monster":
         // =========================
 
         case "job":
-
     showJobPopup(
         player,
         currentSquare,
+        currentTurn,
         function () {
             finishTurn(player);
         }
     );
-
     break;
 
 case "worst":
@@ -7510,14 +7586,19 @@ function finishTurn(
             showEventPopup(
                 "💰 バイト終了！",
 
-                `${nextPlayer.name}は仕事を終えて<br>` +
-                `<strong>${formatG(reward)}G</strong>を獲得！`,
+                `${nextPlayer.name}は<br>` +
+                `<strong>${formatG(reward)}G</strong>を獲得！`
+                ,
 
-                function () {
+             function () {
 
-                    finishTurn(
-                        nextPlayer
-                    );
+        renderTurn();
+        renderPlayers();
+        centerCurrentPlayerOnMap();
+
+        // ルーレット使用可能
+        rouletteButton.disabled =
+            false;
 
                 }
             );
@@ -7533,9 +7614,9 @@ function finishTurn(
         // =========================
 
         showEventPopup(
-            "💼 仕事中",
+            "💼 バイト中",
 
-            `${nextPlayer.name}は現在仕事中です。<br>` +
+            `${nextPlayer.name}は現在バイト中です。<br>` +
             `残り ${nextPlayer.jobTurnsRemaining} ターン`,
 
             function () {
@@ -7688,14 +7769,19 @@ if (
                 showEventPopup(
                     "💰 バイト終了！",
 
-                    `${nextPlayer.name}は仕事を終えて<br>` +
-                    `<strong>${formatG(reward)}G</strong>を獲得！`,
+                     `${nextPlayer.name}は<br>` +
+                `<strong>${formatG(reward)}G</strong>を獲得！`
+                ,
 
                     function () {
 
-                        finishTurn(
-                            nextPlayer
-                        );
+        renderTurn();
+        renderPlayers();
+        centerCurrentPlayerOnMap();
+
+        // ルーレット使用可能
+        rouletteButton.disabled =
+            false;
 
                     }
                 );
@@ -7711,9 +7797,9 @@ if (
             // =========================
 
             showEventPopup(
-                "💼 仕事中",
+                "💼 バイト中",
 
-                `${nextPlayer.name}は現在仕事中です。<br>` +
+                `${nextPlayer.name}は現在バイト中です。<br>` +
                 `残り ${nextPlayer.jobTurnsRemaining} ターン`,
 
                 function () {
@@ -7836,14 +7922,19 @@ switchingSound.play()
             showEventPopup(
                 "💰 バイト終了！",
 
-                `${nextPlayer.name}は仕事を終えて<br>` +
-                `<strong>${formatG(reward)}G</strong>を獲得！`,
+               `${nextPlayer.name}は<br>` +
+                `<strong>${formatG(reward)}G</strong>を獲得！`
+                ,
 
                 function () {
 
-                    finishTurn(
-                        nextPlayer
-                    );
+        renderTurn();
+        renderPlayers();
+        centerCurrentPlayerOnMap();
+
+        // ルーレット使用可能
+        rouletteButton.disabled =
+            false;
 
                 }
             );
@@ -7855,13 +7946,13 @@ switchingSound.play()
 
 
         // =========================
-        // まだ仕事中
+        // まだバイト中
         // =========================
 
         showEventPopup(
-            "💼 仕事中",
+            "💼 バイト中",
 
-            `${nextPlayer.name}は現在仕事中です。<br>` +
+            `${nextPlayer.name}は現在バイト中です。<br>` +
             `残り ${nextPlayer.jobTurnsRemaining} ターン`,
 
             function () {
@@ -8087,8 +8178,14 @@ setTimeout(function () {
 function showJobPopup(
     player,
     square,
+    turn,
     finishCallback
 ) {
+
+    const job =
+        getJobData(
+            square.jobId
+        );
 
     const jobPopup =
         document.getElementById(
@@ -8121,13 +8218,25 @@ function showJobPopup(
         );
 
 
-    // =========================
-    // メッセージ
-    // =========================
+ // =========================
+// 今回の時給を計算
+// =========================
 
-    jobMessage.innerHTML =
-        `💼 ${square.name}で働くことができます。<br><br>` +
-        `${player.name}はどうしますか？`;
+const currentWage =
+    getCurrentJobWage(
+        square.jobWage,
+        turn
+    );
+
+
+// =========================
+// メッセージ
+// =========================
+
+jobMessage.innerHTML =
+    `💼 ${square.name}で働くことができます。<br><br>` +
+    `💰 今回の時給：<strong>${formatG(currentWage)}G</strong><br><br>` +
+    `${player.name}はどうしますか？`;
 
 
     // =========================
@@ -8138,6 +8247,25 @@ function showJobPopup(
         "block";
 
 
+// =========================
+// 各ターン数の報酬を表示
+// =========================
+
+document.getElementById(
+    "job1Reward"
+).textContent =
+    `${formatG(currentWage)}G`;
+
+document.getElementById(
+    "job2Reward"
+).textContent =
+    `${formatG(currentWage * 2)}G`;
+
+document.getElementById(
+    "job3Reward"
+).textContent =
+    `${formatG(currentWage * 3)}G`;
+
     // =========================
     // 1ターン働く
     // =========================
@@ -8145,12 +8273,15 @@ function showJobPopup(
     job1Button.onclick =
         function () {
 
-            startJob(
-                player,
-                1,
-                1000,
-                finishCallback
-            );
+           startJob(
+    player,
+    1,
+    getCurrentJobWage(
+        square.jobWage,
+        turn
+    ),
+    finishCallback
+);
 
         };
 
@@ -8162,12 +8293,15 @@ function showJobPopup(
     job2Button.onclick =
         function () {
 
-            startJob(
-                player,
-                2,
-                2500,
-                finishCallback
-            );
+     startJob(
+    player,
+    2,
+    getCurrentJobWage(
+        square.jobWage,
+        turn
+    ) * 2,
+    finishCallback
+);
 
         };
 
@@ -8179,12 +8313,15 @@ function showJobPopup(
     job3Button.onclick =
         function () {
 
-            startJob(
-                player,
-                3,
-                6000,
-                finishCallback
-            );
+    startJob(
+    player,
+    3,
+    getCurrentJobWage(
+        square.jobWage,
+        turn
+    ) * 3,
+    finishCallback
+);
 
         };
 
@@ -8226,13 +8363,13 @@ function startJob(
         "none";
 
 
-    // =========================
-    // 今のターンを
-    // 1ターン目として消費
-    // =========================
+// =========================
+// バイト開始後の
+// 次のターンから仕事開始
+// =========================
 
-    player.jobTurnsRemaining =
-        turns;
+player.jobTurnsRemaining =
+    turns + 1;
 
 
     player.jobReward =
@@ -8247,49 +8384,6 @@ function startJob(
         "💼 バイト開始",
         `${turns}ターン働きます！`,
         function () {
-
-            // =========================
-            // 1ターンだけの場合
-            // =========================
-
-            if (
-                player.jobTurnsRemaining === 0
-            ) {
-
-                const rewardAmount =
-                    player.jobReward;
-
-
-                player.money +=
-                    rewardAmount;
-
-
-                player.jobReward =
-                    0;
-
-
-                renderPlayers();
-
-
-                showEventPopup(
-                    "💰 バイト報酬",
-                    `${formatG(rewardAmount)}G 獲得！`,
-                    function () {
-
-                        finishCallback();
-
-                    }
-                );
-
-
-                return;
-
-            }
-
-
-            // =========================
-            // 2ターン以上の場合
-            // =========================
 
             finishCallback();
 
