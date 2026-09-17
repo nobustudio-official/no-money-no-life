@@ -4115,3 +4115,58 @@ button {
 .player-card span {
     white-space: nowrap;
 }
+
+/* =========================
+   サウンド設定ボタン
+========================= */
+
+.sound-settings-button {
+    flex:
+        0 0 40px;
+
+    width: 40px;
+    height: 40px;
+
+    margin: 0;
+    padding: 0;
+
+    border: none;
+
+    background: none;
+
+    color: white;
+
+    font-size: 24px;
+
+    cursor: pointer;
+}
+
+.sound-settings-button:active {
+    transform: scale(0.95);
+}
+
+/* =========================
+   サウンド設定
+   スライダー位置を統一
+========================= */
+
+.sound-setting-item {
+    display: flex;
+    align-items: center;
+}
+
+.sound-setting-title {
+    width: 70px;
+    min-width: 70px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.sound-volume-slider {
+    width: 145px;
+    flex-shrink: 0;
+}
+
+.sound-volume-value {
+    margin-left: 15px;
+}
