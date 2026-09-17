@@ -1031,7 +1031,7 @@ startButton.addEventListener(
 
   players.push({
     name: name,
-    money: 1000000,
+    money: 500,
     magicPower: 100,
     bossDamage: 0,
     position: 0,
@@ -2999,9 +2999,6 @@ function renderPlayers() {
                                 ${player.color} !important;
                             "
                         ></span>
-
-
-                        <span></span>
 
 
                         <!-- 資産ボタン -->
