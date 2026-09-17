@@ -924,6 +924,47 @@ function showBossDestinationPopup(
 }
 
 // =========================
+// BGM
+// =========================
+
+// 基本音量
+const BGM_VOLUME = 0.25;
+const SE_VOLUME = 0.7;
+
+//冒険
+const adventureBGM =
+    new Audio("BGM/冒険.mp3");
+
+adventureBGM.loop = true;
+adventureBGM.volume = BGM_VOLUME;
+adventureBGM.preload = "auto";
+
+//街
+const townBGM =
+    new Audio("BGM/街.mp3");
+
+townBGM.loop = true;
+townBGM.volume = BGM_VOLUME;
+townBGM.preload = "auto";
+
+//貴族
+const nobilityBGM =
+    new Audio("BGM/貴族.mp3");
+
+nobilityBGM.loop = true;
+nobilityBGM.volume = BGM_VOLUME;
+nobilityBGM.preload = "auto";
+
+//凱旋
+const victoryBGM =
+    new Audio("BGM/凱旋.mp3");
+
+victoryBGM.loop = true;
+victoryBGM.volume = BGM_VOLUME;
+victoryBGM.preload = "auto";
+
+
+// =========================
 // SE
 // =========================
 
@@ -1282,6 +1323,9 @@ function showTurnSelectScreen(
             // ゲーム開始
             // =========================
             gameStarted = true;
+
+// 冒険BGM開始
+adventureBGM.play();
 
 // 最初のボスを決定
 selectBossSquare();
@@ -3112,6 +3156,124 @@ function renderPlayers() {
             }
 
         ).join("");
+
+
+    // =========================
+    // サウンド設定ボタン
+    // =========================
+
+    status.insertAdjacentHTML(
+        "beforeend",
+        `
+        <button
+            id="soundSettingsButton"
+            type="button"
+            class="sound-settings-button"
+        >
+            ⚙️
+        </button>
+        `
+    );
+
+// サウンド設定を開く
+
+document.getElementById(
+    "soundSettingsButton"
+).onclick =
+    function () {
+
+        const popup =
+            document.getElementById(
+                "soundSettingsPopup"
+            );
+
+        popup.style.display =
+            "block";
+
+    };
+
+// サウンド設定を閉じる
+
+document.getElementById(
+    "soundSettingsCloseButton"
+).onclick =
+
+    function () {
+
+        const popup =
+            document.getElementById(
+                "soundSettingsPopup"
+            );
+
+        popup.style.display =
+            "none";
+
+    };
+
+// BGM音量スライダー
+
+const bgmVolumeSlider =
+    document.getElementById(
+        "bgmVolumeSlider"
+    );
+
+const bgmVolumeValue =
+    document.getElementById(
+        "bgmVolumeValue"
+    );
+
+bgmVolumeSlider.oninput =
+    function () {
+
+        const volume =
+            Number(
+                this.value
+            ) / 100;
+
+        adventureBGM.volume =
+            volume;
+
+        bgmVolumeValue.textContent =
+            `${this.value}%`;
+
+    };
+
+// SE音量スライダー
+
+const seVolumeSlider =
+    document.getElementById(
+        "seVolumeSlider"
+    );
+
+const seVolumeValue =
+    document.getElementById(
+        "seVolumeValue"
+    );
+
+seVolumeSlider.oninput =
+    function () {
+
+        const volume =
+            Number(
+                this.value
+            ) / 100;
+
+        diceSound.volume =
+            volume;
+
+        startSound.volume =
+            volume;
+
+        buttonSound.volume =
+            volume;
+
+        switchingSound.volume =
+            volume;
+
+        seVolumeValue.textContent =
+            `${this.value}%`;
+
+    };
 
 
     // =========================
