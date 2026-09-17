@@ -1031,7 +1031,7 @@ startButton.addEventListener(
 
   players.push({
     name: name,
-    money: 500,
+    money: 1000000,
     magicPower: 100,
     bossDamage: 0,
     position: 0,
