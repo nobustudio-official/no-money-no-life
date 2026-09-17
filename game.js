@@ -3300,8 +3300,22 @@ bgmVolumeSlider.oninput =
                 this.value
             ) / 100;
 
-        adventureBGM.volume =
-            volume;
+        if (
+            location.protocol ===
+            "file:"
+        ) {
+
+            adventureBGM.volume =
+                volume;
+
+        } else if (
+            adventureBGMGain
+        ) {
+
+            adventureBGMGain.gain.value =
+                volume;
+
+        }
 
         bgmVolumeValue.textContent =
             `${this.value}%`;
