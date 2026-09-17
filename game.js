@@ -720,7 +720,9 @@ function selectBossSquare() {
 // ボス決定演出
 // =========================
 
-function showBossDestinationPopup() {
+function showBossDestinationPopup(
+    callback
+) {
 
     const boss =
         mapData.find(function (square) {
@@ -735,88 +737,109 @@ function showBossDestinationPopup() {
     // ボス位置へカメラ移動
     // =========================
 
-    setTimeout(function () {
+    setTimeout(
+        function () {
 
-        const mapArea =
-            document.querySelector(
-                ".game-screen .map-area"
-            );
+            const mapArea =
+                document.querySelector(
+                    ".game-screen .map-area"
+                );
 
-        const bossNode =
-            document.querySelector(
-                `.map-node[data-square-id="${boss.id}"]`
-            );
+            const bossNode =
+                document.querySelector(
+                    `.map-node[data-square-id="${boss.id}"]`
+                );
 
-        if (!mapArea || !bossNode) {
-            return;
-        }
+            if (
+                mapArea &&
+                bossNode
+            ) {
 
-        const mapRect =
-            mapArea.getBoundingClientRect();
+                const mapRect =
+                    mapArea.getBoundingClientRect();
 
-        const bossRect =
-            bossNode.getBoundingClientRect();
+                const bossRect =
+                    bossNode.getBoundingClientRect();
 
-        const mapCenterX =
-            mapRect.left +
-            mapRect.width / 2;
+                const mapCenterX =
+                    mapRect.left +
+                    mapRect.width / 2;
 
-        const mapCenterY =
-            mapRect.top +
-            mapRect.height / 2;
+                const mapCenterY =
+                    mapRect.top +
+                    mapRect.height / 2;
 
-        const bossCenterX =
-            bossRect.left +
-            bossRect.width / 2;
+                const bossCenterX =
+                    bossRect.left +
+                    bossRect.width / 2;
 
-        const bossCenterY =
-            bossRect.top +
-            bossRect.height / 2;
+                const bossCenterY =
+                    bossRect.top +
+                    bossRect.height / 2;
 
-        const scrollAmountX =
-            bossCenterX -
-            mapCenterX;
+                const scrollAmountX =
+                    bossCenterX -
+                    mapCenterX;
 
-        const scrollAmountY =
-            bossCenterY -
-            mapCenterY;
+                const scrollAmountY =
+                    bossCenterY -
+                    mapCenterY;
 
-        mapArea.scrollTo({
+                mapArea.scrollTo({
 
-            left:
-                mapArea.scrollLeft +
-                scrollAmountX,
+                    left:
+                        mapArea.scrollLeft +
+                        scrollAmountX,
 
-            top:
-                mapArea.scrollTop +
-                scrollAmountY,
+                    top:
+                        mapArea.scrollTop +
+                        scrollAmountY,
 
-            behavior:
-                "smooth"
+                    behavior:
+                        "smooth"
 
-        });
+                });
 
-    }, 50);
+            }
+
+        },
+        50
+    );
+
+    // =========================
+    // ポップアップ表示
+    // =========================
 
     showEventPopup(
         "👹 次の目的地が決定！",
-        
         `
-        <div style="font-size: 1.2em; margin-bottom: 10px;">
-    🎯 次の目的地は……
-</div>
+        <div style="font-size: 1.5em; margin-bottom: 15px;">
+            🎯 次の目的地は……
+        </div>
 
-<div style="font-size: 1.5em; font-weight: bold;">
-    👹 ${boss.name}
-</div>
+        <div style="font-size: 2em; font-weight: bold;">
+            👹 ${boss.name}
+        </div>
 
-<div style="margin-top: 10px;">
-    このマスにボスが待ち受けている！
-</div>
+        <div style="margin-top: 15px;">
+            このマスにボスが待ち受けている！
+        </div>
         `,
-        
-        
+        function () {
+
+            // =========================
+            // 次の処理へ
+            // =========================
+
+            if (callback) {
+
+                callback();
+
+            }
+
+        }
     );
+
 }
 
 // =========================
@@ -1243,9 +1266,11 @@ function showGameScreen(
         class="remaining-steps-info">
     </div>
 
-    <div class="destination">
-        🎯
-    </div>
+    <div
+    id="destinationInfo"
+    class="destination">
+    🎯
+</div>
 
 </div>
 
@@ -1688,11 +1713,29 @@ window.showBattleMagicPopup = function (
         "block";
 
 
-    closeButton.onclick =
+        closeButton.onclick =
         function () {
 
             popup.style.display =
                 "none";
+
+            // =========================
+            // 魔法ボタンを再び有効化
+            // =========================
+
+            const battleMagicButton =
+                document.getElementById(
+                    "battleMagicButton"
+                );
+
+            if (
+                battleMagicButton
+            ) {
+
+                battleMagicButton.disabled =
+                    false;
+
+            }
 
         };
 
@@ -3256,6 +3299,31 @@ function renderTurn() {
     remainingStepsInfo.textContent =
         `🎲 残${remainingSteps}マス`;
 
+    // =========================
+    // ボスマスまでの最短距離
+    // =========================
+
+    const destinationInfo =
+        document.getElementById(
+            "destinationInfo"
+        );
+
+
+    if (
+        destinationInfo
+    ) {
+
+        const bossDistance =
+            getShortestDistanceToBoss(
+                players[currentPlayer].position
+            );
+
+
+        destinationInfo.textContent =
+            `🎯 あと${bossDistance}マス`;
+
+    }
+
 }
 
 
@@ -3961,6 +4029,126 @@ function movePlayerToSquare(
 
 }
 
+// =========================
+// ボスマスまでの最短距離
+// =========================
+
+function getShortestDistanceToBoss(
+    startPosition
+) {
+
+    if (
+        currentBossSquareId === null ||
+        currentBossSquareId === undefined
+    ) {
+
+        return 0;
+
+    }
+
+
+    if (
+        startPosition ===
+        currentBossSquareId
+    ) {
+
+        return 0;
+
+    }
+
+
+    const queue = [
+        {
+            position:
+                startPosition,
+
+            distance:
+                0
+        }
+    ];
+
+
+    const visited =
+        new Set();
+
+    visited.add(
+        startPosition
+    );
+
+
+    while (
+        queue.length > 0
+    ) {
+
+        const current =
+            queue.shift();
+
+
+        const options =
+            getConnectedOptions(
+                current.position
+            );
+
+
+        for (
+            let i = 0;
+            i < options.length;
+            i++
+        ) {
+
+            const nextPosition =
+                options[i];
+
+
+            if (
+                visited.has(
+                    nextPosition
+                )
+            ) {
+
+                continue;
+
+            }
+
+
+            if (
+                nextPosition ===
+                currentBossSquareId
+            ) {
+
+                return (
+                    current.distance +
+                    1
+                );
+
+            }
+
+
+            visited.add(
+                nextPosition
+            );
+
+
+            queue.push({
+
+                position:
+                    nextPosition,
+
+                distance:
+                    current.distance +
+                    1
+
+            });
+
+        }
+
+    }
+
+
+    return 0;
+
+}
+
     // =========================
 // プレイヤー移動
 // =========================
@@ -4083,6 +4271,7 @@ showDiceRoulette(
 
         renderTurn();
 
+        
 
         // =========================
         // 移動開始
@@ -5754,7 +5943,7 @@ players.forEach(
             BOSS_DAMAGE_MULTIPLIER;
 
         bossRewardMessage +=
-            `${p.name}：+${formatG(damageReward)}G`;
+            `${p.name}：+${formatG(damageReward)}G<br>`;
 
     }
 );
@@ -5828,11 +6017,11 @@ showEventPopup(
 
 
         // =========================
-        // 次のボス決定演出
-        // =========================
+// 次のボス決定演出
+// =========================
 
-        showBossDestinationPopup();
-
+showBossDestinationPopup(
+    function () {
 
         // =========================
         // ターン終了
@@ -5841,6 +6030,9 @@ showEventPopup(
         finishTurn(
             player
         );
+
+    }
+);
 
     }
 );
