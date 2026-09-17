@@ -410,6 +410,81 @@
 
 </div>
 
+<!-- =========================
+     サウンド設定
+========================= -->
+
+<div
+    id="soundSettingsPopup"
+    class="inventory-popup"
+>
+
+    <div class="inventory-popup-title">
+        ⚙️ サウンド設定
+    </div>
+
+    <div class="inventory-list">
+
+       <div class="inventory-item sound-setting-item">
+
+    <div class="sound-setting-title">
+        🎵 BGM
+    </div>
+
+    <input
+        id="bgmVolumeSlider"
+        class="sound-volume-slider"
+        type="range"
+        min="0"
+        max="100"
+        value="40"
+    >
+
+    <div
+        id="bgmVolumeValue"
+        class="sound-volume-value"
+    >
+        40%
+    </div>
+
+</div>
+
+        <div class="inventory-item sound-setting-item">
+
+    <div class="sound-setting-title">
+        🔊 SE
+    </div>
+
+    <input
+        id="seVolumeSlider"
+        class="sound-volume-slider"
+        type="range"
+        min="0"
+        max="100"
+        value="70"
+    >
+
+    <div
+        id="seVolumeValue"
+        class="sound-volume-value"
+    >
+        70%
+    </div>
+
+</div>
+
+    </div>
+
+    <button
+        id="soundSettingsCloseButton"
+        class="inventory-close-button"
+        type="button"
+    >
+        閉じる
+    </button>
+
+</div>
+
 
     <!-- =========================
          アイテム画面
