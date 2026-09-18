@@ -1045,7 +1045,7 @@ diceSound.preload = "auto";
 
 //開始音
 const startSound =
-    new Audio("sounds/シャララン.wav");
+    new Audio("sounds/シャララン.mp3");
 startSound.preload = "auto";
 
 //決定音
@@ -3227,6 +3227,24 @@ function renderPlayers() {
 
         ).join("");
 
+ // =========================
+// 現在プレイヤーを画面内へ自動スクロール
+// =========================
+
+const currentPlayerCard =
+    status.querySelector(
+        ".current-player"
+    );
+
+if (currentPlayerCard) {
+
+    currentPlayerCard.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center"
+    });
+
+}
 
     // =========================
     // サウンド設定ボタン
