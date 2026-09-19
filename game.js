@@ -33,35 +33,7 @@ function formatG(
 
 }
 
-// =========================
-// お金マス報酬設定
-// =========================
 
-const moneyRewardTable = [
-
-    {      
-
-        rewards: [
-            {
-                amount: 100,
-                probability: 50
-            },
-            {
-                amount: 300,
-                probability: 25
-            },
-            {
-                amount: 500,
-                probability: 15
-            },
-            {
-                amount: 1000,
-                probability: 10
-            }
-        ]
-    }
-
-];
 
 // =========================
 // お金マスのランダム報酬
@@ -69,11 +41,10 @@ const moneyRewardTable = [
 
 function getRandomGoldReward() {
 
-    // 現在はターン数を使わず、
-    // moneyRewardTableの報酬からランダムに選ぶ
+    // MONEY_CONTENTSのcontents ID「1」を使用
 
     const setting =
-        moneyRewardTable[0];
+        MONEY_CONTENTS[1];
 
 
     // 設定がなければ0G
@@ -119,6 +90,7 @@ function getRandomGoldReward() {
     return 0;
 
 }
+
 // =========================
 // 30マス版 異世界マップ
 // =========================
@@ -145,215 +117,11 @@ function getRandomGoldReward() {
 // これが桃鉄型の移動システム。
 // =========================
 
-// =========================
-// モンスター一覧
-// =========================
-
-const monsterData = [
-
-    {
-        id: 1,
-        name: "ゴブリン",
-        icon: "👾",
-        hp: 150,
-        attack: 120
-    }
-
-];
-
-// =========================
-// アイテムデータ
-// =========================
-
-const itemData = [
-    {
-        id: 1,
-        name: "人力車",
-        price: 1000,
-        category: "move",
-        effect: "サイコロを2個振れる"
-    },
-    {
-        id: 2,
-        name: "タクシーチケット",
-        price: 5000,
-        category: "move",
-        effect: "サイコロを3個振れる"
-    },
-    {
-        id: 3,
-        name: "グリーン車",
-        price: 8000,
-        category: "move",
-        effect: "サイコロを4個振れる"
-    }
-];
-
-// =========================
-// 所持品データ、持っているだけで効果があるもの
-// =========================
-
-const possessionData = [
-
-    {
-        id: 1,
-        name: "お守り",
-        price: 1000,
-        effect: "モンスターから受けるダメージ -10%",
-        damageReduction: 0.10
-    }
-
-];
-
-// =========================
-// 魔法データ
-// =========================
-
-const magicData = [
-
-    {
-        id: 1,
-
-        name:
-            "ファイア",
-
-        icon:
-            "🔥",
-
-        type:
-            "attack",
-
-        effect:
-            "💥 魔力×100%ダメージ",
-
-        // 魔力に対する倍率
-        powerRate:
-            1.0,
-
-        // 習得価格
-        price:
-            0,
-
-        // 使用コスト
-        cost:
-            100,
-
-        // 使用後の行動
-        // end = ターン終了
-        // continue = 行動継続
-        actionAfterUse:
-            "end",
-
-        // 効果継続ターン
-        duration:
-            0,
-
-        
-    },
-
-
-    {
-        id: 2,
-
-        name:
-            "ブリザド",
-
-        icon:
-            "❄️",
-
-        type:
-            "attack",
-
-        effect:
-            "💥 魔力×150%ダメージ",
-
-        // 魔力に対する倍率
-        powerRate:
-            1.5,
-
-        // 習得価格
-        price:
-            200,
-
-        // 使用コスト
-        cost:
-            150,
-
-        // 使用後の行動
-        // end = ターン終了
-        // continue = 行動継続
-        actionAfterUse:
-            "end",
-
-        // 効果継続ターン
-        duration:
-            0,
-
-        
-    }
-
-];
-
-// =========================
-// 資産データ
-// =========================
-
-const assetData = [
-
-    {
-        id: 1,
-        name: "素朴な嫁",
-        price: 100,
-        yield: 100,
-        owner: null
-    },
-
-    {
-        id: 2,
-        name: "素朴な嫁",
-        price: 100,
-        yield: 100,
-        owner: null
-    },
-
-    {
-        id: 3,
-        name: "エミリア",
-        price: 5000000000,
-        yield: 2,
-        owner: null
-    },
-
-
-];
 
 // =========================
 // バイトデータ
 // =========================
 
-const JOB_DATA = [
-    {
-        id: 1,
-        name: "居酒屋",
-        unitPrice: 1000
-    },
-    {
-        id: 2,
-        name: "叩き",
-        unitPrice: 50000,
-        specialEffect: "arrest"
-    },
-    {
-        id: 3,
-        name: "パン屋",
-        unitPrice: 1500
-    },
-    {
-        id: 4,
-        name: "引っ越し",
-        unitPrice: 2000
-    }
-];
 
 // バイト単価の割増設定
 
@@ -398,14 +166,9 @@ function getCurrentJobWage(
 
 function getJobData(jobId) {
 
-    return JOB_DATA.find(
-        function (job) {
-
-            return job.id ===
-                jobId;
-
-        }
-    );
+    return JOB_CONTENTS[
+        jobId
+    ];
 
 }
 
@@ -417,19 +180,14 @@ function getJobData(jobId) {
 let currentBossSquareId = null;
 let previousBossSquareId = null;
 
-// ボスデータ
-
-const bossData = {
-    name: "デーモンロード",
-    icon: "👹",
-    hp: 200,
-    attack: 50
-};
+// 現在のボスID
+let currentBossId = 1;
 
 // 現在のボスHP
-
 let currentBossHP =
-    bossData.hp;
+    BOSS_CONTENTS[
+        currentBossId
+    ].hp;
 
 let bossFirstPlayer = null;
 
@@ -447,319 +205,6 @@ const BOSS_DEFEAT_REWARD =
     10000;
 
 
-// =========================
-// マップデータ
-// =========================
-
-const mapData = [
-
-    {
-        id: 0,
-        name: "START",
-        icon: "🏕️",
-        type: "start",
-        next: [1, 6],
-        x: 30,
-        y: 80
-    },
-
-    {
-        id: 1,
-        name: "草原",
-        icon: "💰",
-        type: "money",
-        next: [2,7],
-        x: 38,
-        y: 80
-    },
-
-    {
-        id: 2,
-        name: "居酒屋のバイト",
-        icon: "💼",
-        type: "job",
-        jobWage: 1000,
-        next: [3],
-        x: 46,
-        y: 80
-    },
-
-    {
-        id: 3,
-        name: "案内所",
-        icon: "👩",
-        type: "asset",
-        assetIds: [1,3],
-        next: [4],
-        x: 54,
-        y: 80
-    },
-
-    {
-        id: 4,
-        name: "最悪",
-        icon: "💀",
-        type: "worst",
-        next: [5],
-        x: 62,
-        y: 80
-    },
-
-    {
-        id: 5,
-        name: "モンスター",
-        icon: "👾",
-        type: "monster",
-        next: [11],
-        x: 70,
-        y: 80
-    },
-
-    {
-        id: 6,
-        name: "モンスター",
-        icon: "👾",
-        type: "monster",
-        next: [17],
-        x: 30,
-        y: 65
-    },
-
-    {
-        id: 7,
-        name: "森",
-        icon: "💰",
-        type: "money",
-        next: [8],
-        x: 38,
-        y: 65
-    },
-
-    {
-        id: 8,
-        name: "モンスター",
-        icon: "👾",
-        type: "monster",
-        next: [9],
-        x: 46,
-        y: 65
-    },
-
-    {
-        id: 9,
-        name: "魔法店",
-        icon: "🔮",
-        type: "magic_shop",
-        next: [10],
-        x: 54,
-        y: 65
-    },
-
-    {
-        id: 10,
-        name: "宝箱",
-        icon: "🎁",
-        type: "treasure",
-        next: [11],
-        x: 62,
-        y: 65
-    },
-
-    {
-        id: 11,
-        name: "案内所",
-        icon: "👩",
-        type: "asset",
-        assetIds: [2],
-        next: [12],
-        x: 70,
-        y: 65
-    },
-
-    {
-        id: 12,
-        name: "モンスター",
-        icon: "👾",
-        type: "monster",
-        next: [13,23],
-        x: 70,
-        y: 50
-    },
-
-    {
-        id: 13,
-        name: "草原",
-        icon: "💰",
-        type: "money",
-        next: [14],
-        x: 62,
-        y: 50
-    },
-
-    {
-        id: 14,
-        name: "運び屋のバイト",
-        icon: "💼",
-        type: "job",
-        jobWage: 1500,
-        next: [15,21],
-        x: 54,
-        y: 50
-    },
-
-    {
-        id: 15,
-        name: "星の泉",
-        icon: "💰",
-        type: "money",
-        next: [16],
-        x: 46,
-        y: 50
-    },
-
-    {
-        id: 16,
-        name: "魔法店",
-        icon: "🔮",
-        type: "magic_shop",
-        next: [17],
-        x: 38,
-        y: 50
-    },
-
-    {
-        id: 17,
-        name: "冒険者",
-        icon: "💰",
-        type: "money",
-        next: [18],
-        x: 30,
-        y: 50
-    },
-
-    {
-        id: 18,
-        name: "モンスター",
-        icon: "👾",
-        type: "monster",
-        next: [19],
-        x: 30,
-        y: 35
-    },
-
-    {
-        id: 19,
-        name: "魔法店",
-        icon: "🔮",
-        type: "magic_shop",
-        next: [20,25],
-        x: 38,
-        y: 35
-    },
-
-    {
-        id: 20,
-        name: "宝箱",
-        icon: "🎁",
-        type: "treasure",
-        next: [21],
-        x: 46,
-        y: 35
-    },
-
-    {
-        id: 21,
-        name: "パン屋",
-        icon: "💼",
-        type: "job",
-        jobWage: 1500,
-        next: [22],
-        x: 54,
-        y: 35
-    },
-
-    {
-        id: 22,
-        name: "山",
-        icon: "💰",
-        type: "money",
-        next: [23],
-        x: 62,
-        y: 35
-    },
-
-    {
-        id: 23,
-        name: "モンスター",
-        icon: "👾",
-        type: "monster",
-        next: [29],
-        x: 70,
-        y: 35
-    },
-
-    {
-        id: 24,
-        name: "宝箱",
-        icon: "🎁",
-        type: "treasure",
-        next: [25,18],
-        x: 30,
-        y: 20
-    },
-
-    {
-        id: 25,
-        name: "宝箱",
-        icon: "💰",
-        type: "money",
-        next: [26],
-        x: 38,
-        y: 20
-    },
-
-    {
-        id: 26,
-        name: "魔法店",
-        icon: "🔮",
-        type: "magic_shop",
-        next: [27],
-        x: 46,
-        y: 20
-    },
-
-    {
-        id: 27,
-        name: "モンスター",
-        icon: "👾",
-        type: "monster",
-        next: [28],
-        x: 54,
-        y: 20
-    },
-
-    {
-        id: 28,
-        name: "魔法店",
-        icon: "🔮",
-        type: "magic_shop",
-        next: [29],
-        x: 62,
-        y: 20
-    },
-
-    {
-        id: 29,
-        name: "引っ越しバイト",
-        icon: "💼",
-        type: "job",
-        jobWage:2000,
-        next: [],
-        x: 70,
-        y: 20
-    }
-
-];
 
 // =========================
 // ボス出現マスを決定
@@ -922,140 +367,6 @@ function showBossDestinationPopup(
 
 }
 
-// =========================
-// BGM
-// =========================
-
-// 基本音量
-const BGM_VOLUME = 0.25;
-const SE_VOLUME = 0.7;
-
-//冒険
-const adventureBGM =
-    new Audio("BGM/冒険.mp3");
-
-let bgmAudioContext = null;
-let adventureBGMGain = null;
-
-adventureBGM.loop = true;
-adventureBGM.volume = 1.0;
-adventureBGM.preload = "auto";
-
-        // 冒険BGM 音量コントロール
-        function setupAdventureBGM() {
-
-    // =========================
-    // ローカル環境
-    // =========================
-
-    if (location.protocol === "file:") {
-
-        adventureBGM.volume =
-            BGM_VOLUME;
-
-        adventureBGM.currentTime = 0;
-
-        adventureBGM.play();
-
-        return;
-    }
-
-
-    // =========================
-    // Web環境
-    // =========================
-
-    if (!bgmAudioContext) {
-
-        const AudioContext =
-            window.AudioContext ||
-            window.webkitAudioContext;
-
-        bgmAudioContext =
-            new AudioContext();
-
-        adventureBGMGain =
-            bgmAudioContext.createGain();
-
-        const source =
-            bgmAudioContext.createMediaElementSource(
-                adventureBGM
-            );
-
-        source.connect(
-            adventureBGMGain
-        );
-
-        adventureBGMGain.connect(
-            bgmAudioContext.destination
-        );
-
-        adventureBGMGain.gain.value =
-            BGM_VOLUME;
-    }
-
-    adventureBGM.currentTime = 0;
-
-    // 再生開始
-    adventureBGM.play();
-
-    // AudioContextを再開
-    if (
-        bgmAudioContext.state ===
-        "suspended"
-    ) {
-        bgmAudioContext.resume();
-    }
-}
-        
-//街
-const townBGM =
-    new Audio("BGM/街.mp3");
-
-townBGM.loop = true;
-townBGM.volume = BGM_VOLUME;
-townBGM.preload = "auto";
-
-//貴族
-const nobilityBGM =
-    new Audio("BGM/貴族.mp3");
-
-nobilityBGM.loop = true;
-nobilityBGM.volume = BGM_VOLUME;
-nobilityBGM.preload = "auto";
-
-//凱旋
-const victoryBGM =
-    new Audio("BGM/凱旋.mp3");
-
-victoryBGM.loop = true;
-victoryBGM.volume = BGM_VOLUME;
-victoryBGM.preload = "auto";
-
-
-// =========================
-// SE
-// =========================
-
-//サイコロ
-const diceSound =
-    new Audio("sounds/サイコロ.wav");
-diceSound.preload = "auto";
-
-//開始音
-const startSound =
-    new Audio("sounds/シャララン.mp3");
-startSound.preload = "auto";
-
-//決定音
-const buttonSound =
-    new Audio("sounds/決定ボタン.mp3");
-buttonSound.preload = "auto";
-
-//プレイヤー切り替え
-const switchingSound =
-    new Audio("sounds/プレイヤー切り替え.mp3");
-switchingSound.preload = "auto";
 
 // =========================
 // ゲーム開始
@@ -1229,7 +540,7 @@ startButton.addEventListener(
     color: playerColors[index],
     inventory: [],
     assets: [],
-    possessions: [1],
+    possessions: [],
     magic: [1],
 
     // バイト関連
@@ -1237,19 +548,21 @@ startButton.addEventListener(
     jobReward: 0
 });
 
+// =========================
+// 初期アイテム
+// =========================
 
-if (index === 0) {
-
-    players[index].inventory = [1];
-
-}
+players[index].inventory = [1, 8];
 
 
-if (index === 1) {
+// =========================
+// 初期所持品
+// =========================
 
-    players[index].inventory = [1];
-
-}
+addPossessions(
+    players[index],
+    [1, 3]
+);
 
 
                                     }
@@ -1504,7 +817,7 @@ function showGameScreen(
     </button>
 
     <button id="magicButton">
-        🔮
+        🪄
     </button>
 
 </div>
@@ -1705,14 +1018,9 @@ window.showMagicPopup = function (player) {
         function (magicId) {
 
             const magic =
-                magicData.find(
-                    function (data) {
-
-                        return data.id === magicId;
-
-                    }
-                );
-
+    MAGIC_CONTENTS[
+        magicId
+    ];
 
             if (!magic) {
                 return;
@@ -1733,7 +1041,6 @@ window.showMagicPopup = function (player) {
 
                 <div class="magic-item-name">
 
-                    ${magic.icon}
                     ${magic.name}
 
                 </div>
@@ -1821,15 +1128,10 @@ window.showBattleMagicPopup = function (
     player.magic.forEach(
         function (magicId) {
 
-            const magic =
-                magicData.find(
-                    function (data) {
-
-                        return data.id ===
-                            magicId;
-
-                    }
-                );
+           const magic =
+    MAGIC_CONTENTS[
+        magicId
+    ];
 
 
             if (!magic) {
@@ -1851,7 +1153,7 @@ window.showBattleMagicPopup = function (
     <div class="battle-magic-item-info">
 
         <div class="battle-magic-item-name">
-            ${magic.icon} ${magic.name}
+            ${magic.name}
         </div>
 
         <div class="battle-magic-item-effect">
@@ -2591,14 +1893,9 @@ function showAssetPopup(
             .map(
                 function (assetId) {
 
-                    return assetData.find(
-                        function (data) {
-
-                            return data.id ===
-                                assetId;
-
-                        }
-                    );
+                    return ASSET_CONTENTS[
+                     assetId
+                    ];
 
                 }
             )
@@ -2855,27 +2152,22 @@ function showAssetPurchasePopup(
     );
 
 
-    // =========================
-    // 資産一覧
-    // =========================
+// =========================
+// 資産一覧
+// =========================
 
-    assetIds.forEach(
-        function (assetId) {
+assetIds.forEach(
+    function (assetId) {
 
-            const asset =
-                assetData.find(
-                    function (data) {
-
-                        return data.id ===
-                            assetId;
-
-                    }
-                );
+        const asset =
+            ASSET_CONTENTS[
+                assetId
+            ];
 
 
-            if (!asset) {
-                return;
-            }
+        if (!asset) {
+            return;
+        }
 
 
             const item =
@@ -3083,8 +2375,8 @@ if (!player.assets) {
     player.assets = [];
 }
 
-if (!player.assets.includes(asset.id)) {
-    player.assets.push(asset.id);
+if (!player.assets.includes(assetId)) {
+    player.assets.push(assetId);
 }
 
 
@@ -4165,6 +3457,62 @@ function getReachableStopSquares(
 
 }
 
+// =========================
+// 指定マス以内で
+// 止まれるマスを取得
+// =========================
+
+function getReachableStopSquaresWithin(
+    startPosition,
+    maxSteps
+) {
+
+    const results =
+        new Map();
+
+
+    // =========================
+    // 1〜maxStepsまで調べる
+    // =========================
+
+    for (
+        let steps = 1;
+        steps <= maxSteps;
+        steps++
+    ) {
+
+        const reachable =
+            getReachableStopSquares(
+                startPosition,
+                steps
+            );
+
+
+        reachable.forEach(
+            function (path, squareId) {
+
+                if (
+                    !results.has(
+                        squareId
+                    )
+                ) {
+
+                    results.set(
+                        squareId,
+                        path
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    return results;
+
+}
 
 // =========================
 // 止まれるマスを強調表示
@@ -4292,6 +3640,101 @@ function clearReachableHighlights() {
 }
 
 // =========================
+// 6マス以内の
+// 停止可能マスを強調表示
+// =========================
+
+function highlightReachableSquaresWithin(
+    player,
+    maxSteps
+) {
+
+    const reachable =
+        getReachableStopSquaresWithin(
+            player.position,
+            maxSteps
+        );
+
+
+    // =========================
+    // 強調表示
+    // =========================
+
+    reachable.forEach(
+        function (path, squareId) {
+
+            const node =
+                document.querySelector(
+                    `.map-node[data-square-id="${squareId}"]`
+                );
+
+
+            if (!node) {
+                return;
+            }
+
+
+            // =========================
+            // 光らせる
+            // =========================
+
+            node.style.boxShadow =
+                "0 0 0 5px rgba(255,215,0,0.95), 0 0 25px rgba(255,215,0,0.9)";
+
+            node.style.cursor =
+                "pointer";
+
+
+            // =========================
+            // タップ
+            // =========================
+
+            node.addEventListener(
+                "click",
+                function () {
+
+                    // 強調表示を解除
+
+                    clearReachableHighlights();
+
+
+                    // 分岐矢印を削除
+
+                    document
+                        .querySelectorAll(
+                            ".branch-arrow-map"
+                        )
+                        .forEach(
+                            function (element) {
+
+                                element.remove();
+
+                            }
+                        );
+
+
+                    // 選択したマスへ移動
+
+                    movePlayerToSquare(
+                        player,
+                        path
+                    );
+
+                },
+                {
+                    once: true
+                }
+            );
+
+        }
+    );
+
+
+    return reachable;
+
+}
+
+// =========================
 // 選択したマスまで自動移動
 // =========================
 
@@ -4369,6 +3812,24 @@ function movePlayerToSquare(
     moveNext();
 
 }
+
+// =========================
+// 外部から移動処理を呼び出せるようにする
+// =========================
+
+window.highlightReachableSquaresWithin =
+    function (
+        player,
+        maxSteps
+    ) {
+
+        return highlightReachableSquaresWithin(
+            player,
+            maxSteps
+        );
+
+    };
+
 
 // =========================
 // ボスマスまでの最短距離
@@ -4949,10 +4410,26 @@ function showItemRoulette(item, callback) {
     let count = 0;
 
     const interval = setInterval(function () {
-        const randomItem =
-            itemData[Math.floor(Math.random() * itemData.length)];
+        const itemIds =
+    Object.keys(
+        ITEM_CONTENTS
+    );
 
-        name.textContent = randomItem.name;
+const randomItemId =
+    itemIds[
+        Math.floor(
+            Math.random() *
+            itemIds.length
+        )
+    ];
+
+const randomItem =
+    ITEM_CONTENTS[
+        randomItemId
+    ];
+
+name.textContent =
+    randomItem.name;
 
         count += 1;
 
@@ -4980,18 +4457,27 @@ function startMonsterBattle(
     player
 ) {
 
-    // =========================
-    // モンスターを選択
-    // =========================
+ // =========================
+// モンスターを選択
+// =========================
 
-    const monster =
-        monsterData[
-            Math.floor(
-                Math.random() *
-                monsterData.length
-            )
-        ];
+const monsterIds =
+    Object.keys(
+        MONSTER_CONTENTS
+    );
 
+const randomMonsterId =
+    monsterIds[
+        Math.floor(
+            Math.random() *
+            monsterIds.length
+        )
+    ];
+
+const monster =
+    MONSTER_CONTENTS[
+        randomMonsterId
+    ];
 
     // =========================
     // モンスター遭遇選択画面
@@ -5367,7 +4853,7 @@ passButton.onclick =
                 false;
 
             magicButton.textContent =
-                "🔮 魔法";
+                "🪄 魔法";
 
 
             // =========================
@@ -5405,7 +4891,7 @@ passButton.onclick =
                                 showEventPopup(
                                     "🔮 魔力不足",
 
-                                    `${magic.icon} ${magic.name}を使うには` +
+                                    `${magic.name}を使うには` +
                                     `<br><br>` +
                                     `🔮 必要魔力：${magic.requiredMagicPower}` +
                                     `<br>` +
@@ -5433,7 +4919,7 @@ passButton.onclick =
                                 showEventPopup(
                                     "💰 G不足",
 
-                                    `${magic.icon} ${magic.name}を使うには` +
+                                    `${magic.name}を使うには` +
                                     `<br><br>` +
                                     `💰 ${formatG(magic.cost)}G 必要です。` +
                                     `<br>` +
@@ -5461,11 +4947,26 @@ passButton.onclick =
                             // ダメージ計算
                             // =========================
 
-                            const magicDamage =
-                                Math.floor(
-                                    player.magicPower *
-                                    magic.powerRate
-                                );
+                            // =========================
+// 基本ダメージ
+// =========================
+
+const baseMagicDamage =
+    Math.floor(
+        player.magicPower *
+        magic.powerRate
+    );
+
+
+// =========================
+// 所持品による与ダメージ補正
+// =========================
+
+const magicDamage =
+    getPlayerDamage(
+        player,
+        baseMagicDamage
+    );
 
 
                             // =========================
@@ -5518,7 +5019,7 @@ if (
     document.getElementById(
         "battleMessage"
     ).textContent =
-        `${magic.icon} ${magic.name}！` +
+        `${magic.name}！` +
         ` ${magicDamage}ダメージ！` +
         `　👾 ${monster.name}を倒した！`;
 
@@ -5621,7 +5122,7 @@ battleMessage.textContent =
                             document.getElementById(
                                 "battleMessage"
                             ).textContent =
-                                `${magic.icon} ${magic.name}！` +
+                                `${magic.name}！` +
                                 ` ${magicDamage}ダメージ！` +
                                 `　👾 ${monster.name}の反撃！` +
                                 ` ${monsterDamage}ダメージ！`;
@@ -5744,8 +5245,10 @@ function startBossBattle(
         currentBossHP <= 0
     ) {
 
-        currentBossHP =
-            bossData.hp;
+       currentBossHP =
+    BOSS_CONTENTS[
+        currentBossId
+    ].hp;
 
     }
 
@@ -5792,17 +5295,17 @@ function startBossBattle(
     // ボス表示
     // =========================
 
-    document.getElementById(
-        "battleMonsterName"
+   document.getElementById(
+    "battleMonsterName"
     ).textContent =
-        `${bossData.icon} ${bossData.name}`;
+    `${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}`;
 
 
     document.getElementById(
         "battleMonsterStats"
     ).innerHTML =
         `❤️${currentBossHP}<br>` +
-        `⚔️攻撃 ${bossData.attack}`;
+        `⚔️攻撃 ${BOSS_CONTENTS[currentBossId].attack}`;
 
 
     // =========================
@@ -5842,7 +5345,7 @@ function startBossBattle(
         false;
 
     magicButton.textContent =
-        "🔮 魔法";
+        "🪄 魔法";
 
 
 // =========================
@@ -5882,16 +5385,39 @@ passButton.onclick =
             true;
 
 
-        // =========================
-        // ボスの反撃
-        // =========================
+// =========================
+// ボスの反撃
+// =========================
 
-        const bossDamage =
-            bossData.attack;
+const baseBossDamage =
+    BOSS_CONTENTS[
+        currentBossId
+    ].attack;
 
 
-        player.money -=
-            bossDamage;
+// =========================
+// 所持品による被ダメージ補正
+// =========================
+
+const bossDamage =
+    getMonsterDamage(
+        player,
+        baseBossDamage
+    );
+
+
+player.money -=
+    bossDamage;
+
+
+if (
+    player.money < 0
+) {
+
+    player.money =
+        0;
+
+}
 
 
         if (
@@ -5931,7 +5457,7 @@ passButton.onclick =
             ).textContent =
                 `⏭️ パスした！` +
                 `<br>` +
-                `👹 ${bossData.name}の反撃！ ` +
+                `👹 ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
                 `${bossDamage}Gのダメージ！`;
 
 
@@ -5965,7 +5491,7 @@ passButton.onclick =
         ).innerHTML =
             `⏭️ パスした！` +
             `<br>` +
-            `👹 ${bossData.name}の反撃！ ` +
+            `👹 ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
             `${bossDamage}Gのダメージ！`;
 
 
@@ -6056,10 +5582,12 @@ passButton.onclick =
 
 
             showBattleMagicPopup(
-                player,
-                bossData,
+    player,
+    BOSS_CONTENTS[
+        currentBossId
+    ],
 
-                function (magic) {
+    function (magic) {
 
                     // =========================
                     // 魔法選択画面を閉じる
@@ -6086,7 +5614,7 @@ passButton.onclick =
                         showEventPopup(
                             "💰 G不足",
 
-                            `${magic.icon} ${magic.name}を使うには` +
+                            `${magic.name}を使うには` +
                             `<br><br>` +
                             `💰 ${formatG(magic.cost)}G 必要です。` +
                             `<br>` +
@@ -6109,16 +5637,27 @@ passButton.onclick =
                     player.money -=
                         magic.cost;
 
+ // =========================
+// 基本ダメージ
+// =========================
 
-                    // =========================
-                    // ダメージ計算
-                    // =========================
+const baseMagicDamage =
+    Math.floor(
+        player.magicPower *
+        magic.powerRate
+    );
 
-                    const magicDamage =
-                        Math.floor(
-                            player.magicPower *
-                            magic.powerRate
-                        );
+
+// =========================
+// 所持品による与ダメージ補正
+// =========================
+
+const magicDamage =
+    getPlayerDamage(
+        player,
+        baseMagicDamage
+    );
+                   
 
 
  // =========================
@@ -6165,7 +5704,7 @@ player.bossDamage +=
                         "battleMonsterStats"
                     ).innerHTML =
                         `❤️${currentBossHP}<br>` +
-                        `⚔️攻撃 ${bossData.attack}`;
+                       `⚔️攻撃 ${BOSS_CONTENTS[currentBossId].attack}`;
 
 
                     renderPlayers();
@@ -6182,7 +5721,7 @@ player.bossDamage +=
                         passButton.style.display =
                         "none";
 
-                        // =========================
+  // =========================
 // ボス報酬を計算・配布
 // =========================
 
@@ -6228,10 +5767,9 @@ if (
                         document.getElementById(
                             "battleMessage"
                         ).textContent =
-                            `${magic.icon} ${magic.name}！ ` +
+                            `${magic.name}！ ` +
                             `${magicDamage}ダメージ！` +
-                            `　👹 ${bossData.name}を倒した！`;
-
+                           `　👹 ${BOSS_CONTENTS[currentBossId].name}を倒した！`;
 
                         magicButton.textContent =
                             "戦闘終了";
@@ -6255,7 +5793,7 @@ if (
 // =========================
 
 let bossRewardMessage =
-    `${bossData.name}を倒した！<br>`;
+    `${BOSS_CONTENTS[currentBossId].name}を倒した！<br>`;
 
 
 // =========================
@@ -6382,12 +5920,39 @@ showBossDestinationPopup(
                     }
 
 
-                    // =========================
-                    // ボスの反撃
-                    // =========================
+// =========================
+// ボスの反撃
+// =========================
 
-                    const bossDamage =
-                        bossData.attack;
+const baseBossDamage =
+    BOSS_CONTENTS[
+        currentBossId
+    ].attack;
+
+
+// =========================
+// 所持品による被ダメージ補正
+// =========================
+
+const bossDamage =
+    getMonsterDamage(
+        player,
+        baseBossDamage
+    );
+
+
+player.money -=
+    bossDamage;
+
+
+if (
+    player.money < 0
+) {
+
+    player.money =
+        0;
+
+}
 
 
                     player.money -=
@@ -6453,9 +6018,9 @@ showBossDestinationPopup(
                     document.getElementById(
                         "battleMessage"
                     ).textContent =
-                        `${magic.icon} ${magic.name}！ ` +
+                        `${magic.name}！ ` +
                         `${magicDamage}ダメージ！` +
-                        `　👹 ${bossData.name}の反撃！ ` +
+                        `　👹 ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
                         `${bossDamage}Gのダメージ！`;
 
 
@@ -6737,15 +6302,60 @@ function handleSquareEvent(
         currentSquare.type
     ) {
 
+
+// =========================
+// スタートマス
+// =========================
+
+case "start":
+
+    // 何も起こさずターン終了
+
+    finishTurn(
+        player
+    );
+
+    break;
+
 // =========================
 // 資産マス
 // =========================
 
 case "asset":
 
+    const assetIds = [];
+
+    (
+        currentSquare.typeIds || []
+    ).forEach(
+        function (typeId) {
+
+            const assetBox =
+                ASSET_BOXES[typeId];
+
+            if (!assetBox) {
+                return;
+            }
+
+            (
+                assetBox.contents || []
+            ).forEach(
+                function (assetId) {
+
+                    assetIds.push(
+                        assetId
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
     showAssetPurchasePopup(
         player,
-        currentSquare.assetIds || [],
+        assetIds,
         function () {
 
             finishTurn(player);
@@ -6814,18 +6424,16 @@ case "asset":
             break;
 
         // =========================
-        // 魔法マス
+        // ショップマス
         // =========================
 
-        case "magic_shop":
+       case "shop":
 
-
-         showMagicShopPopup(
+    showShopPopup(
         player
-            );
+    );
 
-             break;
-
+    break;
              
 // =========================
 // モンスターマス
@@ -6899,43 +6507,567 @@ case "worst":
         // =========================
 
 case "treasure":
+
+    // =========================
+    // 宝箱BOXを取得
+    // =========================
+
+    const treasureBox =
+        TREASURE_BOXES[
+            currentSquare.treasureBoxId
+        ];
+
+
+    // =========================
+    // 宝箱BOXが存在しない場合
+    // =========================
+
+    if (!treasureBox) {
+
+        console.error(
+            "宝箱BOXが見つかりません:",
+            currentSquare.treasureBoxId
+        );
+
+        finishTurn(player);
+
+        break;
+
+    }
+
+
+    // =========================
+    // 宝箱のランクを取得
+    // =========================
+
+    const treasureRank =
+        treasureBox.rank;
+
+
+    // =========================
+    // ランクが一致するcontentsを抽選
+    // =========================
+
+    const treasureCandidates = [];
+
+
+    // アイテム
+    Object.entries(ITEM_CONTENTS).forEach(
+        function ([contentId, content]) {
+
+            if (content.rank === treasureRank) {
+
+                treasureCandidates.push({
+                    category: "item",
+                    id: Number(contentId),
+                    content: content
+                });
+
+            }
+
+        }
+    );
+
+
+    // 所持品
+    Object.entries(POSSESSION_CONTENTS).forEach(
+        function ([contentId, content]) {
+
+            if (content.rank === treasureRank) {
+
+                treasureCandidates.push({
+                    category: "possession",
+                    id: Number(contentId),
+                    content: content
+                });
+
+            }
+
+        }
+    );
+
+
+    // 魔力
+    Object.entries(POWER_CONTENTS).forEach(
+        function ([contentId, content]) {
+
+            if (content.rank === treasureRank) {
+
+                treasureCandidates.push({
+                    category: "power",
+                    id: Number(contentId),
+                    content: content
+                });
+
+            }
+
+        }
+    );
+
+
+    // 魔法
+    Object.entries(MAGIC_CONTENTS).forEach(
+        function ([contentId, content]) {
+
+            if (content.rank === treasureRank) {
+
+                treasureCandidates.push({
+                    category: "magic",
+                    id: Number(contentId),
+                    content: content
+                });
+
+            }
+
+        }
+    );
+
+
+    // =========================
+    // 抽選対象が存在しない場合
+    // =========================
+
+    if (treasureCandidates.length === 0) {
+
+        console.error(
+            "宝箱ランクに対応するcontentsがありません:",
+            treasureRank
+        );
+
+        finishTurn(player);
+
+        break;
+
+    }
+
+
+    // =========================
+    // 宝箱ルーレット
+    // =========================
+
+    const randomTreasure =
+        treasureCandidates[
+            Math.floor(
+                Math.random() *
+                treasureCandidates.length
+            )
+        ];
+
+
+    // =========================
+// 宝箱contentsの獲得処理
+// =========================
+
+if (randomTreasure.category === "item") {
+
     const randomItem =
-        itemData[Math.floor(Math.random() * itemData.length)];
+        randomTreasure.content;
+
 
     showItemRoulette(
         randomItem,
+
         function () {
-            player.inventory.push(randomItem.id);
+
+            player.inventory.push(
+                randomTreasure.id
+            );
+
 
             renderPlayers();
 
+
             showEventPopup(
                 "🎁 宝箱",
+
                 `<strong>${randomItem.name}</strong>を手に入れた！`,
+
                 function () {
+
                     finishTurn(player);
+
                 }
             );
+
         }
     );
+
     break;
 
-        // =========================
-        // その他
-        // =========================
+}
 
-        default:
 
-            finishTurn(
-                player
-            );
+// =========================
+// 魔力
+// =========================
 
-            break;
+if (randomTreasure.category === "power") {
+
+    const power =
+        randomTreasure.content;
+
+
+    player.magicPower +=
+        Number(
+            power.effect.match(/\d+/)[0]
+        );
+
+
+    renderPlayers();
+
+
+    showEventPopup(
+        "🎁 宝箱",
+
+        `<strong>${power.effect}</strong>を獲得した！`,
+
+        function () {
+
+            finishTurn(player);
+
+        }
+    );
+
+    break;
+
+}
+
+// =========================
+// 所持品
+// =========================
+
+if (randomTreasure.category === "possession") {
+
+    const possession =
+        randomTreasure.content;
+
+
+    player.possessions.push(
+        randomTreasure.id
+    );
+
+
+    renderPlayers();
+
+
+    showEventPopup(
+        "🎁 宝箱",
+
+        `<strong>${possession.name}</strong>を手に入れた！`,
+
+        function () {
+
+            finishTurn(player);
+
+        }
+    );
+
+    break;
+
+}
+
+// =========================
+// 魔法
+// =========================
+
+if (randomTreasure.category === "magic") {
+
+    const magic =
+        randomTreasure.content;
+
+
+    player.magic.push(
+        randomTreasure.id
+    );
+
+
+    renderPlayers();
+
+
+    showEventPopup(
+        "🎁 宝箱",
+
+        `<strong>${magic.name}</strong>を手に入れた！`,
+
+        function () {
+
+            finishTurn(player);
+
+        }
+    );
+
+    break;
+
+}
 
     }
     
 
 }
+
+
+// =========================
+// ショップ
+// =========================
+
+function showShopPopup(
+    player
+) {
+
+    const shopPopup =
+        document.getElementById(
+            "shopPopup"
+        );
+
+    const shopName =
+        document.getElementById(
+            "shopName"
+        );
+
+    const shopCategoryList =
+        document.getElementById(
+            "shopCategoryList"
+        );
+
+
+    // =========================
+    // 現在のマスを取得
+    // =========================
+
+    const currentSquare =
+        mapData.find(
+            square =>
+                square.id === player.position
+        );
+
+
+    if (!currentSquare) {
+
+        console.error(
+            "現在のマスが見つかりません:",
+            player.position
+        );
+
+        finishTurn(
+            player
+        );
+
+        return;
+    }
+
+
+    // =========================
+    // ショップBOXを取得
+    // =========================
+
+    const shopBox =
+        SHOP_BOXES[
+            currentSquare.typeId
+        ];
+
+
+    if (!shopBox) {
+
+        console.error(
+            "ショップBOXが見つかりません:",
+            currentSquare.typeId
+        );
+
+        finishTurn(
+            player
+        );
+
+        return;
+    }
+
+
+    // =========================
+    // ショップ名
+    // =========================
+
+    shopName.textContent =
+        shopBox.name;
+
+
+    // =========================
+    // 商品一覧を非表示
+    // =========================
+
+    const shopItemList =
+        document.getElementById(
+            "shopItemList"
+        );
+    
+    const shopCloseButton =
+    document.getElementById(
+        "shopCloseButton"
+    );
+
+    shopItemList.innerHTML =
+        "";
+
+    shopItemList.style.display =
+        "none";
+
+    shopCloseButton.textContent =
+    "🏃 やめる";
+
+    // カテゴリーメニューを表示
+    
+    shopCategoryList.style.display =
+        "flex";
+
+
+    // =========================
+    // カテゴリーの有無
+    // =========================
+
+    const shopMagicButton =
+        document.getElementById(
+            "shopMagicButton"
+        );
+
+    const shopPowerButton =
+        document.getElementById(
+            "shopPowerButton"
+        );
+
+    const shopItemButton =
+        document.getElementById(
+            "shopItemButton"
+        );
+
+    const shopPossessionButton =
+        document.getElementById(
+            "shopPossessionButton"
+        );
+
+
+    shopMagicButton.style.display =
+        shopBox.magicContents &&
+        shopBox.magicContents.length > 0
+            ? "block"
+            : "none";
+
+
+    shopPowerButton.style.display =
+        shopBox.powerContents &&
+        shopBox.powerContents.length > 0
+            ? "block"
+            : "none";
+
+
+    shopItemButton.style.display =
+        shopBox.itemContents &&
+        shopBox.itemContents.length > 0
+            ? "block"
+            : "none";
+
+
+    shopPossessionButton.style.display =
+        shopBox.possessionContents &&
+        shopBox.possessionContents.length > 0
+            ? "block"
+            : "none";
+
+
+// =========================
+// 魔法カテゴリー
+// =========================
+
+shopMagicButton.onclick =
+    function () {
+
+        shopPopup.style.display =
+            "none";
+
+        showMagicShopPopup(
+            player
+        );
+
+    };
+
+// =========================
+// 所持品購入ボタン
+// =========================
+
+shopPossessionButton.onclick =
+    function () {
+
+        shopPopup.style.display =
+            "none";
+
+        showPossessionShopPopup(
+            player
+        );
+
+    };
+
+
+// =========================
+// 魔力購入ボタン
+// =========================
+
+shopPowerButton.onclick =
+    function () {
+
+        showPowerShopPopup(
+            player
+        );
+
+    };
+
+// =========================
+// アイテムカテゴリー
+// =========================
+
+shopItemButton.onclick =
+    function () {
+
+        showItemShopPopup(
+            player
+        );
+
+    };
+
+
+
+    // =========================
+    // ショップを表示
+    // =========================
+
+    shopPopup.style.display =
+        "block";
+
+    // =========================
+// やめるボタン
+// ショップを終了してターン終了
+// =========================
+
+shopCloseButton.onclick =
+    function () {
+
+        // ショップを閉じる
+        shopPopup.style.display =
+            "none";
+
+        // 商品一覧を非表示
+        shopItemList.style.display =
+            "none";
+
+        // カテゴリー一覧を表示
+        shopCategoryList.style.display =
+            "flex";
+
+        // ターン終了
+        finishTurn(
+            player
+        );
+
+    };
+
+}
+
 
 // =========================
 // 魔法ショップ
@@ -6948,6 +7080,11 @@ function showMagicShopPopup(
     const magicShopPopup =
         document.getElementById(
             "magicShopPopup"
+        );
+
+    const magicShopTitle =
+        magicShopPopup.querySelector(
+            ".magic-shop-title"
         );
 
     const magicShopMoney =
@@ -6973,6 +7110,10 @@ function showMagicShopPopup(
     magicShopMoney.textContent =
         `💰 所持金：${formatG(player.money)}G`;
 
+    // ボタン表示
+
+    closeButton.textContent =
+        "閉じる";
 
     // =========================
     // 魔法一覧を初期化
@@ -6981,15 +7122,50 @@ function showMagicShopPopup(
     magicShopList.innerHTML =
         "";
 
- // =========================
+    // =========================
+    // ショップBOXを取得
+    // =========================
+
+    const currentSquare =
+        mapData.find(
+            square =>
+                square.id === player.position
+        );
+
+    const shopBox =
+        SHOP_BOXES[
+            currentSquare.typeId
+        ];
+
+    if (!shopBox) {
+
+        console.error(
+            "ショップBOXが見つかりません:",
+            currentSquare.typeId
+        );
+
+        return;
+    }
+
+        magicShopTitle.textContent =
+        `🏪 ${shopBox.name}`;
+
+
+// =========================
 // 魔法を表示
 // =========================
 
-magicData.forEach(
-    function (magic) {
+shopBox.magicContents.forEach(
+    function (contentId) {
 
-        // ファイアは初期魔法なので販売しない
-        if (magic.id === 1) {
+        const magic =
+            MAGIC_CONTENTS[contentId];
+
+        if (!magic) {
+            console.error(
+                "魔法CONTENTSが見つかりません:",
+                contentId
+            );
             return;
         }
 
@@ -7008,9 +7184,9 @@ magicData.forEach(
             // =========================
 
             const alreadyLearned =
-                player.magic.includes(
-                    magic.id
-                );
+    player.magic.includes(
+        Number(contentId)
+    );
 
 
             magicElement.innerHTML = `
@@ -7018,8 +7194,6 @@ magicData.forEach(
                 <div
                     class="magic-shop-item-name"
                 >
-
-                    ${magic.icon}
                     ${magic.name}
 
                 </div>
@@ -7100,8 +7274,6 @@ magicData.forEach(
                             showEventPopup(
                                 "💰 G不足",
                                 `
-
-                                ${magic.icon}
                                 ${magic.name}を購入するには
                                 <br>
 
@@ -7138,8 +7310,8 @@ magicData.forEach(
                         // 魔法を習得
                         // =========================
 
-                        player.magic.push(
-                            magic.id
+                       player.magic.push(
+                        Number(contentId)
                         );
 
 
@@ -7155,10 +7327,9 @@ magicData.forEach(
                         // =========================
 
                         showEventPopup(
-                            "🔮 魔法習得",
+                            "🪄 魔法習得",
                             `
 
-                            ${magic.icon}
                             <strong>
                                 ${magic.name}
                             </strong>
@@ -7206,17 +7377,1067 @@ magicData.forEach(
         "block";
 
 
+  // =========================
+// やめるボタン
+// ショップ一覧へ戻る
+// =========================
+
+closeButton.onclick =
+    function () {
+
+        // 魔法ショップを閉じる
+
+        magicShopPopup.style.display =
+            "none";
+
+
+        // ショップ一覧を表示
+
+        showShopPopup(
+            player
+        );
+
+    };
+
+}
+
+// =========================
+// アイテムショップ
+// =========================
+
+function showItemShopPopup(
+    player
+) {
+
+    const shopPopup =
+        document.getElementById(
+            "shopPopup"
+        );
+
+    const shopName =
+        document.getElementById(
+            "shopName"
+        );
+
+    const shopCategoryList =
+        document.getElementById(
+            "shopCategoryList"
+        );
+
+    const shopItemList =
+        document.getElementById(
+            "shopItemList"
+        );
+
+    const shopMoney =
+    document.getElementById(
+        "shopMoney"
+    );
+
+    const shopCloseButton =
+    document.getElementById(
+            "shopCloseButton"
+        );
+
+
     // =========================
-    // やめるボタン
+    // 現在のショップを取得
+    // =========================
+
+    const currentSquare =
+        mapData.find(
+            square =>
+                square.id === player.position
+        );
+
+
+    if (!currentSquare) {
+
+        return;
+
+    }
+
+
+    const shopBox =
+        SHOP_BOXES[
+            currentSquare.typeId
+        ];
+
+
+    if (!shopBox) {
+
+        return;
+
+    }
+
+
+    // =========================
+    // ショップ名
+    // =========================
+
+    shopName.textContent =
+    shopBox.name;
+
+// =========================
+// 所持金表示
+// =========================
+
+if (shopMoney) {
+
+    shopMoney.textContent =
+        `💰 所持金：${formatG(player.money)}G`;
+
+    shopMoney.style.display =
+        "block";
+
+}
+
+// =========================
+// ボタン表示
+// =========================
+
+if (shopCloseButton) {
+
+    shopCloseButton.textContent =
+        "閉じる";
+
+}
+
+    // =========================
+    // カテゴリーメニューを非表示
+    // =========================
+
+    shopCategoryList.style.display =
+        "none";
+
+
+    // =========================
+    // 商品一覧を初期化
+    // =========================
+
+    shopItemList.innerHTML =
+        "";
+
+
+    shopItemList.style.display =
+        "flex";
+
+
+    // =========================
+    // アイテム一覧
+    // =========================
+
+    shopBox.itemContents.forEach(
+        function (contentId) {
+
+            const item =
+                ITEM_CONTENTS[
+                    contentId
+                ];
+
+
+            if (!item) {
+
+                console.error(
+                    "アイテムCONTENTSが見つかりません:",
+                    contentId
+                );
+
+                return;
+
+            }
+
+
+            const itemElement =
+                document.createElement(
+                    "div"
+                );
+
+
+            itemElement.className =
+                "magic-shop-item";
+
+
+            itemElement.innerHTML = `
+
+                <div
+                    class="magic-shop-item-name"
+                >
+
+                    ${item.name}
+
+                </div>
+
+
+                <div
+                    class="magic-shop-item-effect"
+                >
+
+                    ${item.effect}
+
+                </div>
+
+
+                <div
+                    class="magic-shop-item-price"
+                >
+
+                    💰 ${formatG(item.price)}G
+
+                </div>
+
+
+                <button
+                    class="magic-shop-buy-button"
+                    type="button"
+                >
+                    購入
+                </button>
+
+            `;
+
+
+            // =========================
+            // 購入ボタン
+            // =========================
+
+            const buyButton =
+                itemElement.querySelector(
+                    ".magic-shop-buy-button"
+                );
+
+
+            buyButton.addEventListener(
+                "click",
+                function () {
+
+                    // =========================
+                    // G不足
+                    // =========================
+
+                    if (
+                        player.money <
+                        item.price
+                    ) {
+
+                        showEventPopup(
+                            "💰 ゴールド不足",
+
+                            `
+                            ${item.name}を購入するには
+                            <strong>
+                                ${formatG(item.price)}G
+                            </strong>
+                            必要です。
+                            <br><br>
+
+                            現在の所持金：
+                            <strong>
+                                ${formatG(player.money)}G
+                            </strong>
+                            `,
+
+                            function () {
+
+                            }
+                        );
+
+                        return;
+
+                    }
+
+
+                    // =========================
+                    // Gを支払う
+                    // =========================
+
+                    player.money -=
+                        item.price;
+
+
+                    // =========================
+                    // アイテムを追加
+                    // =========================
+
+                    if (
+                        !player.inventory
+                    ) {
+
+                        player.inventory =
+                            [];
+
+                    }
+
+
+                    player.inventory.push(
+                        Number(contentId)
+                    );
+
+
+                    // =========================
+                    // プレイヤー情報更新
+                    // =========================
+
+                    renderPlayers();
+
+
+                    // =========================
+                    // 購入完了
+                    // =========================
+
+                    showEventPopup(
+                        "🎒 アイテム購入",
+
+                        `
+                        <strong>
+                            ${item.name}
+                        </strong>
+                        を購入した！
+                        <br><br>
+
+                        💰
+                        ${formatG(item.price)}G
+                        を支払った。
+                        `,
+
+                        function () {
+
+                            showItemShopPopup(
+                                player
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+            shopItemList.appendChild(
+                itemElement
+            );
+
+        }
+    );
+
+// =========================
+// ショップを表示
+// =========================
+
+shopPopup.style.display =
+    "block";
+
+
+// =========================
+// 閉じるボタン
+// ショップ一覧へ戻る
+// =========================
+
+shopCloseButton.onclick =
+    function () {
+
+        // 商品一覧を非表示
+
+        shopItemList.style.display =
+            "none";
+
+
+        // 所持金表示を非表示
+
+        shopMoney.style.display =
+            "none";
+
+
+        // カテゴリー一覧を表示
+
+        shopCategoryList.style.display =
+            "flex";
+
+
+        // ボタン表示を戻す
+
+        shopCloseButton.textContent =
+            "🏃 やめる";
+
+    };
+
+}
+
+
+// =========================
+// 所持品ショップ
+// =========================
+
+function showPossessionShopPopup(
+    player
+) {
+
+    const possessionShopPopup =
+        document.getElementById(
+            "possessionShopPopup"
+        );
+
+    const possessionShopTitle =
+        document.getElementById(
+            "possessionShopTitle"
+        );
+
+    console.log(
+    "所持品ショップタイトル:",
+    possessionShopTitle
+);
+
+    const possessionShopMoney =
+        document.getElementById(
+            "possessionShopMoney"
+        );
+
+    const possessionShopList =
+        document.getElementById(
+            "possessionShopList"
+        );
+
+    const closeButton =
+        document.getElementById(
+            "possessionShopCloseButton"
+        );
+
+
+    // =========================
+    // 現在のマスを取得
+    // =========================
+
+    const currentSquare =
+        mapData.find(
+            square =>
+                square.id === player.position
+        );
+
+
+    if (!currentSquare) {
+
+        console.error(
+            "現在のマスが見つかりません:",
+            player.position
+        );
+
+        return;
+
+    }
+
+
+    // =========================
+    // ショップBOXを取得
+    // =========================
+
+    const shopBox =
+        SHOP_BOXES[
+            currentSquare.typeId
+        ];
+
+
+    if (!shopBox) {
+
+        console.error(
+            "ショップBOXが見つかりません:",
+            currentSquare.typeId
+        );
+
+        return;
+
+    }
+
+
+    // =========================
+    // ショップ名
+    // =========================
+
+    possessionShopTitle.textContent =
+        `🏪 ${shopBox.name}`;
+
+
+    // =========================
+    // 所持金表示
+    // =========================
+
+    possessionShopMoney.textContent =
+        `💰 所持金：${formatG(player.money)}G`;
+
+
+    // =========================
+    // 商品一覧を初期化
+    // =========================
+
+    possessionShopList.innerHTML =
+        "";
+
+
+    // =========================
+    // 所持品一覧
+    // =========================
+
+    shopBox.possessionContents.forEach(
+        function (contentId) {
+
+            const possession =
+                POSSESSION_CONTENTS[
+                    contentId
+                ];
+
+
+            if (!possession) {
+
+                console.error(
+                    "所持品CONTENTSが見つかりません:",
+                    contentId
+                );
+
+                return;
+
+            }
+
+
+            // =========================
+            // 商品カード作成
+            // =========================
+
+            const itemElement =
+                document.createElement(
+                    "div"
+                );
+
+
+            itemElement.className =
+                "magic-shop-item";
+
+
+            itemElement.innerHTML = `
+
+                <div
+                    class="magic-shop-item-name"
+                >
+
+                    ${possession.name}
+
+                </div>
+
+
+                <div
+                    class="magic-shop-item-effect"
+                >
+
+                    ${possession.effect}
+
+                </div>
+
+
+                <div
+                    class="magic-shop-item-price"
+                >
+
+                    💰 ${formatG(possession.price)}G
+
+                </div>
+
+
+                <button
+                    class="magic-shop-buy-button"
+                    type="button"
+                >
+                    購入
+                </button>
+
+            `;
+
+
+            // =========================
+            // 購入ボタン
+            // =========================
+
+            const buyButton =
+                itemElement.querySelector(
+                    ".magic-shop-buy-button"
+                );
+
+
+            buyButton.addEventListener(
+                "click",
+                function () {
+
+                    // =========================
+                    // G不足
+                    // =========================
+
+                    if (
+                        player.money <
+                        possession.price
+                    ) {
+
+                        showEventPopup(
+                            "💰 ゴールド不足",
+
+                            `
+                            ${possession.name}を購入するには
+                            <strong>
+                                ${formatG(possession.price)}G
+                            </strong>
+                            必要です。
+                            <br><br>
+
+                            現在の所持金：
+                            <strong>
+                                ${formatG(player.money)}G
+                            </strong>
+                            `,
+
+                            function () {
+
+                            }
+                        );
+
+                        return;
+
+                    }
+
+
+                    // =========================
+                    // Gを支払う
+                    // =========================
+
+                    player.money -=
+                        possession.price;
+
+
+// =========================
+// 所持品を追加
+// =========================
+
+if (
+    !player.possessions
+) {
+
+    player.possessions =
+        [];
+
+}
+
+
+addPossession(
+    player,
+    Number(contentId)
+);
+
+
+
+                    // =========================
+                    // プレイヤー情報更新
+                    // =========================
+
+                    renderPlayers();
+
+
+                    // =========================
+                    // 購入完了
+                    // =========================
+
+                    showEventPopup(
+                        "🏆 所持品購入",
+
+                        `
+                        <strong>
+                            ${possession.name}
+                        </strong>
+                        を購入した！
+                        <br><br>
+
+                        💰
+                        ${formatG(possession.price)}G
+                        を支払った。
+                        `,
+
+                        function () {
+
+                            showPossessionShopPopup(
+                                player
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+            // =========================
+            // 商品カードを一覧に追加
+            // =========================
+
+            possessionShopList.appendChild(
+                itemElement
+            );
+
+        }
+    );
+
+
+    // =========================
+    // ショップ画面を表示
+    // =========================
+
+    possessionShopPopup.style.display =
+        "block";
+
+
+    // =========================
+    // 閉じるボタン
     // =========================
 
     closeButton.onclick =
         function () {
 
-            magicShopPopup.style.display =
+            possessionShopPopup.style.display =
                 "none";
 
-            finishTurn(
+            showShopPopup(
+                player
+            );
+
+        };
+
+}
+
+
+// =========================
+// 魔力ショップ
+// =========================
+
+function showPowerShopPopup(
+    player
+) {
+
+    const powerShopPopup =
+        document.getElementById(
+            "powerShopPopup"
+        );
+
+    const powerShopTitle =
+        document.getElementById(
+            "powerShopTitle"
+        );
+
+    const powerShopMoney =
+        document.getElementById(
+            "powerShopMoney"
+        );
+
+    const powerShopList =
+        document.getElementById(
+            "powerShopList"
+        );
+
+    const closeButton =
+        document.getElementById(
+            "powerShopCloseButton"
+        );
+
+
+    // =========================
+    // 現在のショップを取得
+    // =========================
+
+    const currentSquare =
+        mapData.find(
+            square =>
+                square.id === player.position
+        );
+
+
+    if (!currentSquare) {
+
+        return;
+
+    }
+
+
+    const shopBox =
+        SHOP_BOXES[
+            currentSquare.typeId
+        ];
+
+
+    if (!shopBox) {
+
+        return;
+
+    }
+
+
+    // =========================
+    // ショップ名
+    // =========================
+
+    powerShopTitle.textContent =
+        `🏪 ${shopBox.name}`;
+
+
+    // =========================
+    // 所持金表示
+    // =========================
+
+    powerShopMoney.textContent =
+        `💰 所持金：${formatG(player.money)}G`;
+
+
+    // =========================
+    // 商品一覧を初期化
+    // =========================
+
+    powerShopList.innerHTML =
+        "";
+
+
+    // =========================
+    // 魔力一覧
+    // =========================
+
+    shopBox.powerContents.forEach(
+        function (contentId) {
+
+            const power =
+                POWER_CONTENTS[
+                    contentId
+                ];
+
+
+            if (!power) {
+
+                console.error(
+                    "魔力CONTENTSが見つかりません:",
+                    contentId
+                );
+
+                return;
+
+            }
+
+
+            const itemElement =
+                document.createElement(
+                    "div"
+                );
+
+
+            // =========================
+            // 商品カードのクラス
+            // =========================
+
+            itemElement.className =
+                "magic-shop-item";
+
+
+            // =========================
+            // 商品カードの内容
+            // =========================
+
+            itemElement.innerHTML = `
+
+                <div
+                    class="magic-shop-item-name"
+                >
+
+                    魔力アップ
+
+                </div>
+
+
+                <div
+                    class="magic-shop-item-effect"
+                >
+
+                    ${power.effect}
+
+                </div>
+
+
+                <div
+                    class="magic-shop-item-price"
+                >
+
+                    💰 ${formatG(power.price)}G
+
+                </div>
+
+
+                <button
+                    class="magic-shop-buy-button"
+                    type="button"
+                >
+                    購入
+                </button>
+
+            `;
+
+
+            // =========================
+            // 購入ボタン
+            // =========================
+
+            const buyButton =
+                itemElement.querySelector(
+                    ".magic-shop-buy-button"
+                );
+
+
+            buyButton.addEventListener(
+                "click",
+                function () {
+
+                    // =========================
+                    // G不足
+                    // =========================
+
+                    if (
+                        player.money <
+                        power.price
+                    ) {
+
+                        showEventPopup(
+                            "💰 ゴールド不足",
+
+                            `
+                            魔力を購入するには
+                            <strong>
+                                ${formatG(power.price)}G
+                            </strong>
+                            必要です。
+                            <br><br>
+
+                            現在の所持金：
+                            <strong>
+                                ${formatG(player.money)}G
+                            </strong>
+                            `,
+
+                            function () {
+
+                            }
+                        );
+
+                        return;
+
+                    }
+
+
+                    // =========================
+                    // Gを支払う
+                    // =========================
+
+                    player.money -=
+                        power.price;
+
+
+                    // =========================
+                    // 魔力を追加
+                    // =========================
+
+                    if (
+                        !player.magicPower
+                    ) {
+
+                        player.magicPower =
+                            0;
+
+                    }
+
+
+                    // =========================
+                    // 魔力の増加量を取得
+                    // =========================
+
+                    const powerValue =
+                        Number(
+                            power.effect
+                                .replace(
+                                    "魔力＋",
+                                    ""
+                                )
+                        );
+
+
+                    player.magicPower +=
+                        powerValue;
+
+
+                    // =========================
+                    // プレイヤー情報更新
+                    // =========================
+
+                    renderPlayers();
+
+
+                    // =========================
+                    // 購入完了
+                    // =========================
+
+                    showEventPopup(
+                        "🔮 魔力購入",
+
+                        `
+                        <strong>
+                            ${power.effect}
+                        </strong>
+                        した！
+                        <br><br>
+
+                        💰
+                        ${formatG(power.price)}G
+                        を支払った。
+                        `,
+
+                        function () {
+
+                            showPowerShopPopup(
+                                player
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+            // =========================
+            // 商品カードを一覧に追加
+            // =========================
+
+            powerShopList.appendChild(
+                itemElement
+            );
+
+        }
+    );
+
+
+    // =========================
+    // ショップ画面を表示
+    // =========================
+
+    powerShopPopup.style.display =
+        "block";
+
+
+    // =========================
+    // 閉じるボタン
+    // =========================
+
+    closeButton.onclick =
+        function () {
+
+            powerShopPopup.style.display =
+                "none";
+
+            showShopPopup(
                 player
             );
 
@@ -7428,23 +8649,19 @@ function calculateAssetDividend(player) {
 
     // 保有している資産を1つずつ計算
     player.assets.forEach(
-        function (assetId) {
+    function (assetId) {
 
-            const asset =
-                assetData.find(
-                    function (data) {
-
-                        return data.id === assetId;
-
-                    }
-                );
+        const asset =
+            ASSET_CONTENTS[
+                assetId
+            ];
 
 
-            if (!asset) {
+        if (!asset) {
 
-                return;
+            return;
 
-            }
+        }
 
 
             // 取得額 × 利回り
@@ -7551,9 +8768,10 @@ function calculateTotalAssetValue(player) {
 
     if (player.assets && player.assets.length > 0) {
         player.assets.forEach(function (assetId) {
-            const asset = assetData.find(function (data) {
-                return data.id === assetId;
-            });
+            const asset =
+            ASSET_CONTENTS[
+            assetId
+             ];
 
             if (asset) {
                 assetValue += asset.price;
@@ -7801,9 +9019,19 @@ function finishTurn(
     // 次のプレイヤー
     // =========================
 
-    const nextPlayer =
-        players[currentPlayer];
+   const nextPlayer =
+    players[currentPlayer];
 
+console.log(
+    "【所持品効果チェック②】",
+    nextPlayer.name,
+    nextPlayer.possessions,
+    nextPlayer.money
+);
+
+applyTurnStartPossessionEffects(
+    nextPlayer
+);
 
     // =========================
     // 次のプレイヤーが
@@ -7984,9 +9212,19 @@ if (
         // 次のプレイヤー
         // =========================
 
-        const nextPlayer =
-            players[currentPlayer];
+       const nextPlayer =
+    players[currentPlayer];
 
+console.log(
+    "【所持品効果チェック③】",
+    nextPlayer.name,
+    nextPlayer.possessions,
+    nextPlayer.money
+);
+
+applyTurnStartPossessionEffects(
+    nextPlayer
+);
 
         // =========================
         // 次のプレイヤーが
@@ -8138,17 +9376,33 @@ switchingSound.play()
 
 
     const nextPlayer =
-        players[currentPlayer];
+    players[currentPlayer];
 
 
-    // =========================
-    // 次のプレイヤーが
-    // 仕事中か確認
-    // =========================
+// =========================
+// ターン開始時の所持品効果
+// =========================
 
-    if (
-        nextPlayer.jobTurnsRemaining > 0
-    ) {
+console.log(
+    "【所持品効果チェック①】",
+    nextPlayer.name,
+    nextPlayer.possessions,
+    nextPlayer.money
+);
+
+applyTurnStartPossessionEffects(
+    nextPlayer
+);
+
+
+// =========================
+// 次のプレイヤーが
+// 仕事中か確認
+// =========================
+
+if (
+    nextPlayer.jobTurnsRemaining > 0
+) {
 
         nextPlayer.jobTurnsRemaining -=
             1;
@@ -8883,14 +10137,7 @@ function showInventoryPopup(
         function (itemId, inventoryIndex) {
 
             const item =
-                itemData.find(
-                    function (data) {
-
-                        return data.id ===
-                            itemId;
-
-                    }
-                );
+    ITEM_CONTENTS[itemId];
 
 
             if (!item) {
@@ -8949,101 +10196,169 @@ function showInventoryPopup(
 
 
             useButton.addEventListener(
-                "click",
-                function () {
+    "click",
+    function () {
 
-                    // =========================
-                    // 移動アイテムか確認
-                    // =========================
+// =========================
+// どんぴ車
+// 6マス以内の好きなマスへ移動
+// =========================
 
-                    if (
-                        item.category !==
-                        "move"
-                    ) {
+if (
+    Number(itemId) === 8
+) {
 
-                        return;
-
-                    }
-
-
-                    // =========================
-                    // サイコロの個数
-                    // =========================
-
-                    let diceCount =
-                        1;
+    console.log(
+        "どんぴ車を使用しました"
+    );
 
 
-                    if (
-                        item.id === 1
-                    ) {
+    // アイテムを1個消費
 
-                        diceCount = 2;
-
-                    }
-
-
-                    if (
-                        item.id === 2
-                    ) {
-
-                        diceCount = 3;
-
-                    }
+    player.inventory.splice(
+        inventoryIndex,
+        1
+    );
 
 
-                    if (
-                        item.id === 3
-                    ) {
+    // 所持品画面を閉じる
 
-                        diceCount = 4;
-
-                    }
+    inventoryPopup.style.display =
+        "none";
 
 
-                    // =========================
-                    // アイテムを1個消費
-                    // =========================
+    // 6マス以内の停止可能マスを表示
 
-                    player.inventory.splice(
-                        inventoryIndex,
-                        1
-                    );
+    window.highlightReachableSquaresWithin(
+    player,
+    6
+);
 
 
-                    // =========================
-                    // 所持品画面を閉じる
-                    // =========================
+    return;
 
-                    inventoryPopup.style.display =
-                        "none";
+}
 
 
-                    // =========================
-                    // ゲーム画面の移動処理へ接続
-                    // =========================
+// =========================
+// 移動アイテムか確認
+// =========================
 
-                    if (
-                        typeof window.useMoveItem !==
-                        "function"
-                    ) {
+if (
+    item.category !==
+    "move"
+) {
 
-                        console.error(
-                            "ゲーム画面の移動処理が準備されていません。"
-                        );
+    return;
 
-                        return;
-
-                    }
+}
 
 
-                    window.useMoveItem(
-                        player,
-                        diceCount
-                    );
+        // =========================
+        // サイコロの個数
+        // =========================
 
-                }
+        let diceCount =
+            1;
+
+
+        if (
+            itemId === 1
+        ) {
+
+            diceCount = 2;
+
+        }
+
+
+        if (
+            itemId === 2
+        ) {
+
+            diceCount = 3;
+
+        }
+
+
+        if (
+            itemId === 3
+        ) {
+
+            diceCount = 4;
+
+        }
+
+
+        if (
+            itemId === 5
+        ) {
+
+            diceCount = 6;
+
+        }
+
+
+        if (
+            itemId === 6
+        ) {
+
+            diceCount = 8;
+
+        }
+
+
+        if (
+            itemId === 7
+        ) {
+
+            diceCount = 10;
+
+        }
+
+
+        // =========================
+        // アイテムを1個消費
+        // =========================
+
+        player.inventory.splice(
+            inventoryIndex,
+            1
+        );
+
+
+        // =========================
+        // 所持品画面を閉じる
+        // =========================
+
+        inventoryPopup.style.display =
+            "none";
+
+
+        // =========================
+        // 通常移動
+        // =========================
+
+        if (
+            typeof window.useMoveItem !==
+            "function"
+        ) {
+
+            console.error(
+                "ゲーム画面の移動処理が準備されていません。"
             );
+
+            return;
+
+        }
+
+
+        window.useMoveItem(
+            player,
+            diceCount
+        );
+
+    }
+);
 
 
             inventoryList.appendChild(
@@ -9260,29 +10575,197 @@ window.addEventListener("beforeunload", function (event) {
 });
 
 // =========================
-// 所持品によるダメージ軽減
+// 所持品を追加
 // =========================
 
-function getMonsterDamage(
+function addPossession(
     player,
-    damage
+    possessionId
 ) {
 
-    let reduction = 0;
+    if (!player.possessions) {
+
+        player.possessions = [];
+
+    }
+
+
+    player.possessions.push(
+        Number(possessionId)
+    );
+
+
+    // =========================
+    // 効果時間を初期化
+    // =========================
+
+    const possession =
+        POSSESSION_CONTENTS[
+            possessionId
+        ];
+
+
+    if (!possession) {
+
+        return;
+
+    }
+
+
+    if (
+        possession.effectDuration ===
+        "permanent"
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        possession.effectDuration ===
+        "5turn"
+    ) {
+
+        if (
+            !player.possessionTurns
+        ) {
+
+            player.possessionTurns = {};
+
+        }
+
+
+        player.possessionTurns[
+            possessionId
+        ] = 5;
+
+    }
+
+}
+
+// =========================
+// 複数の所持品を追加
+// =========================
+
+function addPossessions(
+    player,
+    possessionIds
+) {
+
+    possessionIds.forEach(
+        function (possessionId) {
+
+            addPossession(
+                player,
+                possessionId
+            );
+
+        }
+    );
+
+}
+
+// =========================
+// ターン開始時の所持品効果
+// =========================
+
+function applyTurnStartPossessionEffects(
+    player
+) {
+
+    if (
+        !player.possessions ||
+        player.possessions.length === 0
+    ) {
+
+        return;
+
+    }
 
 
     player.possessions.forEach(
         function (possessionId) {
 
             const possession =
-                possessionData.find(
-                    function (data) {
+                POSSESSION_CONTENTS[
+                    possessionId
+                ];
 
-                        return data.id ===
-                            possessionId;
 
-                    }
+            if (!possession) {
+
+                return;
+
+            }
+
+
+            // =========================
+            // 効果時間を確認
+            // =========================
+
+            if (
+                possession.effectDuration !==
+                "permanent"
+            ) {
+
+                if (
+                    !player.possessionTurns ||
+                    !player.possessionTurns[
+                        possessionId
+                    ]
+                ) {
+
+                    return;
+
+                }
+
+            }
+
+
+            // =========================
+            // ターン開始時のG獲得
+            // =========================
+
+            if (
+                possession.effectType ===
+                "goldGain"
+            ) {
+
+                player.money +=
+                    possession.effectValue;
+
+
+                console.log(
+                    `${player.name}：${possession.name}の効果で ${possession.effectValue}G獲得`
                 );
+
+            }
+
+        }
+    );
+
+}
+
+// =========================
+// 所持品の効果値を取得
+// =========================
+
+function getPossessionEffect(
+    player,
+    effectType
+) {
+
+    let totalValue = 0;
+
+
+    player.possessions.forEach(
+        function (possessionId) {
+
+            const possession =
+                POSSESSION_CONTENTS[
+                    possessionId
+                ];
 
 
             if (!possession) {
@@ -9291,11 +10774,12 @@ function getMonsterDamage(
 
 
             if (
-                possession.damageReduction
+                possession.effectType ===
+                effectType
             ) {
 
-                reduction +=
-                    possession.damageReduction;
+                totalValue +=
+                    possession.effectValue || 0;
 
             }
 
@@ -9303,14 +10787,64 @@ function getMonsterDamage(
     );
 
 
+    return totalValue;
+
+}
+
+
+// =========================
+// モンスターから受けるダメージ
+// =========================
+
+function getMonsterDamage(
+    player,
+    damage
+) {
+
+    const damageReduction =
+        getPossessionEffect(
+            player,
+            "damageReduction"
+        );
+
+
     const finalDamage =
-        Math.floor(
-            damage *
-            (1 - reduction)
+        Math.max(
+            0,
+            damage -
+            damageReduction
         );
 
 
     return finalDamage;
+
+}
+
+// =========================
+// 所持品による与ダメージ補正
+// =========================
+
+function getPlayerDamage(
+    player,
+    damage
+) {
+
+    const damageBonus =
+        getPossessionEffect(
+            player,
+            "damageBonus"
+        );
+
+
+    const finalDamage =
+        damage +
+        damageBonus;
+
+
+    return Math.max(
+        0,
+        finalDamage
+    );
 
 }
 
@@ -9369,14 +10903,9 @@ function showPossessionPopup(
         function (possessionId) {
 
             const possession =
-                possessionData.find(
-                    function (data) {
-
-                        return data.id ===
-                            possessionId;
-
-                    }
-                );
+            POSSESSION_CONTENTS[
+            possessionId
+             ];
 
 
             if (!possession) {
