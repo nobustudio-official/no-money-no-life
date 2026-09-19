@@ -207,7 +207,7 @@
     id="battleMagicButton"
     class="battle-magic-button"
 >
-    🔮 魔法
+    🪄 魔法
 </button>
 
 <button
@@ -229,7 +229,7 @@
 >
 
     <div class="battle-magic-title">
-        🔮 魔法
+        🪄 魔法
     </div>
 
 
@@ -552,7 +552,7 @@
     >
 
         <div class="magic-title">
-            🔮 魔法
+            🪄 魔法
         </div>
 
         <div
@@ -569,6 +569,98 @@
 
     </div>
 
+<!-- =========================
+     ショップ
+========================= -->
+
+<div
+    id="shopPopup"
+    style="display: none;"
+    class="shop-popup"
+>
+
+    <div class="shop-title">
+        🏪 ショップ
+    </div>
+
+    <div
+        id="shopName"
+        class="shop-name"
+    >
+    </div>
+
+    <div
+    id="shopMoney"
+    class="shop-money"
+>
+</div>
+
+
+
+
+    <!-- =========================
+     ショップカテゴリー
+========================= -->
+
+<div
+    id="shopCategoryList"
+    class="shop-category-list"
+>
+
+    <button
+        id="shopItemButton"
+        class="shop-category-button"
+    >
+        🎒 アイテム購入
+    </button>
+
+    <button
+        id="shopPossessionButton"
+        class="shop-category-button"
+    >
+        🏆 所持品購入
+    </button>
+
+    <button
+        id="shopPowerButton"
+        class="shop-category-button"
+    >
+        🔮 魔力購入
+    </button>
+
+    <button
+        id="shopMagicButton"
+        class="shop-category-button"
+    >
+        🪄 魔法購入
+    </button>
+
+</div>
+
+
+    <!-- =========================
+         商品一覧
+    ========================= -->
+
+    <div
+        id="shopItemList"
+        class="shop-item-list"
+    ></div>
+
+
+    <!-- =========================
+        やめる
+    ========================= -->
+
+    <button
+        id="shopCloseButton"
+        class="shop-close-button"
+    >
+        🏃 やめる
+    </button>
+
+</div>
+
     <!-- =========================
      魔法ショップ
 ========================= -->
@@ -579,7 +671,7 @@
 >
 
     <div class="magic-shop-title">
-        🔮 魔法屋
+        🪄 魔法屋
     </div>
 
 
@@ -605,6 +697,81 @@
     </button>
 
 </div>
+
+<!-- =========================
+     所持品購入画面
+     ========================= -->
+
+<div
+    id="possessionShopPopup"
+    style="display: none;"
+    class="magic-shop-popup"
+>
+
+    <div
+        class="magic-title"
+        id="possessionShopTitle"
+    >
+        🏆 所持品購入
+    </div>
+
+    <div
+        class="magic-shop-money"
+        id="possessionShopMoney"
+    >
+    </div>
+
+    <div
+        id="possessionShopList"
+    >
+    </div>
+
+    <button
+        id="possessionShopCloseButton"
+        class="magic-shop-close-button"
+    >
+        閉じる
+    </button>
+
+</div>
+
+<!-- =========================
+     魔力購入画面
+     ========================= -->
+
+<div
+    id="powerShopPopup"
+    style="display: none;"
+    class="magic-shop-popup"
+>
+
+    <div
+        class="magic-title"
+        id="powerShopTitle"
+    >
+        🔮 魔力購入
+    </div>
+
+    <div
+        class="magic-shop-money"
+        id="powerShopMoney"
+    >
+    </div>
+
+    <div
+        id="powerShopList"
+    >
+    </div>
+
+    <button
+        id="powerShopCloseButton"
+        class="magic-shop-close-button"
+    >
+        閉じる
+    </button>
+
+</div>
+
 
     <!-- =========================
          最終結果
@@ -642,9 +809,13 @@
          JavaScript
     ========================= -->
 
+    <script src="data.js"></script>
+    <script src="map.js"></script>
+    <script src="sound.js"></script>
     <script src="game.js"></script>
 
     <div 
+
 id="itemRoulette"
  class="item-roulette">
 
