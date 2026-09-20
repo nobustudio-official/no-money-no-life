@@ -26,10 +26,9 @@ const mapData = [
 
     {
         id: 2,
-        name: "居酒屋のバイト",
         icon: "💼",
         type: "job",
-        jobWage: 1000,
+        jobId: 2,
         next: [3],
         x: 46,
         y: 80
@@ -149,14 +148,13 @@ const mapData = [
     },
 
     {
-        id: 14,
-        name: "運び屋のバイト",
-        icon: "💼",
-        type: "job",
-        jobWage: 1500,
-        next: [15,21],
-        x: 54,
-        y: 50
+    id: 14,
+    icon: "💼",
+    type: "job",
+    jobId: 3,
+    next: [15, 21],
+    x: 54,
+    y: 50
     },
 
     {
@@ -224,10 +222,9 @@ const mapData = [
 
     {
         id: 21,
-        name: "パン屋",
         icon: "💼",
         type: "job",
-        jobWage: 1500,
+        jobId: 4,
         next: [22],
         x: 54,
         y: 35
@@ -308,10 +305,9 @@ const mapData = [
 
     {
         id: 29,
-        name: "引っ越しバイト",
         icon: "💼",
         type: "job",
-        jobWage: 2000,
+        jobId: 1,
         next: [],
         x: 70,
         y: 20
