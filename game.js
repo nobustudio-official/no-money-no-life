@@ -533,7 +533,7 @@ startButton.addEventListener(
 
   players.push({
     name: name,
-    money: 500,
+    money: 5000,
     magicPower: 100,
     bossDamage: 0,
     position: 0,
@@ -561,7 +561,8 @@ players[index].inventory = [1, 8];
 
 addPossessions(
     players[index],
-    [1, 3]
+    [1, 3],
+    1
 );
 
 
@@ -4564,6 +4565,15 @@ const monster =
             let currentRound =
                 1;
 
+// 戦闘中バフ状態
+const battleState = {
+
+    magicPowerRate: 1,
+
+    enemyAttackRate: 1
+
+};
+
 
             // =========================
             // 戦闘画面
@@ -4670,15 +4680,18 @@ passButton.onclick =
             true;
 
 
-        // =========================
-        // モンスターの反撃
-        // =========================
+// =========================
+// モンスターの反撃ダメージ計算
+// =========================
 
-        const monsterDamage =
-            getMonsterDamage(
-                player,
-                monster.attack
-            );
+const monsterDamage =
+    getMonsterDamage(
+        player,
+        Math.floor(
+            monster.attack *
+            battleState.enemyAttackRate
+        )
+    );
 
 
         player.money -=
@@ -4941,50 +4954,228 @@ passButton.onclick =
 
                             player.money -=
                                 magic.cost;
-
-
-                            // =========================
-                            // ダメージ計算
-                            // =========================
-
-                            // =========================
-// 基本ダメージ
+               
+// =========================
+// バフ魔法の処理
 // =========================
 
-const baseMagicDamage =
-    Math.floor(
-        player.magicPower *
-        magic.powerRate
+if (
+    magic.type === "buff"
+) {
+
+    // =========================
+    // バフ効果を適用
+    // =========================
+
+    const buffResult =
+    tryApplyBattleBuff(
+        magic,
+        battleState
     );
 
 
+    // =========================
+    // プレイヤー表示更新
+    // =========================
+
+    document.getElementById(
+        "battlePlayerStats"
+    ).innerHTML =
+        `💰${formatG(player.money)}G<br>` +
+        `🔮魔力 ${player.magicPower}`;
+
+
+    renderPlayers();
+
+
+    // =========================
+    // モンスターの反撃ダメージ計算
+    // =========================
+
+    const monsterDamage =
+        getMonsterDamage(
+            player,
+            Math.floor(
+                monster.attack *
+                battleState.enemyAttackRate
+            )
+        );
+
+
+    // =========================
+    // プレイヤーの所持金からダメージ
+    // =========================
+
+    player.money -=
+        monsterDamage;
+
+
+    if (
+        player.money < 0
+    ) {
+
+        player.money =
+            0;
+
+    }
+
+
+    // =========================
+    // プレイヤー表示更新
+    // =========================
+
+    document.getElementById(
+        "battlePlayerStats"
+    ).innerHTML =
+        `💰${formatG(player.money)}G<br>` +
+        `🔮魔力 ${player.magicPower}`;
+
+
+    renderPlayers();
+
+
+    // =========================
+    // バフ＋モンスター反撃を表示
+    // =========================
+
+    let buffMessage = "";
+
+if (
+    buffResult.success
+) {
+
+    if (
+        magic.buffTarget === "self" &&
+        magic.buffStat === "magicPower"
+    ) {
+
+        buffMessage =
+            `⚡ 魔力が${magic.buffRate}倍になった！`;
+
+    }
+
+    else if (
+        magic.buffTarget === "enemy" &&
+        magic.buffStat === "attackPower"
+    ) {
+
+        buffMessage =
+            `🛡️ ${monster.name}の攻撃力が${magic.buffRate}倍になった！`;
+
+    }
+
+    else {
+
+        buffMessage =
+            "✨ バフ効果が発動！";
+
+    }
+
+}
+
+else {
+
+    buffMessage =
+        "💥 バフに失敗した！";
+
+}
+
+
+document.getElementById(
+    "battleMessage"
+).textContent =
+    `✨ ${magic.name}！` +
+    `　${buffMessage}` +
+    `　👾 ${monster.name}の反撃！` +
+    ` ${monsterDamage}Gのダメージ！`;
+
+
+    // =========================
+    // 3ラウンド終了
+    // =========================
+
+    if (
+        currentRound >= 3
+    ) {
+
+        document.getElementById(
+            "battleMessage"
+        ).textContent +=
+            "　⚔️ 3ラウンド終了！";
+
+         passButton.style.display =
+        "none";
+
+
+        magicButton.textContent =
+            "戦闘終了";
+
+
+        magicButton.onclick =
+            function () {
+
+                magicButton.disabled =
+                    true;
+
+
+                battlePopup.style.display =
+                    "none";
+
+
+                passButton.style.display =
+                    "none";
+
+
+                finishTurn(
+                    player
+                );
+
+            };
+
+
+        return;
+
+    }
+
+
+    // =========================
+    // 次のラウンド
+    // =========================
+
+    currentRound +=
+        1;
+
+
+    document.getElementById(
+        "battleRound"
+    ).textContent =
+        `ROUND ${currentRound} / 3`;
+
+
+    return;
+
+}
+
 // =========================
-// 所持品による与ダメージ補正
+// 攻撃魔法のダメージ計算
 // =========================
 
 const magicDamage =
-    getPlayerDamage(
+    calculateMagicDamage(
         player,
-        baseMagicDamage
+        magic
+    ) *
+    battleState.magicPowerRate;
+
+ // =========================
+ // モンスターHPを減らす
+// =========================
+
+    monsterHP =
+    applyMonsterDamage(
+        monsterHP,
+        magicDamage
     );
-
-
-                            // =========================
-                            // モンスターHPを減らす
-                            // =========================
-
-                            monsterHP -=
-                                magicDamage;
-
-
-                            if (
-                                monsterHP < 0
-                            ) {
-
-                                monsterHP =
-                                    0;
-
-                            }
 
 
                             // =========================
@@ -5066,14 +5257,16 @@ passButton.style.display =
 
 }
 
- // =========================
-// モンスター反撃
 // =========================
-
+// モンスターの反撃ダメージ計算
+// =========================
 const monsterDamage =
     getMonsterDamage(
         player,
-        monster.attack
+        Math.floor(
+            monster.attack *
+            battleState.enemyAttackRate
+        )
     );
 
 player.money -=
@@ -5082,6 +5275,7 @@ player.money -=
 if (player.money <= 0) {
 
     player.money = 0;
+    
 
     renderPlayers();
 
@@ -5141,6 +5335,8 @@ battleMessage.textContent =
                                 ).textContent +=
                                     "　⚔️ 3ラウンド終了！";
 
+                                passButton.style.display =
+                                "none";
 
                                 magicButton.textContent =
                                     "戦闘終了";
@@ -5274,6 +5470,18 @@ function startBossBattle(
         1;
 
 
+// 戦闘中バフ状態
+const battleState = {
+
+// プレイヤーの魔法攻撃力倍率
+    magicPowerRate: 1,
+
+ // ボスの攻撃力倍率
+    enemyAttackRate: 1
+
+};
+
+
     // =========================
     // プレイヤー表示
     // =========================
@@ -5396,15 +5604,17 @@ const baseBossDamage =
 
 
 // =========================
-// 所持品による被ダメージ補正
+// バフ・所持品による被ダメージ補正
 // =========================
 
 const bossDamage =
     getMonsterDamage(
         player,
-        baseBossDamage
+        Math.floor(
+            baseBossDamage *
+            battleState.enemyAttackRate
+        )
     );
-
 
 player.money -=
     bossDamage;
@@ -5419,15 +5629,6 @@ if (
 
 }
 
-
-        if (
-            player.money < 0
-        ) {
-
-            player.money =
-                0;
-
-        }
 
 
         // =========================
@@ -5637,26 +5838,288 @@ if (
                     player.money -=
                         magic.cost;
 
- // =========================
-// 基本ダメージ
+// =========================
+// バフ魔法の処理
 // =========================
 
-const baseMagicDamage =
-    Math.floor(
-        player.magicPower *
-        magic.powerRate
-    );
+if (
+    magic.type === "buff"
+) {
 
+    // =========================
+    // バフ効果を適用
+    // =========================
+
+    const buffResult =
+        tryApplyBattleBuff(
+            magic,
+            battleState
+        );
+
+
+    // =========================
+    // プレイヤー表示更新
+    // =========================
+
+    document.getElementById(
+        "battlePlayerStats"
+    ).innerHTML =
+        `💰${formatG(player.money)}G<br>` +
+        `🔮魔力 ${player.magicPower}`;
+
+
+    renderPlayers();
+
+
+    // =========================
+    // バフ結果メッセージ
+    // =========================
+
+    let buffMessage = "";
+
+
+    if (
+        buffResult.success
+    ) {
+
+        if (
+            magic.buffTarget === "self" &&
+            magic.buffStat === "magicPower"
+        ) {
+
+            buffMessage =
+                `⚡ 魔力が${magic.buffRate}倍になった！`;
+
+        }
+
+        else if (
+            magic.buffTarget === "enemy" &&
+            magic.buffStat === "attackPower"
+        ) {
+
+            buffMessage =
+                `🛡️ ${BOSS_CONTENTS[currentBossId].name}` +
+                `の攻撃力が${magic.buffRate}倍になった！`;
+
+        }
+
+        else {
+
+            buffMessage =
+                "✨ バフ効果が発動！";
+
+        }
+
+    }
+
+    else {
+
+        buffMessage =
+            "💥 バフに失敗した！";
+
+    }
+
+
+    // =========================
+    // ボスの反撃ダメージ計算
+    // =========================
+
+    const baseBossDamage =
+        BOSS_CONTENTS[
+            currentBossId
+        ].attack;
+
+
+    const bossDamage =
+        getMonsterDamage(
+            player,
+            Math.floor(
+                baseBossDamage *
+                battleState.enemyAttackRate
+            )
+        );
+
+
+    // =========================
+    // プレイヤーの所持金からダメージ
+    // =========================
+
+    player.money -=
+        bossDamage;
+
+
+    if (
+        player.money < 0
+    ) {
+
+        player.money =
+            0;
+
+    }
+
+
+    // =========================
+    // プレイヤー表示更新
+    // =========================
+
+    document.getElementById(
+        "battlePlayerStats"
+    ).innerHTML =
+        `💰${formatG(player.money)}G<br>` +
+        `🔮魔力 ${player.magicPower}`;
+
+
+    renderPlayers();
+
+
+    // =========================
+    // プレイヤーが0G
+    // =========================
+
+    if (
+        player.money <= 0
+    ) {
+
+        document.getElementById(
+            "battleMessage"
+        ).textContent =
+            `✨ ${magic.name}！` +
+            `　${buffMessage}` +
+            `👹 ${BOSS_CONTENTS[currentBossId].name}` +
+            `の反撃！` +
+            ` ${formatG(bossDamage)}Gのダメージ！`;
+
+
+        battlePopup.style.display =
+            "none";
+
+
+        checkPlayerRespawn(
+            player,
+
+            function () {
+
+                finishTurn(
+                    player
+                );
+
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    // =========================
+    // バフ＋ボス反撃を表示
+    // =========================
+
+    document.getElementById(
+        "battleMessage"
+    ).textContent =
+        `✨ ${magic.name}！` +
+        `　${buffMessage}` +
+        `<br>` +
+        `👹 ${BOSS_CONTENTS[currentBossId].name}` +
+        `の反撃！` +
+        ` ${formatG(bossDamage)}Gのダメージ！`;
+
+
+    // =========================
+    // 3ラウンド終了
+    // =========================
+
+    if (
+        currentRound >= 3
+    ) {
+
+        document.getElementById(
+            "battleMessage"
+        ).textContent +=
+            `<br>⚔️ 3ラウンド終了！`;
+
+
+        // =========================
+        // パスボタンを即非表示
+        // =========================
+
+        passButton.style.display =
+            "none";
+
+
+        // =========================
+        // 戦闘終了ボタン
+        // =========================
+
+        magicButton.textContent =
+            "戦闘終了";
+
+
+        magicButton.disabled =
+            false;
+
+
+        magicButton.onclick =
+            function () {
+
+                magicButton.disabled =
+                    true;
+
+
+                battlePopup.style.display =
+                    "none";
+
+
+                finishTurn(
+                    player
+                );
+
+            };
+
+
+        return;
+
+    }
+
+
+    // =========================
+    // 次のラウンド
+    // =========================
+
+    currentRound +=
+        1;
+
+
+    document.getElementById(
+        "battleRound"
+    ).textContent =
+        `ROUND ${currentRound} / 3`;
+
+
+    // =========================
+    // 次のラウンドの魔法を有効化
+    // =========================
+
+    magicButton.disabled =
+        false;
+
+
+    return;
+
+}
 
 // =========================
-// 所持品による与ダメージ補正
+// 攻撃魔法のダメージ計算
 // =========================
 
 const magicDamage =
-    getPlayerDamage(
+    calculateMagicDamage(
         player,
-        baseMagicDamage
-    );
+        magic
+    ) *
+    battleState.magicPowerRate;
                    
 
 
@@ -5665,7 +6128,7 @@ const magicDamage =
 // =========================
 
 const actualDamage =
-    Math.min(
+    calculateActualDamage(
         magicDamage,
         currentBossHP
     );
@@ -5675,8 +6138,11 @@ const actualDamage =
 // ボスHPを減らす
 // =========================
 
-currentBossHP -=
-    actualDamage;
+currentBossHP =
+    applyBossDamage(
+        currentBossHP,
+        actualDamage
+    );
 
 
 // =========================
@@ -5788,7 +6254,7 @@ if (
                                 battlePopup.style.display =
                                     "none";
 
-                                // =========================
+// =========================
 // ボス報酬表示
 // =========================
 
@@ -5931,15 +6397,17 @@ const baseBossDamage =
 
 
 // =========================
-// 所持品による被ダメージ補正
+// バフ・所持品による被ダメージ補正
 // =========================
 
 const bossDamage =
     getMonsterDamage(
         player,
-        baseBossDamage
+        Math.floor(
+            baseBossDamage *
+            battleState.enemyAttackRate
+        )
     );
-
 
 player.money -=
     bossDamage;
@@ -5954,19 +6422,6 @@ if (
 
 }
 
-
-                    player.money -=
-                        bossDamage;
-
-
-                    if (
-                        player.money < 0
-                    ) {
-
-                        player.money =
-                            0;
-
-                    }
 
 
                     // =========================
@@ -6742,9 +7197,11 @@ if (randomTreasure.category === "possession") {
         randomTreasure.content;
 
 
-    player.possessions.push(
-        randomTreasure.id
-    );
+   addPossession(
+    player,
+    randomTreasure.id,
+    currentTurn
+);
 
 
     renderPlayers();
@@ -8024,7 +8481,8 @@ if (
 
 addPossession(
     player,
-    Number(contentId)
+    Number(contentId),
+    currentTurn
 );
 
 
@@ -9029,6 +9487,11 @@ console.log(
     nextPlayer.money
 );
 
+removeExpiredPossessions(
+    nextPlayer,
+    currentTurn
+);
+
 applyTurnStartPossessionEffects(
     nextPlayer
 );
@@ -9222,6 +9685,11 @@ console.log(
     nextPlayer.money
 );
 
+removeExpiredPossessions(
+    nextPlayer,
+    currentTurn
+);
+
 applyTurnStartPossessionEffects(
     nextPlayer
 );
@@ -9388,6 +9856,11 @@ console.log(
     nextPlayer.name,
     nextPlayer.possessions,
     nextPlayer.money
+);
+
+removeExpiredPossessions(
+    nextPlayer,
+    currentTurn
 );
 
 applyTurnStartPossessionEffects(
@@ -10574,279 +11047,6 @@ window.addEventListener("beforeunload", function (event) {
     event.returnValue = true;
 });
 
-// =========================
-// 所持品を追加
-// =========================
-
-function addPossession(
-    player,
-    possessionId
-) {
-
-    if (!player.possessions) {
-
-        player.possessions = [];
-
-    }
-
-
-    player.possessions.push(
-        Number(possessionId)
-    );
-
-
-    // =========================
-    // 効果時間を初期化
-    // =========================
-
-    const possession =
-        POSSESSION_CONTENTS[
-            possessionId
-        ];
-
-
-    if (!possession) {
-
-        return;
-
-    }
-
-
-    if (
-        possession.effectDuration ===
-        "permanent"
-    ) {
-
-        return;
-
-    }
-
-
-    if (
-        possession.effectDuration ===
-        "5turn"
-    ) {
-
-        if (
-            !player.possessionTurns
-        ) {
-
-            player.possessionTurns = {};
-
-        }
-
-
-        player.possessionTurns[
-            possessionId
-        ] = 5;
-
-    }
-
-}
-
-// =========================
-// 複数の所持品を追加
-// =========================
-
-function addPossessions(
-    player,
-    possessionIds
-) {
-
-    possessionIds.forEach(
-        function (possessionId) {
-
-            addPossession(
-                player,
-                possessionId
-            );
-
-        }
-    );
-
-}
-
-// =========================
-// ターン開始時の所持品効果
-// =========================
-
-function applyTurnStartPossessionEffects(
-    player
-) {
-
-    if (
-        !player.possessions ||
-        player.possessions.length === 0
-    ) {
-
-        return;
-
-    }
-
-
-    player.possessions.forEach(
-        function (possessionId) {
-
-            const possession =
-                POSSESSION_CONTENTS[
-                    possessionId
-                ];
-
-
-            if (!possession) {
-
-                return;
-
-            }
-
-
-            // =========================
-            // 効果時間を確認
-            // =========================
-
-            if (
-                possession.effectDuration !==
-                "permanent"
-            ) {
-
-                if (
-                    !player.possessionTurns ||
-                    !player.possessionTurns[
-                        possessionId
-                    ]
-                ) {
-
-                    return;
-
-                }
-
-            }
-
-
-            // =========================
-            // ターン開始時のG獲得
-            // =========================
-
-            if (
-                possession.effectType ===
-                "goldGain"
-            ) {
-
-                player.money +=
-                    possession.effectValue;
-
-
-                console.log(
-                    `${player.name}：${possession.name}の効果で ${possession.effectValue}G獲得`
-                );
-
-            }
-
-        }
-    );
-
-}
-
-// =========================
-// 所持品の効果値を取得
-// =========================
-
-function getPossessionEffect(
-    player,
-    effectType
-) {
-
-    let totalValue = 0;
-
-
-    player.possessions.forEach(
-        function (possessionId) {
-
-            const possession =
-                POSSESSION_CONTENTS[
-                    possessionId
-                ];
-
-
-            if (!possession) {
-                return;
-            }
-
-
-            if (
-                possession.effectType ===
-                effectType
-            ) {
-
-                totalValue +=
-                    possession.effectValue || 0;
-
-            }
-
-        }
-    );
-
-
-    return totalValue;
-
-}
-
-
-// =========================
-// モンスターから受けるダメージ
-// =========================
-
-function getMonsterDamage(
-    player,
-    damage
-) {
-
-    const damageReduction =
-        getPossessionEffect(
-            player,
-            "damageReduction"
-        );
-
-
-    const finalDamage =
-        Math.max(
-            0,
-            damage -
-            damageReduction
-        );
-
-
-    return finalDamage;
-
-}
-
-// =========================
-// 所持品による与ダメージ補正
-// =========================
-
-function getPlayerDamage(
-    player,
-    damage
-) {
-
-    const damageBonus =
-        getPossessionEffect(
-            player,
-            "damageBonus"
-        );
-
-
-    const finalDamage =
-        damage +
-        damageBonus;
-
-
-    return Math.max(
-        0,
-        finalDamage
-    );
-
-}
 
 // =========================
 // 所持品画面
@@ -10900,12 +11100,12 @@ function showPossessionPopup(
     // =========================
 
     player.possessions.forEach(
-        function (possessionId) {
+    function (possessionData) {
 
-            const possession =
+        const possession =
             POSSESSION_CONTENTS[
-            possessionId
-             ];
+                possessionData.id
+            ];
 
 
             if (!possession) {
