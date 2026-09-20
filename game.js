@@ -336,14 +336,14 @@ function showBossDestinationPopup(
     // =========================
 
     showEventPopup(
-        "👹 次の目的地が決定！",
+        `${BOSS_CONTENTS[currentBossId].icon} 次の目的地が決定！`,
         `
         <div style="font-size: 1.5em; margin-bottom: 15px;">
             🎯 次の目的地は……
         </div>
 
         <div style="font-size: 2em; font-weight: bold;">
-            👹 ${boss.name}
+            ${BOSS_CONTENTS[currentBossId].icon} ${boss.name}
         </div>
 
         <div style="margin-top: 15px;">
@@ -533,7 +533,7 @@ startButton.addEventListener(
 
   players.push({
     name: name,
-    money: 5000,
+    money: 1000,
     magicPower: 100,
     bossDamage: 0,
     position: 0,
@@ -1546,7 +1546,7 @@ if (
 ) {
 
     squareIcon.textContent =
-        "👹";
+       `${BOSS_CONTENTS[currentBossId].icon}`;
 
     node.classList.add(
         "boss-node"
@@ -5533,7 +5533,7 @@ const battleState = {
     document.getElementById(
         "battleMessage"
     ).textContent =
-        "👹 デーモンロードとの戦闘開始！";
+        `${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}との戦闘開始！`;
 
 
        
@@ -5658,7 +5658,7 @@ if (
             ).textContent =
                 `⏭️ パスした！` +
                 `<br>` +
-                `👹 ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
+                `${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
                 `${bossDamage}Gのダメージ！`;
 
 
@@ -5692,7 +5692,7 @@ if (
         ).innerHTML =
             `⏭️ パスした！` +
             `<br>` +
-            `👹 ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
+            `${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
             `${bossDamage}Gのダメージ！`;
 
 
@@ -5985,7 +5985,7 @@ if (
         ).textContent =
             `✨ ${magic.name}！` +
             `　${buffMessage}` +
-            `👹 ${BOSS_CONTENTS[currentBossId].name}` +
+            `${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}` +
             `の反撃！` +
             ` ${formatG(bossDamage)}Gのダメージ！`;
 
@@ -6020,9 +6020,8 @@ if (
         "battleMessage"
     ).textContent =
         `✨ ${magic.name}！` +
-        `　${buffMessage}` +
-        `<br>` +
-        `👹 ${BOSS_CONTENTS[currentBossId].name}` +
+        `　${buffMessage}<br>` +
+        `${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}` +
         `の反撃！` +
         ` ${formatG(bossDamage)}Gのダメージ！`;
 
@@ -6235,7 +6234,7 @@ if (
                         ).textContent =
                             `${magic.name}！ ` +
                             `${magicDamage}ダメージ！` +
-                           `　👹 ${BOSS_CONTENTS[currentBossId].name}を倒した！`;
+                           `　${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}を倒した！`;
 
                         magicButton.textContent =
                             "戦闘終了";
@@ -6310,7 +6309,7 @@ bossRewardMessage +=
 // =========================
 
 showEventPopup(
-    "👹 ボス撃破！",
+    `${BOSS_CONTENTS[currentBossId].icon} ボス撃破！`,
     bossRewardMessage,
     function () {
 
@@ -6321,6 +6320,21 @@ showEventPopup(
         previousBossSquareId =
             currentBossSquareId;
 
+        // =========================
+// 次のボスへ変更
+// =========================
+
+// デーモンロード撃破後は
+// 以降ずっと「いただきリリィ」
+
+if (
+    currentBossId === 1
+) {
+
+    currentBossId =
+        2;
+
+}
 
         // =========================
         // 次のボス位置を決定
@@ -6475,7 +6489,7 @@ if (
                     ).textContent =
                         `${magic.name}！ ` +
                         `${magicDamage}ダメージ！` +
-                        `　👹 ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
+                        `　${BOSS_CONTENTS[currentBossId].icon}  ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
                         `${bossDamage}Gのダメージ！`;
 
 
@@ -6606,14 +6620,17 @@ function showBossChallengePopup(
             font-size: 2.5em;
             margin-bottom: 15px;
         ">
-            👹
+            ${BOSS_CONTENTS[currentBossId].icon} 
         </div>
 
         <div style="
         font-size: 1.5em;
         font-weight: bold;
     ">
-        ${isRechallenge ? "ボスが待っている！" : "ボスが現れた！"}
+        ${isRechallenge
+            ? "ボスが待っている！"
+            : `${BOSS_CONTENTS[currentBossId].name}が現れた！`
+        }
     </div>
 
            <div style="
@@ -6684,7 +6701,7 @@ function showBossChallengePopup(
         ) {
 
             showEventPopup(
-                "👹 ボスから撤退",
+                `${BOSS_CONTENTS[currentBossId].icon} ボスから撤退`,
 
                 `
                 ${player.name}は
@@ -10214,7 +10231,7 @@ function showJobPopup(
 
 const currentWage =
     getCurrentJobWage(
-        square.jobWage,
+        job.unitPrice,
         turn
     );
 
@@ -10224,7 +10241,7 @@ const currentWage =
 // =========================
 
 jobMessage.innerHTML =
-    `💼 ${square.name}で働くことができます。<br><br>` +
+    `💼 ${job.name}で働くことができます。<br><br>` +    
     `💰 今回の時給：<strong>${formatG(currentWage)}G</strong><br><br>` +
     `${player.name}はどうしますか？`;
 
@@ -10267,8 +10284,8 @@ document.getElementById(
     player,
     1,
     getCurrentJobWage(
-        square.jobWage,
-        turn
+    job.unitPrice,
+    turn
     ),
     finishCallback
 );
@@ -10287,8 +10304,8 @@ document.getElementById(
     player,
     2,
     getCurrentJobWage(
-        square.jobWage,
-        turn
+    job.unitPrice,
+    turn
     ) * 2,
     finishCallback
 );
@@ -10307,8 +10324,8 @@ document.getElementById(
     player,
     3,
     getCurrentJobWage(
-        square.jobWage,
-        turn
+    job.unitPrice,
+    turn
     ) * 3,
     finishCallback
 );
