@@ -40,6 +40,9 @@ const MAP_TYPE_ICON_PATHS = {
 const BOSS_MAP_ICON_PATH =
     "images/map-icons/boss.png";
 
+const BOSS_ICON_HTML =
+    `<img src="${BOSS_MAP_ICON_PATH}" alt="ボス" style="width:1.2em;height:1.2em;object-fit:contain;vertical-align:middle;">`;
+
 const MAP_TYPE_ICON_FALLBACKS = {
     start: "🏕️",
     money: "💰",
@@ -411,112 +414,172 @@ function showBossDestinationPopup(
         return;
     }
 
+    const popup =
+        document.getElementById(
+            "eventPopup"
+        );
+
     // =========================
-    // ボス位置へカメラ移動
+    // ボス決定ポップアップ専用表示
     // =========================
 
-    setTimeout(
-        function () {
+    if (popup) {
+        popup.classList.add(
+            "boss-destination-popup"
+        );
+    }
 
-            const mapArea =
-                document.querySelector(
-                    ".game-screen .map-area"
-                );
+    // =========================
+    // ボスマスを中央へ移動
+    // =========================
+    // ポップアップ表示前に、ボスを
+    // マップの中央へきちんと合わせます。
+    // =========================
 
-            const bossNode =
-                document.querySelector(
-                    `.map-node[data-square-id="${boss.id}"]`
-                );
+    setTimeout(function () {
 
-            if (
-                mapArea &&
-                bossNode
-            ) {
+        const mapArea =
+            document.querySelector(
+                ".game-screen .map-area"
+            );
 
-                const mapRect =
-                    mapArea.getBoundingClientRect();
+        const bossNode =
+            document.querySelector(
+                `.map-node[data-square-id="${boss.id}"]`
+            );
 
-                const bossRect =
-                    bossNode.getBoundingClientRect();
+        if (!mapArea || !bossNode) {
+            return;
+        }
 
-                const mapCenterX =
-                    mapRect.left +
-                    mapRect.width / 2;
+        const bossCenterX =
+            bossNode.offsetLeft +
+            bossNode.offsetWidth / 2;
 
-                const mapCenterY =
-                    mapRect.top +
-                    mapRect.height / 2;
+        const bossCenterY =
+            bossNode.offsetTop +
+            bossNode.offsetHeight / 2;
 
-                const bossCenterX =
-                    bossRect.left +
-                    bossRect.width / 2;
+        const targetScrollLeft =
+            bossCenterX -
+            mapArea.clientWidth / 2;
 
-                const bossCenterY =
-                    bossRect.top +
-                    bossRect.height / 2;
+        const targetScrollTop =
+            bossCenterY -
+            mapArea.clientHeight / 2;
 
-                const scrollAmountX =
-                    bossCenterX -
-                    mapCenterX;
+        const maxScrollLeft =
+            Math.max(
+                0,
+                mapArea.scrollWidth -
+                mapArea.clientWidth
+            );
 
-                const scrollAmountY =
-                    bossCenterY -
-                    mapCenterY;
+        const maxScrollTop =
+            Math.max(
+                0,
+                mapArea.scrollHeight -
+                mapArea.clientHeight
+            );
 
-                mapArea.scrollTo({
+        const finalScrollLeft =
+            Math.max(
+                0,
+                Math.min(
+                    targetScrollLeft,
+                    maxScrollLeft
+                )
+            );
 
-                    left:
-                        mapArea.scrollLeft +
-                        scrollAmountX,
+        const finalScrollTop =
+            Math.max(
+                0,
+                Math.min(
+                    targetScrollTop,
+                    maxScrollTop
+                )
+            );
 
-                    top:
-                        mapArea.scrollTop +
-                        scrollAmountY,
+        mapArea.scrollTo({
+            left: finalScrollLeft,
+            top: finalScrollTop,
+            behavior: "smooth"
+        });
 
-                    behavior:
-                        "smooth"
-
-                });
-
-            }
-
-        },
-        50
-    );
+    }, 50);
 
     // =========================
     // ポップアップ表示
     // =========================
+    // showEventPopup() のタイトルは
+    // textContentで処理されるため、
+    // HTMLは本文側にだけ入れます。
+    // =========================
 
-    showEventPopup(
-        `${BOSS_CONTENTS[currentBossId].icon} 次の目的地が決定！`,
-        `
-        <div style="font-size: 1.5em; margin-bottom: 15px;">
-            🎯 次の目的地は……
-        </div>
+    setTimeout(function () {
 
-        <div style="font-size: 2em; font-weight: bold;">
-            ${BOSS_CONTENTS[currentBossId].icon} ${boss.name}
-        </div>
+        showEventPopup(
+            "次の目的地が決定！",
+            `
+            <div class="boss-destination-image-wrap">
+                <img
+                    src="${BOSS_MAP_ICON_PATH}"
+                    alt="ボス"
+                    class="boss-destination-popup-icon"
+                >
+            </div>
 
-        <div style="margin-top: 15px;">
-            このマスにボスが待ち受けている！
-        </div>
-        `,
-        function () {
+            <div class="boss-destination-line">
+                ${BOSS_CONTENTS[currentBossId].name}
+            </div>
 
-            // =========================
-            // 次の処理へ
-            // =========================
+            <div class="boss-destination-message">
+                がこのマスで待ち受けている！
+            </div>
+            `,
+            function () {
 
-            if (callback) {
+                // =========================
+                // 専用クラスを解除
+                // =========================
 
-                callback();
+                if (popup) {
+                    popup.classList.remove(
+                        "boss-destination-popup"
+                    );
+                }
+
+                // =========================
+                // ボス撃破後など
+                // =========================
+
+                if (callback) {
+                    callback();
+                    return;
+                }
+
+                // =========================
+                // ゲーム開始時
+                // プレイヤー1へ戻す
+                // =========================
+
+                currentPlayer = 0;
+
+                renderTurn();
+                renderPlayers();
+
+                // ボスへのsmoothスクロールが残っていても、
+                // ここで確実に解除してからプレイヤー1へ移動。
+                requestAnimationFrame(function () {
+
+                    centerCurrentPlayerOnMap("auto");
+
+                });
 
             }
+        );
 
-        }
-    );
+    }, 450);
 
 }
 
@@ -543,7 +606,7 @@ const GAME_LOADING_ASSETS = [
     "images/characters/player-female.png",
     "images/ui-icons/gold.png",
     "images/ui-icons/mana.png",
-    "images/ui-icons/destination.png",
+    "images/map-icons/boss.png",
     "images/ui-icons/dice.png",
     "images/ui-icons/item.png",
     "images/ui-icons/magic.png",
@@ -1153,11 +1216,11 @@ function showGameScreen(
                 >
                     <img
                         class="hud-icon hud-destination-icon"
-                        src="images/ui-icons/destination.png"
-                        alt="目的地"
+                        src="${BOSS_MAP_ICON_PATH}"
+                        alt="ボス"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';"
                     >
-                    <span class="hud-icon-fallback">🚩</span>
+                    <span class="hud-icon-fallback"></span>
                     <span class="hud-destination-label">目的地まで あと</span>
                     <strong id="hudDestinationValue" class="hud-destination-value">0</strong>
                     <span class="hud-destination-label">マス</span>
@@ -3427,6 +3490,22 @@ function renderTurn() {
             hudPlayerName,
             player.name
         );
+
+        // =========================
+        // プレイヤー顔アイコンをタップ
+        // 現在プレイヤーの位置へカメラを戻す
+        // =========================
+
+        if (hudPlayerAvatar) {
+
+            hudPlayerAvatar.onclick =
+                function () {
+
+                    centerCurrentPlayerOnMap();
+
+                };
+
+        }
 
     }
 
@@ -6097,8 +6176,8 @@ const battleState = {
 
    document.getElementById(
     "battleMonsterName"
-    ).textContent =
-    `${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}`;
+    ).innerHTML =
+    `${BOSS_ICON_HTML} ${BOSS_CONTENTS[currentBossId].name}`;
 
 
     document.getElementById(
@@ -6124,8 +6203,8 @@ const battleState = {
 
     document.getElementById(
         "battleMessage"
-    ).textContent =
-        `${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}との戦闘開始！`;
+    ).innerHTML =
+        `${BOSS_ICON_HTML} ${BOSS_CONTENTS[currentBossId].name}との戦闘開始！`;
 
 
        
@@ -6247,10 +6326,10 @@ if (
 
             document.getElementById(
                 "battleMessage"
-            ).textContent =
+            ).innerHTML =
                 `⏭️ パスした！` +
                 `<br>` +
-                `${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
+                `${BOSS_ICON_HTML} ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
                 `${bossDamage}Gのダメージ！`;
 
 
@@ -6284,7 +6363,7 @@ if (
         ).innerHTML =
             `⏭️ パスした！` +
             `<br>` +
-            `${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
+            `${BOSS_ICON_HTML} ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
             `${bossDamage}Gのダメージ！`;
 
 
@@ -6574,10 +6653,10 @@ if (
 
         document.getElementById(
             "battleMessage"
-        ).textContent =
+        ).innerHTML =
             `✨ ${magic.name}！` +
             `　${buffMessage}` +
-            `${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}` +
+            `${BOSS_ICON_HTML} ${BOSS_CONTENTS[currentBossId].name}` +
             `の反撃！` +
             ` ${formatG(bossDamage)}Gのダメージ！`;
 
@@ -6610,10 +6689,10 @@ if (
 
     document.getElementById(
         "battleMessage"
-    ).textContent =
+    ).innerHTML =
         `✨ ${magic.name}！` +
         `　${buffMessage}<br>` +
-        `${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}` +
+        `${BOSS_ICON_HTML} ${BOSS_CONTENTS[currentBossId].name}` +
         `の反撃！` +
         ` ${formatG(bossDamage)}Gのダメージ！`;
 
@@ -6823,10 +6902,10 @@ if (
 
                         document.getElementById(
                             "battleMessage"
-                        ).textContent =
+                        ).innerHTML =
                             `${magic.name}！ ` +
                             `${magicDamage}ダメージ！` +
-                           `　${BOSS_CONTENTS[currentBossId].icon} ${BOSS_CONTENTS[currentBossId].name}を倒した！`;
+                           `　${BOSS_ICON_HTML} ${BOSS_CONTENTS[currentBossId].name}を倒した！`;
 
                         magicButton.textContent =
                             "戦闘終了";
@@ -6901,7 +6980,7 @@ bossRewardMessage +=
 // =========================
 
 showEventPopup(
-    `${BOSS_CONTENTS[currentBossId].icon} ボス撃破！`,
+    "ボス撃破！",
     bossRewardMessage,
     function () {
 
@@ -7078,10 +7157,10 @@ if (
 
                     document.getElementById(
                         "battleMessage"
-                    ).textContent =
+                    ).innerHTML =
                         `${magic.name}！ ` +
                         `${magicDamage}ダメージ！` +
-                        `　${BOSS_CONTENTS[currentBossId].icon}  ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
+                        `　${BOSS_ICON_HTML}  ${BOSS_CONTENTS[currentBossId].name}の反撃！ ` +
                         `${bossDamage}Gのダメージ！`;
 
 
@@ -7212,7 +7291,7 @@ function showBossChallengePopup(
             font-size: 2.5em;
             margin-bottom: 15px;
         ">
-            ${BOSS_CONTENTS[currentBossId].icon} 
+            ${BOSS_ICON_HTML} 
         </div>
 
         <div style="
@@ -7290,7 +7369,7 @@ function showBossChallengePopup(
         ) {
 
             showEventPopup(
-                `${BOSS_CONTENTS[currentBossId].icon} ボスから撤退`,
+                "ボスから撤退",
 
                 `
                 ${player.name}は
@@ -10219,7 +10298,9 @@ if (
 // 現在プレイヤーをマップ中央へ
 // =========================
 
-function centerCurrentPlayerOnMap() {
+function centerCurrentPlayerOnMap(
+    behavior = "smooth"
+) {
 
     const mapArea =
         document.querySelector(
@@ -10242,42 +10323,75 @@ function centerCurrentPlayerOnMap() {
         return;
     }
 
-    const mapRect =
-        mapArea.getBoundingClientRect();
+    // 進行中のsmoothスクロールを解除
+    mapArea.scrollTo({
+        left: mapArea.scrollLeft,
+        top: mapArea.scrollTop,
+        behavior: "auto"
+    });
 
-    const playerRect =
-        playerNode.getBoundingClientRect();
+    requestAnimationFrame(function () {
 
-    const mapCenterX =
-    mapRect.left +
-    mapRect.width / 2;
+        // マップ内の座標から直接目的地を計算
+        const playerCenterX =
+            playerNode.offsetLeft +
+            playerNode.offsetWidth / 2;
 
-const mapCenterY =
-    mapRect.top +
-    mapRect.height / 2;
+        const playerCenterY =
+            playerNode.offsetTop +
+            playerNode.offsetHeight / 2;
 
-const playerCenterX =
-    playerRect.left +
-    playerRect.width / 2;
+        const targetScrollLeft =
+            playerCenterX -
+            mapArea.clientWidth / 2;
 
-const playerCenterY =
-    playerRect.top +
-    playerRect.height / 2;
+        const targetScrollTop =
+            playerCenterY -
+            mapArea.clientHeight / 2;
 
-const scrollAmountX =
-    playerCenterX -
-    mapCenterX;
+        // スクロール可能範囲内に収める
+        const maxScrollLeft =
+            Math.max(
+                0,
+                mapArea.scrollWidth -
+                mapArea.clientWidth
+            );
 
-const scrollAmountY =
-    playerCenterY -
-    mapCenterY;
+        const maxScrollTop =
+            Math.max(
+                0,
+                mapArea.scrollHeight -
+                mapArea.clientHeight
+            );
 
-mapArea.scrollTo({
-    left: mapArea.scrollLeft + scrollAmountX,
-    top: mapArea.scrollTop + scrollAmountY,
-    behavior: "smooth"
-});
+        const finalScrollLeft =
+            Math.max(
+                0,
+                Math.min(
+                    targetScrollLeft,
+                    maxScrollLeft
+                )
+            );
+
+        const finalScrollTop =
+            Math.max(
+                0,
+                Math.min(
+                    targetScrollTop,
+                    maxScrollTop
+                )
+            );
+
+        mapArea.scrollTo({
+            left: finalScrollLeft,
+            top: finalScrollTop,
+            behavior: behavior
+        });
+
+    });
+
 }
+
 
 // =========================
 // 🎯 目的地をクリックしたら
@@ -10393,34 +10507,29 @@ function showJobPopup(
     finishCallback
 ) {
 
-    const job =
-        getJobData(
-            square.jobId
-        );
-
     const jobPopup =
         document.getElementById(
             "jobPopup"
         );
 
-    const jobMessage =
+    const jobName =
         document.getElementById(
-            "jobMessage"
+            "jobName"
         );
 
-    const job1Button =
+    const jobWage =
         document.getElementById(
-            "job1Button"
+            "jobWage"
         );
 
-    const job2Button =
+    const jobQuestion =
         document.getElementById(
-            "job2Button"
+            "jobQuestion"
         );
 
-    const job3Button =
+    const jobWorkButton =
         document.getElementById(
-            "job3Button"
+            "jobWorkButton"
         );
 
     const jobNoneButton =
@@ -10428,117 +10537,63 @@ function showJobPopup(
             "jobNoneButton"
         );
 
-
- // =========================
-// 今回の時給を計算
-// =========================
-
-const currentWage =
-    getCurrentJobWage(
-        square.jobWage,
-        turn
-    );
-
-
-// =========================
-// メッセージ
-// =========================
-
-jobMessage.innerHTML =
-    `💼 ${square.name}で働くことができます。<br><br>` +
-    `💰 今回の時給：<strong>${formatG(currentWage)}G</strong><br><br>` +
-    `${player.name}はどうしますか？`;
-
+    if (
+        !jobPopup ||
+        !jobName ||
+        !jobWage ||
+        !jobQuestion ||
+        !jobWorkButton ||
+        !jobNoneButton
+    ) {
+        return;
+    }
 
     // =========================
-    // 表示
+    // 今回の時給
     // =========================
+
+    const currentWage =
+        getCurrentJobWage(
+            square.jobWage,
+            turn
+        );
+
+    // =========================
+    // 3行UI
+    // ① バイト名　時給
+    // ② 1ターン働きますか？
+    // ③ 働く　やめる
+    // =========================
+
+    jobName.textContent =
+        square.name;
+
+    jobWage.textContent =
+        `時給 ${formatG(currentWage)}G`;
+
+    jobQuestion.textContent =
+        "1ターン働きますか？";
 
     jobPopup.style.display =
         "block";
 
-
-// =========================
-// 各ターン数の報酬を表示
-// =========================
-
-document.getElementById(
-    "job1Reward"
-).textContent =
-    `${formatG(currentWage)}G`;
-
-document.getElementById(
-    "job2Reward"
-).textContent =
-    `${formatG(currentWage * 2)}G`;
-
-document.getElementById(
-    "job3Reward"
-).textContent =
-    `${formatG(currentWage * 3)}G`;
-
     // =========================
-    // 1ターン働く
+    // 働く
     // =========================
 
-    job1Button.onclick =
+    jobWorkButton.onclick =
         function () {
 
-           startJob(
-    player,
-    1,
-    getCurrentJobWage(
-        square.jobWage,
-        turn
-    ),
-    finishCallback
-);
+            startJob(
+                player,
+                currentWage,
+                finishCallback
+            );
 
         };
 
-
     // =========================
-    // 2ターン働く
-    // =========================
-
-    job2Button.onclick =
-        function () {
-
-     startJob(
-    player,
-    2,
-    getCurrentJobWage(
-        square.jobWage,
-        turn
-    ) * 2,
-    finishCallback
-);
-
-        };
-
-
-    // =========================
-    // 3ターン働く
-    // =========================
-
-    job3Button.onclick =
-        function () {
-
-    startJob(
-    player,
-    3,
-    getCurrentJobWage(
-        square.jobWage,
-        turn
-    ) * 3,
-    finishCallback
-);
-
-        };
-
-
-    // =========================
-    // 働かない
+    // やめる
     // =========================
 
     jobNoneButton.onclick =
@@ -10547,15 +10602,15 @@ document.getElementById(
             jobPopup.style.display =
                 "none";
 
-
             finishCallback();
 
         };
 
 }
+
+
 function startJob(
     player,
-    turns,
     reward,
     finishCallback
 ) {
@@ -10565,7 +10620,6 @@ function startJob(
             "jobPopup"
         );
 
-
     // =========================
     // バイト選択画面を閉じる
     // =========================
@@ -10573,19 +10627,15 @@ function startJob(
     jobPopup.style.display =
         "none";
 
+    // =========================
+    // バイトは「次の自分の1ターン」だけ
+    // =========================
 
-// =========================
-// バイト開始後の
-// 次のターンから仕事開始
-// =========================
-
-player.jobTurnsRemaining =
-    turns + 1;
-
+    player.jobTurnsRemaining =
+        1;
 
     player.jobReward =
         reward;
-
 
     // =========================
     // バイト開始
@@ -10593,7 +10643,7 @@ player.jobTurnsRemaining =
 
     showEventPopup(
         "💼 バイト開始",
-        `${turns}ターン働きます！`,
+        `1ターン働きます！<br><strong>${formatG(reward)}G</strong>を獲得予定です。`,
         function () {
 
             finishCallback();
