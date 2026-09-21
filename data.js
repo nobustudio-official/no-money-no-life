@@ -466,16 +466,14 @@ const BOSS_CONTENTS = {
 
     1: {
         name: "デーモンロード",
-        icon: "👹",
         hp: 200,
         attack: 50
     },
 
     2: {
         name: "いただきリリィ",
-        icon: "💁‍♀️",
-        hp: 1000,
-        attack: 10
+        hp: 500,
+        attack: 500
     }
 
 };
