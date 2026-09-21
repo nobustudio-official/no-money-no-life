@@ -146,10 +146,8 @@ function updateHudPlayerAvatar(
 // =========================
 // HUD用プレイヤー名サイズ
 // =========================
-// 画面サイズ・横持ち・プレイヤー名の長さに応じて
-// 実際に表示できる幅を測定し、文字が収まるまで縮小します。
-// また、HUDのプレイヤー欄をタッチすると
-// 現在プレイヤーの位置へカメラを戻します。
+// 6文字程度までは通常サイズ。
+// 長い名前ほど段階的に小さくして枠内へ収めます。
 function updateHudPlayerName(
     element,
     name
@@ -159,109 +157,20 @@ function updateHudPlayerName(
         return;
     }
 
-    const playerBox =
-        element.closest(
-            ".hud-player"
-        );
+    const length =
+        Array.from(name || "").length;
 
-    // =========================
-    // プレイヤー欄をタッチ
-    // =========================
+    let fontSize = 26;
 
-    if (playerBox) {
-
-        playerBox.onclick =
-            function () {
-
-                centerCurrentPlayerOnMap();
-
-            };
-
+    if (length > 6) {
+        fontSize =
+            Math.max(14, 26 - ((length - 6) * 2));
     }
 
-    // =========================
-    // 名前を表示可能幅に合わせる
-    // =========================
-
-    const fitName =
-        function () {
-
-            if (!element) {
-                return;
-            }
-
-            const availableWidth =
-                element.clientWidth;
-
-            if (availableWidth <= 0) {
-                return;
-            }
-
-            const MAX_FONT_SIZE = 20;
-            const MIN_FONT_SIZE = 8;
-
-            let fontSize =
-                MAX_FONT_SIZE;
-
-            element.style.fontSize =
-                `${fontSize}px`;
-
-            while (
-                fontSize > MIN_FONT_SIZE &&
-                element.scrollWidth > availableWidth
-            ) {
-
-                fontSize -= 1;
-
-                element.style.fontSize =
-                    `${fontSize}px`;
-
-            }
-
-        };
-
-    // =========================
-    // 画面サイズ変更・横持ち切替に対応
-    // =========================
-
-    if (
-        !element._hudNameResizeObserver &&
-        typeof ResizeObserver !== "undefined"
-    ) {
-
-        const observer =
-            new ResizeObserver(
-                function () {
-
-                    fitName();
-
-                }
-            );
-
-        observer.observe(
-            element
-        );
-
-        if (playerBox) {
-
-            observer.observe(
-                playerBox
-            );
-
-        }
-
-        element._hudNameResizeObserver =
-            observer;
-
-    }
-
-    // DOM反映後にサイズ計算
-    requestAnimationFrame(
-        fitName
-    );
+    element.style.fontSize =
+        `${fontSize}px`;
 
 }
-
 
 // =========================
 // Gの3桁区切り表示
@@ -613,6 +522,192 @@ function showBossDestinationPopup(
 
 
 // =========================
+// ゲーム開始時の読み込み画面
+// =========================
+
+const GAME_LOADING_MIN_TIME = 1200;
+
+const GAME_LOADING_ASSETS = [
+    "images/map2.png",
+    "images/map-icons/start.png",
+    "images/map-icons/gold.png",
+    "images/map-icons/job.png",
+    "images/map-icons/shop.png",
+    "images/map-icons/worst.png",
+    "images/map-icons/monster.png",
+    "images/map-icons/magic-shop.png",
+    "images/map-icons/asset.png",
+    "images/map-icons/treasure.png",
+    "images/map-icons/boss.png",
+    "images/characters/player-male.png",
+    "images/characters/player-female.png",
+    "images/ui-icons/gold.png",
+    "images/ui-icons/mana.png",
+    "images/ui-icons/destination.png",
+    "images/ui-icons/dice.png",
+    "images/ui-icons/item.png",
+    "images/ui-icons/magic.png",
+    "images/ui-icons/settings.png"
+];
+
+function preloadGameImage(path) {
+
+    return new Promise(function (resolve) {
+
+        const image =
+            new Image();
+
+        image.onload =
+            function () {
+                resolve();
+            };
+
+        image.onerror =
+            function () {
+                // 画像がなくてもゲーム開始は止めない
+                resolve();
+            };
+
+        image.src = path;
+
+    });
+}
+
+function showGameLoadingScreen() {
+
+    const gameContainer =
+        document.querySelector(
+            ".game-container"
+        );
+
+    if (!gameContainer) {
+        return;
+    }
+
+    gameContainer.innerHTML = `
+
+        <style>
+            @keyframes gameLoadingBar {
+                0% {
+                    transform: translateX(-120%);
+                }
+                100% {
+                    transform: translateX(280%);
+                }
+            }
+        </style>
+
+        <div
+            class="game-loading-screen"
+            style="
+                width:100%;
+                height:100dvh;
+                min-height:100dvh;
+                display:flex;
+                flex-direction:column;
+                align-items:center;
+                justify-content:center;
+                box-sizing:border-box;
+                padding:30px;
+                background:
+                    radial-gradient(
+                        circle at 50% 35%,
+                        #344b72 0%,
+                        #18233d 50%,
+                        #071b3f 100%
+                    );
+                color:white;
+                text-align:center;
+            "
+        >
+
+            <div
+                style="
+                    font-size:clamp(28px, 6vw, 52px);
+                    font-weight:900;
+                    margin-bottom:24px;
+                    letter-spacing:0.08em;
+                "
+            >
+                NO MONEY, NO LIFE
+            </div>
+
+            <div
+                style="
+                    font-size:clamp(18px, 3vw, 28px);
+                    font-weight:bold;
+                    margin-bottom:24px;
+                "
+            >
+                🗺️ マップを読み込んでいます…
+            </div>
+
+            <div
+                style="
+                    width:min(70vw, 420px);
+                    height:12px;
+                    overflow:hidden;
+                    border-radius:999px;
+                    background:rgba(255,255,255,0.18);
+                    border:1px solid rgba(255,255,255,0.3);
+                "
+            >
+                <div
+                    style="
+                        width:45%;
+                        height:100%;
+                        border-radius:999px;
+                        background:linear-gradient(90deg,#48bcff,#d4af37);
+                        animation:gameLoadingBar 1.1s ease-in-out infinite;
+                    "
+                ></div>
+            </div>
+
+        </div>
+
+    `;
+}
+
+function waitForGameAssets() {
+
+    const startTime =
+        performance.now();
+
+    const assetPromise =
+        Promise.all(
+            GAME_LOADING_ASSETS.map(
+                preloadGameImage
+            )
+        );
+
+    const minimumTimePromise =
+        new Promise(function (resolve) {
+
+            setTimeout(
+                resolve,
+                GAME_LOADING_MIN_TIME
+            );
+
+        });
+
+    return Promise.all([
+        assetPromise,
+        minimumTimePromise
+    ]).then(function () {
+
+        // ブラウザに読み込み画面を描画させてから切り替える
+        return new Promise(function (resolve) {
+
+            requestAnimationFrame(function () {
+                requestAnimationFrame(resolve);
+            });
+
+        });
+
+    });
+}
+
+// =========================
 // ゲーム開始
 // =========================
 
@@ -956,19 +1051,31 @@ setupAdventureBGM();
 // 最初のボスを決定
 selectBossSquare();
 
-//開始音    
+// 開始音
 startSound.currentTime = 0;
-startSound.play()
+startSound.play();
 
-showGameScreen(
-    players,
-    maxTurns
-);
+// =========================
+// 読み込み画面を表示
+// =========================
 
-// ボス決定演出
-setTimeout(function () {
-    showBossDestinationPopup();
-}, 500);
+showGameLoadingScreen();
+
+// マップ画像などを先に読み込み、
+// 最低1.2秒は読み込み画面を表示する
+waitForGameAssets().then(function () {
+
+    showGameScreen(
+        players,
+        maxTurns
+    );
+
+    // ボス決定演出
+    setTimeout(function () {
+        showBossDestinationPopup();
+    }, 500);
+
+});
             
         }
     );
@@ -1046,12 +1153,12 @@ function showGameScreen(
                 >
                     <img
                         class="hud-icon hud-destination-icon"
-                        src="images/map-icons/boss.png"
+                        src="images/ui-icons/destination.png"
                         alt="目的地"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';"
                     >
                     <span class="hud-icon-fallback">🚩</span>
-                    <span class="hud-destination-label">目的地まであと</span>
+                    <span class="hud-destination-label">目的地まで あと</span>
                     <strong id="hudDestinationValue" class="hud-destination-value">0</strong>
                     <span class="hud-destination-label">マス</span>
                 </div>
@@ -3320,24 +3427,6 @@ function renderTurn() {
             hudPlayerName,
             player.name
         );
-
-        // =========================
-        // プレイヤーアイコンをタッチ／クリックしたら
-        // 現在地をマップ中央へ戻す
-        // =========================
-
-        if (hudPlayerAvatar) {
-
-            hudPlayerAvatar.addEventListener(
-                "click",
-                function () {
-
-                    centerCurrentPlayerOnMap();
-
-                }
-            );
-
-        }
 
     }
 
