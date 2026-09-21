@@ -85,6 +85,7 @@ const mapData = [
         name: "魔法店",
         icon: "🔮",
         type: "magic_shop",
+        typeId: 1,
         next: [8],
         x: 38,
         y: 65
@@ -214,6 +215,7 @@ const mapData = [
         name: "魔法店",
         icon: "🔮",
         type: "magic_shop",
+        typeId: 2,
         next: [20, 25],
         x: 38,
         y: 35
