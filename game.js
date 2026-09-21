@@ -559,22 +559,22 @@ function showBossDestinationPopup(
                 }
 
                 // =========================
-                // ゲーム開始時
-                // プレイヤー1へ戻す
-                // =========================
+// ゲーム開始時
+// プレイヤー1へ戻す
+// =========================
 
-                currentPlayer = 0;
+currentPlayer = 0;
 
-                renderTurn();
-                renderPlayers();
+renderTurn();
+renderPlayers();
 
-                // ボスへのsmoothスクロールが残っていても、
-                // ここで確実に解除してからプレイヤー1へ移動。
-                requestAnimationFrame(function () {
+// ボスへのカメラ移動が完全に終わってから
+// プレイヤー1のマスへ移動する
+setTimeout(function () {
 
-                    centerCurrentPlayerOnMap("auto");
+    centerPlayer1OnMap();
 
-                });
+}, 700);
 
             }
         );
@@ -3499,6 +3499,22 @@ function renderTurn() {
         if (hudPlayerAvatar) {
 
             hudPlayerAvatar.onclick =
+                function () {
+
+                    centerCurrentPlayerOnMap();
+
+                };
+
+        }
+
+        // =========================
+        // プレイヤー名をタップ
+        // 現在プレイヤーの位置へカメラを移動
+        // =========================
+
+        if (hudPlayerName) {
+
+            hudPlayerName.onclick =
                 function () {
 
                     centerCurrentPlayerOnMap();
@@ -8828,7 +8844,7 @@ shopPopup.style.display =
 
 // =========================
 // 閉じるボタン
-// ショップ一覧へ戻る
+// ショップを完全に閉じてターン終了
 // =========================
 
 shopCloseButton.onclick =
@@ -8842,20 +8858,35 @@ shopCloseButton.onclick =
 
         // 所持金表示を非表示
 
-        shopMoney.style.display =
+        if (shopMoney) {
+
+            shopMoney.style.display =
+                "none";
+
+        }
+
+
+        // カテゴリー一覧を非表示
+
+        if (shopCategoryList) {
+
+            shopCategoryList.style.display =
+                "none";
+
+        }
+
+
+        // ショップを閉じる
+
+        shopPopup.style.display =
             "none";
 
 
-        // カテゴリー一覧を表示
+        // ショップを閉じたらターン終了
 
-        shopCategoryList.style.display =
-            "flex";
-
-
-        // ボタン表示を戻す
-
-        shopCloseButton.textContent =
-            "🏃 やめる";
+        finishTurn(
+            player
+        );
 
     };
 
@@ -10392,6 +10423,125 @@ function centerCurrentPlayerOnMap(
 
 }
 
+// =========================
+// プレイヤー1をマップ中央へ
+// ボス決定演出終了後専用
+// =========================
+
+function centerPlayer1OnMap() {
+
+    const mapArea =
+        document.querySelector(
+            ".game-screen .map-area"
+        );
+
+    const player1 =
+        players[0];
+
+    if (
+        !mapArea ||
+        !player1
+    ) {
+
+        return;
+
+    }
+
+
+    requestAnimationFrame(
+        function () {
+
+            const playerNode =
+                mapArea.querySelector(
+                    `.map-node[data-square-id="${player1.position}"]`
+                );
+
+            if (!playerNode) {
+
+                return;
+
+            }
+
+
+            // =========================
+            // プレイヤー1のマップ内中心座標
+            // =========================
+
+            const playerCenterX =
+                playerNode.offsetLeft +
+                playerNode.offsetWidth / 2;
+
+            const playerCenterY =
+                playerNode.offsetTop +
+                playerNode.offsetHeight / 2;
+
+
+            // =========================
+            // マップ中央へ合わせる
+            // =========================
+
+            const targetScrollLeft =
+                playerCenterX -
+                mapArea.clientWidth / 2;
+
+            const targetScrollTop =
+                playerCenterY -
+                mapArea.clientHeight / 2;
+
+
+            // =========================
+            // スクロール可能範囲
+            // =========================
+
+            const maxScrollLeft =
+                mapArea.scrollWidth -
+                mapArea.clientWidth;
+
+            const maxScrollTop =
+                mapArea.scrollHeight -
+                mapArea.clientHeight;
+
+
+            const finalScrollLeft =
+                Math.max(
+                    0,
+                    Math.min(
+                        targetScrollLeft,
+                        maxScrollLeft
+                    )
+                );
+
+            const finalScrollTop =
+                Math.max(
+                    0,
+                    Math.min(
+                        targetScrollTop,
+                        maxScrollTop
+                    )
+                );
+
+
+            // =========================
+            // プレイヤー1へカメラ移動
+            // =========================
+
+            mapArea.scrollTo({
+
+                left:
+                    finalScrollLeft,
+
+                top:
+                    finalScrollTop,
+
+                behavior:
+                    "smooth"
+
+            });
+
+        }
+    );
+
+}
 
 // =========================
 // 🎯 目的地をクリックしたら
