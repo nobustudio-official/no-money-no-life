@@ -6641,3 +6641,66 @@ body:has(.game-screen) {
         height: 58px;
     }
 }
+
+
+/* =========================================================
+   今回の3点改修
+   ① HUDプレイヤー名を小さくする
+   ③ サイコロ・アイテム非活性時も半透明にしない
+========================================================= */
+
+/* =========================
+   ① HUD：プレイヤー名
+========================= */
+
+.game-hud .hud-player-name {
+
+    font-size:
+        clamp(14px, 1.45vw, 20px) !important;
+
+    line-height:
+        1.1;
+
+    cursor:
+        pointer;
+
+    user-select:
+        none;
+
+    -webkit-tap-highlight-color:
+        transparent;
+}
+
+
+/* =========================
+   ③ サイコロ・アイテム：非活性時
+   disabled自体は維持するため、
+   タップしても処理は開きません。
+   見た目だけ通常時のままにします。
+========================= */
+
+.action-menu-button:disabled {
+
+    opacity:
+        1 !important;
+
+    filter:
+        none !important;
+
+    transform:
+        none !important;
+
+    cursor:
+        default;
+}
+
+
+.action-menu-button:disabled:hover,
+.action-menu-button:disabled:active {
+
+    filter:
+        none !important;
+
+    transform:
+        none !important;
+}
