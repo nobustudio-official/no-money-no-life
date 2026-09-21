@@ -146,8 +146,10 @@ function updateHudPlayerAvatar(
 // =========================
 // HUD用プレイヤー名サイズ
 // =========================
-// 6文字程度までは通常サイズ。
-// 長い名前ほど段階的に小さくして枠内へ収めます。
+// 画面サイズ・横持ち・プレイヤー名の長さに応じて
+// 実際に表示できる幅を測定し、文字が収まるまで縮小します。
+// また、HUDのプレイヤー欄をタッチすると
+// 現在プレイヤーの位置へカメラを戻します。
 function updateHudPlayerName(
     element,
     name
@@ -157,20 +159,109 @@ function updateHudPlayerName(
         return;
     }
 
-    const length =
-        Array.from(name || "").length;
+    const playerBox =
+        element.closest(
+            ".hud-player"
+        );
 
-    let fontSize = 26;
+    // =========================
+    // プレイヤー欄をタッチ
+    // =========================
 
-    if (length > 6) {
-        fontSize =
-            Math.max(14, 26 - ((length - 6) * 2));
+    if (playerBox) {
+
+        playerBox.onclick =
+            function () {
+
+                centerCurrentPlayerOnMap();
+
+            };
+
     }
 
-    element.style.fontSize =
-        `${fontSize}px`;
+    // =========================
+    // 名前を表示可能幅に合わせる
+    // =========================
+
+    const fitName =
+        function () {
+
+            if (!element) {
+                return;
+            }
+
+            const availableWidth =
+                element.clientWidth;
+
+            if (availableWidth <= 0) {
+                return;
+            }
+
+            const MAX_FONT_SIZE = 20;
+            const MIN_FONT_SIZE = 8;
+
+            let fontSize =
+                MAX_FONT_SIZE;
+
+            element.style.fontSize =
+                `${fontSize}px`;
+
+            while (
+                fontSize > MIN_FONT_SIZE &&
+                element.scrollWidth > availableWidth
+            ) {
+
+                fontSize -= 1;
+
+                element.style.fontSize =
+                    `${fontSize}px`;
+
+            }
+
+        };
+
+    // =========================
+    // 画面サイズ変更・横持ち切替に対応
+    // =========================
+
+    if (
+        !element._hudNameResizeObserver &&
+        typeof ResizeObserver !== "undefined"
+    ) {
+
+        const observer =
+            new ResizeObserver(
+                function () {
+
+                    fitName();
+
+                }
+            );
+
+        observer.observe(
+            element
+        );
+
+        if (playerBox) {
+
+            observer.observe(
+                playerBox
+            );
+
+        }
+
+        element._hudNameResizeObserver =
+            observer;
+
+    }
+
+    // DOM反映後にサイズ計算
+    requestAnimationFrame(
+        fitName
+    );
 
 }
+
 
 // =========================
 // Gの3桁区切り表示
@@ -955,12 +1046,12 @@ function showGameScreen(
                 >
                     <img
                         class="hud-icon hud-destination-icon"
-                        src="images/ui-icons/destination.png"
+                        src="images/map-icons/boss.png"
                         alt="目的地"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';"
                     >
                     <span class="hud-icon-fallback">🚩</span>
-                    <span class="hud-destination-label">目的地まで あと</span>
+                    <span class="hud-destination-label">目的地まであと</span>
                     <strong id="hudDestinationValue" class="hud-destination-value">0</strong>
                     <span class="hud-destination-label">マス</span>
                 </div>
@@ -2454,33 +2545,23 @@ assetIds.forEach(
 
 let ownerIcon = "";
 
+const ownerIcons = [
+    "🔴",
+    "🔵",
+    "🟢",
+    "🟡",
+    "🟣",
+    "🟠"
+];
+
+
 if (
     asset.owner !== null &&
     asset.owner !== undefined
 ) {
 
-    const ownerIndex =
-        asset.owner;
-
-    const ownerImage =
-        getPlayerCharacterImage(
-            ownerIndex
-        );
-
-    ownerIcon = `
-        <span
-            class="asset-owner-avatar"
-            style="
-                background-image:
-                url('${ownerImage}');
-            "
-            aria-label="${
-                players[ownerIndex]
-                    ? players[ownerIndex].name
-                    : "所有者"
-            }"
-        ></span>
-    `;
+    ownerIcon =
+        ownerIcons[asset.owner] || "";
 
 }
 
@@ -3239,6 +3320,24 @@ function renderTurn() {
             hudPlayerName,
             player.name
         );
+
+        // =========================
+        // プレイヤーアイコンをタッチ／クリックしたら
+        // 現在地をマップ中央へ戻す
+        // =========================
+
+        if (hudPlayerAvatar) {
+
+            hudPlayerAvatar.addEventListener(
+                "click",
+                function () {
+
+                    centerCurrentPlayerOnMap();
+
+                }
+            );
+
+        }
 
     }
 
@@ -8567,41 +8666,28 @@ shopPopup.style.display =
 shopCloseButton.onclick =
     function () {
 
-        // =========================
-        // ショップを閉じる
-        // =========================
-
-        shopPopup.style.display =
-            "none";
-
-
-        // =========================
-        // 表示状態をリセット
-        // =========================
+        // 商品一覧を非表示
 
         shopItemList.style.display =
             "none";
 
 
+        // 所持金表示を非表示
+
         shopMoney.style.display =
             "none";
 
+
+        // カテゴリー一覧を表示
 
         shopCategoryList.style.display =
             "flex";
 
 
+        // ボタン表示を戻す
+
         shopCloseButton.textContent =
             "🏃 やめる";
-
-
-        // =========================
-        // ターン終了
-        // =========================
-
-        finishTurn(
-            player
-        );
 
     };
 
@@ -10763,17 +10849,6 @@ function showInventoryPopup(
             useButton.addEventListener(
                 "click",
                 function () {
-                    // =========================
-                    // サイコロ後はアイテム使用禁止
-                    // =========================
-
-                    if (
-                        inventoryButton.disabled
-                    ) {
-
-                        return;
-
-                    }
 
                     // =========================
                     // どんぴ車
@@ -10795,9 +10870,6 @@ function showInventoryPopup(
                             inventoryIndex,
                             1
                         );
-
-                        inventoryButton.disabled =
-                        true;
 
 
                         // アイテム画面を閉じる
