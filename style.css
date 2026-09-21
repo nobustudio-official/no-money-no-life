@@ -6323,42 +6323,6 @@ body:has(.game-screen) {
 
 }
 
-/* =========================================================
-   ボス決定ポップアップ：ボスアイコンを画像で表示
-   環境依存絵文字は使用しません。
-========================================================= */
-
-.event-popup.boss-destination-popup
-.event-popup-title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-}
-
-.event-popup.boss-destination-popup
-.event-popup-title::before {
-    content: "";
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    flex: 0 0 32px;
-    background-image: url("images/map-icons/boss.png");
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-}
-
-@media (max-width: 700px) {
-
-    .event-popup.boss-destination-popup
-    .event-popup-title::before {
-        width: 28px;
-        height: 28px;
-        flex-basis: 28px;
-    }
-
-}
 
 
 /* =========================================================
@@ -6388,14 +6352,6 @@ body:has(.game-screen) {
     line-height: 1.25;
 }
 
-.event-popup.boss-destination-popup .event-popup-title::before {
-    content: "";
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    flex: 0 0 30px;
-    background: url("images/map-icons/boss.png") center / contain no-repeat;
-}
 
 .boss-destination-image-wrap {
     display: flex;
@@ -6620,12 +6576,7 @@ body:has(.game-screen) {
         font-size: 17px;
     }
 
-    .event-popup.boss-destination-popup .event-popup-title::before {
-        width: 24px;
-        height: 24px;
-        flex-basis: 24px;
-    }
-
+    
     .boss-destination-image-wrap {
         height: 78px;
         margin: 0 0 3px;
