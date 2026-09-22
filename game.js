@@ -4432,15 +4432,6 @@ function clearDiceReachableClickHandlers() {
 // サイコロ移動中の
 // 止まれるマスを強調表示
 // =========================
-//
-// 通常サイコロでも複数サイコロアイテムでも、
-// 「残り歩数をすべて使った場合に止まれるマス」
-// を同じロジックで求めます。
-//
-// 強調されたマスはタップ可能です。
-// タップされた場合は、そのマスに対応する
-// path を使って1マスずつ自動移動します。
-// =========================
 
 function highlightDiceReachableSquares(
     player,
@@ -4467,15 +4458,6 @@ function highlightDiceReachableSquares(
     // サイコロを振った瞬間に
     // 確定した停止候補を使用
     // =========================
-    //
-    // ここでは現在地から再計算しません。
-    //
-    // これが今回の修正の重要ポイントです。
-    //
-    // 例えば「3」が出た場合、
-    // 最初に確定した3歩先の候補だけを
-    // 最後まで基準として使用します。
-    //
     const fixedReachable =
         diceMovementState.reachablePaths;
 
@@ -4497,22 +4479,7 @@ function highlightDiceReachableSquares(
     // 現在までの移動履歴が
     // 候補経路の先頭と一致しているか
     // =========================
-    //
-    // 例：
-    //
-    // 候補経路
-    // [A, B, C, D]
-    //
-    // 現在の履歴
-    // [A, B]
-    //
-    // → 一致しているので候補として残す
-    //
-    // 別ルート
-    // [A, E, F, G]
-    //
-    // → A,Bとは一致しないので消す
-    //
+
     function isHistoryPrefixOfPath(
         currentHistory,
         path
