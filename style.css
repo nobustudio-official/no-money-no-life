@@ -6979,3 +6979,27 @@ body:has(.game-screen) {
     font-size: 24px;
     white-space: nowrap;
 }
+
+/* =========================
+   プレイヤー上部のサイコロ表示
+   左側アクションメニューと同じ配色
+========================= */
+
+.dice-movement-counter {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(9, 64, 128, 0.96),
+            rgba(4, 39, 86, 0.96)
+        );
+
+    border: 3px solid rgba(37, 202, 255, 0.75);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 4px 10px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.18);
+
+    color: white;
+}
