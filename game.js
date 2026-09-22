@@ -4339,10 +4339,19 @@ function getDiceReachableStopSquares(
 // サイコロ移動中の
 // 止まれるマスを強調表示
 // =========================
-// 矢印による1マス移動とは別に、
-// 「今回の出目で最終的に止まれる場所」を
-// 見た目だけ強調します。
-// クリック処理は付けません。
+//
+// サイコロの残り歩数から、
+// 実際に最終停止地点になり得るマスだけを
+// 強調表示します。
+//
+// 重要：
+// ・1歩ずつの移動そのものは
+//   showDiceMovementArrows() が担当
+// ・ここでは「最終的にどこで止まれるか」
+//   だけを計算する
+// ・途中のマスは強調しない
+// ・強調されたマスはタップできない
+// ・引き返し操作そのものは移動側で処理する
 // =========================
 
 function highlightDiceReachableSquares(
@@ -4351,7 +4360,6 @@ function highlightDiceReachableSquares(
 ) {
 
     clearReachableHighlights();
-
 
     if (
         !player ||
@@ -4363,12 +4371,32 @@ function highlightDiceReachableSquares(
     }
 
 
+    // =========================
+    // 現在の残り歩数をすべて使った場合に
+    // 最終停止地点になり得るマスを取得
+    // =========================
+    //
+    // getReachableStopSquares() は、
+    // 直前のマスへそのまま戻る経路を
+    // 停止候補の計算から除外します。
+    //
+    // これにより、
+    //
+    // 6マス → 3マス目
+    //
+    // のような途中地点が
+    // 停止候補として扱われません。
+    //
     const reachable =
-        getDiceReachableStopSquares(
+        getReachableStopSquares(
             player.position,
             steps
         );
 
+
+    // =========================
+    // 最終停止地点だけを強調
+    // =========================
 
     reachable.forEach(
         function (path, squareId) {
@@ -4386,6 +4414,11 @@ function highlightDiceReachableSquares(
 
             node.style.boxShadow =
                 "0 0 0 5px rgba(255,215,0,0.95), 0 0 25px rgba(255,215,0,0.9)";
+
+
+            // =========================
+            // 強調表示はあくまで視覚情報
+            // =========================
 
             node.style.cursor =
                 "default";
