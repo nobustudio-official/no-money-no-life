@@ -1389,6 +1389,26 @@ function showGameScreen(
 // だけを担当します。
 // =========================
 
+// =========================================================
+// サイコロ移動中の残り歩数UI
+// =========================================================
+//
+// 現在ターンのプレイヤーの頭上に、
+// 「🎲 3」のような小さな表示を出します。
+//
+// ・プレイヤーの子要素として生成
+// ・プレイヤーと一緒に移動
+// ・移動矢印より前面に表示
+// ・見た目はCSS側で管理
+//
+// 今後UIを変更するときは、基本的に
+// この関数とCSSだけを修正すればOKです。
+// =========================================================
+
+
+// =========================================================
+// 残り歩数カウンターを取得 / 作成
+// =========================================================
 
 function ensureDiceMovementCounter(
     playerPiece
@@ -1415,6 +1435,68 @@ function ensureDiceMovementCounter(
         counter.className =
             "dice-movement-counter";
 
+
+        // =========================
+        // サイコロアイコン
+        // =========================
+
+        const diceIcon =
+            document.createElement(
+                "img"
+            );
+
+        diceIcon.className =
+            "dice-movement-counter-icon";
+
+        diceIcon.src =
+            "images/ui-icons/dice.png";
+
+        diceIcon.alt =
+            "";
+
+        diceIcon.draggable =
+            false;
+
+
+        diceIcon.addEventListener(
+            "error",
+            function () {
+
+                diceIcon.remove();
+
+            },
+            {
+                once: true
+            }
+        );
+
+
+        // =========================
+        // 残り歩数
+        // =========================
+
+        const value =
+            document.createElement(
+                "span"
+            );
+
+        value.className =
+            "dice-movement-counter-value";
+
+
+        // =========================
+        // カウンターへ追加
+        // =========================
+
+        counter.appendChild(
+            diceIcon
+        );
+
+        counter.appendChild(
+            value
+        );
+
+
         playerPiece.appendChild(
             counter
         );
@@ -1427,9 +1509,9 @@ function ensureDiceMovementCounter(
 }
 
 
-// =========================
-// 残り歩数UIを表示・更新
-// =========================
+// =========================================================
+// 残り歩数を表示・更新
+// =========================================================
 
 function showDiceMovementCounter() {
 
@@ -1449,6 +1531,10 @@ function showDiceMovementCounter() {
 
     }
 
+
+    // =========================
+    // 現在プレイヤーのプレイヤー画像
+    // =========================
 
     const playerPiece =
         document.querySelector(
@@ -1472,15 +1558,26 @@ function showDiceMovementCounter() {
     }
 
 
-    counter.textContent =
+    const value =
+        counter.querySelector(
+            ".dice-movement-counter-value"
+        );
+
+
+    if (!value) {
+        return;
+    }
+
+
+    value.textContent =
         String(remainingSteps);
 
 }
 
 
-// =========================
-// 残り歩数UIを更新
-// =========================
+// =========================================================
+// 残り歩数を更新
+// =========================================================
 
 function updateDiceMovementCounter() {
 
@@ -1489,9 +1586,9 @@ function updateDiceMovementCounter() {
 }
 
 
-// =========================
+// =========================================================
 // 残り歩数UIを消す
-// =========================
+// =========================================================
 
 function hideDiceMovementCounter() {
 
@@ -1509,7 +1606,8 @@ function hideDiceMovementCounter() {
 
 }
 
-    // =========================
+
+ // =========================
 // 配当サイクル
 // =========================
 
@@ -2317,10 +2415,7 @@ node.appendChild(
     "player-piece player-sprite";
 
 
-// プレイヤー番号を保持
-// 残り歩数UIで
-// 「現在ターンのプレイヤー」を
-// 判別するために使用します。
+//現在プレイヤー番号を保持
 piece.dataset.playerIndex =
     players.indexOf(player);
 
