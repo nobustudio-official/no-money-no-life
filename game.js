@@ -3516,77 +3516,86 @@ seVolumeSlider.oninput =
     };
 
 
-    // =========================
-    // プレイヤーカードをタップしたら
-    // そのプレイヤーの位置へ移動
-    // =========================
-
-    const playerCards =
-        status.querySelectorAll(
-            ".player-card"
-        );
-
-
-    playerCards.forEach(
-        function (card) {
-
-                        let lastTapTime = 0;
-
-            card.addEventListener(
-                "click",
-                function () {
-
-                    const now =
-                        Date.now();
-
-                    const isDoubleTap =
-                        now - lastTapTime < 300;
-
-                    lastTapTime =
-                        now;
-
-
-                    const playerIndex =
-                        Number(
-                            card.dataset.playerIndex
-                        );
-
-
-                    const player =
-                        players[playerIndex];
-
-
-                    if (!player) {
-                        return;
-                    }
-
-
-                    // =========================
-                    // ダブルタップ
-                    // マップを100%に戻す
-                    // =========================
-
-                    if (isDoubleTap) {
-
-                        mapZoom = 1;
-
-                        applyMapZoom();
-
-                    }
-
-
- // =========================
-// プレイヤーがいるマスを中央へ
+   // =========================
+// プレイヤーカードをタップしたら
+// そのプレイヤーがいるマスを中央へ
 // =========================
 
-centerPlayerOnMap(
-    playerIndex
+const playerCards =
+    status.querySelectorAll(
+        ".player-card"
+    );
+
+
+playerCards.forEach(
+    function (card) {
+
+        let lastTapTime = 0;
+
+
+        card.addEventListener(
+            "click",
+            function () {
+
+                const now =
+                    Date.now();
+
+
+                const isDoubleTap =
+                    now - lastTapTime < 300;
+
+
+                lastTapTime =
+                    now;
+
+
+                const playerIndex =
+                    Number(
+                        card.dataset.playerIndex
+                    );
+
+
+                const player =
+                    players[playerIndex];
+
+
+                if (!player) {
+                    return;
+                }
+
+
+                // =========================
+                // ダブルタップ
+                // マップを100%に戻す
+                // =========================
+
+                if (isDoubleTap) {
+
+                    mapZoom = 1;
+
+                    applyMapZoom();
+
+                }
+
+
+                // =========================
+                // プレイヤーがいるマスを中央へ
+                // =========================
+
+                centerPlayerOnMap(
+                    playerIndex
+                );
+
+            }
+        );
+
+    }
 );
 
 
-    // =========================
-    // 👩 資産ボタン
-    // =========================
+// =========================
+// 👩 資産ボタン
+// =========================
 
     const assetButtons =
         status.querySelectorAll(
