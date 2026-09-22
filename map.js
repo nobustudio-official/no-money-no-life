@@ -201,7 +201,7 @@ const mapData = [
         name: "モンスター",
         icon: "👾",
         type: "monster",
-        next: [19],
+        next: [19,24],
         x: 30,
         y: 35
     },
@@ -269,7 +269,7 @@ const mapData = [
         icon: "🎁",
         type: "treasure",
         treasureBoxId: 1,
-        next: [25, 18],
+        next: [25],
         x: 30,
         y: 20
     },
