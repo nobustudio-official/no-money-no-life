@@ -375,6 +375,33 @@ button {
 }
 
 
+
+/* =========================================================
+   停止可能マス：共通強調色
+   通常サイコロ移動・どんぴ車 共通
+   ========================================================= */
+
+:root {
+    --reachable-stop-border:
+        rgba(72, 188, 255, 0.95);
+
+    --reachable-stop-glow:
+        rgba(72, 188, 255, 0.9);
+}
+
+/*
+ * 現在の game.js は停止可能マスへ
+ * inline の box-shadow を設定しているため、
+ * CSS側でその状態だけを共通色へ上書きする。
+ *
+ * game.js の移動ロジック・判定ロジックは変更しない。
+ */
+.map-node[style*="box-shadow"] {
+    box-shadow:
+        0 0 0 5px var(--reachable-stop-border),
+        0 0 25px var(--reachable-stop-glow) !important;
+}
+
 /* =========================================================
    10. マップのマス
    ========================================================= */
@@ -6759,247 +6786,4 @@ body:has(.game-screen) {
 
     transform:
         none !important;
-}
-
-/* =========================================================
-   サイコロ移動：残り歩数カウンター
-========================================================= */
-/*
-   プレイヤーの頭上に浮かぶ、
-   ファンタジー風の残り歩数表示。
-
-   表示例：
-
-          🎲 3
-           ↓
-          🧙
-
-   移動矢印より上に表示することで、
-   上方向の矢印と重ならないようにします。
-========================================================= */
-
-.dice-movement-counter {
-
-    position:
-        absolute;
-
-    /*
-       プレイヤー画像の中央より
-       かなり上へ配置します。
-
-       これにより、プレイヤー直上の
-       移動矢印よりさらに上に表示されます。
-    */
-    left:
-        50%;
-
-    top:
-        -58px;
-
-    transform:
-        translateX(-50%);
-
-
-    /*
-       横並び
-       🎲 3
-    */
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-
-    /*
-       アイコンと数字の間隔
-    */
-    gap:
-        3px;
-
-
-    /*
-       UIを大きくしすぎない
-    */
-    min-width:
-        48px;
-
-    height:
-        30px;
-
-    padding:
-        0 5px;
-
-
-    box-sizing:
-        border-box;
-
-
-    /*
-       背景はほぼ透明。
-       マップの世界観を邪魔しない程度の
-       ほんのりした暗さだけ残します。
-    */
-   background:
-    transparent;
-
-    /*
-       枠はかなり控えめ。
-    */
-   border:
-    none;
-
-
-    border-radius:
-        8px;
-
-
- box-shadow:
-    none;
-
-
-    /*
-       プレイヤーのz-indexが50、
-       矢印が20なので、
-       カウンターをさらに前面へ。
-    */
-    z-index:
-        100;
-
-
-    /*
-       UIがクリックを邪魔しない
-    */
-    pointer-events:
-        none;
-
-    user-select:
-        none;
-
-    white-space:
-        nowrap;
-
-}
-
-
-/* =========================================================
-   サイコロアイコン
-========================================================= */
-
-.dice-movement-counter-icon {
-
-    width:
-        25px;
-
-    height:
-        25px;
-
-    flex:
-        0 0 25px;
-
-    object-fit:
-        contain;
-
-    display:
-        block;
-
-    filter:
-        drop-shadow(
-            0 2px 2px
-            rgba(0, 0, 0, 0.55)
-        );
-
-}
-
-
-/* =========================================================
-   残り歩数の数字
-========================================================= */
-
-.dice-movement-counter-value {
-
-    /*
-       今回ここを大きくします。
-    */
-    font-size:
-        24px;
-
-
-    /*
-       ゲームタイトルなどでも使用している
-       ファンタジー寄りのフォント。
-    */
-    font-family:
-        "Cinzel",
-        Georgia,
-        "Times New Roman",
-        serif;
-
-
-    font-weight:
-        900;
-
-
-    line-height:
-        1;
-
-
-    /*
-       金色系にして世界観へ合わせます。
-    */
-    color:
-      #ffffff;
-
-
-    /*
-       数字を背景から浮かせる
-    */
-    text-shadow:
-        0 1px 2px rgba(0, 0, 0, 0.95),
-        0 0 5px rgba(255, 210, 90, 0.65);
-
-
-    min-width:
-        18px;
-
-    text-align:
-        center;
-
-}
-
-/* =========================
-   「現在地に戻る」ボタン
-   ラベルの文字サイズ調整
-========================= */
-
-.dice-movement-return-button .action-menu-label {
-    font-size: 16px;
-    white-space: nowrap;
-}
-
-/* =========================
-   プレイヤー上部のサイコロ表示
-   左側アクションメニューと同じ配色
-========================= */
-
-.dice-movement-counter {
-    background:
-        linear-gradient(
-            180deg,
-            rgba(9, 64, 128, 0.96),
-            rgba(4, 39, 86, 0.96)
-        );
-
-    border: 3px solid rgba(37, 202, 255, 0.75);
-
-    border-radius: 16px;
-
-    box-shadow:
-        0 4px 10px rgba(0,0,0,0.35),
-        inset 0 1px 0 rgba(255,255,255,0.18);
-
-    color: white;
 }
