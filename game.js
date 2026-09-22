@@ -561,54 +561,7 @@ function showBossDestinationPopup(
                     return;
                 }
 
-                // =========================
-// ゲーム開始時
-// プレイヤー1へ戻す
-// =========================
-
-currentPlayer = 0;
-
-// =========================
-// ゲーム開始時の表示更新
-// =========================
-
-if (
-    typeof renderTurn ===
-    "function"
-) {
-
-    renderTurn();
-
-} else {
-
-    console.warn(
-        "【警告】renderTurn が見つからないため、ターン表示更新をスキップしました。"
-    );
-
-}
-
-if (
-    typeof renderPlayers ===
-    "function"
-) {
-
-    renderPlayers();
-
-} else {
-
-    console.warn(
-        "【警告】renderPlayers が見つからないため、プレイヤー表示更新をスキップしました。"
-    );
-
-}
-                
-// ボスへのカメラ移動が完全に終わってから
-// プレイヤー1のマスへ移動する
-setTimeout(function () {
-
-    centerPlayer1OnMap();
-
-}, 700);
+  
 
             }
         );
@@ -8949,6 +8902,16 @@ function handleSquareEvent(
     player
 ) {
 
+console.log(
+    "【停止マスイベント】",
+    player.position,
+    mapData.find(
+        function (square) {
+            return square.id === player.position;
+        }
+    )
+);
+    
     const currentSquare =
         mapData.find(
             function (square) {
