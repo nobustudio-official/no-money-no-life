@@ -568,9 +568,40 @@ function showBossDestinationPopup(
 
 currentPlayer = 0;
 
-renderTurn();
-renderPlayers();
+// =========================
+// ゲーム開始時の表示更新
+// =========================
 
+if (
+    typeof renderTurn ===
+    "function"
+) {
+
+    renderTurn();
+
+} else {
+
+    console.warn(
+        "【警告】renderTurn が見つからないため、ターン表示更新をスキップしました。"
+    );
+
+}
+
+if (
+    typeof renderPlayers ===
+    "function"
+) {
+
+    renderPlayers();
+
+} else {
+
+    console.warn(
+        "【警告】renderPlayers が見つからないため、プレイヤー表示更新をスキップしました。"
+    );
+
+}
+                
 // ボスへのカメラ移動が完全に終わってから
 // プレイヤー1のマスへ移動する
 setTimeout(function () {
@@ -5700,10 +5731,31 @@ function finishDiceMovement(
 
     hideDiceMovementCounter();
 
-    remainingSteps =
+        remainingSteps =
         0;
 
-    renderTurn();
+    // =========================
+    // ターン表示を更新
+    // =========================
+    //
+    // renderTurn() に問題があっても、
+    // マスイベント処理まで止めない。
+    // =========================
+
+    if (
+        typeof renderTurn ===
+        "function"
+    ) {
+
+        renderTurn();
+
+    } else {
+
+        console.warn(
+            "【警告】renderTurn が見つからないため、ターン表示更新をスキップしました。"
+        );
+
+    }
 
     const choiceArea =
         document.getElementById(
