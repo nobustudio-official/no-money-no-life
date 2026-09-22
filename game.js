@@ -3575,86 +3575,13 @@ seVolumeSlider.oninput =
                     }
 
 
-                    // =========================
-                    // プレイヤー位置を中央へ
-                    // =========================
+ // =========================
+// プレイヤーがいるマスを中央へ
+// =========================
 
-                    const mapNode =
-                        document.querySelector(
-                            `.map-node[data-square-id="${player.position}"]`
-                        );
-
-
-                    if (!mapNode) {
-                        return;
-                    }
-
-
-                    const mapArea =
-                        document.querySelector(
-                            ".map-area"
-                        );
-
-
-                    if (!mapArea) {
-                        return;
-                    }
-
-
-                    const mapRect =
-                        mapArea.getBoundingClientRect();
-
-                    const playerRect =
-                        mapNode.getBoundingClientRect();
-
-
-                    const mapCenterX =
-                        mapRect.left +
-                        mapRect.width / 2;
-
-                    const mapCenterY =
-                        mapRect.top +
-                        mapRect.height / 2;
-
-
-                    const playerCenterX =
-                        playerRect.left +
-                        playerRect.width / 2;
-
-                    const playerCenterY =
-                        playerRect.top +
-                        playerRect.height / 2;
-
-
-                    const scrollAmountX =
-                        playerCenterX -
-                        mapCenterX;
-
-                    const scrollAmountY =
-                        playerCenterY -
-                        mapCenterY;
-
-
-                    mapArea.scrollTo({
-
-                        left:
-                            mapArea.scrollLeft +
-                            scrollAmountX,
-
-                        top:
-                            mapArea.scrollTop +
-                            scrollAmountY,
-
-                        behavior:
-                            "smooth"
-
-                    });
-
-                   }
-            );
-
-        }
-    );
+centerPlayerOnMap(
+    playerIndex
+);
 
 
     // =========================
@@ -11808,10 +11735,12 @@ if (
 }
 
 // =========================
-// 現在プレイヤーをマップ中央へ
+// 指定プレイヤーのいるマスを
+// マップ中央へ移動
 // =========================
 
-function centerCurrentPlayerOnMap(
+function centerPlayerOnMap(
+    playerIndex,
     behavior = "smooth"
 ) {
 
@@ -11820,24 +11749,39 @@ function centerCurrentPlayerOnMap(
             ".game-screen .map-area"
         );
 
-    const player =
-        players[currentPlayer];
+    const mapBoard =
+        document.getElementById(
+            "mapBoard"
+        );
 
-    if (!mapArea || !player) {
+    const player =
+        players[playerIndex];
+
+    if (
+        !mapArea ||
+        !mapBoard ||
+        !player
+    ) {
         return;
     }
 
-    const playerNode =
+
+    // =========================
+    // プレイヤーがいるマスを取得
+    // =========================
+
+    const mapNode =
         mapArea.querySelector(
             `.map-node[data-square-id="${player.position}"]`
         );
 
-    if (!playerNode) {
+    if (!mapNode) {
         return;
     }
 
+
     // =========================
-    // 現在のズーム倍率を取得
+    // 現在のズーム倍率
     // =========================
 
     const zoom =
@@ -11846,68 +11790,91 @@ function centerCurrentPlayerOnMap(
             ? mapZoom
             : 1;
 
+
     // =========================
-    // 現在の表示位置を取得
-    // transform(scale)後の
-    // 実際の画面上の座標を使用する
+    // 進行中のスクロールを解除
     // =========================
+
+    mapArea.scrollTo({
+
+        left:
+            mapArea.scrollLeft,
+
+        top:
+            mapArea.scrollTop,
+
+        behavior:
+            "auto"
+
+    });
+
 
     requestAnimationFrame(
         function () {
 
-            const mapRect =
-                mapArea.getBoundingClientRect();
-
-            const playerRect =
-                playerNode.getBoundingClientRect();
-
-            const mapCenterX =
-                mapRect.left +
-                mapRect.width / 2;
-
-            const mapCenterY =
-                mapRect.top +
-                mapRect.height / 2;
-
-            const playerCenterX =
-                playerRect.left +
-                playerRect.width / 2;
-
-            const playerCenterY =
-                playerRect.top +
-                playerRect.height / 2;
-
             // =========================
-            // 画面上でのズレ
+            // マスの中心座標
+            // mapBoard内の座標
             // =========================
 
-            const visualOffsetX =
-                playerCenterX -
-                mapCenterX;
+            const squareCenterX =
+                mapNode.offsetLeft +
+                mapNode.offsetWidth / 2;
 
-            const visualOffsetY =
-                playerCenterY -
-                mapCenterY;
+            const squareCenterY =
+                mapNode.offsetTop +
+                mapNode.offsetHeight / 2;
+
 
             // =========================
-            // transform(scale)による
-            // 表示上の移動量を
-            // スクロール量へ変換
+            // mapBoardの中心座標
             // =========================
 
-            const scrollAmountX =
-                visualOffsetX / zoom;
+            const boardCenterX =
+                mapBoard.clientWidth / 2;
 
-            const scrollAmountY =
-                visualOffsetY / zoom;
+            const boardCenterY =
+                mapBoard.clientHeight / 2;
+
+
+            // =========================
+            // ズーム後の
+            // マス中心座標
+            //
+            // transform-origin:
+            // center center
+            // に合わせて計算
+            // =========================
+
+            const zoomedSquareCenterX =
+                boardCenterX +
+                (
+                    squareCenterX -
+                    boardCenterX
+                ) *
+                zoom;
+
+            const zoomedSquareCenterY =
+                boardCenterY +
+                (
+                    squareCenterY -
+                    boardCenterY
+                ) *
+                zoom;
+
+
+            // =========================
+            // 画面中央へ合わせる
+            // =========================
 
             const targetScrollLeft =
-                mapArea.scrollLeft +
-                scrollAmountX;
+                zoomedSquareCenterX -
+                mapArea.clientWidth / 2;
 
             const targetScrollTop =
-                mapArea.scrollTop +
-                scrollAmountY;
+                zoomedSquareCenterY -
+                mapArea.clientHeight / 2;
+
 
             // =========================
             // スクロール可能範囲
@@ -11927,6 +11894,11 @@ function centerCurrentPlayerOnMap(
                     mapArea.clientHeight
                 );
 
+
+            // =========================
+            // 範囲内に収める
+            // =========================
+
             const finalScrollLeft =
                 Math.max(
                     0,
@@ -11945,8 +11917,9 @@ function centerCurrentPlayerOnMap(
                     )
                 );
 
+
             // =========================
-            // プレイヤー位置へカメラ移動
+            // マス中央へ移動
             // =========================
 
             mapArea.scrollTo({
@@ -11963,6 +11936,23 @@ function centerCurrentPlayerOnMap(
             });
 
         }
+    );
+
+}
+
+
+// =========================
+// 現在プレイヤーを
+// マップ中央へ
+// =========================
+
+function centerCurrentPlayerOnMap(
+    behavior = "smooth"
+) {
+
+    centerPlayerOnMap(
+        currentPlayer,
+        behavior
     );
 
 }
