@@ -11348,25 +11348,21 @@ applyTurnStartItemEffects(
             renderPlayers();
 
 
-            showEventPopup(
-                "💰 バイト終了！",
+           showEventPopup(
+    "💰 バイト終了！",
 
-                `${nextPlayer.name}は<br>` +
-                `<strong>${formatG(reward)}G</strong>を獲得！`
-                ,
+    `${nextPlayer.name}は<br>` +
+    `<strong>${formatG(reward)}G</strong>を獲得！`
+    ,
 
-             function () {
+    function () {
 
-        renderTurn();
-        renderPlayers();
-        centerCurrentPlayerOnMap();
+        finishTurn(
+            nextPlayer
+        );
 
-        // ルーレット使用可能
-        rouletteButton.disabled =
-            false;
-
-                }
-            );
+    }
+);
 
 
             return;
@@ -11547,25 +11543,21 @@ applyTurnStartItemEffects(
                 renderPlayers();
 
 
-                showEventPopup(
-                    "💰 バイト終了！",
+               showEventPopup(
+    "💰 バイト終了！",
 
-                     `${nextPlayer.name}は<br>` +
-                `<strong>${formatG(reward)}G</strong>を獲得！`
-                ,
+    `${nextPlayer.name}は<br>` +
+    `<strong>${formatG(reward)}G</strong>を獲得！`
+    ,
 
-                    function () {
+    function () {
 
-        renderTurn();
-        renderPlayers();
-        centerCurrentPlayerOnMap();
+        finishTurn(
+            nextPlayer
+        );
 
-        // ルーレット使用可能
-        rouletteButton.disabled =
-            false;
-
-                    }
-                );
+    }
+);
 
 
                 return;
@@ -11722,25 +11714,21 @@ if (
             renderPlayers();
 
 
-            showEventPopup(
-                "💰 バイト終了！",
+          showEventPopup(
+    "💰 バイト終了！",
 
-               `${nextPlayer.name}は<br>` +
-                `<strong>${formatG(reward)}G</strong>を獲得！`
-                ,
+    `${nextPlayer.name}は<br>` +
+    `<strong>${formatG(reward)}G</strong>を獲得！`
+    ,
 
-                function () {
+    function () {
 
-        renderTurn();
-        renderPlayers();
-        centerCurrentPlayerOnMap();
+        finishTurn(
+            nextPlayer
+        );
 
-        // ルーレット使用可能
-        rouletteButton.disabled =
-            false;
-
-                }
-            );
+    }
+);
 
 
             return;
