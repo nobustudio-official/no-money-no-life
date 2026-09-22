@@ -12399,9 +12399,9 @@ function startJob(
     // 指定ターン数だけバイトする
     // =========================
 
-    player.jobTurnsRemaining =
-        turns;
-
+   player.jobTurnsRemaining =
+    turns + 1;
+    
     player.jobReward =
         reward;
 
