@@ -12194,6 +12194,10 @@ setTimeout(function () {
 // 報酬選択画面
 // =========================
 
+// =========================
+// バイト画面
+// =========================
+
 function showJobPopup(
     player,
     square,
@@ -12201,29 +12205,33 @@ function showJobPopup(
     finishCallback
 ) {
 
+    // =========================
+    // 現在のHTMLで使用している要素
+    // =========================
+
     const jobPopup =
         document.getElementById(
             "jobPopup"
         );
 
-    const jobName =
+    const jobMessage =
         document.getElementById(
-            "jobName"
+            "jobMessage"
         );
 
-    const jobWage =
+    const job1Button =
         document.getElementById(
-            "jobWage"
+            "job1Button"
         );
 
-    const jobQuestion =
+    const job2Button =
         document.getElementById(
-            "jobQuestion"
+            "job2Button"
         );
 
-    const jobWorkButton =
+    const job3Button =
         document.getElementById(
-            "jobWorkButton"
+            "job3Button"
         );
 
     const jobNoneButton =
@@ -12231,33 +12239,44 @@ function showJobPopup(
             "jobNoneButton"
         );
 
+
     // =========================
-    // 必要なHTMLが存在するか確認
+    // HTML要素チェック
     // =========================
 
     if (
         !jobPopup ||
-        !jobName ||
-        !jobWage ||
-        !jobQuestion ||
-        !jobWorkButton ||
+        !jobMessage ||
+        !job1Button ||
         !jobNoneButton
     ) {
 
         console.error(
-            "【バイト画面】必要なHTML要素が見つかりません。",
+            "【バイト画面】現在のHTMLに必要なバイト要素がありません。",
             {
-                jobPopup: !!jobPopup,
-                jobName: !!jobName,
-                jobWage: !!jobWage,
-                jobQuestion: !!jobQuestion,
-                jobWorkButton: !!jobWorkButton,
-                jobNoneButton: !!jobNoneButton
+                jobPopup:
+                    !!jobPopup,
+
+                jobMessage:
+                    !!jobMessage,
+
+                job1Button:
+                    !!job1Button,
+
+                job2Button:
+                    !!job2Button,
+
+                job3Button:
+                    !!job3Button,
+
+                jobNoneButton:
+                    !!jobNoneButton
             }
         );
 
         return;
     }
+
 
     // =========================
     // 今回の時給
@@ -12269,74 +12288,86 @@ function showJobPopup(
             turn
         );
 
-    // =========================
-    // 内容を設定
-    // =========================
-
-    jobName.textContent =
-        square.name;
-
-    jobWage.textContent =
-        `時給 ${formatG(currentWage)}G`;
-
-    jobQuestion.textContent =
-        "1ターン働きますか？";
 
     // =========================
-    // バイト画面を強制表示
+    // バイト内容
     // =========================
 
-    jobPopup.style.setProperty(
-        "display",
-        "block",
-        "important"
-    );
+    jobMessage.innerHTML =
+        `💼 ${square.name}<br>` +
+        `💰 時給 ${formatG(currentWage)}G<br><br>` +
+        `1ターン働きますか？`;
 
-    jobPopup.style.setProperty(
-        "visibility",
-        "visible",
-        "important"
-    );
-
-    jobPopup.style.setProperty(
-        "opacity",
-        "1",
-        "important"
-    );
-
-    jobPopup.style.setProperty(
-        "z-index",
-        "99999",
-        "important"
-    );
 
     // =========================
-    // 働く
+    // 表示
     // =========================
 
-    jobWorkButton.onclick =
+    jobPopup.style.display =
+        "block";
+
+
+    // =========================
+    // 1ターン働く
+    // =========================
+
+    job1Button.textContent =
+        "働く";
+
+    job1Button.style.display =
+        "";
+
+
+    job1Button.onclick =
         function () {
 
             startJob(
                 player,
+                1,
                 currentWage,
                 finishCallback
             );
 
         };
 
+
     // =========================
-    // やめる
+    // 2ターン・3ターンは
+    // 今回の仕様では使用しない
     // =========================
+
+    if (job2Button) {
+
+        job2Button.style.display =
+            "none";
+
+    }
+
+    if (job3Button) {
+
+        job3Button.style.display =
+            "none";
+
+    }
+
+
+    // =========================
+    // 働かない
+    // =========================
+
+    jobNoneButton.textContent =
+        "やめる";
+
+
+    jobNoneButton.style.display =
+        "";
+
 
     jobNoneButton.onclick =
         function () {
 
-            jobPopup.style.setProperty(
-                "display",
-                "none",
-                "important"
-            );
+            jobPopup.style.display =
+                "none";
 
             finishCallback();
 
