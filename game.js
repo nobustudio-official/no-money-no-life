@@ -12195,7 +12195,7 @@ setTimeout(function () {
 // =========================
 
 // =========================
-// バイト画面
+// バイト内容表示
 // =========================
 
 function showJobPopup(
@@ -12205,33 +12205,29 @@ function showJobPopup(
     finishCallback
 ) {
 
-    // =========================
-    // 現在のHTMLで使用している要素
-    // =========================
-
     const jobPopup =
         document.getElementById(
             "jobPopup"
         );
 
-    const jobMessage =
+    const jobName =
         document.getElementById(
-            "jobMessage"
+            "jobName"
         );
 
-    const job1Button =
+    const jobWage =
         document.getElementById(
-            "job1Button"
+            "jobWage"
         );
 
-    const job2Button =
+    const jobQuestion =
         document.getElementById(
-            "job2Button"
+            "jobQuestion"
         );
 
-    const job3Button =
+    const jobWorkButton =
         document.getElementById(
-            "job3Button"
+            "jobWorkButton"
         );
 
     const jobNoneButton =
@@ -12239,39 +12235,37 @@ function showJobPopup(
             "jobNoneButton"
         );
 
-
-    // =========================
-    // HTML要素チェック
-    // =========================
-
     if (
         !jobPopup ||
-        !jobMessage ||
-        !job1Button ||
+        !jobName ||
+        !jobWage ||
+        !jobQuestion ||
+        !jobWorkButton ||
         !jobNoneButton
     ) {
+        return;
+    }
+
+
+    // =========================
+    // バイトcontentsを取得
+    // =========================
+
+    const jobData =
+        getJobData(
+            square.jobId
+        );
+
+
+    // =========================
+    // バイトcontentsが存在しない場合
+    // =========================
+
+    if (!jobData) {
 
         console.error(
-            "【バイト画面】現在のHTMLに必要なバイト要素がありません。",
-            {
-                jobPopup:
-                    !!jobPopup,
-
-                jobMessage:
-                    !!jobMessage,
-
-                job1Button:
-                    !!job1Button,
-
-                job2Button:
-                    !!job2Button,
-
-                job3Button:
-                    !!job3Button,
-
-                jobNoneButton:
-                    !!jobNoneButton
-            }
+            "JOB_CONTENTSに存在しないjobIdです:",
+            square.jobId
         );
 
         return;
@@ -12284,46 +12278,38 @@ function showJobPopup(
 
     const currentWage =
         getCurrentJobWage(
-            square.jobWage,
+            jobData.unitPrice,
             turn
         );
 
 
     // =========================
-    // バイト内容
+    // バイト内容表示
     // =========================
 
-    jobMessage.innerHTML =
-        `💼 ${square.name}<br>` +
-        `💰 時給 ${formatG(currentWage)}G<br><br>` +
-        `1ターン働きますか？`;
+    jobName.textContent =
+        jobData.name;
 
+    jobWage.textContent =
+        `時給 ${formatG(currentWage)}G`;
 
-    // =========================
-    // 表示
-    // =========================
+    jobQuestion.textContent =
+        "1ターン働きますか?";
+
 
     jobPopup.style.display =
         "block";
 
 
     // =========================
-    // 1ターン働く
+    // 働く
     // =========================
 
-    job1Button.textContent =
-        "働く";
-
-    job1Button.style.display =
-        "";
-
-
-    job1Button.onclick =
+    jobWorkButton.onclick =
         function () {
 
             startJob(
                 player,
-                2,
                 currentWage,
                 finishCallback
             );
@@ -12332,36 +12318,8 @@ function showJobPopup(
 
 
     // =========================
-    // 2ターン・3ターンは
-    // 今回の仕様では使用しない
+    // やめる
     // =========================
-
-    if (job2Button) {
-
-        job2Button.style.display =
-            "none";
-
-    }
-
-    if (job3Button) {
-
-        job3Button.style.display =
-            "none";
-
-    }
-
-
-    // =========================
-    // 働かない
-    // =========================
-
-    jobNoneButton.textContent =
-        "やめる";
-
-
-    jobNoneButton.style.display =
-        "";
-
 
     jobNoneButton.onclick =
         function () {
