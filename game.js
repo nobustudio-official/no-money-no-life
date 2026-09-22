@@ -12210,20 +12210,108 @@ function showJobPopup(
             "jobPopup"
         );
 
-    const jobName =
-        document.getElementById(
-            "jobName"
+    // =========================
+    // バイトポップアップ本体が
+    // 存在しない場合
+    // =========================
+
+    if (!jobPopup) {
+
+        console.error(
+            "【バイト画面】jobPopup が見つかりません。"
         );
 
-    const jobWage =
-        document.getElementById(
-            "jobWage"
+        return;
+    }
+
+
+    // =========================
+    // JOB_CONTENTSから
+    // jobIdに対応するバイトを取得
+    // =========================
+
+    const jobData =
+        getJobData(
+            square.jobId
         );
 
-    const jobQuestion =
-        document.getElementById(
-            "jobQuestion"
+
+    // =========================
+    // JOB_CONTENTSに存在しない
+    // jobIdの場合
+    // =========================
+
+    if (!jobData) {
+
+        console.error(
+            "【バイトエラー】JOB_CONTENTSに存在しないjobIdです:",
+            square.jobId
         );
+
+        return;
+    }
+
+
+    // =========================
+    // 現在の時給
+    // =========================
+
+    const currentWage =
+        getCurrentJobWage(
+            jobData.unitPrice,
+            turn
+        );
+
+
+    // =========================
+    // バイト画面をJOB_CONTENTSの
+    // 内容から生成
+    // =========================
+
+    jobPopup.innerHTML = `
+
+        <div class="job-info-row">
+
+            <div class="job-name">
+                ${jobData.name}
+            </div>
+
+            <div class="job-wage">
+                時給 ${formatG(currentWage)}G
+            </div>
+
+        </div>
+
+        <div class="job-question">
+            1ターン働きますか？
+        </div>
+
+        <div class="job-choices">
+
+            <button
+                id="jobWorkButton"
+                class="job-choice-button job-work-button"
+                type="button"
+            >
+                働く
+            </button>
+
+            <button
+                id="jobNoneButton"
+                class="job-choice-button job-none-button"
+                type="button"
+            >
+                やめる
+            </button>
+
+        </div>
+
+    `;
+
+
+    // =========================
+    // ボタンを取得
+    // =========================
 
     const jobWorkButton =
         document.getElementById(
@@ -12235,71 +12323,6 @@ function showJobPopup(
             "jobNoneButton"
         );
 
-    if (
-        !jobPopup ||
-        !jobName ||
-        !jobWage ||
-        !jobQuestion ||
-        !jobWorkButton ||
-        !jobNoneButton
-    ) {
-        return;
-    }
-
-
-    // =========================
-    // バイトcontentsを取得
-    // =========================
-
-    const jobData =
-        getJobData(
-            square.jobId
-        );
-
-
-    // =========================
-    // バイトcontentsが存在しない場合
-    // =========================
-
-    if (!jobData) {
-
-        console.error(
-            "JOB_CONTENTSに存在しないjobIdです:",
-            square.jobId
-        );
-
-        return;
-    }
-
-
-    // =========================
-    // 今回の時給
-    // =========================
-
-    const currentWage =
-        getCurrentJobWage(
-            jobData.unitPrice,
-            turn
-        );
-
-
-    // =========================
-    // バイト内容表示
-    // =========================
-
-    jobName.textContent =
-        jobData.name;
-
-    jobWage.textContent =
-        `時給 ${formatG(currentWage)}G`;
-
-    jobQuestion.textContent =
-        "1ターン働きますか?";
-
-
-    jobPopup.style.display =
-        "block";
-
 
     // =========================
     // 働く
@@ -12310,6 +12333,7 @@ function showJobPopup(
 
             startJob(
                 player,
+                1,
                 currentWage,
                 finishCallback
             );
@@ -12330,6 +12354,14 @@ function showJobPopup(
             finishCallback();
 
         };
+
+
+    // =========================
+    // 表示
+    // =========================
+
+    jobPopup.style.display =
+        "block";
 
 }
 
