@@ -7,7 +7,6 @@ const mapData = [
     {
         id: 0,
         name: "START",
-        icon: "🏕️",
         type: "start",
         next: [1, 6],
         x: 30,
@@ -16,8 +15,6 @@ const mapData = [
 
     {
         id: 1,
-        name: "草原",
-        icon: "💰",
         type: "money",
         next: [2, 7],
         x: 38,
@@ -26,10 +23,8 @@ const mapData = [
 
     {
         id: 2,
-        name: "居酒屋のバイト",
-        icon: "💼",
         type: "job",
-        jobWage: 1000,
+        jobId: 1,
         next: [3],
         x: 46,
         y: 80
@@ -37,8 +32,6 @@ const mapData = [
 
     {
         id: 3,
-        name: "案内所",
-        icon: "👩",
         type: "asset",
         typeIds: [1],
         next: [4],
@@ -48,8 +41,6 @@ const mapData = [
 
     {
         id: 4,
-        name: "最悪",
-        icon: "💀",
         type: "worst",
         next: [5],
         x: 62,
@@ -58,8 +49,6 @@ const mapData = [
 
     {
         id: 5,
-        name: "モンスター",
-        icon: "👾",
         type: "monster",
         next: [11],
         x: 70,
@@ -68,8 +57,6 @@ const mapData = [
 
     {
         id: 6,
-        name: "モンスター",
-        icon: "👾",
         type: "monster",
         next: [17],
         x: 30,
@@ -82,8 +69,6 @@ const mapData = [
 
     {
         id: 7,
-        name: "魔法店",
-        icon: "🔮",
         type: "magic_shop",
         typeId: 1,
         next: [8],
@@ -93,8 +78,6 @@ const mapData = [
 
     {
         id: 8,
-        name: "モンスター",
-        icon: "👾",
         type: "monster",
         next: [9],
         x: 46,
@@ -103,8 +86,6 @@ const mapData = [
 
     {
         id: 9,
-        name: "ショップ",
-        icon: "🏪",
         type: "shop",
         typeId: 1,
         next: [10],
@@ -114,8 +95,6 @@ const mapData = [
 
     {
         id: 10,
-        name: "宝箱",
-        icon: "🎁",
         type: "treasure",
         treasureBoxId: 1,
         next: [11],
@@ -125,8 +104,6 @@ const mapData = [
 
     {
         id: 11,
-        name: "案内所",
-        icon: "👩",
         type: "asset",
         typeIds: [3],
         next: [12],
@@ -136,8 +113,6 @@ const mapData = [
 
     {
         id: 12,
-        name: "モンスター",
-        icon: "👾",
         type: "monster",
         next: [13, 23],
         x: 70,
@@ -146,8 +121,6 @@ const mapData = [
 
     {
         id: 13,
-        name: "草原",
-        icon: "💰",
         type: "money",
         next: [14],
         x: 62,
@@ -156,10 +129,8 @@ const mapData = [
 
     {
         id: 14,
-        name: "運び屋のバイト",
-        icon: "💼",
         type: "job",
-        jobWage: 1500,
+        jobId: 2,
         next: [15, 21],
         x: 54,
         y: 50
@@ -167,8 +138,6 @@ const mapData = [
 
     {
         id: 15,
-        name: "星の泉",
-        icon: "💰",
         type: "money",
         next: [16],
         x: 46,
@@ -177,8 +146,6 @@ const mapData = [
 
     {
         id: 16,
-        name: "ショップ",
-        icon: "🏪",
         type: "shop",
         typeId: 2,
         next: [17],
@@ -188,8 +155,6 @@ const mapData = [
 
     {
         id: 17,
-        name: "冒険者",
-        icon: "💰",
         type: "money",
         next: [18],
         x: 30,
@@ -198,8 +163,6 @@ const mapData = [
 
     {
         id: 18,
-        name: "モンスター",
-        icon: "👾",
         type: "monster",
         next: [19,24],
         x: 30,
@@ -212,8 +175,6 @@ const mapData = [
 
     {
         id: 19,
-        name: "魔法店",
-        icon: "🔮",
         type: "magic_shop",
         typeId: 2,
         next: [20, 25],
@@ -223,8 +184,6 @@ const mapData = [
 
     {
         id: 20,
-        name: "宝箱",
-        icon: "🎁",
         type: "treasure",
         treasureBoxId: 1,
         next: [21],
@@ -234,10 +193,8 @@ const mapData = [
 
     {
         id: 21,
-        name: "パン屋",
-        icon: "💼",
         type: "job",
-        jobWage: 1500,
+        jobId: 3,
         next: [22],
         x: 54,
         y: 35
@@ -245,8 +202,6 @@ const mapData = [
 
     {
         id: 22,
-        name: "山",
-        icon: "💰",
         type: "money",
         next: [23],
         x: 62,
@@ -255,8 +210,6 @@ const mapData = [
 
     {
         id: 23,
-        name: "モンスター",
-        icon: "👾",
         type: "monster",
         next: [29],
         x: 70,
@@ -265,8 +218,6 @@ const mapData = [
 
     {
         id: 24,
-        name: "宝箱",
-        icon: "🎁",
         type: "treasure",
         treasureBoxId: 1,
         next: [25],
@@ -276,8 +227,6 @@ const mapData = [
 
     {
         id: 25,
-        name: "宝箱",
-        icon: "💰",
         type: "money",
         next: [26],
         x: 38,
@@ -286,8 +235,6 @@ const mapData = [
 
     {
         id: 26,
-        name: "ショップ",
-        icon: "🏪",
         type: "shop",
         typeId: 1,
         next: [27],
@@ -297,8 +244,6 @@ const mapData = [
 
     {
         id: 27,
-        name: "モンスター",
-        icon: "👾",
         type: "monster",
         next: [28],
         x: 54,
@@ -307,8 +252,6 @@ const mapData = [
 
     {
         id: 28,
-        name: "ショップ",
-        icon: "🏪",
         type: "shop",
         typeId: 2,
         next: [29],
@@ -318,10 +261,8 @@ const mapData = [
 
     {
         id: 29,
-        name: "引っ越しバイト",
-        icon: "💼",
         type: "job",
-        jobWage: 2000,
+        jobId: 4,
         next: [],
         x: 70,
         y: 20
