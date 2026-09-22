@@ -6976,7 +6976,7 @@ body:has(.game-screen) {
 ========================= */
 
 .dice-movement-return-button .action-menu-label {
-    font-size: 24px;
+    font-size: 16px;
     white-space: nowrap;
 }
 
