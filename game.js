@@ -12231,6 +12231,10 @@ function showJobPopup(
             "jobNoneButton"
         );
 
+    // =========================
+    // 必要なHTMLが存在するか確認
+    // =========================
+
     if (
         !jobPopup ||
         !jobName ||
@@ -12239,6 +12243,19 @@ function showJobPopup(
         !jobWorkButton ||
         !jobNoneButton
     ) {
+
+        console.error(
+            "【バイト画面】必要なHTML要素が見つかりません。",
+            {
+                jobPopup: !!jobPopup,
+                jobName: !!jobName,
+                jobWage: !!jobWage,
+                jobQuestion: !!jobQuestion,
+                jobWorkButton: !!jobWorkButton,
+                jobNoneButton: !!jobNoneButton
+            }
+        );
+
         return;
     }
 
@@ -12253,10 +12270,7 @@ function showJobPopup(
         );
 
     // =========================
-    // 3行UI
-    // ① バイト名　時給
-    // ② 1ターン働きますか？
-    // ③ 働く　やめる
+    // 内容を設定
     // =========================
 
     jobName.textContent =
@@ -12268,8 +12282,33 @@ function showJobPopup(
     jobQuestion.textContent =
         "1ターン働きますか？";
 
-    jobPopup.style.display =
-        "block";
+    // =========================
+    // バイト画面を強制表示
+    // =========================
+
+    jobPopup.style.setProperty(
+        "display",
+        "block",
+        "important"
+    );
+
+    jobPopup.style.setProperty(
+        "visibility",
+        "visible",
+        "important"
+    );
+
+    jobPopup.style.setProperty(
+        "opacity",
+        "1",
+        "important"
+    );
+
+    jobPopup.style.setProperty(
+        "z-index",
+        "99999",
+        "important"
+    );
 
     // =========================
     // 働く
@@ -12293,57 +12332,15 @@ function showJobPopup(
     jobNoneButton.onclick =
         function () {
 
-            jobPopup.style.display =
-                "none";
+            jobPopup.style.setProperty(
+                "display",
+                "none",
+                "important"
+            );
 
             finishCallback();
 
         };
-
-}
-
-
-function startJob(
-    player,
-    reward,
-    finishCallback
-) {
-
-    const jobPopup =
-        document.getElementById(
-            "jobPopup"
-        );
-
-    // =========================
-    // バイト選択画面を閉じる
-    // =========================
-
-    jobPopup.style.display =
-        "none";
-
-    // =========================
-    // バイトは「次の自分の1ターン」だけ
-    // =========================
-
-    player.jobTurnsRemaining =
-        1;
-
-    player.jobReward =
-        reward;
-
-    // =========================
-    // バイト開始
-    // =========================
-
-    showEventPopup(
-        "💼 バイト開始",
-        `1ターン働きます！<br><strong>${formatG(reward)}G</strong>を獲得予定です。`,
-        function () {
-
-            finishCallback();
-
-        }
-    );
 
 }
 
