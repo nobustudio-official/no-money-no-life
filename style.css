@@ -6765,14 +6765,17 @@ body:has(.game-screen) {
    サイコロ移動：残り歩数カウンター
 ========================================================= */
 /*
-   現在ターンのプレイヤーの頭上に表示します。
+   プレイヤーの頭上に浮かぶ、
+   ファンタジー風の残り歩数表示。
 
-   数字だけを表示し、
-   「残り」「マス」などの文字は使いません。
+   表示例：
 
-   見た目はこのCSSだけで管理するため、
-   今後デザインを変更するときは
-   このブロックを中心に修正できます。
+          🎲 3
+           ↓
+          🧙
+
+   移動矢印より上に表示することで、
+   上方向の矢印と重ならないようにします。
 ========================================================= */
 
 .dice-movement-counter {
@@ -6780,27 +6783,27 @@ body:has(.game-screen) {
     position:
         absolute;
 
+    /*
+       プレイヤー画像の中央より
+       かなり上へ配置します。
+
+       これにより、プレイヤー直上の
+       移動矢印よりさらに上に表示されます。
+    */
     left:
         50%;
 
     top:
-        -18px;
+        -58px;
 
     transform:
         translateX(-50%);
 
-    min-width:
-        28px;
 
-    height:
-        24px;
-
-    padding:
-        0 5px;
-
-    box-sizing:
-        border-box;
-
+    /*
+       横並び
+       🎲 3
+    */
     display:
         flex;
 
@@ -6810,43 +6813,166 @@ body:has(.game-screen) {
     justify-content:
         center;
 
-    background:
-        rgba(0, 0, 0, 0.55);
 
+    /*
+       アイコンと数字の間隔
+    */
+    gap:
+        3px;
+
+
+    /*
+       UIを大きくしすぎない
+    */
+    min-width:
+        48px;
+
+    height:
+        30px;
+
+    padding:
+        0 5px;
+
+
+    box-sizing:
+        border-box;
+
+
+    /*
+       背景はほぼ透明。
+       マップの世界観を邪魔しない程度の
+       ほんのりした暗さだけ残します。
+    */
+    background:
+        rgba(15, 20, 35, 0.28);
+
+
+    /*
+       枠はかなり控えめ。
+    */
     border:
-        1px solid rgba(255, 255, 255, 0.65);
+        1px solid
+        rgba(255, 235, 170, 0.38);
+
 
     border-radius:
-        5px;
+        8px;
 
-    color:
-        #ffffff;
 
-    font-size:
-        17px;
-
-    font-weight:
-        900;
-
-    line-height:
-        1;
-
-    white-space:
-        nowrap;
-
-    text-shadow:
-        0 1px 2px rgba(0, 0, 0, 0.9);
-
+    /*
+       ファンタジーUIらしい
+       控えめな光
+    */
     box-shadow:
-        0 2px 5px rgba(0, 0, 0, 0.35);
+        0 2px 5px rgba(0, 0, 0, 0.35),
+        0 0 8px rgba(255, 220, 120, 0.25);
 
+
+    /*
+       プレイヤーのz-indexが50、
+       矢印が20なので、
+       カウンターをさらに前面へ。
+    */
     z-index:
         100;
 
+
+    /*
+       UIがクリックを邪魔しない
+    */
     pointer-events:
         none;
 
     user-select:
         none;
+
+    white-space:
+        nowrap;
+
+}
+
+
+/* =========================================================
+   サイコロアイコン
+========================================================= */
+
+.dice-movement-counter-icon {
+
+    width:
+        25px;
+
+    height:
+        25px;
+
+    flex:
+        0 0 25px;
+
+    object-fit:
+        contain;
+
+    display:
+        block;
+
+    filter:
+        drop-shadow(
+            0 2px 2px
+            rgba(0, 0, 0, 0.55)
+        );
+
+}
+
+
+/* =========================================================
+   残り歩数の数字
+========================================================= */
+
+.dice-movement-counter-value {
+
+    /*
+       今回ここを大きくします。
+    */
+    font-size:
+        24px;
+
+
+    /*
+       ゲームタイトルなどでも使用している
+       ファンタジー寄りのフォント。
+    */
+    font-family:
+        "Cinzel",
+        Georgia,
+        "Times New Roman",
+        serif;
+
+
+    font-weight:
+        900;
+
+
+    line-height:
+        1;
+
+
+    /*
+       金色系にして世界観へ合わせます。
+    */
+    color:
+        #fff1a8;
+
+
+    /*
+       数字を背景から浮かせる
+    */
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.95),
+        0 0 5px rgba(255, 210, 90, 0.65);
+
+
+    min-width:
+        18px;
+
+    text-align:
+        center;
 
 }
