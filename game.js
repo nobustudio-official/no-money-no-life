@@ -11352,7 +11352,7 @@ applyTurnStartItemEffects(
     "💰 バイト終了！",
 
     `${nextPlayer.name}は<br>` +
-    `<strong>${formatG(reward)}G</strong>を獲得！`
+   
     ,
 
     function () {
@@ -11551,7 +11551,7 @@ applyTurnStartItemEffects(
     "💰 バイト終了！",
 
     `${nextPlayer.name}は<br>` +
-    `<strong>${formatG(reward)}G</strong>を獲得！`
+   
     ,
 
     function () {
@@ -12323,7 +12323,7 @@ function showJobPopup(
 
             startJob(
                 player,
-                1,
+                2,
                 currentWage,
                 finishCallback
             );
