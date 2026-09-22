@@ -1,0 +1,6762 @@
+/* =========================================================
+   異世界冒険人生ゲーム
+   style.css
+   ========================================================= */
+
+
+/* =========================================================
+   1. 基本設定
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    margin: 0;
+
+    min-height: 100vh;
+
+    font-family:
+        "Yu Gothic",
+        "Hiragino Kaku Gothic ProN",
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at 50% 30%,
+            #344b72 0%,
+            #18233d 45%,
+            #0b1020 100%
+        );
+
+    color: white;
+}
+
+
+button {
+    cursor: pointer;
+    color: white;
+}
+
+
+/* =========================================================
+   2. ゲーム全体
+   ========================================================= */
+
+.game-container {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    padding: 30px;
+}
+
+
+/* =========================================================
+   3. ゲームタイトル
+   ========================================================= */
+
+.game-title {
+    position: relative;
+
+    font-family:
+        "Cinzel",
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:
+        clamp(32px, 8vw, 64px);
+
+    font-weight: 800;
+
+    letter-spacing: 3px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fff8d6 0%,
+            #f5df8a 25%,
+            #d8a928 55%,
+            #fff0a8 75%,
+            #b8860b 100%
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    text-shadow:
+        0 0 4px rgba(255, 235, 150, 0.8),
+        0 0 10px rgba(255, 200, 60, 0.6),
+        0 0 20px rgba(220, 160, 30, 0.4),
+        3px 3px 0 rgba(70, 45, 5, 0.8),
+        6px 6px 10px rgba(0, 0, 0, 0.7);
+
+    margin: 0 0 24px;
+
+    line-height: 1.1;
+}
+
+
+.game-title::before,
+.game-title::after {
+    display: block;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 14px;
+
+    letter-spacing: 2px;
+
+    color: #d8a928;
+
+    text-shadow:
+        0 0 8px rgba(255, 200, 50, 0.8);
+
+    white-space: nowrap;
+}
+
+
+.game-title::before {
+    content: "✦ ───────────────── ✦";
+
+    margin-bottom: 14px;
+}
+
+
+.game-title::after {
+    content: "✦ ───────────────── ✦";
+
+    margin-top: 14px;
+}
+
+
+/* =========================================================
+   4. ゲームサブタイトル
+   ========================================================= */
+
+.game-subtitle {
+    font-family:
+        "Cinzel",
+        Georgia,
+        "Times New Roman",
+        serif !important;
+
+    font-size:
+        clamp(13px, 3.5vw, 21px) !important;
+
+    font-weight: 500 !important;
+
+    letter-spacing: 3px !important;
+
+    text-align: center !important;
+
+    color: #f3d77a !important;
+
+    text-shadow:
+        0 0 5px rgba(255, 220, 130, 0.7),
+        0 0 10px rgba(220, 170, 50, 0.4),
+        2px 2px 5px rgba(0, 0, 0, 0.8) !important;
+
+    margin-top: 4px !important;
+}
+
+
+/* =========================================================
+   5. スタートボタン
+   ========================================================= */
+
+#startButton {
+    padding: 16px 45px;
+
+    border: 2px solid #ffffff;
+
+    border-radius: 50px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    font-size: 1.2rem;
+
+    font-weight: bold;
+
+    letter-spacing: 0.08em;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+#startButton:hover {
+    transform: scale(1.05);
+
+    background:
+        rgba(255, 255, 255, 0.22);
+
+    box-shadow:
+        0 0 15px rgba(255, 255, 255, 0.5),
+        0 0 35px rgba(100, 180, 255, 0.5);
+}
+
+
+#startButton:active {
+    transform: scale(0.98);
+}
+
+
+/* =========================================================
+   6. ゲーム画面
+   ========================================================= */
+
+.game-screen {
+    width: 100%;
+    max-width: 1400px;
+
+    height: 100dvh;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-rows:
+        auto
+        minmax(0, 1fr)
+        auto
+        auto;
+
+    overflow: hidden;
+
+    position: relative;
+}
+
+
+/* =========================================================
+   7. 目的地
+   ========================================================= */
+
+.destination {
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.25);
+
+    border-radius: 15px;
+
+    padding: 12px 16px;
+
+    margin-bottom: 15px;
+
+    font-size: 1rem;
+
+    font-weight: bold;
+
+    text-align: center;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0, 0, 0, 0.2);
+}
+
+
+/* =========================================================
+   8. マップ
+   ========================================================= */
+
+.map-area {
+    grid-row: 3;
+
+    min-height: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background:
+        rgba(0, 0, 0, 0.15);
+
+    border-radius: 20px;
+
+    padding: 15px;
+
+    margin: 0;
+
+    overflow: auto;
+
+    box-sizing: border-box;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: none;
+
+    touch-action:
+    pan-x
+    pan-y;
+}
+
+
+.map-area::-webkit-scrollbar {
+    display: none;
+}
+
+.map-area h2 {
+    margin-top: 0;
+
+    margin-bottom: 15px;
+
+    font-size: 1.3rem;
+}
+
+
+.map-board {
+    position: relative;
+
+    width: 1200px;
+    height: 800px;
+
+    max-width: none;
+
+    margin: 0 auto;
+
+    padding: 0;
+
+    flex-shrink: 0;
+
+    background-image: url("images/map2.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* =========================================================
+   9. マップの道
+   ========================================================= */
+
+.map-lines {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 0;
+
+    pointer-events: none;
+}
+
+
+.map-line {
+    stroke:
+        rgba(231, 168, 108, 0.9);
+
+    stroke-width: 1.2;
+
+    stroke-linecap: round;
+}
+
+
+/* =========================================================
+   10. マップのマス
+   ========================================================= */
+
+.map-node {
+    position: absolute;
+
+    width: 50px;
+    height: 50px;
+
+    transform:
+        translate(-50%, -50%);
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    background:
+        rgba(255, 255, 255, 0.8);
+
+    border:
+        2px solid
+        rgba(48, 47, 47, 0.247);
+
+    border-radius: 14px;
+
+    font-size: 1.5rem;
+
+    z-index: 1;
+}
+
+
+.square-icon {
+    font-size: 1.6rem;
+}
+
+/* =========================
+   ボスマス
+   ========================= */
+
+.boss-node {
+    transform:
+        translate(-50%, -50%)
+        scale(1.15);
+
+    background:
+        rgba(247, 177, 177, 0.9);
+        
+    box-shadow:
+        0 0 0 4px rgba(255, 80, 80, 0.9),
+        0 0 25px rgba(255, 80, 80, 0.9);
+
+    border-color:
+        rgba(255, 80, 80, 0.9);
+}
+
+
+.boss-node .square-icon {
+    font-size: 2rem;
+}
+
+.square-number {
+    position: absolute;
+
+    top: 3px;
+    left: 5px;
+
+    font-size: 0.65rem;
+
+    opacity: 0.6;
+}
+
+
+
+/* =========================================================
+   12. ターン表示
+   ========================================================= */
+
+.turn-display {
+    margin-bottom: 12px;
+
+    padding: 12px;
+
+    text-align: center;
+
+    background:
+        rgba(255, 255, 255, 0.15);
+
+    border-radius: 12px;
+
+    font-weight: bold;
+
+    font-size: 1.1rem;
+}
+
+
+/* =========================================================
+   13. プレイヤー情報
+   ========================================================= */
+
+.player-status {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-bottom: 20px;
+}
+
+
+.player-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    background:
+        rgba(255, 255, 255, 0.1);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius: 12px;
+
+    padding: 12px 15px;
+
+    font-size: 1rem;
+}
+
+
+.player-card strong {
+    min-width: 100px;
+
+    font-size: 1.05rem;
+
+    text-align: left;
+}
+
+
+.player-icon {
+    display: inline-block;
+
+    width: 16px;
+    height: 16px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    margin-right: 8px;
+
+    vertical-align: middle;
+
+    border: 2px solid white;
+
+    box-shadow:
+        0 0 6px
+        rgba(255, 255, 255, 0.5);
+}
+
+
+/* 現在のプレイヤー */
+
+.current-player {
+    border:
+        2px solid
+        rgba(255, 220, 100, 0.8);
+
+    box-shadow:
+        0 0 12px
+        rgba(255, 220, 100, 0.25);
+}
+
+
+/* =========================================================
+   14. ゲームメニューボタン
+   ========================================================= */
+
+.roulette-area {
+    display: flex;
+
+    flex-direction: row;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 12px;
+
+    flex-wrap: nowrap;
+
+    padding: 10px 0 20px;
+}
+
+
+#rouletteNumber {
+    display: none;
+}
+
+
+
+/* =========================================================
+   15. 分岐選択
+   ========================================================= */
+
+.choice-area {
+    margin-top: 15px;
+}
+
+
+.choice-box {
+    padding: 18px;
+
+    background:
+        rgba(0, 0, 0, 0.25);
+
+    border-radius: 15px;
+
+    text-align: center;
+}
+
+
+.choice-box h3 {
+    margin-top: 0;
+}
+
+
+.choice-buttons {
+    display: flex;
+
+    gap: 10px;
+
+    justify-content: center;
+}
+
+
+.branch-button {
+    flex: 1;
+
+    padding: 14px 10px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.5);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    font-size: 0.95rem;
+
+    font-weight: bold;
+}
+
+
+.branch-button:active {
+    transform: scale(0.96);
+}
+
+
+/* =========================================================
+   16. マップ上の分岐矢印
+   ========================================================= */
+
+.branch-message {
+    text-align: center;
+
+    margin-bottom: 10px;
+
+    font-weight: bold;
+
+    font-size: 1rem;
+}
+
+
+.branch-hint {
+    margin-top: 6px;
+
+    font-size: 0.85rem;
+
+    opacity: 0.8;
+}
+
+
+.branch-arrow-map {
+    position: absolute;
+
+    z-index: 20;
+
+    width: 46px;
+    height: 46px;
+
+    padding: 0;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    border: 3px solid white;
+
+    border-radius: 50%;
+
+    background:
+        rgba(20, 30, 60, 0.95);
+
+    color: white;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 0 8px rgba(255,255,255,0.8),
+        0 0 20px rgba(100,160,255,0.7);
+
+    animation:
+        branchArrowGlow 1.2s infinite;
+}
+
+
+.map-arrow-symbol {
+    display: block;
+
+    font-size: 2rem;
+
+    font-weight: bold;
+
+    line-height: 1;
+
+    text-shadow:
+        0 0 5px black,
+        0 0 10px black;
+}
+
+
+.branch-arrow-map:active {
+    filter: brightness(1.5);
+}
+
+
+/* =========================================================
+   サイコロ移動：画像矢印
+   ========================================================= */
+
+.dice-movement-arrow {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+
+    padding: 0 !important;
+
+    border: none !important;
+    border-radius: 0 !important;
+
+    background: transparent !important;
+    background-image: none !important;
+
+    box-shadow: none !important;
+
+    animation: none !important;
+
+    outline: none !important;
+}
+
+
+.dice-movement-arrow:focus,
+.dice-movement-arrow:focus-visible,
+.dice-movement-arrow:hover,
+.dice-movement-arrow:active {
+    background: transparent !important;
+    background-image: none !important;
+
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+
+    filter: none;
+}
+
+
+.dice-movement-arrow img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    pointer-events: none;
+
+    user-select: none;
+}
+
+
+/* ========================================================= */
+
+
+@keyframes branchArrowGlow {
+
+    0% {
+        box-shadow:
+            0 0 8px rgba(255,255,255,0.7),
+            0 0 15px rgba(100,160,255,0.5);
+    }
+
+    50% {
+        box-shadow:
+            0 0 15px rgba(255,255,255,1),
+            0 0 30px rgba(100,160,255,0.9);
+    }
+
+    100% {
+        box-shadow:
+            0 0 8px rgba(255,255,255,0.7),
+            0 0 15px rgba(100,160,255,0.5);
+    }
+
+}
+
+
+/* =========================================================
+   17. プレイヤー人数選択
+   ========================================================= */
+
+.player-count-buttons {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    margin-top: 25px;
+}
+
+
+.player-count {
+    min-width: 55px;
+
+    padding: 12px 10px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.5);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    font-size: 1rem;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+.player-count:hover {
+    background:
+        rgba(255, 255, 255, 0.25);
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 4px 12px
+        rgba(0, 0, 0, 0.25);
+}
+
+
+.player-count:active {
+    transform: scale(0.95);
+}
+
+
+/* =========================================================
+   18. プレイヤー決定ボタン
+   ========================================================= */
+
+#confirmPlayers {
+    margin-top: 15px;
+
+    padding: 12px 35px;
+
+    border: 2px solid white;
+
+    border-radius: 50px;
+
+    background:
+        rgba(255, 255, 255, 0.15);
+
+    color: white;
+
+    font-size: 1rem;
+
+    font-weight: bold;
+
+    letter-spacing: 0.08em;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+#confirmPlayers:hover {
+    background:
+        rgba(255, 255, 255, 0.25);
+
+    box-shadow:
+        0 0 15px
+        rgba(255, 255, 255, 0.4);
+}
+
+
+#confirmPlayers:active {
+    transform: scale(0.95);
+}
+
+
+/* =========================================================
+   19. ターン数選択
+   ========================================================= */
+
+.turn-count-buttons {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    margin-top: 25px;
+}
+
+
+.turn-count {
+    min-width: 110px;
+
+    padding: 14px 18px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.5);
+
+    border-radius: 14px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    font-size: 1rem;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+.turn-count:hover {
+    background:
+        rgba(255, 255, 255, 0.25);
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 4px 12px
+        rgba(0, 0, 0, 0.25);
+}
+
+
+.turn-count:active {
+    transform: scale(0.95);
+}
+
+
+/* =========================================================
+   20. イベントポップアップ
+   ========================================================= */
+
+.event-popup {
+    position: fixed;
+
+    left: 50%;
+    top: 38%;
+
+    transform:
+        translate(-50%,-50%);
+
+    width:
+        min(85%, 420px);
+
+    padding:
+        24px 20px;
+
+    background:
+        rgba(25, 35, 60, 0.97);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.35);
+
+    border-radius:
+        18px;
+
+    box-shadow:
+        0 10px 40px
+        rgba(0, 0, 0, 0.45);
+
+    text-align:
+        center;
+
+    z-index:
+        14000;
+
+    display:
+        none;
+}
+
+
+.event-popup-title {
+    font-size: 20px;
+
+    font-weight: bold;
+
+    margin-bottom: 16px;
+}
+
+
+.event-popup-message {
+    font-size: 18px;
+
+    line-height: 1.7;
+
+    margin-bottom: 20px;
+}
+
+
+.event-popup-button {
+    padding: 10px 36px;
+
+    border: none;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 255, 255, 0.15);
+
+    color: white;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+
+.event-popup-button:active {
+    transform: scale(0.96);
+}
+
+
+/* =========================================================
+   21. ゴールドルーレット
+   ========================================================= */
+
+.gold-roulette {
+    position: fixed;
+
+    left: 50%;
+    top: 38%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width:
+        min(82%, 400px);
+
+    padding:
+        18px 20px;
+
+    background:
+        linear-gradient(
+            rgba(35, 45, 70, 0.98),
+            rgba(20, 30, 55, 0.98)
+        );
+
+    border:
+        3px solid
+        #d8a900;
+
+    border-radius:
+        20px;
+
+    box-shadow:
+        0 8px 35px
+        rgba(0, 0, 0, 0.55);
+
+    text-align:
+        center;
+
+    z-index:
+        10000;
+
+    display:
+        none;
+}
+
+
+.gold-roulette-title {
+    font-size: 18px;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+}
+
+
+.gold-roulette-number {
+    font-size: 42px;
+
+    font-weight: bold;
+
+    line-height: 1.2;
+
+    letter-spacing: 2px;
+}
+
+
+.gold-roulette.spinning
+.gold-roulette-number {
+    transform: scale(1.08);
+}
+
+
+/* =========================================================
+   22. サイコロルーレット
+   ========================================================= */
+
+.dice-roulette {
+    position: fixed;
+
+    left: 50%;
+    top: 38%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width:
+        min(70%, 300px);
+
+    padding:
+        20px;
+
+    background:
+        rgba(25, 35, 60, 0.98);
+
+    border:
+        3px solid
+        rgba(255, 255, 255, 0.55);
+
+    border-radius:
+        20px;
+
+    box-shadow:
+        0 8px 35px
+        rgba(0, 0, 0, 0.55);
+
+    text-align:
+        center;
+
+    z-index:
+        10000;
+
+    display:
+        none;
+}
+
+
+.dice-roulette-title {
+    font-size: 20px;
+
+    font-weight: bold;
+
+    margin-bottom: 10px;
+}
+
+
+.dice-roulette-number {
+    font-size: 64px;
+
+    font-weight: bold;
+
+    line-height: 1.2;
+
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   23. モンスター遭遇選択
+   ========================================================= */
+
+.monster-choice-popup {
+    position: fixed;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width:
+        min(90%, 420px);
+
+    padding:
+        26px 20px;
+
+    background:
+        rgba(20, 30, 55, 0.98);
+
+    border:
+        2px solid
+        rgba(255,255,255,0.4);
+
+    border-radius:
+        20px;
+
+    box-shadow:
+        0 10px 40px
+        rgba(0,0,0,0.6);
+
+    text-align:
+        center;
+
+    z-index:
+        12500;
+
+    display:
+        none;
+}
+
+
+.monster-choice-title {
+    font-size:
+        24px;
+
+    font-weight:
+        bold;
+
+    margin-bottom:
+        14px;
+}
+
+
+.monster-choice-message {
+    font-size:
+        17px;
+
+    margin-bottom:
+        24px;
+}
+
+
+.monster-choice-buttons {
+    display:
+        flex;
+
+    gap:
+        12px;
+}
+
+
+.monster-choice-button {
+    flex:
+        1;
+
+    height:
+        52px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.5);
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(255,255,255,0.1);
+
+    color:
+        white;
+
+    font-size:
+        16px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+}
+
+
+.monster-choice-button:active {
+    transform:
+        scale(0.96);
+}
+
+
+/* モンスターのステータス */
+
+.monster-choice-stats {
+    margin-top:
+        16px;
+
+    padding:
+        12px 16px;
+
+    background:
+        rgba(255,255,255,0.06);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.15);
+
+    border-radius:
+        12px;
+
+    font-size:
+        15px;
+
+    line-height:
+        1.8;
+}
+
+
+/* =========================================================
+   24. モンスターバトル
+   ========================================================= */
+
+.battle-popup {
+    position: fixed;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width:
+        min(90%, 440px);
+
+    padding:
+        24px 20px;
+
+    background:
+        rgba(20, 30, 55, 0.98);
+
+    border:
+        2px solid
+        rgba(255, 255, 255, 0.4);
+
+    border-radius:
+        20px;
+
+    box-shadow:
+        0 10px 40px
+        rgba(0, 0, 0, 0.6);
+
+    text-align:
+        center;
+
+    z-index:
+        11000;
+
+    display:
+        none;
+}
+
+
+.battle-title {
+    font-size:
+        22px;
+
+    font-weight:
+        bold;
+
+    margin-bottom:
+        8px;
+}
+
+
+.battle-round {
+    font-size:
+        15px;
+
+    opacity:
+        0.8;
+
+    margin-bottom:
+        20px;
+}
+
+
+.battle-status {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-around;
+
+    gap:
+        10px;
+}
+
+
+.battle-player,
+.battle-monster {
+    width:
+        42%;
+
+    padding:
+        14px 8px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    border-radius:
+        14px;
+}
+
+
+.battle-name {
+    font-size:
+        18px;
+
+    font-weight:
+        bold;
+
+    margin-bottom:
+        10px;
+}
+
+
+#battlePlayerStats,
+#battleMonsterStats {
+    line-height:
+        1.8;
+
+    font-size:
+        15px;
+}
+
+
+.battle-vs {
+    font-size:
+        18px;
+
+    font-weight:
+        bold;
+}
+
+
+.battle-message {
+    margin-top:
+        20px;
+
+    min-height:
+        50px;
+
+    font-size:
+        17px;
+
+    line-height:
+        1.6;
+}
+
+
+/* =========================================================
+   25. バトル攻撃ボタン
+   ========================================================= */
+
+.battle-attack-button {
+    width:
+        80%;
+
+    margin-top:
+        10px;
+
+    padding:
+        14px 20px;
+
+    border:
+        none;
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(255, 255, 255, 0.15);
+
+    color:
+        white;
+
+    font-size:
+        18px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+}
+
+
+.battle-attack-button:active {
+    transform:
+        scale(0.96);
+}
+
+
+/* =========================================================
+   26. 報酬選択
+   ========================================================= */
+
+.reward-popup {
+    position:
+        fixed;
+
+    left:
+        50%;
+
+    top:
+        50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width:
+        min(90%, 420px);
+
+    padding:
+        24px 20px;
+
+    background:
+        rgba(20, 30, 55, 0.98);
+
+    border:
+        2px solid
+        rgba(255, 255, 255, 0.4);
+
+    border-radius:
+        20px;
+
+    box-shadow:
+        0 10px 40px
+        rgba(0, 0, 0, 0.6);
+
+    text-align:
+        center;
+
+    z-index:
+        12000;
+
+    display:
+        none;
+}
+
+
+.reward-title {
+    font-size:
+        22px;
+
+    font-weight:
+        bold;
+
+    margin-bottom:
+        12px;
+}
+
+
+.reward-message {
+    font-size:
+        16px;
+
+    margin-bottom:
+        20px;
+
+    opacity:
+        0.9;
+}
+
+
+.reward-choices {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        12px;
+}
+
+
+.reward-choice-button {
+    width:
+        100%;
+
+    padding:
+        14px 16px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.3);
+
+    border-radius:
+        14px;
+
+    background:
+        rgba(255, 255, 255, 0.1);
+
+    color:
+        white;
+
+    font-size:
+        17px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+}
+
+
+.reward-choice-button:active {
+    transform:
+        scale(0.97);
+}
+
+
+/* =========================================================
+   27. 所持品画面
+   ========================================================= */
+
+.inventory-popup {
+    position: fixed;
+
+    left: 50%;
+    top: 20px;
+
+    transform:
+        translateX(-50%);
+
+    width:
+        min(94%, 600px);
+
+    height:
+        650px;
+
+    max-height:
+        calc(100vh - 120px);
+
+    padding:
+        28px 22px;
+
+    box-sizing:
+        border-box;
+
+    background:
+        rgba(20, 30, 55, 0.98);
+
+    border:
+        2px solid
+        rgba(255, 255, 255, 0.4);
+
+    border-radius:
+        20px;
+
+    box-shadow:
+        0 10px 40px
+        rgba(0, 0, 0, 0.6);
+
+    text-align:
+        center;
+
+    z-index:
+        13000;
+
+    display:
+        none;
+
+    overflow:
+        hidden;
+}
+
+
+/* =========================
+   所持品タイトル
+========================= */
+
+.inventory-title {
+    font-size:
+        26px;
+
+    font-weight:
+        bold;
+
+    margin-bottom:
+        20px;
+}
+
+
+/* =========================
+   所持品一覧
+========================= */
+
+.inventory-list {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        10px;
+
+    height:
+        calc(100% - 100px);
+
+    overflow-y:
+        auto;
+
+    padding:
+        4px;
+
+    text-align:
+        left;
+}
+
+
+/* =========================
+   所持品1つ分
+========================= */
+
+.inventory-item {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        14px;
+
+    width:
+        100%;
+
+    min-height:
+        60px;
+
+    padding:
+        14px 16px;
+
+    box-sizing:
+        border-box;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius:
+        12px;
+
+    flex-shrink:
+        0;
+}
+
+
+/* =========================
+   アイテム名
+========================= */
+
+.inventory-item-name {
+    flex:
+        0 0 24%;
+
+    font-size:
+        17px;
+
+    font-weight:
+        bold;
+
+    white-space:
+        normal;
+
+    word-break:
+        break-word;
+}
+
+
+/* =========================
+   アイテム効果
+========================= */
+
+.inventory-item-effect {
+    flex:
+        1 1 auto;
+
+    min-width:
+        0;
+
+    font-size:
+        15px;
+
+    line-height:
+        1.5;
+
+    color:
+        rgba(255, 255, 255, 0.9);
+
+    text-align:
+        left;
+
+    white-space:
+        normal;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+/* =========================
+   アイテム使用ボタン
+========================= */
+
+.inventory-item-use-button {
+    flex:
+        0 0 80px;
+
+    height:
+        40px;
+
+    border:
+        1px solid
+        rgba(245, 215, 110, 0.7);
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(245, 215, 110, 0.15);
+
+    color:
+        #ffffff;
+
+    font-size:
+        14px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.1s ease;
+}
+
+
+.inventory-item-use-button:hover {
+    background:
+        rgba(245, 215, 110, 0.28);
+}
+
+
+.inventory-item-use-button:active {
+    transform:
+        scale(0.96);
+}
+
+
+/* =========================
+   所持品なし
+========================= */
+
+.inventory-empty {
+    padding:
+        40px 20px;
+
+    text-align:
+        center;
+
+    opacity:
+        0.7;
+
+    font-size:
+        16px;
+}
+
+
+/* =========================
+   閉じるボタン
+========================= */
+
+.inventory-close-button {
+    display:
+        block;
+
+    margin:
+        14px auto 0;
+
+    padding:
+        12px 40px;
+
+    border:
+        none;
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(255, 255, 255, 0.15);
+
+    color:
+        white;
+
+    font-size:
+        16px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+}
+
+
+.inventory-close-button:active {
+    transform:
+        scale(0.96);
+}
+
+
+/* =========================================================
+   28. 魔法画面
+   ========================================================= */
+
+.magic-popup {
+    position: fixed;
+
+    left: 50%;
+    top: 20px;
+
+    transform:
+        translateX(-50%);
+
+    width:
+        min(94%, 600px);
+
+    height:
+        650px;
+
+    max-height:
+        calc(100vh - 120px);
+
+    padding:
+        28px 22px;
+
+    box-sizing:
+        border-box;
+
+    background:
+        rgba(25, 35, 60, 0.98);
+
+    border:
+        2px solid
+        rgba(255, 255, 255, 0.4);
+
+    border-radius:
+        20px;
+
+    box-shadow:
+        0 10px 40px
+        rgba(0, 0, 0, 0.6);
+
+    text-align:
+        center;
+
+    z-index:
+        13000;
+
+    display:
+        none;
+
+    overflow:
+        hidden;
+}
+
+
+/* =========================
+   魔法タイトル
+========================= */
+
+.magic-title {
+    font-size:
+        26px;
+
+    font-weight:
+        bold;
+
+    margin-bottom:
+        20px;
+}
+
+
+/* =========================
+   魔法一覧
+========================= */
+
+.magic-list {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        10px;
+
+    height:
+        calc(100% - 100px);
+
+    overflow-y:
+        auto;
+
+    padding:
+        4px;
+
+    text-align:
+        left;
+}
+
+
+/* =========================
+   魔法1つ分
+========================= */
+
+.magic-item {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        14px;
+
+    width:
+        100%;
+
+    min-height:
+        60px;
+
+    padding:
+        14px 16px;
+
+    box-sizing:
+        border-box;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius:
+        12px;
+
+    background:
+        rgba(255, 255, 255, 0.06);
+
+    flex-shrink:
+        0;
+}
+
+
+/* =========================
+   魔法名
+========================= */
+
+.magic-item-name {
+    flex:
+        0 0 24%;
+
+    font-size:
+        17px;
+
+    font-weight:
+        bold;
+
+    white-space:
+        normal;
+
+    word-break:
+        break-word;
+}
+
+
+/* =========================
+   魔法効果
+========================= */
+
+.magic-item-effect {
+    flex:
+        1 1 auto;
+
+    min-width:
+        0;
+
+    font-size:
+        15px;
+
+    line-height:
+        1.5;
+
+    color:
+        rgba(255, 255, 255, 0.9);
+
+    text-align:
+        left;
+
+    white-space:
+        normal;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+/* =========================
+   魔法使用コスト
+========================= */
+
+.magic-item-cost {
+    flex:
+        0 0 auto;
+
+    font-size:
+        15px;
+
+    font-weight:
+        bold;
+
+    color:
+        #f5d76e;
+
+    white-space:
+        nowrap;
+}
+
+
+/* =========================
+   魔法なし
+========================= */
+
+.magic-empty {
+    padding:
+        40px 20px;
+
+    text-align:
+        center;
+
+    opacity:
+        0.7;
+
+    font-size:
+        16px;
+}
+
+
+/* =========================
+   閉じるボタン
+========================= */
+
+.magic-close-button {
+    display:
+        block;
+
+    margin:
+        14px auto 0;
+
+    padding:
+        12px 40px;
+
+    border:
+        none;
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(255, 255, 255, 0.15);
+
+    color:
+        #ffffff;
+
+    font-size:
+        16px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+}
+
+
+.magic-close-button:active {
+    transform:
+        scale(0.96);
+}
+
+/* =========================================================
+   29. スマホ対応
+   ========================================================= */
+
+@media (max-width: 500px) {
+
+    .game-container {
+        padding:
+            15px;
+    }
+
+
+    .map-board {
+        padding:
+            8px;
+    }
+
+
+    .map-node {
+        width:
+            45px;
+
+        height:
+            45px;
+    }
+
+
+    .square-icon {
+        font-size:
+            1.4rem;
+    }
+
+
+    .player-card {
+        gap:
+            8px;
+
+        padding:
+            10px;
+    }
+
+
+
+
+
+    .player-count {
+        min-width:
+            50px;
+
+        padding:
+            10px 8px;
+
+        font-size:
+            0.9rem;
+    }
+
+
+    /*
+       メニューボタンは現在の横並びを維持。
+       画面が狭すぎる場合だけ少し縮小。
+    */
+
+    .roulette-area {
+        gap:
+            8px;
+    }
+
+    .inventory-popup,
+    .magic-popup {
+        width:
+            94%;
+
+        height:
+            90vh;
+
+        padding:
+            24px 14px;
+    }
+
+
+    .inventory-item,
+    .magic-item {
+        gap:
+            8px;
+
+        padding:
+            12px 10px;
+    }
+
+
+    .inventory-item-name,
+    .magic-item-name {
+        flex:
+            0 0 24%;
+
+        font-size:
+            15px;
+    }
+
+
+    .inventory-item-effect,
+    .magic-item-effect {
+        font-size:
+            14px;
+
+        line-height:
+            1.5;
+    }
+
+
+    .inventory-item-use-button {
+        flex:
+            0 0 65px;
+
+        height:
+            38px;
+
+        font-size:
+            13px;
+    }
+
+
+    .magic-item-cost {
+        font-size:
+            13px;
+    }
+
+}
+/* =========================
+   バイト選択
+========================= */
+
+.job-popup {
+
+    display: none;
+
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: min(90%, 420px);
+
+    padding: 28px;
+
+    background: rgba(20, 20, 35, 0.98);
+
+    border: 2px solid rgba(255, 215, 120, 0.7);
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 0 30px rgba(255, 200, 100, 0.25);
+
+    z-index: 1000;
+
+    text-align: center;
+}
+
+
+.job-title {
+
+    font-size: 26px;
+
+    font-weight: bold;
+
+    margin-bottom: 12px;
+}
+
+
+.job-message {
+
+    margin-bottom: 20px;
+
+    line-height: 1.6;
+
+    font-size: 15px;
+}
+
+
+.job-choices {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.job-choice-button {
+
+    width: 100%;
+
+    padding: 14px 18px;
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    color: white;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.job-choice-button:hover {
+
+    background: rgba(255, 215, 120, 0.15);
+
+    transform: translateY(-1px);
+}
+
+
+.job-choice-button span {
+
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 14px;
+
+    color: #ffd76a;
+}
+
+/* =========================
+   最終結果
+========================= */
+
+.result-popup {
+    display: none;
+
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: 90%;
+    max-width: 500px;
+
+    padding: 30px 20px;
+
+    box-sizing: border-box;
+
+    background: rgba(15, 25, 50, 0.97);
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+
+    border-radius: 18px;
+
+    text-align: center;
+
+    z-index: 1000;
+
+    box-shadow:
+        0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+
+.result-title {
+
+    font-size: 32px;
+
+    font-weight: bold;
+
+    margin-bottom: 10px;
+
+    color: #f5d76e;
+}
+
+
+.result-subtitle {
+
+    font-size: 20px;
+
+    margin-bottom: 25px;
+}
+
+
+.result-ranking {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin-bottom: 25px;
+}
+
+
+.result-rank {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 12px 16px;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    border-radius: 10px;
+
+    font-size: 18px;
+}
+
+
+.result-rank-name {
+
+    font-weight: bold;
+}
+
+
+.result-rank-money {
+
+    font-weight: bold;
+}
+
+
+/* =========================
+   タイトルにもどるボタン
+========================= */
+
+.result-button {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    color: #ffffff;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.1s ease;
+}
+
+
+.result-button:hover {
+
+    background: rgba(255, 255, 255, 0.2);
+
+}
+
+
+.result-button:active {
+
+    transform: scale(0.98);
+
+}
+/* =========================
+   ターン数選択画面
+========================= */
+
+.turn-input-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+#turnCountInput {
+    width: 150px;
+    height: 70px;
+
+    box-sizing: border-box;
+
+    padding: 8px 15px;
+
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.1);
+
+    color: #ffffff;
+
+    font-size: 32px;
+    font-weight: bold;
+
+    text-align: center;
+
+    outline: none;
+}
+
+#turnCountInput:focus {
+    border-color: #f5d76e;
+    box-shadow: 0 0 15px rgba(245, 215, 110, 0.3);
+}
+
+.turn-input-label {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.turn-input-hint {
+    margin-top: 10px;
+
+    font-size: 14px;
+
+    color: rgba(255, 255, 255, 0.7);
+}
+
+
+/* =========================
+   ターン数決定ボタン
+========================= */
+
+#confirmTurnButton {
+    display: block;
+
+    width: 260px;
+    height: 60px;
+
+    margin: 25px auto 0;
+
+    border: 1px solid rgba(245, 215, 110, 0.6);
+    border-radius: 14px;
+
+    background: rgba(245, 215, 110, 0.15);
+
+    color: #ffffff;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.1s ease,
+        box-shadow 0.2s ease;
+}
+
+#confirmTurnButton:hover {
+    background: rgba(245, 215, 110, 0.25);
+
+    box-shadow:
+        0 0 18px rgba(245, 215, 110, 0.25);
+}
+
+#confirmTurnButton:active {
+    transform: scale(0.97);
+}
+/* =========================================================
+   魔法ショップ
+   ========================================================= */
+
+.magic-shop-popup {
+
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width:
+        min(90%, 420px);
+
+    max-height:
+        80vh;
+
+    padding:
+        28px;
+
+    box-sizing:
+        border-box;
+
+    background:
+        rgba(20, 20, 35, 0.98);
+
+    border:
+        2px solid
+        rgba(255, 215, 120, 0.7);
+
+    border-radius:
+        20px;
+
+    box-shadow:
+        0 0 30px
+        rgba(255, 200, 100, 0.25);
+
+    text-align:
+        center;
+
+    z-index:
+        10000;
+
+    display:
+        none;
+
+    overflow-y:
+        auto;
+}
+
+
+.magic-shop-title {
+    font-size:
+        24px;
+
+    font-weight:
+        bold;
+
+    margin-bottom:
+        12px;
+}
+
+
+.magic-shop-money {
+    font-size:
+        17px;
+
+    font-weight:
+        bold;
+
+    margin-bottom:
+        20px;
+
+    color:
+        #f5d76e;
+}
+
+
+.magic-shop-list {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        10px;
+
+    margin-bottom:
+        20px;
+}
+
+
+.magic-shop-close-button {
+
+    display: block;
+
+    width: auto;
+
+    margin:
+        8px auto 0;
+
+    padding:
+        8px 18px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius:
+        8px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    color:
+        white;
+
+    font-size:
+        14px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+}
+
+
+.magic-shop-close-button:active {
+    transform:
+        scale(0.97);
+}
+/* =========================================================
+   魔法ショップ：商品
+   ========================================================= */
+
+.magic-shop-item {
+    display: grid;
+
+    grid-template-columns: 1fr auto;
+
+    grid-template-rows: auto auto;
+
+    gap: 5px 12px;
+
+    padding: 12px 14px;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.06);
+}
+
+
+.magic-shop-item-name {
+    grid-column: 1;
+    grid-row: 1;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    margin: 0;
+
+    text-align: left;
+}
+
+
+.magic-shop-item-effect {
+    grid-column: 1;
+    grid-row: 2;
+
+    font-size: 14px;
+
+    margin: 0;
+
+    color:
+        rgba(255, 255, 255, 0.8);
+
+    text-align: left;
+
+    line-height: 1.4;
+}
+
+
+.magic-shop-item-price {
+    grid-column: 2;
+    grid-row: 1;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    margin: 0;
+
+    color:
+        #f5d76e;
+
+    white-space: nowrap;
+
+    text-align: right;
+}
+
+
+/* =========================
+   購入ボタン
+========================= */
+
+.magic-shop-buy-button {
+    grid-column: 2;
+    grid-row: 2;
+
+    width: 80px;
+    padding: 2px 12px;
+    font-size: 9px;
+
+    border:
+        1px solid
+        rgba(245, 215, 110, 0.7);
+
+    border-radius: 999px;
+
+    background:
+        rgba(245, 215, 110, 0.15);
+
+    color: #ffffff;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    justify-self: end;
+}
+
+
+.magic-shop-buy-button:hover {
+    background:
+        rgba(245, 215, 110, 0.28);
+
+    box-shadow:
+        0 0 12px
+        rgba(245, 215, 110, 0.2);
+}
+
+
+.magic-shop-buy-button:active {
+    transform:
+        scale(0.95);
+}
+/* =========================================================
+   戦闘画面：攻撃・魔法ボタン
+   ========================================================= */
+
+.battle-attack-button,
+.battle-magic-button {
+    display: block;
+
+    width: 255px;
+    height: 48px;
+
+    margin: 10px auto 0;
+
+    padding: 10px 20px;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.25);
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    color:
+        #ffffff;
+
+    font-size:
+        16px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.1s ease;
+}
+
+
+.battle-attack-button:hover,
+.battle-magic-button:hover {
+    background:
+        rgba(255, 255, 255, 0.2);
+}
+
+
+.battle-attack-button:active,
+.battle-magic-button:active {
+    transform:
+        scale(0.96);
+}/* =========================================================
+   戦闘画面：攻撃・魔法ボタン
+   ========================================================= */
+
+.battle-attack-button,
+.battle-magic-button {
+    display: block;
+
+    width: 255px;
+    height: 48px;
+
+    margin: 10px auto 0;
+
+    padding: 10px 20px;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.25);
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    color:
+        #ffffff;
+
+    font-size:
+        16px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.1s ease;
+}
+
+
+.battle-attack-button:hover,
+.battle-magic-button:hover {
+    background:
+        rgba(255, 255, 255, 0.2);
+}
+
+
+.battle-attack-button:active,
+.battle-magic-button:active {
+    transform:
+        scale(0.96);
+}
+
+/* =========================================================
+   戦闘中の魔法選択
+   ========================================================= */
+
+.battle-magic-popup {
+    position: fixed;
+
+    left: 50%;
+    top: 58%;
+
+    transform:
+        translateX(-50%);
+
+    width:
+        min(92%, 560px);
+
+    height:
+        280px;
+
+    padding:
+        18px 16px;
+
+    box-sizing:
+        border-box;
+
+    background:
+        rgba(25, 35, 60, 0.98);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.35);
+
+    border-radius:
+        18px;
+
+    box-shadow:
+        0 10px 40px
+        rgba(0, 0, 0, 0.5);
+
+    text-align:
+        center;
+
+    z-index:
+        11000;
+
+    display:
+        none;
+
+    overflow:
+        hidden;
+}
+
+
+.battle-magic-title {
+    font-size:
+        24px;
+
+    font-weight:
+        bold;
+
+    margin-bottom:
+        20px;
+}
+
+
+.battle-magic-list {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        10px;
+
+    margin-bottom:
+        12px;
+
+    max-height:
+        130px;
+
+    overflow-y:
+        auto;
+
+    padding-right:
+        4px;
+}
+
+
+.battle-magic-item {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 10px 14px;
+
+    border: 1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.06);
+
+    box-sizing: border-box;
+}
+
+
+.battle-magic-item-info {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.battle-magic-item-info {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+}
+
+
+.battle-magic-item-name {
+    font-weight: bold;
+
+    line-height: 1.2;
+}
+
+
+
+.battle-magic-item-effect {
+    white-space: nowrap;
+}
+
+
+.battle-magic-item-cost {
+    white-space: nowrap;
+
+    display: flex;
+    align-items: center;
+    line-height: 1;
+
+}
+
+
+.battle-magic-use-button {
+    flex-shrink: 0;
+}
+
+
+.battle-magic-item-name {
+    font-size:
+        17px;
+
+    font-weight:
+        bold;
+
+    white-space:
+        nowrap;
+}
+
+
+.battle-magic-item-effect {
+    flex:
+        1;
+
+    font-size:
+        14px;
+
+    color:
+        rgba(255, 255, 255, 0.85);
+}
+
+
+.battle-magic-item-cost {
+    font-size:
+        14px;
+
+    font-weight:
+        bold;
+
+    color:
+        #f5d76e;
+
+    white-space:
+        nowrap;
+}
+
+
+.battle-magic-use-button {
+    width:
+        90px;
+
+    padding:
+        8px 12px;
+
+    border:
+        1px solid
+        rgba(245, 215, 110, 0.7);
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(245, 215, 110, 0.15);
+
+    color:
+        #ffffff;
+
+    font-size:
+        14px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+}
+
+
+.battle-magic-use-button:hover {
+    background:
+        rgba(245, 215, 110, 0.28);
+}
+
+
+.battle-magic-use-button:active {
+    transform:
+        scale(0.96);
+}
+
+
+.battle-magic-close-button {
+    width:
+        180px;
+
+    padding:
+        12px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.25);
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    color:
+        #ffffff;
+
+    font-size:
+        16px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+}
+
+
+.battle-magic-close-button:active {
+    transform:
+        scale(0.96);
+}
+
+.item-roulette {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(90%, 500px);
+    padding: 30px 20px;
+    background: rgba(25, 35, 60, 0.98);
+    border: 3px solid #d4af37;
+    border-radius: 18px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    z-index: 20000;
+}
+
+.item-roulette-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.item-roulette-name {
+    font-size: 36px;
+    font-weight: bold;
+    min-height: 50px;
+}
+
+    /* =========================
+   アイテム用 複数サイコロルーレット
+   ========================= */
+
+.multi-dice-roulette {
+    display: none;
+
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: min(90%, 600px);
+
+    padding: 30px 20px;
+
+    background: rgba(25, 35, 60, 0.98);
+
+    border: 3px solid #d4af37;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 0 30px rgba(0, 0, 0, 0.6);
+
+    text-align: center;
+
+    z-index: 20000;
+}
+
+
+/* タイトル */
+
+.multi-dice-title {
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    margin-bottom: 25px;
+
+}
+
+
+/* サイコロを並べる場所 */
+
+.multi-dice-numbers {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+
+}
+
+
+/* それぞれのサイコロ */
+
+.multi-dice-number {
+
+    width: 70px;
+
+    height: 70px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background: #ffffff;
+
+    color: #222222;
+
+    border-radius: 12px;
+
+    font-size: 40px;
+
+    font-weight: bold;
+
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.4);
+
+}
+
+
+/* 合計 */
+
+.multi-dice-total {
+
+    margin-top: 25px;
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    min-height: 35px;
+
+}
+
+/* =========================================================
+   ゲーム画面：レイヤー構造
+========================================================= */
+
+.game-screen > .game-top-row {
+    grid-row: 1;
+}
+
+.game-screen > .map-area {
+    grid-row: 2;
+}
+
+.game-screen > .roulette-area {
+    grid-row: 3;
+}
+
+.game-screen > .player-status {
+    grid-row: 4;
+}
+
+/* =========================================================
+   マップレイヤー
+========================================================= */
+
+.game-screen > .map-area {
+    min-height: 0;
+
+    overflow: auto;
+
+    box-sizing: border-box;
+
+    scrollbar-width: none;
+
+    -webkit-overflow-scrolling: touch;
+
+    margin-top: 5px;
+}
+
+
+.game-screen > .map-area::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* =========================================================
+   下部UI
+========================================================= */
+
+.game-screen > .roulette-area {
+    flex-shrink: 0;
+
+    margin: 0;
+}
+
+
+.game-screen > .player-status {
+    flex-shrink: 0;
+
+    margin: 0;
+}
+
+/* =========================
+   ゲーム上部レイアウト
+   ========================= */
+
+.game-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 0;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+}
+
+.game-top-row .turn-display {
+    flex: 0 0 auto;
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+}
+
+.game-top-row .destination {
+    flex: 1;
+    margin: 0;
+    padding: 0;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-align: center;
+}
+
+
+
+/* =========================
+   現在プレイヤー情報
+   ========================= */
+
+.current-player-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 35px;
+    margin: 8px 0;
+}
+
+.current-player-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.remaining-steps-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+/* =========================
+   スマホ版：ゲームボタン縮小
+========================= */
+
+@media (max-width: 600px) {
+
+    .roulette-area {
+        gap: 8px;
+        padding-top: 6px;
+        padding-bottom: 5px;
+    }
+
+}
+
+/* =========================
+   スマホ版：プレイヤー一覧
+========================= */
+
+@media (max-width: 600px) {
+
+    .player-card {
+        height: 42px;
+        min-height: 42px;
+        padding: 6px 12px;
+        gap: 8px;
+    }
+
+
+
+}
+
+/* =========================
+   スマホ版：マップ拡大
+========================= */
+
+@media (max-width: 600px) {
+
+    .game-screen .map-area {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .map-board {
+        height: 850px;
+        padding: 0;
+    }
+
+    .map-node {
+        width: 45px;
+        height: 45px;
+    }
+
+    .square-icon {
+        font-size: 1.5rem;
+    }
+
+}
+
+/* =========================================================
+   スマホ：分岐矢印を小さく
+   ========================================================= */
+
+@media (max-width: 500px) {
+
+    .branch-arrow-map {
+        width: 36px;
+        height: 36px;
+        border-width: 2px;
+    }
+
+    .map-arrow-symbol {
+        font-size: 1rem;
+    }
+
+}
+
+/* =========================================================
+   スマホ：ゲームタイトル
+   ========================================================= */
+
+@media (max-width: 500px) {
+
+    .game-title {
+        font-size: 28px;
+        letter-spacing: 1px;
+        white-space: nowrap;
+    }
+
+}
+/* =========================
+   プレイヤーカード 資産ボタン
+========================= */
+
+.player-asset-button {
+    border: none;
+    background: transparent;
+    padding: 2px 6px;
+    margin: 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.player-asset-button:hover {
+    transform: scale(1.1);
+}
+
+.player-asset-button:active {
+    transform: scale(0.95);
+}
+
+/* =========================
+   資産購入
+========================= */
+
+.asset-purchase-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    width: 100%;
+
+    min-height: 60px;
+
+    padding: 12px 10px;
+
+    box-sizing: border-box;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius: 12px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================
+   資産情報
+========================= */
+
+.asset-purchase-info {
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    text-align: left;
+}
+
+
+.asset-purchase-name {
+    font-size: 17px;
+
+    font-weight: bold;
+
+    white-space: normal;
+
+    word-break: break-word;
+}
+
+
+.asset-purchase-detail {
+    margin-top: 4px;
+
+    font-size: 14px;
+
+    line-height: 1.4;
+
+    color:
+        rgba(255, 255, 255, 0.9);
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   所有者アイコン
+========================= */
+
+.asset-purchase-owner {
+    flex:
+        0 0 30px;
+
+    font-size: 1.3rem;
+
+    text-align: center;
+}
+
+
+/* =========================
+   購入ボタン
+========================= */
+
+.asset-purchase-button {
+    flex:
+        0 0 85px;
+
+    height: 38px;
+
+    padding: 6px 8px;
+
+    border:
+        1px solid
+        rgba(245, 215, 110, 0.7);
+
+    border-radius: 999px;
+
+    background:
+        rgba(245, 215, 110, 0.15);
+
+    color:
+        #ffffff;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+}
+
+
+.asset-purchase-button:hover {
+    background:
+        rgba(245, 215, 110, 0.28);
+}
+
+
+.asset-purchase-button:active {
+    transform:
+        scale(0.96);
+}
+
+
+.asset-purchase-button:disabled {
+    opacity: 0.5;
+
+    cursor: default;
+}
+
+
+/* =========================
+   スマホ版：資産購入
+========================= */
+
+@media (max-width: 500px) {
+
+    .asset-purchase-item {
+        gap: 6px;
+
+        padding: 10px 8px;
+    }
+
+
+    .asset-purchase-name {
+        font-size: 15px;
+    }
+
+
+    .asset-purchase-detail {
+        font-size: 13px;
+    }
+
+
+    .asset-purchase-owner {
+        flex-basis: 26px;
+
+        font-size: 1.1rem;
+    }
+
+
+    .asset-purchase-button {
+        flex-basis: 75px;
+
+        height: 36px;
+
+        font-size: 12px;
+    }
+
+}
+/* =========================
+   資産購入：所持金
+========================= */
+
+.asset-purchase-money {
+    padding: 8px 4px;
+
+    margin-bottom: 4px;
+
+    text-align: center;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    color: #f5d76e;
+
+    flex-shrink: 0;
+}
+/* =========================
+   保有資産サマリー
+========================= */
+
+.asset-summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+
+    width: 100%;
+    padding: 8px 4px;
+    box-sizing: border-box;
+
+    flex-shrink: 0;
+}
+
+.asset-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    font-size: 17px;
+    white-space: nowrap;
+}
+
+.asset-summary-item strong {
+    font-size: 18px;
+}
+
+/* =========================================================
+   スマホ版：ゲーム画面の横幅調整
+========================================================= */
+
+@media (max-width: 600px) {
+
+    /* ゲーム画面そのもの */
+    .game-screen {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+
+    /* =========================
+       上部：TURN ＋ 次の目的地
+    ========================= */
+
+    .game-top-row {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 8px;
+        padding-right: 8px;
+        gap: 4px;
+    }
+
+    .game-top-row .turn-display {
+        font-size: 13px;
+    }
+
+    .game-top-row .destination {
+        font-size: 13px;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    /* =========================
+       現在プレイヤー ＋ 残りマス
+    ========================= */
+
+    .current-player-row {
+        width: 100%;
+        max-width: 100%;
+        gap: 13px;
+    }
+
+    .current-player-info,
+    .remaining-steps-info {
+        font-size: 13px !important;
+    }
+
+
+    /* =========================
+       ゲームメニューボタン
+    ========================= */
+
+    .roulette-area {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 4px;
+        padding-right: 4px;
+        gap: 5px;
+        box-sizing: border-box;
+    }
+
+    /* =========================
+       プレイヤー一覧：横スクロール
+    ========================= */
+
+    .player-status {
+        width: 100%;
+        max-width: 100%;
+
+        display: flex;
+        flex-direction: row;
+
+        gap: 8px;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        justify-content: flex-start;
+
+        padding: 0 4px;
+
+        box-sizing: border-box;
+
+        scrollbar-width: none;
+
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .player-status::-webkit-scrollbar {
+        display: none;
+    }
+
+
+   .player-card {
+    flex: 0 0 auto;
+
+    width: max-content;
+    min-width: 260px;
+
+    height: 42px;
+    min-height: 42px;
+
+    padding: 6px 12px;
+
+    white-space: nowrap;
+}
+
+}
+
+/* =========================
+   ゴールド表示：改行させない
+========================= */
+
+.player-card span {
+    white-space: nowrap;
+}
+
+/* =========================
+   サウンド設定ボタン
+========================= */
+
+.sound-settings-button {
+    flex:
+        0 0 40px;
+
+    width: 40px;
+    height: 40px;
+
+    margin: 0;
+    padding: 0;
+
+    border: none;
+
+    background: none;
+
+    color: white;
+
+    font-size: 24px;
+
+    cursor: pointer;
+}
+
+.sound-settings-button:active {
+    transform: scale(0.95);
+}
+
+/* =========================
+   サウンド設定
+   スライダー位置を統一
+========================= */
+
+.sound-setting-item {
+    display: flex;
+    align-items: center;
+}
+
+.sound-setting-title {
+    width: 70px;
+    min-width: 70px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.sound-volume-slider {
+    width: 145px;
+    flex-shrink: 0;
+}
+
+.sound-volume-value {
+    margin-left: 15px;
+}
+
+/* =========================
+   ショップ
+========================= */
+
+#shopPopup {
+
+    display: none;
+
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: min(90%, 420px);
+
+    padding: 28px;
+
+    background: rgba(20, 20, 35, 0.98);
+
+    border: 2px solid rgba(255, 215, 120, 0.7);
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 0 30px rgba(255, 200, 100, 0.25);
+
+    z-index: 1000;
+
+    text-align: center;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================
+   ショップ・魔法店カテゴリー選択ボタン
+   旧ショップのカテゴリーUIを共通利用
+========================= */
+
+.shop-category-button {
+    display: block;
+
+    width: 70%;
+    margin: 0 auto;
+
+    padding: 14px 18px;
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.shop-category-button:hover {
+    background: rgba(255, 215, 120, 0.15);
+
+    transform: translateY(-1px);
+}
+
+
+.shop-category-button:active {
+    transform: scale(0.98);
+}
+
+
+@media (max-width: 500px) {
+
+    .shop-category-button {
+        width: 80%;
+
+        padding: 13px 16px;
+
+        font-size: 15px;
+    }
+
+}
+
+/* =========================
+   ショップ終了ボタン
+========================= */
+#shopCloseButton {
+    margin-top: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#shopCloseButton:hover {
+    background: rgba(255, 215, 120, 0.15);
+    transform: translateY(-1px);
+}
+
+/* =========================
+   ショップ商品一覧
+========================= */
+
+#shopItemList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+/* =========================
+   魔力ショップ商品一覧
+========================= */
+
+#powerShopList {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    width: 100%;
+}
+
+/* =========================
+   ショップ所持金
+========================= */
+
+.shop-money,
+.magic-shop-money {
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    margin-top: 8px;
+
+    margin-bottom: 16px;
+
+    color: #f5d76e;
+}
+
+/* =========================================================
+   所持品・所持品一覧画面
+   ショップと同じ外枠デザイン
+   ========================================================= */
+
+#inventoryPopup {
+
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width:
+        min(90%, 420px);
+
+    max-height:
+        80vh;
+
+    padding:
+        28px;
+
+    box-sizing:
+        border-box;
+
+    background:
+        rgba(20, 20, 35, 0.98);
+
+    border:
+        2px solid
+        rgba(255, 215, 120, 0.7);
+
+    border-radius:
+        20px;
+
+    box-shadow:
+        0 0 30px
+        rgba(255, 200, 100, 0.25);
+
+    text-align:
+        center;
+
+    z-index:
+        13000;
+
+    overflow-y:
+        auto;
+}
+
+/* =========================================================
+   魔法画面
+   ショップと同じ外枠デザイン
+   ========================================================= */
+
+#magicPopup {
+
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width:
+        min(90%, 420px);
+
+    max-height:
+        80vh;
+
+    padding:
+        28px;
+
+    box-sizing:
+        border-box;
+
+    background:
+        rgba(20, 20, 35, 0.98);
+
+    border:
+        2px solid
+        rgba(255, 215, 120, 0.7);
+
+    border-radius:
+        20px;
+
+    box-shadow:
+        0 0 30px
+        rgba(255, 200, 100, 0.25);
+
+    text-align:
+        center;
+
+    z-index:
+        13000;
+
+    overflow-y:
+        auto;
+}
+
+/* =========================================================
+   所持品・魔法タイトル
+   ========================================================= */
+
+.inventory-title,
+.magic-title {
+
+    font-size:
+        24px;
+
+    font-weight:
+        bold;
+
+    margin-bottom:
+        12px;
+}
+
+/* =========================================================
+   所持品・魔法：閉じるボタン
+   ========================================================= */
+
+.inventory-close-button,
+.magic-close-button {
+
+    display:
+        block;
+
+    width:
+        auto;
+
+    margin:
+        8px auto 0;
+
+    padding:
+        8px 18px;
+
+    box-sizing:
+        border-box;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius:
+        8px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    color:
+        white;
+
+    font-size:
+        14px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+}
+
+
+/* =========================================================
+   UI全面改修・第1段階
+   完成イメージ準拠：固定HUD + 左メニュー + 大型マップ
+========================================================= */
+
+body:has(.game-screen) {
+    padding: 0;
+    overflow: hidden;
+    background: #071b3f;
+}
+
+.game-container:has(.game-screen) {
+    width: 100vw;
+    height: 100dvh;
+    min-height: 100dvh;
+    padding: 0;
+    margin: 0;
+    display: block;
+    overflow: hidden;
+}
+
+.game-screen {
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    margin: 0;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    background: #071b3f;
+}
+
+/* =========================
+   上部固定HUD
+========================= */
+
+.game-hud {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    height: 76px;
+    z-index: 1000;
+
+    display: grid;
+    grid-template-columns:
+        170px
+        minmax(310px, 1.35fr)
+        minmax(190px, 0.8fr)
+        minmax(320px, 1.25fr)
+        175px;
+    gap: 0;
+    align-items: stretch;
+
+    padding: 0;
+
+    box-sizing: border-box;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(9, 63, 129, 0.96),
+            rgba(3, 42, 91, 0.96)
+        );
+
+    border: 2px solid rgba(72, 188, 255, 0.75);
+    border-radius: 14px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.15),
+        0 6px 16px rgba(0,0,0,0.38);
+
+    overflow: hidden;
+}
+
+.hud-box {
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+    padding: 8px 16px;
+
+    color: #ffffff;
+    background: transparent;
+
+    border: 0;
+    border-radius: 0;
+
+    box-shadow: none;
+
+    position: relative;
+}
+
+.hud-box + .hud-box {
+    border-left: 1px solid rgba(255,255,255,0.18);
+}
+
+.hud-player {
+    justify-content: flex-start;
+    gap: 10px;
+    padding-left: 10px;
+}
+
+.hud-player-avatar {
+    width: 60px;
+    height: 60px;
+    flex: 0 0 60px;
+    object-fit: contain;
+    object-position: center bottom;
+    filter: drop-shadow(0 3px 3px rgba(0,0,0,0.35));
+}
+
+.hud-player-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.hud-icon {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    object-fit: contain;
+    margin-right: 10px;
+    filter: drop-shadow(0 3px 3px rgba(0,0,0,0.3));
+}
+
+.hud-icon-fallback {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    margin-right: 10px;
+    font-size: 34px;
+}
+
+.hud-value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+}
+
+.hud-destination {
+    gap: 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.hud-destination:hover {
+    filter: brightness(1.12);
+}
+
+.hud-destination-icon {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    object-fit: contain;
+    margin-right: 3px;
+}
+
+.hud-destination-label {
+    white-space: nowrap;
+    font-size: clamp(14px, 1.35vw, 22px);
+    font-weight: 800;
+}
+
+.hud-destination-value {
+    margin: 0 2px;
+    color: #ffe83b;
+    font-size: clamp(30px, 3vw, 48px);
+    line-height: 1;
+}
+
+.hud-turn {
+    font-size: 30px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+/* 既存ロジック互換用。新UIには表示しない。 */
+.game-hud .remaining-steps-info {
+    display: none !important;
+}
+
+/* =========================
+   マップ領域
+========================= */
+
+.game-screen > .map-area {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    width: auto;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+
+    overflow: auto;
+    border-radius: 0;
+    background: transparent;
+    scrollbar-width: none;
+
+    z-index: 10;
+    touch-action: pan-x pan-y;
+    -webkit-overflow-scrolling: touch;
+}
+
+.game-screen > .map-area::-webkit-scrollbar {
+    display: none;
+}
+
+.map-board {
+    width: 1800px;
+    height: 1200px;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    transform-origin: center center;
+    will-change: transform;
+}
+
+/* =========================
+   マス
+========================= */
+
+.map-node {
+    width: 58px;
+    height: 58px;
+    overflow: visible;
+
+    background: rgba(255,255,255,0.78);
+    border: 3px solid rgba(255,255,255,0.95);
+    border-radius: 50%;
+
+    box-shadow:
+        0 3px 8px rgba(0,0,0,0.35),
+        inset 0 1px 2px rgba(255,255,255,0.8);
+
+    z-index: 5;
+}
+
+.map-node[data-map-type="start"] {
+    background: rgba(83, 180, 255, 0.9);
+}
+
+.map-node[data-map-type="money"] {
+    background: rgba(255, 219, 78, 0.92);
+}
+
+.map-node[data-map-type="job"] {
+    background: rgba(91, 205, 123, 0.92);
+}
+
+.map-node[data-map-type="shop"] {
+    background: rgba(255, 170, 76, 0.92);
+}
+
+.map-node[data-map-type="worst"] {
+    background: rgba(103, 81, 139, 0.9);
+}
+
+.map-node[data-map-type="monster"] {
+    background: rgba(247, 109, 91, 0.9);
+}
+
+.map-node[data-map-type="magic_shop"] {
+    background: rgba(171, 109, 245, 0.9);
+}
+
+.map-node[data-map-type="asset"] {
+    background: rgba(77, 169, 232, 0.9);
+}
+
+.map-node[data-map-type="treasure"] {
+    background: rgba(255, 205, 75, 0.92);
+}
+
+.square-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.map-space-icon {
+    width: 66px;
+    height: 66px;
+    max-width: none;
+    object-fit: contain;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+    filter: drop-shadow(0 3px 3px rgba(0,0,0,0.38));
+}
+
+.square-number {
+    display: none !important;
+}
+
+.boss-node {
+    transform:
+        translate(-50%, -50%)
+        scale(1.08);
+
+    background: rgba(191, 49, 52, 0.92);
+    border-color: #ffcf4a;
+
+    box-shadow:
+        0 0 0 3px rgba(255, 89, 64, 0.9),
+        0 0 20px rgba(255, 77, 58, 0.85),
+        0 4px 10px rgba(0,0,0,0.45);
+}
+
+.boss-node .map-space-icon {
+    width: 78px;
+    height: 78px;
+}
+
+
+/* =========================
+   左側アクションメニュー
+========================= */
+
+.game-screen > .action-menu {
+    position: absolute;
+    top: 105px;
+    left: 8px;
+    bottom: auto;
+
+    width: 190px;
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+
+    z-index: 100;
+    background: transparent;
+}
+
+.action-menu-button {
+    width: 190px;
+    height: 92px;
+    padding: 8px 12px;
+
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    grid-template-rows: 1fr;
+    align-items: center;
+    justify-items: center;
+    gap: 6px;
+
+    border: 3px solid rgba(37, 202, 255, 0.75);
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(9, 64, 128, 0.96),
+            rgba(4, 39, 86, 0.96)
+        );
+
+    color: white;
+    font-size: 26px;
+    font-weight: 900;
+
+    box-shadow:
+        0 4px 10px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.18);
+
+    transition:
+        transform 0.12s ease,
+        filter 0.12s ease,
+        background 0.12s ease;
+}
+
+.action-menu-button img {
+    width: 58px;
+    height: 58px;
+    object-fit: contain;
+    display: block;
+    grid-column: 1;
+}
+
+.action-menu-fallback {
+    display: none;
+    grid-column: 1;
+    font-size: 48px;
+    line-height: 1;
+}
+
+.action-menu-label {
+    grid-column: 2;
+    white-space: nowrap;
+}
+
+.action-menu-button:hover {
+    filter: brightness(1.1);
+    transform: translateX(2px);
+}
+
+.action-menu-button:active {
+    transform: scale(0.98);
+}
+
+/* サイコロも共通のアクションメニューデザインを使用 */
+
+.action-menu-button:disabled {
+    opacity: 0.48;
+    filter: grayscale(0.45);
+    transform: none;
+}
+
+/* =========================
+   既存下部UIは非表示
+========================= */
+
+.game-screen > .player-status,
+.game-screen > .choice-area {
+    display: none !important;
+}
+
+.roulette-number-hidden {
+    display: none !important;
+}
+
+/* =========================
+   その他メニュー
+========================= */
+
+.other-menu-popup {
+    display: none;
+    position: absolute;
+    top: 122px;
+    left: 210px;
+    width: 260px;
+    padding: 18px;
+
+    z-index: 1200;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(11, 62, 117, 0.98),
+            rgba(4, 29, 66, 0.98)
+        );
+
+    border: 2px solid rgba(91, 208, 255, 0.75);
+    border-radius: 16px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.5);
+}
+
+.other-menu-title {
+    margin-bottom: 12px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.other-menu-item,
+.other-menu-close {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 8px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.other-menu-item:hover,
+.other-menu-close:hover {
+    background: rgba(255,255,255,0.18);
+}
+
+.other-menu-close {
+    margin-top: 14px;
+}
+
+/* =========================
+   既存ポップアップを新UIの最前面へ
+========================= */
+
+.game-screen .inventory-popup,
+.game-screen .magic-popup,
+.game-screen .shop-popup,
+.game-screen .magic-shop-popup,
+.game-screen .battle-popup,
+.game-screen .event-popup,
+.game-screen .reward-popup {
+    z-index: 20000;
+}
+
+/* =========================
+   横画面を基準にした縮小調整
+========================= */
+
+@media (max-width: 1100px) {
+
+    .game-hud {
+        grid-template-columns:
+            140px
+            minmax(220px, 1.3fr)
+            minmax(150px, 0.8fr)
+            minmax(230px, 1.2fr)
+            125px;
+        gap: 5px;
+    }
+
+    .hud-box {
+        padding-left: 9px;
+        padding-right: 9px;
+    }
+
+    .hud-player-avatar {
+        width: 50px;
+        height: 50px;
+        flex-basis: 50px;
+    }
+
+    .hud-icon {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+    }
+
+    .hud-icon-fallback {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+        font-size: 28px;
+    }
+
+    .game-screen > .action-menu {
+        width: 150px;
+    }
+
+    .action-menu-button {
+        width: 150px;
+        height: 88px;
+        grid-template-columns: 48px 1fr;
+        font-size: 18px;
+    }
+
+    .action-menu-button img {
+        width: 46px;
+        height: 46px;
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .game-hud {
+        top: 4px;
+        left: 4px;
+        right: 4px;
+        height: 58px;
+        grid-template-columns:
+            108px
+            minmax(165px, 1.3fr)
+            minmax(105px, 0.8fr)
+            minmax(180px, 1.2fr)
+            100px;
+        gap: 0;
+    }
+
+    .hud-box {
+        height: 58px;
+        padding: 4px 6px;
+        border-width: 1px;
+        border-radius: 8px;
+    }
+
+    .hud-player {
+        gap: 4px;
+    }
+
+    .hud-player-avatar {
+        width: 44px;
+        height: 44px;
+        flex-basis: 44px;
+    }
+
+    .hud-player-name {
+        font-size: 18px;
+    }
+
+    .hud-icon {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+        margin-right: 4px;
+    }
+
+    .hud-destination-icon {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+        margin-right: 2px;
+    }
+
+    .hud-icon-fallback {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+        margin-right: 4px;
+        font-size: 23px;
+    }
+
+    .hud-value {
+        font-size: 19px;
+    }
+
+    .hud-destination-label {
+        font-size: 12px;
+    }
+
+    .hud-destination-value {
+        font-size: 27px;
+    }
+
+    .hud-turn {
+        font-size: 16px;
+    }
+
+    .game-screen > .map-area {
+        top: 0;
+    }
+
+    .game-screen > .action-menu {
+        top: 74px;
+        left: 4px;
+        width: 112px;
+        gap: 4px;
+    }
+
+    .action-menu-button {
+        width: 112px;
+        height: 70px;
+        padding: 4px 6px;
+        grid-template-columns: 38px 1fr;
+        gap: 3px;
+        border-radius: 10px;
+        border-width: 2px;
+        font-size: 14px;
+    }
+
+    .action-menu-button img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .action-menu-fallback {
+        font-size: 30px;
+    }
+
+    .map-board {
+        width: 1500px;
+        height: 1000px;
+    }
+
+    .map-node {
+        width: 50px;
+        height: 50px;
+    }
+
+    .map-space-icon {
+        width: 58px;
+        height: 58px;
+    }
+
+    .boss-node .map-space-icon {
+        width: 68px;
+        height: 68px;
+    }
+
+}
+
+/* =========================================================
+   プレイヤーキャラクター：4方向スプライトシート
+   =========================================================
+
+   使用画像：
+   images/characters/player-male.png
+   images/characters/player-female.png
+
+   画像は2×2配置です。
+
+   ┌────────┬────────┐
+   │ 正面   │ 背面   │
+   ├────────┼────────┤
+   │ 左向き │ 右向き │
+   └────────┴────────┘
+
+   game.js の updatePlayerSprite() が
+   background-position を変更します。
+
+   このCSSでは、
+   ・画像全体を表示しない
+   ・1方向分だけ表示
+   ・マス中央に配置できるサイズ
+   ・マップズーム時にプレイヤーだけ縮小しない
+   を担当します。
+========================================================= */
+
+/* 共通のスプライト設定 */
+
+.player-sprite {
+    display: block;
+
+    background-repeat:
+        no-repeat !important;
+
+    background-size:
+        200% 200% !important;
+
+    background-color:
+        transparent !important;
+
+    border:
+        0 !important;
+
+    border-radius:
+        0 !important;
+
+    box-shadow:
+        none !important;
+
+    object-fit:
+        initial !important;
+
+    object-position:
+        initial !important;
+
+    overflow:
+        visible;
+
+    pointer-events:
+        none;
+
+    user-select:
+        none;
+
+    -webkit-user-drag:
+        none;
+}
+
+
+/* =========================================================
+   HUDのプレイヤー
+========================================================= */
+
+.hud-player-avatar.player-sprite {
+
+    flex:
+        0 0 60px;
+
+    width:
+        60px;
+
+    height:
+        60px;
+
+    background-repeat:
+        no-repeat !important;
+
+    background-size:
+        200% 200% !important;
+
+    background-color:
+        transparent !important;
+
+}
+
+
+/* =========================================================
+   マップ上のプレイヤー
+========================================================= */
+/*
+   マスの完全中央に配置します。
+
+   width / height はマスより大きめです。
+   プレイヤーを「マスの意味を示すアイコン」より
+   さらに前面に表示します。
+
+   マップ自体をズームした場合は、
+   プレイヤーもマップと一緒に拡大・縮小します。
+   プレイヤーだけ逆方向に縮小する処理はありません。
+*/
+
+.map-node .player-piece.player-sprite {
+
+    position:
+        absolute;
+
+    left:
+        50%;
+
+    top:
+        50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width:
+        100px;
+
+    height:
+        100px;
+
+    margin:
+        0 !important;
+
+    background-repeat:
+        no-repeat !important;
+
+    background-size:
+        200% 200% !important;
+
+    background-color:
+        transparent !important;
+
+    border:
+        0 !important;
+
+    border-radius:
+        0 !important;
+
+    box-shadow:
+        none !important;
+
+    z-index:
+        50;
+
+    pointer-events:
+        none;
+
+    user-select:
+        none;
+
+    -webkit-user-drag:
+        none;
+
+}
+
+
+/* =========================================================
+   プレイヤーの向き
+========================================================= */
+/*
+   game.js が data-direction を設定します。
+
+   down  = 正面
+   up    = 背面
+   left  = 左向き
+   right = 右向き
+
+   background-position 自体は game.js からも設定されるため、
+   ここではCSS側でも対応関係を明示しておきます。
+*/
+
+/* 正面 */
+
+.map-node .player-piece.player-sprite[data-direction="down"] {
+
+    background-position:
+        0% 0%;
+
+}
+
+
+/* 背面 */
+
+.map-node .player-piece.player-sprite[data-direction="up"] {
+
+    background-position:
+        100% 0%;
+
+}
+
+
+/* 左向き */
+
+.map-node .player-piece.player-sprite[data-direction="left"] {
+
+    background-position:
+        0% 100%;
+
+}
+
+
+/* 右向き */
+
+.map-node .player-piece.player-sprite[data-direction="right"] {
+
+    background-position:
+        100% 100%;
+
+}
+
+
+/* =========================================================
+   HUD：画面幅が狭い場合
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .hud-player-avatar.player-sprite {
+
+        flex-basis:
+            50px;
+
+        width:
+            50px;
+
+        height:
+            50px;
+
+    }
+
+}
+
+
+/* =========================================================
+   スマートフォン
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .hud-player-avatar.player-sprite {
+
+        flex-basis:
+            44px;
+
+        width:
+            44px;
+
+        height:
+            44px;
+
+    }
+
+
+    /*
+       マップ上のプレイヤーは、
+       スマホでも小さくしません。
+
+       マップ自体のズームに合わせて
+       一緒に拡大・縮小します。
+    */
+
+    .map-node .player-piece.player-sprite {
+
+        width:
+            110px;
+
+        height:
+            130px;
+
+    }
+
+}
+
+/* =========================================================
+   UI微修正：今回の最終調整
+   ・プレイヤー名
+   ・左側アクションメニュー
+   ・ショップカテゴリー
+   ・HUD顔アイコン
+========================================================= */
+
+/* =========================
+   HUD：プレイヤー名
+========================= */
+
+.game-hud .hud-player {
+    min-width: 0;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.game-hud .hud-player-name {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: 0;
+    text-align: left;
+}
+
+/* =========================
+   HUD：正面固定・顔中心アイコン
+========================= */
+
+.hud-avatar-face {
+    width: 60px;
+    height: 60px;
+    flex: 0 0 60px;
+
+    display: block;
+
+    background-repeat: no-repeat !important;
+    background-size: 420% 420% !important;
+    background-position: 20% 0% !important;
+    background-color: transparent !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    overflow: hidden;
+    pointer-events: auto;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* =========================
+   左側アクションメニュー：表示を統一
+========================= */
+
+.game-screen > .action-menu {
+    width: 190px;
+    gap: 7px;
+}
+
+.game-screen > .action-menu .action-menu-button {
+    width: 190px;
+    height: 92px;
+    box-sizing: border-box;
+}
+
+.game-screen > .action-menu .action-menu-button img {
+    width: 58px;
+    height: 58px;
+}
+
+/* =========================
+   ショップカテゴリー一覧
+========================= */
+
+.shop-category-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin: 8px 0 12px;
+}
+
+.shop-category-list .shop-category-button {
+    width: 80%;
+    box-sizing: border-box;
+}
+
+/* =========================
+   画面幅1100px以下
+========================= */
+
+@media (max-width: 1100px) {
+
+    .game-hud {
+        grid-template-columns:
+            180px
+            minmax(220px, 1.3fr)
+            minmax(150px, 0.8fr)
+            minmax(230px, 1.2fr)
+            125px;
+    }
+
+    .game-screen > .action-menu,
+    .game-screen > .action-menu .action-menu-button {
+        width: 150px;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        height: 88px;
+    }
+
+    .game-screen > .action-menu .action-menu-button img {
+        width: 46px;
+        height: 46px;
+    }
+
+    .hud-avatar-face {
+        width: 50px;
+        height: 50px;
+        flex-basis: 50px;
+    }
+
+}
+
+/* =========================
+   画面幅700px以下
+========================= */
+
+@media (max-width: 700px) {
+
+    .game-hud {
+        grid-template-columns:
+            150px
+            minmax(150px, 1.3fr)
+            minmax(105px, 0.8fr)
+            minmax(170px, 1.2fr)
+            100px;
+    }
+
+    .hud-avatar-face {
+        width: 44px;
+        height: 44px;
+        flex-basis: 44px;
+    }
+
+    .game-screen > .action-menu {
+        top: 74px;
+        left: 4px;
+        width: 150px;
+        gap: 5px;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        width: 150px;
+        height: 78px;
+        grid-template-columns: 46px 1fr;
+        font-size: 16px;
+    }
+
+    .game-screen > .action-menu .action-menu-button img {
+        width: 42px;
+        height: 42px;
+    }
+
+    .shop-category-list .shop-category-button {
+        width: 88%;
+    }
+
+}
+
+/* =========================
+   画面幅500px以下
+========================= */
+
+@media (max-width: 500px) {
+
+    .game-hud {
+        grid-template-columns:
+            140px
+            minmax(145px, 1.2fr)
+            minmax(95px, 0.8fr)
+            minmax(160px, 1.1fr)
+            92px;
+    }
+
+    .game-screen > .action-menu,
+    .game-screen > .action-menu .action-menu-button {
+        width: 140px;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        height: 72px;
+        grid-template-columns: 42px 1fr;
+        font-size: 15px;
+    }
+
+    .game-screen > .action-menu .action-menu-button img {
+        width: 38px;
+        height: 38px;
+    }
+
+    .hud-avatar-face {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+    }
+
+}
+
+
+/* =========================================================
+   今回のレスポンシブ最終調整
+   ・プレイヤー名を画面幅に応じて収める
+   ・スマホ横持ち専用レイアウト
+   ・左側アクションメニューを横画面でも最適化
+========================================================= */
+
+/* プレイヤー名は省略せず、縮小表示を優先 */
+.game-hud .hud-player-name {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+    line-height: 1;
+    font-size: clamp(10px, 2vw, 26px);
+    letter-spacing: 0;
+}
+
+/* =========================================================
+   画面幅1100px以下
+   ※既存の見た目をなるべく維持しつつ、名前欄を確保
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .game-hud {
+        grid-template-columns:
+            minmax(125px, 1.05fr)
+            minmax(150px, 1.25fr)
+            minmax(105px, 0.85fr)
+            minmax(200px, 1.45fr)
+            minmax(100px, 0.9fr);
+        gap: 0;
+    }
+
+    .hud-player {
+        padding-left: 7px;
+        padding-right: 7px;
+        gap: 5px;
+    }
+
+    .hud-player-name {
+        font-size: clamp(12px, 1.8vw, 22px);
+    }
+
+}
+
+/* =========================================================
+   スマホ縦・狭い画面
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .game-hud {
+        top: 4px;
+        left: 4px;
+        right: 4px;
+        height: 58px;
+
+        grid-template-columns:
+            minmax(78px, 0.9fr)
+            minmax(68px, 0.85fr)
+            minmax(55px, 0.7fr)
+            minmax(115px, 1.35fr)
+            minmax(62px, 0.8fr);
+
+        gap: 0;
+    }
+
+    .hud-box {
+        height: 58px;
+        padding: 4px 4px;
+        border-width: 1px;
+        border-radius: 8px;
+    }
+
+    .hud-player {
+        gap: 3px;
+        padding-left: 4px;
+        padding-right: 3px;
+    }
+
+    .hud-avatar-face {
+        width: 38px;
+        height: 38px;
+        flex: 0 0 38px;
+    }
+
+    .hud-player-name {
+        font-size: clamp(10px, 3.5vw, 18px);
+    }
+
+    .hud-icon {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+        margin-right: 2px;
+    }
+
+    .hud-destination-icon {
+        width: 28px;
+        height: 28px;
+        flex-basis: 28px;
+        margin-right: 1px;
+    }
+
+    .hud-icon-fallback {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+        margin-right: 2px;
+        font-size: 20px;
+    }
+
+    .hud-value {
+        font-size: clamp(13px, 4vw, 19px);
+    }
+
+    .hud-destination {
+        gap: 1px;
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+
+    .hud-destination-label {
+        font-size: clamp(8px, 2.7vw, 12px);
+    }
+
+    .hud-destination-value {
+        font-size: clamp(20px, 7vw, 27px);
+        margin: 0 1px;
+    }
+
+    .hud-turn {
+        font-size: clamp(10px, 3.5vw, 16px);
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+
+    /* 左メニュー */
+    .game-screen > .action-menu {
+        top: 70px;
+        left: 4px;
+        width: 112px;
+        gap: 4px;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        width: 112px;
+        height: 68px;
+        padding: 4px 5px;
+        grid-template-columns: 36px 1fr;
+        gap: 2px;
+        border-radius: 10px;
+        border-width: 2px;
+        font-size: 14px;
+    }
+
+    .game-screen > .action-menu .action-menu-button img {
+        width: 34px;
+        height: 34px;
+    }
+
+}
+
+/* =========================================================
+   スマホ横持ち
+   画面幅ではなく「横向き」で判定する
+========================================================= */
+
+@media (orientation: landscape) and (max-height: 600px) {
+
+    .game-hud {
+        top: 4px;
+        left: 4px;
+        right: 4px;
+        height: 58px;
+
+        grid-template-columns:
+            minmax(100px, 1.0fr)
+            minmax(100px, 1.0fr)
+            minmax(75px, 0.75fr)
+            minmax(160px, 1.35fr)
+            minmax(88px, 0.85fr);
+
+        gap: 0;
+    }
+
+    .hud-box {
+        height: 58px;
+        padding: 4px 6px;
+        border-width: 1px;
+        border-radius: 8px;
+    }
+
+    .hud-player {
+        gap: 4px;
+        padding-left: 5px;
+    }
+
+    .hud-avatar-face {
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+    }
+
+    .hud-player-name {
+        font-size: clamp(11px, 2.2vw, 20px);
+    }
+
+    .hud-icon {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+        margin-right: 3px;
+    }
+
+    .hud-destination-icon {
+        width: 32px;
+        height: 32px;
+        flex-basis: 32px;
+    }
+
+    .hud-destination-label {
+        font-size: clamp(9px, 1.7vw, 15px);
+    }
+
+    .hud-destination-value {
+        font-size: clamp(22px, 4vw, 34px);
+    }
+
+    .hud-value {
+        font-size: clamp(15px, 2.5vw, 24px);
+    }
+
+    .hud-turn {
+        font-size: clamp(12px, 2.4vw, 22px);
+    }
+
+    /* 横持ちではマップを最大限確保 */
+    .game-screen > .map-area {
+        top: 0;
+    }
+
+    /* 左ボタンは高さを抑え、マップを広く使う */
+    .game-screen > .action-menu {
+        top: 70px;
+        left: 4px;
+        width: 108px;
+        gap: 4px;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        width: 108px;
+        height: 58px;
+        padding: 3px 5px;
+        grid-template-columns: 34px 1fr;
+        gap: 2px;
+        border-radius: 9px;
+        border-width: 2px;
+        font-size: 13px;
+    }
+
+    .game-screen > .action-menu .action-menu-button img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .game-screen > .action-menu .action-menu-fallback {
+        font-size: 27px;
+    }
+
+}
+
+/* =========================================================
+   極端に横長・低い画面
+========================================================= */
+
+@media (orientation: landscape) and (max-height: 430px) {
+
+    .game-hud {
+        height: 50px;
+        top: 3px;
+        left: 3px;
+        right: 3px;
+    }
+
+    .hud-box {
+        height: 50px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+
+    .hud-avatar-face {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+    }
+
+    .hud-player-name {
+        font-size: clamp(10px, 2vw, 17px);
+    }
+
+    .hud-icon {
+        width: 28px;
+        height: 28px;
+        flex-basis: 28px;
+    }
+
+    .hud-destination-icon {
+        width: 26px;
+        height: 26px;
+        flex-basis: 26px;
+    }
+
+    .hud-destination-label {
+        font-size: 9px;
+    }
+
+    .hud-destination-value {
+        font-size: 22px;
+    }
+
+    .hud-value {
+        font-size: 14px;
+    }
+
+    .hud-turn {
+        font-size: 11px;
+    }
+
+    .game-screen > .action-menu {
+        top: 58px;
+        width: 92px;
+        gap: 3px;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        width: 92px;
+        height: 50px;
+        grid-template-columns: 28px 1fr;
+        font-size: 11px;
+        padding: 2px 3px;
+    }
+
+    .game-screen > .action-menu .action-menu-button img {
+        width: 27px;
+        height: 27px;
+    }
+
+    .game-screen > .action-menu .action-menu-fallback {
+        font-size: 22px;
+    }
+
+}
+
+
+/* =========================================================
+   極端に狭い縦画面
+   360px前後でも5項目を1列に収める
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .game-hud {
+        grid-template-columns:
+            minmax(70px, 0.85fr)
+            minmax(62px, 0.8fr)
+            minmax(50px, 0.65fr)
+            minmax(105px, 1.25fr)
+            minmax(58px, 0.75fr);
+    }
+
+    .hud-box {
+        padding-left: 3px;
+        padding-right: 3px;
+    }
+
+    .hud-player {
+        gap: 2px;
+        padding-left: 3px;
+    }
+
+    .hud-avatar-face {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+    }
+
+    .hud-player-name {
+        font-size: 10px;
+    }
+
+    .hud-icon {
+        width: 27px;
+        height: 27px;
+        flex-basis: 27px;
+        margin-right: 1px;
+    }
+
+    .hud-destination-icon {
+        width: 24px;
+        height: 24px;
+        flex-basis: 24px;
+    }
+
+    .hud-destination-label {
+        font-size: 8px;
+    }
+
+    .hud-destination-value {
+        font-size: 20px;
+    }
+
+    .hud-value {
+        font-size: 13px;
+    }
+
+    .hud-turn {
+        font-size: 10px;
+    }
+
+    .game-screen > .action-menu {
+        width: 100px;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        width: 100px;
+        height: 64px;
+        grid-template-columns: 32px 1fr;
+        font-size: 13px;
+    }
+
+    .game-screen > .action-menu .action-menu-button img {
+        width: 30px;
+        height: 30px;
+    }
+
+}
+
+/* =========================================================
+   今回の追加修正：アイコンサイズ統一・文字のはみ出し防止
+   ・HUD内の全アイコンを同一サイズに統一
+   ・左側4ボタンのアイコンも同じサイズに統一
+   ・画面が狭くなった場合は全アイコンを同じ比率で縮小
+========================================================= */
+
+/* ---------- PC標準 ---------- */
+
+.game-hud .hud-player-avatar,
+.game-hud .hud-icon,
+.game-hud .hud-icon-fallback,
+.game-hud .hud-destination-icon,
+.game-screen > .action-menu .action-menu-button img {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    box-sizing: border-box;
+}
+
+.game-screen > .action-menu .action-menu-button {
+    grid-template-columns: 48px minmax(0, 1fr);
+}
+
+/* 文字が隣の枠へはみ出さないようにする */
+.game-hud .hud-value,
+.game-hud .hud-turn,
+.game-hud .hud-destination-label,
+.game-hud .hud-destination-value,
+.game-screen > .action-menu .action-menu-label {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.game-hud .hud-value,
+.game-hud .hud-turn {
+    white-space: nowrap;
+    text-overflow: clip;
+    font-size: clamp(14px, 2.2vw, 30px);
+}
+
+/* ---------- 1100px以下 ---------- */
+
+@media (max-width: 1100px) {
+
+    .game-hud .hud-player-avatar,
+    .game-hud .hud-icon,
+    .game-hud .hud-icon-fallback,
+    .game-hud .hud-destination-icon,
+    .game-screen > .action-menu .action-menu-button img {
+        width: 40px;
+        height: 40px;
+        flex-basis: 40px;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        grid-template-columns: 40px minmax(0, 1fr);
+    }
+
+}
+
+/* ---------- 700px以下 ---------- */
+
+@media (max-width: 700px) {
+
+    .game-hud .hud-player-avatar,
+    .game-hud .hud-icon,
+    .game-hud .hud-icon-fallback,
+    .game-hud .hud-destination-icon,
+    .game-screen > .action-menu .action-menu-button img {
+        width: 32px;
+        height: 32px;
+        flex-basis: 32px;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        grid-template-columns: 32px minmax(0, 1fr);
+    }
+
+    .game-screen > .action-menu .action-menu-fallback {
+        font-size: 28px;
+    }
+
+}
+
+/* ---------- スマホ横持ち ---------- */
+
+@media (orientation: landscape) and (max-height: 600px) {
+
+    .game-hud .hud-player-avatar,
+    .game-hud .hud-icon,
+    .game-hud .hud-icon-fallback,
+    .game-hud .hud-destination-icon,
+    .game-screen > .action-menu .action-menu-button img {
+        width: 32px;
+        height: 32px;
+        flex-basis: 32px;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        grid-template-columns: 32px minmax(0, 1fr);
+    }
+
+    .game-hud .hud-value,
+    .game-hud .hud-turn {
+        font-size: clamp(12px, 2.2vw, 22px);
+    }
+
+}
+
+/* ---------- 極端に低い横画面 ---------- */
+
+@media (orientation: landscape) and (max-height: 430px) {
+
+    .game-hud .hud-player-avatar,
+    .game-hud .hud-icon,
+    .game-hud .hud-icon-fallback,
+    .game-hud .hud-destination-icon,
+    .game-screen > .action-menu .action-menu-button img {
+        width: 28px;
+        height: 28px;
+        flex-basis: 28px;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        grid-template-columns: 28px minmax(0, 1fr);
+    }
+
+}
+
+/* ---------- 極端に狭い縦画面 ---------- */
+
+@media (max-width: 380px) {
+
+    .game-hud .hud-player-avatar,
+    .game-hud .hud-icon,
+    .game-hud .hud-icon-fallback,
+    .game-hud .hud-destination-icon,
+    .game-screen > .action-menu .action-menu-button img {
+        width: 28px;
+        height: 28px;
+        flex-basis: 28px;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        grid-template-columns: 28px minmax(0, 1fr);
+    }
+
+}
+
+/* =========================================================
+   ボス決定ポップアップ専用
+   ・3行構成
+   ・ボスをポップアップの下側に見せる
+========================================================= */
+
+.event-popup.boss-destination-popup {
+    top: clamp(76px, 14vh, 150px);
+
+    width:
+        min(88%, 420px);
+
+    padding:
+        18px 20px;
+
+    transform:
+        translateX(-50%);
+}
+
+
+.event-popup.boss-destination-popup
+.event-popup-title {
+    margin-bottom:
+        12px;
+
+    font-size:
+        clamp(18px, 2.2vw, 24px);
+
+    line-height:
+        1.3;
+}
+
+
+.event-popup.boss-destination-popup
+.event-popup-message {
+    margin-bottom:
+        14px;
+
+    font-size:
+        clamp(18px, 2.1vw, 24px);
+
+    line-height:
+        1.35;
+}
+
+
+.boss-destination-line {
+    font-weight:
+        900;
+
+    white-space:
+        nowrap;
+}
+
+
+.event-popup.boss-destination-popup
+.event-popup-button {
+    min-width:
+        96px;
+
+    padding:
+        9px 30px;
+
+    font-size:
+        16px;
+}
+
+
+@media (max-width: 700px) {
+
+    .event-popup.boss-destination-popup {
+        width:
+            min(90%, 360px);
+
+        padding:
+            16px 14px;
+    }
+
+    .event-popup.boss-destination-popup
+    .event-popup-title {
+        font-size:
+            18px;
+    }
+
+    .event-popup.boss-destination-popup
+    .event-popup-message {
+        font-size:
+            18px;
+    }
+
+}
+
+
+@media (orientation: landscape) and (max-height: 600px) {
+
+    .event-popup.boss-destination-popup {
+        top:
+            72px;
+
+        width:
+            min(78%, 390px);
+
+        padding:
+            12px 16px;
+    }
+
+    .event-popup.boss-destination-popup
+    .event-popup-title {
+        margin-bottom:
+            8px;
+
+        font-size:
+            18px;
+    }
+
+    .event-popup.boss-destination-popup
+    .event-popup-message {
+        margin-bottom:
+            8px;
+
+        font-size:
+            18px;
+    }
+
+    .event-popup.boss-destination-popup
+    .event-popup-button {
+        padding:
+            7px 26px;
+    }
+
+}
+
+
+
+/* =========================================================
+   今回のUI修正：ボス決定ポップアップ
+   ・ボス画像を適正サイズに固定
+   ・画面内に必ず収める
+   ・横画面ではさらにコンパクトに
+========================================================= */
+
+.event-popup.boss-destination-popup {
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(90%, 420px);
+    max-height: calc(100dvh - 20px);
+    padding: 18px 20px;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.event-popup.boss-destination-popup .event-popup-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-bottom: 10px;
+    font-size: clamp(18px, 4vw, 24px);
+    line-height: 1.25;
+}
+
+
+.boss-destination-image-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 135px;
+    margin: 2px 0 8px;
+}
+
+.boss-destination-popup-icon {
+    display: block;
+    width: 135px;
+    height: 135px;
+    object-fit: contain;
+}
+
+.boss-destination-subtitle {
+    margin-bottom: 5px;
+    font-size: 17px;
+    line-height: 1.3;
+}
+
+.boss-destination-line {
+    margin-bottom: 5px;
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1.25;
+}
+
+.boss-destination-message {
+    margin-bottom: 12px;
+    font-size: 16px;
+    line-height: 1.45;
+}
+
+@media (max-width: 700px) {
+    .event-popup.boss-destination-popup {
+        width: min(92%, 390px);
+        padding: 14px 14px;
+    }
+
+    .boss-destination-image-wrap {
+        height: 105px;
+        margin-bottom: 5px;
+    }
+
+    .boss-destination-popup-icon {
+        width: 105px;
+        height: 105px;
+    }
+
+    .boss-destination-subtitle {
+        font-size: 15px;
+    }
+
+    .boss-destination-line {
+        font-size: 20px;
+    }
+
+    .boss-destination-message {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+}
+
+/* =========================================================
+   今回のUI修正：バイトマス
+   3行構成
+   ① バイト名　時給
+   ② 1ターン働きますか？
+   ③ 働く　やめる
+========================================================= */
+
+.game-screen .job-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(92%, 420px);
+    max-height: calc(100dvh - 20px);
+    padding: 18px 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    background: rgba(20, 20, 35, 0.98);
+    border: 2px solid rgba(255, 215, 120, 0.7);
+    border-radius: 18px;
+    box-shadow: 0 0 30px rgba(255, 200, 100, 0.25);
+    text-align: center;
+    z-index: 20000;
+}
+
+.job-info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+}
+
+.job-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 21px;
+    font-weight: 900;
+    text-align: left;
+}
+
+.job-wage {
+    flex-shrink: 0;
+    color: #ffd76a;
+    font-size: 18px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.job-question {
+    margin-bottom: 14px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.job-choices {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.job-choice-button {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    min-height: 46px;
+    padding: 9px 12px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.job-work-button {
+    border-color: rgba(255,215,106,0.75);
+    background: rgba(255,215,106,0.14);
+}
+
+.job-choice-button:hover {
+    background: rgba(255,215,120,0.2);
+}
+
+.job-choice-button:active {
+    transform: scale(0.97);
+}
+
+/* =========================================================
+   横画面：ポップアップを画面内に収める
+   body/game-screen は overflow:hidden のため、
+   ポップアップ自身をスクロール可能にする。
+========================================================= */
+
+@media (orientation: landscape) and (max-height: 600px) {
+
+    .game-screen .job-popup,
+    .game-screen .event-popup,
+    .game-screen .reward-popup,
+    .game-screen .battle-popup,
+    .game-screen .magic-shop-popup,
+    .game-screen .shop-popup {
+        max-height: calc(100dvh - 12px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .game-screen .job-popup {
+        width: min(82%, 430px);
+        padding: 10px 14px;
+        border-radius: 14px;
+    }
+
+    .job-info-row {
+        margin-bottom: 7px;
+        padding-bottom: 6px;
+    }
+
+    .job-name {
+        font-size: 17px;
+    }
+
+    .job-wage {
+        font-size: 15px;
+    }
+
+    .job-question {
+        margin-bottom: 8px;
+        font-size: 15px;
+    }
+
+    .job-choices {
+        gap: 8px;
+    }
+
+    .job-choice-button {
+        min-height: 38px;
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+    .event-popup.boss-destination-popup {
+        width: min(78%, 390px);
+        padding: 10px 14px;
+    }
+
+    .event-popup.boss-destination-popup .event-popup-title {
+        margin-bottom: 5px;
+        font-size: 17px;
+    }
+
+    
+    .boss-destination-image-wrap {
+        height: 78px;
+        margin: 0 0 3px;
+    }
+
+    .boss-destination-popup-icon {
+        width: 78px;
+        height: 78px;
+    }
+
+    .boss-destination-subtitle {
+        font-size: 13px;
+    }
+
+    .boss-destination-line {
+        font-size: 17px;
+        margin-bottom: 2px;
+    }
+
+    .boss-destination-message {
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .event-popup.boss-destination-popup .event-popup-button {
+        padding: 5px 24px;
+        font-size: 14px;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 430px) {
+
+    .game-screen .job-popup {
+        width: min(78%, 400px);
+        padding: 8px 12px;
+    }
+
+    .job-name {
+        font-size: 15px;
+    }
+
+    .job-wage {
+        font-size: 13px;
+    }
+
+    .job-question {
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+    .job-choice-button {
+        min-height: 34px;
+        font-size: 13px;
+    }
+
+    .boss-destination-image-wrap {
+        height: 58px;
+    }
+
+    .boss-destination-popup-icon {
+        width: 58px;
+        height: 58px;
+    }
+}
+
+
+/* =========================================================
+   今回の3点改修
+   ① HUDプレイヤー名を小さくする
+   ③ サイコロ・アイテム非活性時も半透明にしない
+========================================================= */
+
+/* =========================
+   ① HUD：プレイヤー名
+========================= */
+
+.game-hud .hud-player-name {
+
+    font-size:
+        clamp(14px, 1.45vw, 20px) !important;
+
+    line-height:
+        1.1;
+
+    cursor:
+        pointer;
+
+    user-select:
+        none;
+
+    -webkit-tap-highlight-color:
+        transparent;
+}
+
+
+/* =========================
+   ③ サイコロ・アイテム：非活性時
+   disabled自体は維持するため、
+   タップしても処理は開きません。
+   見た目だけ通常時のままにします。
+========================= */
+
+.action-menu-button:disabled {
+
+    opacity:
+        1 !important;
+
+    filter:
+        none !important;
+
+    transform:
+        none !important;
+
+    cursor:
+        default;
+}
+
+
+.action-menu-button:disabled:hover,
+.action-menu-button:disabled:active {
+
+    filter:
+        none !important;
+
+    transform:
+        none !important;
+}

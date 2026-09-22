@@ -40,6 +40,9 @@ const MAP_TYPE_ICON_PATHS = {
 const BOSS_MAP_ICON_PATH =
     "images/map-icons/boss.png";
 
+const DICE_MOVEMENT_ARROW_PATH =
+    "images/ui-icons/yajirushi.png";
+
 const BOSS_ICON_HTML =
     `<img src="${BOSS_MAP_ICON_PATH}" alt="ボス" style="width:1.2em;height:1.2em;object-fit:contain;vertical-align:middle;">`;
 
@@ -610,7 +613,8 @@ const GAME_LOADING_ASSETS = [
     "images/ui-icons/dice.png",
     "images/ui-icons/item.png",
     "images/ui-icons/magic.png",
-    "images/ui-icons/settings.png"
+    "images/ui-icons/settings.png",
+    "images/ui-icons/yajirushi.png"
 ];
 
 function preloadGameImage(path) {
@@ -1330,6 +1334,36 @@ function showGameScreen(
     let currentPlayer = 0;
     let remainingSteps = 0;
     let currentTurn = 1;
+
+    // =========================
+    // サイコロ移動状態
+    // =========================
+    // 今回のサイコロ移動中に通ったマスを記録します。
+    // 直前に通った道を逆方向へ戻った場合は、
+    // その1マス分だけ残り歩数を回復します。
+    // =========================
+
+    let diceMovementState = {
+
+        active: false,
+
+        player: null,
+
+        startPosition: null,
+
+        totalSteps: 0,
+
+        history: []
+
+    };
+
+    // =========================
+    // サイコロ移動中の
+    // 強調マスクリック処理
+    // =========================
+
+    let diceReachableClickHandlers =
+        new Map();
 
     // =========================
 // 配当サイクル
@@ -4146,6 +4180,547 @@ function getReachableStopSquares(
 }
 
 // =========================
+// サイコロ移動用
+// 止まれるマスを取得
+// =========================
+// 今回のサイコロ移動では、
+// 「来た道を戻る」ことが可能です。
+// そのため通常の停止可能マス検索とは分けます。
+// =========================
+
+function getDiceReachableStopSquares(
+    startPosition,
+    steps
+) {
+
+    const results =
+        new Map();
+
+    const queue = [
+        {
+            position:
+                startPosition,
+
+            previousPosition:
+                null,
+
+            stepsUsed:
+                0,
+
+            path:
+                [
+                    startPosition
+                ]
+        }
+    ];
+
+    const visited =
+        new Set();
+
+
+    while (
+        queue.length > 0
+    ) {
+
+        const state =
+            queue.shift();
+
+
+        // =========================
+        // 指定マス数に到達
+        // =========================
+
+        if (
+            state.stepsUsed ===
+            steps
+        ) {
+
+            if (
+                !results.has(
+                    state.position
+                )
+            ) {
+
+                results.set(
+                    state.position,
+                    state.path
+                );
+
+            }
+
+            continue;
+
+        }
+
+
+        // =========================
+        // 現在地から行けるマス
+        // =========================
+
+        const options =
+            getConnectedOptions(
+                state.position
+            );
+
+
+        // =========================
+        // 行ける場所がない
+        // =========================
+
+        if (
+            options.length === 0
+        ) {
+
+            if (
+                !results.has(
+                    state.position
+                )
+            ) {
+
+                results.set(
+                    state.position,
+                    state.path
+                );
+
+            }
+
+            continue;
+
+        }
+
+
+        options.forEach(
+            function (nextPosition) {
+
+                // =========================
+                // 来た道を戻ることも許可
+                // =========================
+
+                const nextKey =
+                    `${state.position}-${nextPosition}-${state.previousPosition}-${state.stepsUsed + 1}`;
+
+
+                if (
+                    visited.has(
+                        nextKey
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                visited.add(
+                    nextKey
+                );
+
+
+                queue.push({
+
+                    position:
+                        nextPosition,
+
+                    previousPosition:
+                        state.position,
+
+                    stepsUsed:
+                        state.stepsUsed + 1,
+
+                    path:
+                        [
+                            ...state.path,
+                            nextPosition
+                        ]
+
+                });
+
+            }
+        );
+
+    }
+
+
+    return results;
+
+}
+
+// =========================
+// サイコロ移動中の
+// 止まれるマスを強調表示
+// =========================
+// 矢印による1マス移動とは別に、
+// 「今回の出目で最終的に止まれる場所」を
+// 見た目だけ強調します。
+// クリック処理は付けません。
+// =========================
+
+// =========================
+// 強調されたマスまで移動
+// =========================
+// 強調マスをタップした場合は、
+// 矢印を1回ずつタップしたのと同じルールで
+// 選択した経路を自動的に進みます。
+// =========================
+
+function moveDiceToHighlightedSquare(
+    player,
+    path
+) {
+
+    if (
+        !diceMovementState.active ||
+        diceMovementState.player !== player ||
+        !Array.isArray(path) ||
+        path.length < 2
+    ) {
+
+        return;
+
+    }
+
+
+    // =========================
+    // 現在の仮移動履歴から、
+    // 選択した正式ルートへ合流する地点を探す
+    // =========================
+
+    const history =
+        diceMovementState.history;
+
+    let mergeHistoryIndex =
+        -1;
+
+    let mergePosition =
+        null;
+
+
+    for (
+        let i = history.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        if (
+            path.indexOf(
+                history[i]
+            ) !== -1
+        ) {
+
+            mergeHistoryIndex =
+                i;
+
+            mergePosition =
+                history[i];
+
+            break;
+
+        }
+
+    }
+
+
+    // スタート地点は必ず正式ルートに存在するため、
+    // 通常ここには入らない。
+    if (
+        mergeHistoryIndex === -1 ||
+        mergePosition === null
+    ) {
+
+        return;
+
+    }
+
+
+    // =========================
+    // 正式ルート上の合流地点を取得
+    // 同じマスが複数回登場する場合は、
+    // 正式ルートの最後の登場位置を使用する。
+    // =========================
+
+    let mergePathIndex =
+        -1;
+
+
+    for (
+        let i = path.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        if (
+            path[i] ===
+            mergePosition
+        ) {
+
+            mergePathIndex =
+                i;
+
+            break;
+
+        }
+
+    }
+
+
+    if (
+        mergePathIndex === -1
+    ) {
+
+        return;
+
+    }
+
+
+    clearReachableHighlights();
+    clearDiceMovementArrows();
+
+
+    // =========================
+    // 仮移動ルートから
+    // 合流地点まで戻るルート
+    // =========================
+
+    const returnPath =
+        history
+            .slice(
+                mergeHistoryIndex + 1
+            )
+            .reverse();
+
+
+    // =========================
+    // 合流地点から
+    // 選択した停止地点まで進むルート
+    // =========================
+
+    const forwardPath =
+        path.slice(
+            mergePathIndex + 1
+        );
+
+
+    const movementPlan = [
+        ...returnPath,
+        ...forwardPath
+    ];
+
+
+    let index = 0;
+
+
+    function moveNext() {
+
+        if (
+            !diceMovementState.active ||
+            diceMovementState.player !== player
+        ) {
+
+            return;
+
+        }
+
+
+        // =========================
+        // 正式移動完了
+        // =========================
+
+        if (
+            index >= movementPlan.length
+        ) {
+
+            // 選択した停止地点に到着したら、
+            // 必ずそのマスで停止します。
+            remainingSteps = 0;
+
+            renderTurn();
+
+            finishDiceMovement(
+                player
+            );
+
+            return;
+
+        }
+
+
+        const nextPosition =
+            movementPlan[index];
+
+        // =========================
+        // 戻る移動か判定
+        // =========================
+        // movementPlanの先頭が、仮移動から
+        // 合流地点まで戻る区間です。
+        // =========================
+
+        const isBacktracking =
+            index < returnPath.length;
+
+
+        // =========================
+        // 1マス移動
+        // =========================
+
+        moveOneStep(
+            player,
+            nextPosition
+        );
+
+
+        // =========================
+        // 仮移動から分岐点へ戻る
+        // =========================
+
+        if (isBacktracking) {
+
+            if (
+                diceMovementState.history.length > 1
+            ) {
+
+                diceMovementState.history.pop();
+
+            }
+
+            remainingSteps +=
+                1;
+
+        } else {
+
+            // =========================
+            // 正式ルートを進む
+            // =========================
+
+            diceMovementState.history.push(
+                nextPosition
+            );
+
+            remainingSteps -=
+                1;
+
+        }
+
+
+        renderTurn();
+
+        index += 1;
+
+
+        setTimeout(
+            moveNext,
+            350
+        );
+
+    }
+
+
+    moveNext();
+
+}
+
+
+// =========================
+// サイコロ移動中の
+// 止まれるマスを強調表示
+// =========================
+// 今回の残り歩数で最終的に
+// 止まれるマスを表示します。
+// =========================
+
+function highlightDiceReachableSquares(
+    player,
+    steps
+) {
+
+    clearReachableHighlights();
+
+
+    if (
+        !player ||
+        steps <= 0
+    ) {
+
+        return;
+
+    }
+
+
+    const reachable =
+        getDiceReachableStopSquares(
+            player.position,
+            steps
+        );
+
+
+    reachable.forEach(
+        function (path, squareId) {
+
+            const node =
+                document.querySelector(
+                    `.map-node[data-square-id="${squareId}"]`
+                );
+
+
+            if (!node) {
+                return;
+            }
+
+
+            node.style.boxShadow =
+                "0 0 0 5px rgba(255,215,0,0.95), 0 0 25px rgba(255,215,0,0.9)";
+
+            node.style.cursor =
+                "pointer";
+
+
+            // =========================
+            // 強調されたマスをタップしたら
+            // そのマスまで移動
+            // =========================
+
+            const clickHandler =
+                function () {
+
+                    if (
+                        !diceMovementState.active ||
+                        diceMovementState.player !==
+                            player
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    moveDiceToHighlightedSquare(
+                        player,
+                        path
+                    );
+
+                };
+
+
+            node.addEventListener(
+                "click",
+                clickHandler
+            );
+
+
+            diceReachableClickHandlers.set(
+                node,
+                clickHandler
+            );
+
+        }
+    );
+
+
+    return reachable;
+
+}
+
+
+// =========================
 // 指定マス以内で
 // 止まれるマスを取得
 // =========================
@@ -4308,6 +4883,20 @@ function highlightReachableSquares(
 // =========================
 
 function clearReachableHighlights() {
+
+    diceReachableClickHandlers.forEach(
+        function (handler, node) {
+
+            node.removeEventListener(
+                "click",
+                handler
+            );
+
+        }
+    );
+
+    diceReachableClickHandlers.clear();
+
 
     document
         .querySelectorAll(
@@ -4640,56 +5229,471 @@ function getShortestDistanceToBoss(
 }
 
     // =========================
-// プレイヤー移動
-// =========================
-
-function movePlayer(
-    player,
-    diceNumber
-) {
-
-    // =========================
-    // 現在の残りマス
+    // サイコロ移動中の矢印を削除
     // =========================
 
-    remainingSteps =
-        diceNumber;
+    function clearDiceMovementArrows() {
 
-    renderTurn();
+        document
+            .querySelectorAll(
+                ".dice-movement-arrow"
+            )
+            .forEach(
+                function (element) {
 
+                    element.remove();
 
-    // =========================
-    // 止まれるマスを強調
-    // =========================
-
-    const reachable =
-        highlightReachableSquares(
-            player,
-            diceNumber
-        );
-
-
-    // =========================
-    // 行けるマスがない
-    // =========================
-
-    if (
-        reachable.size === 0
-    ) {
-
-        remainingSteps = 0;
-
-        renderTurn();
-
-        finishTurn(
-            player
-        );
-
-        return;
+                }
+            );
 
     }
 
-}
+
+    // =========================
+    // サイコロ移動の終了
+    // =========================
+
+    function finishDiceMovement(
+        player
+    ) {
+
+        clearDiceMovementArrows();
+
+        clearReachableHighlights();
+
+        diceMovementState.active =
+            false;
+
+        diceMovementState.player =
+            null;
+
+        diceMovementState.startPosition =
+            null;
+
+        diceMovementState.totalSteps =
+            0;
+
+        diceMovementState.history =
+            [];
+
+        remainingSteps =
+            0;
+
+        renderTurn();
+
+        const choiceArea =
+            document.getElementById(
+                "choiceArea"
+            );
+
+        if (choiceArea) {
+
+            choiceArea.innerHTML =
+                "";
+
+        }
+
+        handleSquareEvent(
+            player
+        );
+
+    }
+
+
+    // =========================
+    // サイコロ移動の矢印を表示
+    // =========================
+    //
+    // 現在地から1マスで移動できる
+    // すべての方向を表示します。
+    // サイコロ移動中は来た道を戻ることも
+    // 選択できるようにします。
+    // =========================
+
+    function showDiceMovementArrows() {
+
+        clearDiceMovementArrows();
+
+        if (!diceMovementState.active) {
+            return;
+        }
+
+        // =========================
+        // 今回の残り歩数で
+        // 最終的に止まれるマスを強調
+        // =========================
+
+        highlightDiceReachableSquares(
+            diceMovementState.player,
+            diceMovementState.totalSteps
+        );
+
+        const player =
+            diceMovementState.player;
+
+        const mapBoard =
+            document.getElementById(
+                "mapBoard"
+            );
+
+        if (!player || !mapBoard) {
+            return;
+        }
+
+        const currentSquare =
+            mapData.find(
+                function (square) {
+
+                    return square.id ===
+                        player.position;
+
+                }
+            );
+
+        if (!currentSquare) {
+            return;
+        }
+
+        const options =
+            getConnectedOptions(
+                player.position
+            );
+
+        // =========================
+        // 進める方向がない場合
+        // =========================
+
+        if (options.length === 0) {
+
+            finishDiceMovement(
+                player
+            );
+
+            return;
+
+        }
+
+        options.forEach(
+            function (option) {
+
+                const destination =
+                    mapData.find(
+                        function (square) {
+
+                            return square.id ===
+                                option;
+
+                        }
+                    );
+
+                if (!destination) {
+                    return;
+                }
+
+                // =========================
+                // 矢印ボタン
+                // =========================
+
+                const arrow =
+                    document.createElement(
+                        "button"
+                    );
+
+                arrow.type =
+                    "button";
+
+                arrow.className =
+                    "branch-arrow-map dice-movement-arrow";
+
+                arrow.setAttribute(
+                    "aria-label",
+                    "この方向へ1マス進む"
+                );
+
+                // =========================
+                // 画像矢印
+                // =========================
+
+                const arrowImage =
+                    document.createElement(
+                        "img"
+                    );
+
+                arrowImage.src =
+                    DICE_MOVEMENT_ARROW_PATH;
+
+                arrowImage.alt =
+                    "進む";
+
+                arrowImage.draggable =
+                    false;
+
+                arrowImage.style.width =
+                    "100%";
+
+                arrowImage.style.height =
+                    "100%";
+
+                arrowImage.style.objectFit =
+                    "contain";
+
+                arrowImage.style.pointerEvents =
+                    "none";
+
+                arrow.appendChild(
+                    arrowImage
+                );
+
+                // =========================
+                // 方向計算
+                // =========================
+                // yajirushi.png は上向きなので、
+                // 上方向を0度として回転させます。
+                // =========================
+
+                const dx =
+                    destination.x -
+                    currentSquare.x;
+
+                const dy =
+                    destination.y -
+                    currentSquare.y;
+
+                const angle =
+                    Math.atan2(
+                        dy,
+                        dx
+                    ) * 180 / Math.PI;
+
+                // =========================
+                // 矢印位置
+                // =========================
+
+                const arrowPosition =
+                    0.35;
+
+                const arrowX =
+                    currentSquare.x +
+                    dx * arrowPosition;
+
+                const arrowY =
+                    currentSquare.y +
+                    dy * arrowPosition;
+
+                arrow.style.left =
+                    `${arrowX}%`;
+
+                arrow.style.top =
+                    `${arrowY}%`;
+
+                arrow.style.transform =
+                    `translate(-50%, -50%) rotate(${angle + 90}deg)`;
+
+                // =========================
+                // 既存の分岐矢印CSSを
+                // 画像矢印用に上書き
+                // =========================
+
+                arrow.style.width =
+                    "52px";
+
+                arrow.style.height =
+                    "52px";
+
+                arrow.style.padding =
+                    "0";
+
+                arrow.style.border =
+                    "none";
+
+                arrow.style.borderRadius =
+                    "0";
+
+                arrow.style.background =
+                    "transparent";
+
+                arrow.style.boxShadow =
+                    "none";
+
+                arrow.style.animation =
+                    "none";
+
+                arrow.style.appearance =
+                    "none";
+
+                arrow.style.webkitAppearance =
+                    "none";
+
+                arrow.style.outline =
+                    "none";
+
+                arrow.style.backgroundImage =
+                    "none";
+
+                arrow.style.color =
+                    "transparent";
+
+                // =========================
+                // 矢印タップ
+                // =========================
+
+                arrow.addEventListener(
+                    "click",
+                    function () {
+
+                        if (
+                            !diceMovementState.active
+                        ) {
+                            return;
+                        }
+
+                        if (
+                            diceMovementState.player !==
+                            player
+                        ) {
+                            return;
+                        }
+
+                        clearDiceMovementArrows();
+
+                        const history =
+                            diceMovementState.history;
+
+                        const previousPosition =
+                            history.length >= 2
+                                ? history[history.length - 2]
+                                : null;
+
+                        const isBacktracking =
+                            option ===
+                            previousPosition;
+
+                        // =========================
+                        // 1マス移動
+                        // =========================
+
+                        moveOneStep(
+                            player,
+                            option
+                        );
+
+                        // =========================
+                        // 来た道を戻った場合
+                        // =========================
+
+                        if (isBacktracking) {
+
+                            history.pop();
+
+                            remainingSteps +=
+                                1;
+
+                        } else {
+
+                            history.push(
+                                option
+                            );
+
+                            remainingSteps -=
+                                1;
+
+                        }
+
+                        renderTurn();
+
+                        // =========================
+                        // 残り0なら移動終了
+                        // =========================
+
+                        if (
+                            remainingSteps <= 0
+                        ) {
+
+                            finishDiceMovement(
+                                player
+                            );
+
+                            return;
+
+                        }
+
+                        // =========================
+                        // まだ移動できる場合
+                        // =========================
+
+                        showDiceMovementArrows();
+
+                    }
+                );
+
+                mapBoard.appendChild(
+                    arrow
+                );
+
+            }
+        );
+
+    }
+
+
+    // =========================
+    // プレイヤー移動
+    // =========================
+    //
+    // サイコロを振った後は自動移動せず、
+    // 矢印をタップして1マスずつ移動します。
+    // =========================
+
+    function movePlayer(
+        player,
+        diceNumber
+    ) {
+
+        clearReachableHighlights();
+        clearDiceMovementArrows();
+
+        diceMovementState.active =
+            true;
+
+        diceMovementState.player =
+            player;
+
+        diceMovementState.startPosition =
+            player.position;
+
+        diceMovementState.totalSteps =
+            diceNumber;
+
+        diceMovementState.history = [
+            player.position
+        ];
+
+        remainingSteps =
+            diceNumber;
+
+        renderTurn();
+
+        // =========================
+        // 残り0の場合
+        // =========================
+
+        if (remainingSteps <= 0) {
+
+            finishDiceMovement(
+                player
+            );
+
+            return;
+
+        }
+
+        // =========================
+        // 進行方向を表示
+        // =========================
+
+        showDiceMovementArrows();
+
+    }
 
     // =========================
     // ルーレット
@@ -10354,72 +11358,134 @@ function centerCurrentPlayerOnMap(
         return;
     }
 
-    // 進行中のsmoothスクロールを解除
-    mapArea.scrollTo({
-        left: mapArea.scrollLeft,
-        top: mapArea.scrollTop,
-        behavior: "auto"
-    });
+    // =========================
+    // 現在のズーム倍率を取得
+    // =========================
 
-    requestAnimationFrame(function () {
+    const zoom =
+        typeof mapZoom === "number" &&
+        mapZoom > 0
+            ? mapZoom
+            : 1;
 
-        // マップ内の座標から直接目的地を計算
-        const playerCenterX =
-            playerNode.offsetLeft +
-            playerNode.offsetWidth / 2;
+    // =========================
+    // 現在の表示位置を取得
+    // transform(scale)後の
+    // 実際の画面上の座標を使用する
+    // =========================
 
-        const playerCenterY =
-            playerNode.offsetTop +
-            playerNode.offsetHeight / 2;
+    requestAnimationFrame(
+        function () {
 
-        const targetScrollLeft =
-            playerCenterX -
-            mapArea.clientWidth / 2;
+            const mapRect =
+                mapArea.getBoundingClientRect();
 
-        const targetScrollTop =
-            playerCenterY -
-            mapArea.clientHeight / 2;
+            const playerRect =
+                playerNode.getBoundingClientRect();
 
-        // スクロール可能範囲内に収める
-        const maxScrollLeft =
-            Math.max(
-                0,
-                mapArea.scrollWidth -
-                mapArea.clientWidth
-            );
+            const mapCenterX =
+                mapRect.left +
+                mapRect.width / 2;
 
-        const maxScrollTop =
-            Math.max(
-                0,
-                mapArea.scrollHeight -
-                mapArea.clientHeight
-            );
+            const mapCenterY =
+                mapRect.top +
+                mapRect.height / 2;
 
-        const finalScrollLeft =
-            Math.max(
-                0,
-                Math.min(
-                    targetScrollLeft,
-                    maxScrollLeft
-                )
-            );
+            const playerCenterX =
+                playerRect.left +
+                playerRect.width / 2;
 
-        const finalScrollTop =
-            Math.max(
-                0,
-                Math.min(
-                    targetScrollTop,
-                    maxScrollTop
-                )
-            );
+            const playerCenterY =
+                playerRect.top +
+                playerRect.height / 2;
 
-        mapArea.scrollTo({
-            left: finalScrollLeft,
-            top: finalScrollTop,
-            behavior: behavior
-        });
+            // =========================
+            // 画面上でのズレ
+            // =========================
 
-    });
+            const visualOffsetX =
+                playerCenterX -
+                mapCenterX;
+
+            const visualOffsetY =
+                playerCenterY -
+                mapCenterY;
+
+            // =========================
+            // transform(scale)による
+            // 表示上の移動量を
+            // スクロール量へ変換
+            // =========================
+
+            const scrollAmountX =
+                visualOffsetX / zoom;
+
+            const scrollAmountY =
+                visualOffsetY / zoom;
+
+            const targetScrollLeft =
+                mapArea.scrollLeft +
+                scrollAmountX;
+
+            const targetScrollTop =
+                mapArea.scrollTop +
+                scrollAmountY;
+
+            // =========================
+            // スクロール可能範囲
+            // =========================
+
+            const maxScrollLeft =
+                Math.max(
+                    0,
+                    mapArea.scrollWidth -
+                    mapArea.clientWidth
+                );
+
+            const maxScrollTop =
+                Math.max(
+                    0,
+                    mapArea.scrollHeight -
+                    mapArea.clientHeight
+                );
+
+            const finalScrollLeft =
+                Math.max(
+                    0,
+                    Math.min(
+                        targetScrollLeft,
+                        maxScrollLeft
+                    )
+                );
+
+            const finalScrollTop =
+                Math.max(
+                    0,
+                    Math.min(
+                        targetScrollTop,
+                        maxScrollTop
+                    )
+                );
+
+            // =========================
+            // プレイヤー位置へカメラ移動
+            // =========================
+
+            mapArea.scrollTo({
+
+                left:
+                    finalScrollLeft,
+
+                top:
+                    finalScrollTop,
+
+                behavior:
+                    behavior
+
+            });
+
+        }
+    );
 
 }
 
