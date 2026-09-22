@@ -1376,6 +1376,140 @@ function showGameScreen(
         new Map();
 
     // =========================
+// サイコロ移動中の残り歩数UI
+// =========================
+//
+// 現在ターンのプレイヤーだけに表示します。
+//
+// UIの見た目はCSS側へ分離し、
+// ここでは
+// ・表示
+// ・数字の更新
+// ・非表示
+// だけを担当します。
+// =========================
+
+
+function ensureDiceMovementCounter(
+    playerPiece
+) {
+
+    if (!playerPiece) {
+        return null;
+    }
+
+
+    let counter =
+        playerPiece.querySelector(
+            ".dice-movement-counter"
+        );
+
+
+    if (!counter) {
+
+        counter =
+            document.createElement(
+                "div"
+            );
+
+        counter.className =
+            "dice-movement-counter";
+
+        playerPiece.appendChild(
+            counter
+        );
+
+    }
+
+
+    return counter;
+
+}
+
+
+// =========================
+// 残り歩数UIを表示・更新
+// =========================
+
+function showDiceMovementCounter() {
+
+    const player =
+        players[currentPlayer];
+
+
+    if (
+        !player ||
+        !diceMovementState.active ||
+        remainingSteps <= 0
+    ) {
+
+        hideDiceMovementCounter();
+
+        return;
+
+    }
+
+
+    const playerPiece =
+        document.querySelector(
+            `.map-node[data-square-id="${player.position}"] .player-piece[data-player-index="${currentPlayer}"]`
+        );
+
+
+    if (!playerPiece) {
+        return;
+    }
+
+
+    const counter =
+        ensureDiceMovementCounter(
+            playerPiece
+        );
+
+
+    if (!counter) {
+        return;
+    }
+
+
+    counter.textContent =
+        String(remainingSteps);
+
+}
+
+
+// =========================
+// 残り歩数UIを更新
+// =========================
+
+function updateDiceMovementCounter() {
+
+    showDiceMovementCounter();
+
+}
+
+
+// =========================
+// 残り歩数UIを消す
+// =========================
+
+function hideDiceMovementCounter() {
+
+    document
+        .querySelectorAll(
+            ".dice-movement-counter"
+        )
+        .forEach(
+            function (counter) {
+
+                counter.remove();
+
+            }
+        );
+
+}
+
+    // =========================
 // 配当サイクル
 // =========================
 
@@ -2180,13 +2314,21 @@ node.appendChild(
 
 
                         piece.className =
-                            "player-piece player-sprite";
+    "player-piece player-sprite";
 
 
-                        piece.setAttribute(
-                            "aria-label",
-                            player.name
-                        );
+// プレイヤー番号を保持
+// 残り歩数UIで
+// 「現在ターンのプレイヤー」を
+// 判別するために使用します。
+piece.dataset.playerIndex =
+    players.indexOf(player);
+
+
+piece.setAttribute(
+    "aria-label",
+    player.name
+);
 
                         piece.draggable = false;
 
@@ -2228,8 +2370,31 @@ node.appendChild(
 
 
                         node.appendChild(
-                            piece
-                        );
+    piece
+);
+
+
+// =========================
+// サイコロ移動中の残り歩数
+// =========================
+//
+// 現在ターンのプレイヤーだけに表示します。
+// renderMap() は移動のたびにプレイヤーを
+// 作り直すため、ここでもUIを復元します。
+//
+
+if (
+    players.indexOf(player) ===
+        currentPlayer &&
+    diceMovementState.active &&
+    remainingSteps > 0
+) {
+
+    ensureDiceMovementCounter(
+        piece
+    );
+
+}
 
                     }
                 );
@@ -3614,6 +3779,11 @@ function renderTurn() {
             `🎲 残${remainingSteps}マス`;
 
     }
+// =========================
+// サイコロ移動中の残り歩数UI
+// =========================
+
+updateDiceMovementCounter();
 
 
     // =========================
@@ -5224,11 +5394,19 @@ function getShortestDistanceToBoss(
         diceMovementState.reachablePaths =
             new Map();
 
-        diceMovementState.autoMoving =
-            false;
+       diceMovementState.autoMoving =
+    false;
 
-        remainingSteps =
-            0;
+
+// =========================
+// 残り歩数UIを消す
+// =========================
+
+hideDiceMovementCounter();
+
+
+remainingSteps =
+    0;
 
         renderTurn();
 
@@ -5523,37 +5701,45 @@ function getShortestDistanceToBoss(
                             previousPosition;
 
                         // =========================
-                        // 1マス移動
-                        // =========================
+// 移動履歴と残り歩数を先に更新
+// =========================
+//
+// moveOneStep() の中では renderMap() が
+// 実行されます。
+// そのため、新しい残り歩数を先に確定してから
+// プレイヤーを移動させます。
+//
 
-                        moveOneStep(
-                            player,
-                            option
-                        );
+if (isBacktracking) {
 
-                        // =========================
-                        // 来た道を戻った場合
-                        // =========================
+    history.pop();
 
-                        if (isBacktracking) {
+    remainingSteps +=
+        1;
 
-                            history.pop();
+} else {
 
-                            remainingSteps +=
-                                1;
+    history.push(
+        option
+    );
 
-                        } else {
+    remainingSteps -=
+        1;
 
-                            history.push(
-                                option
-                            );
+}
 
-                            remainingSteps -=
-                                1;
 
-                        }
+// =========================
+// 1マス移動
+// =========================
 
-                        renderTurn();
+moveOneStep(
+    player,
+    option
+);
+
+
+renderTurn();
 
                         // =========================
                         // 残り0なら移動終了
