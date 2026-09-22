@@ -456,22 +456,7 @@ button {
    12. ターン表示
    ========================================================= */
 
-.turn-display {
-    margin-bottom: 12px;
 
-    padding: 12px;
-
-    text-align: center;
-
-    background:
-        rgba(255, 255, 255, 0.15);
-
-    border-radius: 12px;
-
-    font-weight: bold;
-
-    font-size: 1.1rem;
-}
 
 
 /* =========================================================
@@ -590,55 +575,19 @@ button {
 }
 
 
-.choice-box {
-    padding: 18px;
-
-    background:
-        rgba(0, 0, 0, 0.25);
-
-    border-radius: 15px;
-
-    text-align: center;
-}
 
 
-.choice-box h3 {
-    margin-top: 0;
-}
 
 
-.choice-buttons {
-    display: flex;
-
-    gap: 10px;
-
-    justify-content: center;
-}
 
 
-.branch-button {
-    flex: 1;
-
-    padding: 14px 10px;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.5);
-
-    border-radius: 12px;
-
-    background:
-        rgba(255, 255, 255, 0.12);
-
-    color: white;
-
-    font-size: 0.95rem;
-
-    font-weight: bold;
-}
 
 
-.branch-button:active {
+
+
+
+
+              :active {
     transform: scale(0.96);
 }
 
@@ -647,24 +596,10 @@ button {
    16. マップ上の分岐矢印
    ========================================================= */
 
-.branch-message {
-    text-align: center;
-
-    margin-bottom: 10px;
-
-    font-weight: bold;
-
-    font-size: 1rem;
-}
 
 
-.branch-hint {
-    margin-top: 6px;
 
-    font-size: 0.85rem;
 
-    opacity: 0.8;
-}
 
 
 .branch-arrow-map {
@@ -917,62 +852,16 @@ button {
    19. ターン数選択
    ========================================================= */
 
-.turn-count-buttons {
-    display: flex;
-
-    justify-content: center;
-
-    gap: 10px;
-
-    flex-wrap: wrap;
-
-    margin-top: 25px;
-}
 
 
-.turn-count {
-    min-width: 110px;
-
-    padding: 14px 18px;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.5);
-
-    border-radius: 14px;
-
-    background:
-        rgba(255, 255, 255, 0.12);
-
-    color: white;
-
-    font-size: 1rem;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.15s ease,
-        background 0.15s ease,
-        box-shadow 0.15s ease;
-}
 
 
-.turn-count:hover {
-    background:
-        rgba(255, 255, 255, 0.25);
-
-    transform:
-        translateY(-2px);
-
-    box-shadow:
-        0 4px 12px
-        rgba(0, 0, 0, 0.25);
-}
 
 
-.turn-count:active {
+
+
+
+           :active {
     transform: scale(0.95);
 }
 
@@ -1485,45 +1374,6 @@ button {
 /* =========================================================
    25. バトル攻撃ボタン
    ========================================================= */
-
-.battle-attack-button {
-    width:
-        80%;
-
-    margin-top:
-        10px;
-
-    padding:
-        14px 20px;
-
-    border:
-        none;
-
-    border-radius:
-        999px;
-
-    background:
-        rgba(255, 255, 255, 0.15);
-
-    color:
-        white;
-
-    font-size:
-        18px;
-
-    font-weight:
-        bold;
-
-    cursor:
-        pointer;
-}
-
-
-.battle-attack-button:active {
-    transform:
-        scale(0.96);
-}
-
 
 /* =========================================================
    26. 報酬選択
@@ -2392,24 +2242,10 @@ button {
 }
 
 
-.job-title {
-
-    font-size: 26px;
-
-    font-weight: bold;
-
-    margin-bottom: 12px;
-}
 
 
-.job-message {
 
-    margin-bottom: 20px;
 
-    line-height: 1.6;
-
-    font-size: 15px;
-}
 
 
 .job-choices {
@@ -2924,7 +2760,6 @@ button {
 
     width: 80px;
     padding: 2px 12px;
-    font-size: 9px;
 
     border:
         1px solid
@@ -2965,113 +2800,9 @@ button {
    戦闘画面：攻撃・魔法ボタン
    ========================================================= */
 
-.battle-attack-button,
-.battle-magic-button {
-    display: block;
-
-    width: 255px;
-    height: 48px;
-
-    margin: 10px auto 0;
-
-    padding: 10px 20px;
-
-    box-sizing: border-box;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.25);
-
-    border-radius: 999px;
-
-    background:
-        rgba(255, 255, 255, 0.12);
-
-    color:
-        #ffffff;
-
-    font-size:
-        16px;
-
-    font-weight:
-        bold;
-
-    cursor:
-        pointer;
-
-    transition:
-        background 0.2s ease,
-        transform 0.1s ease;
-}
-
-
-.battle-attack-button:hover,
-.battle-magic-button:hover {
-    background:
-        rgba(255, 255, 255, 0.2);
-}
-
-
-.battle-attack-button:active,
-.battle-magic-button:active {
-    transform:
-        scale(0.96);
-}/* =========================================================
+/* =========================================================
    戦闘画面：攻撃・魔法ボタン
    ========================================================= */
-
-.battle-attack-button,
-.battle-magic-button {
-    display: block;
-
-    width: 255px;
-    height: 48px;
-
-    margin: 10px auto 0;
-
-    padding: 10px 20px;
-
-    box-sizing: border-box;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.25);
-
-    border-radius: 999px;
-
-    background:
-        rgba(255, 255, 255, 0.12);
-
-    color:
-        #ffffff;
-
-    font-size:
-        16px;
-
-    font-weight:
-        bold;
-
-    cursor:
-        pointer;
-
-    transition:
-        background 0.2s ease,
-        transform 0.1s ease;
-}
-
-
-.battle-attack-button:hover,
-.battle-magic-button:hover {
-    background:
-        rgba(255, 255, 255, 0.2);
-}
-
-
-.battle-attack-button:active,
-.battle-magic-button:active {
-    transform:
-        scale(0.96);
-}
 
 /* =========================================================
    戦闘中の魔法選択
@@ -3190,13 +2921,6 @@ button {
 
     min-width: 0;
 }
-
-.battle-magic-item-info {
-    flex: 1;
-    min-width: 0;
-    text-align: left;
-}
-
 
 .battle-magic-item-name {
     font-weight: bold;
@@ -3483,9 +3207,7 @@ button {
    ゲーム画面：レイヤー構造
 ========================================================= */
 
-.game-screen > .game-top-row {
-    grid-row: 1;
-}
+.game-screen > 
 
 .game-screen > .map-area {
     grid-row: 2;
@@ -3544,36 +3266,11 @@ button {
    ゲーム上部レイアウト
    ========================= */
 
-.game-top-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    gap: 0;
-    padding: 10px 14px;
-    box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 12px;
-}
 
-.game-top-row .turn-display {
-    flex: 0 0 auto;
-    padding: 0;
-    margin: 0;
-    background: none;
-    border: none;
-}
 
-.game-top-row .destination {
-    flex: 1;
-    margin: 0;
-    padding: 0;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    text-align: center;
-}
+
+
+
 
 
 
@@ -3581,23 +3278,9 @@ button {
    現在プレイヤー情報
    ========================= */
 
-.current-player-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    gap: 35px;
-    margin: 8px 0;
-}
 
-.current-player-info {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    font-size: 18px;
-    font-weight: bold;
-}
+
+
 
 .remaining-steps-info {
     display: flex;
@@ -3963,37 +3646,20 @@ button {
        上部：TURN ＋ 次の目的地
     ========================= */
 
-    .game-top-row {
-        width: 100%;
-        max-width: 100%;
-        padding-left: 8px;
-        padding-right: 8px;
-        gap: 4px;
-    }
+    
 
-    .game-top-row .turn-display {
-        font-size: 13px;
-    }
+    
 
-    .game-top-row .destination {
-        font-size: 13px;
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+    
 
 
     /* =========================
        現在プレイヤー ＋ 残りマス
     ========================= */
 
-    .current-player-row {
-        width: 100%;
-        max-width: 100%;
-        gap: 13px;
-    }
+    
 
-    .current-player-info,
+                        ,
     .remaining-steps-info {
         font-size: 13px !important;
     }
@@ -6425,11 +6091,7 @@ body:has(.game-screen) {
     object-fit: contain;
 }
 
-.boss-destination-subtitle {
-    margin-bottom: 5px;
-    font-size: 17px;
-    line-height: 1.3;
-}
+
 
 .boss-destination-line {
     margin-bottom: 5px;
@@ -6460,9 +6122,7 @@ body:has(.game-screen) {
         height: 105px;
     }
 
-    .boss-destination-subtitle {
-        font-size: 15px;
-    }
+    
 
     .boss-destination-line {
         font-size: 20px;
@@ -6643,9 +6303,7 @@ body:has(.game-screen) {
         height: 78px;
     }
 
-    .boss-destination-subtitle {
-        font-size: 13px;
-    }
+    
 
     .boss-destination-line {
         font-size: 17px;
@@ -7003,3 +6661,379 @@ body:has(.game-screen) {
 
     color: white;
 }
+
+/* =========================================================
+   戦闘画面：魔法ボタン
+   ========================================================= */
+
+.battle-magic-button {
+    display: block;
+    width: min(255px, 80%);
+    min-height: 48px;
+    margin: 10px auto 0;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    font-size: clamp(13px, 1.55vw, 16px);
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.battle-magic-button:hover {
+    background: rgba(72, 188, 255, 0.16);
+}
+
+.battle-magic-button:active {
+    transform: scale(0.96);
+}
+
+/* =========================================================
+   UI整理・最終統一
+   対象：ポップアップ / スマホ文字 / 横画面 / 現在地に戻る
+   ========================================================= */
+
+:root {
+    --popup-bg-top: rgba(9, 63, 129, 0.98);
+    --popup-bg-bottom: rgba(4, 39, 86, 0.98);
+    --popup-border: rgba(72, 188, 255, 0.78);
+    --popup-gold-border: rgba(255, 215, 106, 0.78);
+    --popup-shadow: 0 10px 30px rgba(0, 0, 0, 0.48);
+    --popup-radius: 16px;
+    --popup-font-title: clamp(17px, 2.2vw, 24px);
+    --popup-font-body: clamp(13px, 1.65vw, 17px);
+    --popup-font-button: clamp(13px, 1.55vw, 16px);
+}
+
+/* ポップアップ本体：現在の青系バナーUIへ統一 */
+.event-popup,
+.monster-choice-popup,
+.battle-popup,
+.reward-popup,
+.inventory-popup,
+.magic-popup,
+.job-popup,
+.magic-shop-popup,
+.battle-magic-popup,
+#shopPopup,
+.item-roulette,
+.multi-dice-roulette {
+    box-sizing: border-box;
+    max-width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: linear-gradient(180deg, var(--popup-bg-top), var(--popup-bg-bottom));
+    border: 2px solid var(--popup-border);
+    border-radius: var(--popup-radius);
+    box-shadow: var(--popup-shadow);
+    color: #ffffff;
+}
+
+.event-popup-title,
+.monster-choice-title,
+.battle-title,
+.reward-title,
+.inventory-title,
+.magic-title,
+.magic-shop-title,
+.battle-magic-title,
+.item-roulette-title,
+.multi-dice-title {
+    font-size: var(--popup-font-title);
+    line-height: 1.25;
+}
+
+.event-popup-message,
+.monster-choice-message,
+.reward-message,
+.battle-message,
+.job-question,
+.magic-shop-money,
+.shop-money,
+.inventory-empty,
+.magic-empty {
+    font-size: var(--popup-font-body);
+    line-height: 1.5;
+}
+
+.event-popup-button,
+.monster-choice-button,
+.reward-choice-button,
+.inventory-close-button,
+.magic-close-button,
+.magic-shop-close-button,
+.battle-magic-close-button,
+.shop-category-button,
+#shopCloseButton,
+.job-choice-button,
+.battle-magic-use-button {
+    font-size: var(--popup-font-button);
+    font-weight: 800;
+}
+
+.event-popup-button,
+.monster-choice-button,
+.reward-choice-button,
+.inventory-close-button,
+.magic-close-button,
+.magic-shop-close-button,
+.battle-magic-close-button,
+#shopCloseButton,
+.job-choice-button {
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.10);
+    color: #ffffff;
+}
+
+.event-popup-button:hover,
+.monster-choice-button:hover,
+.reward-choice-button:hover,
+.inventory-close-button:hover,
+.magic-close-button:hover,
+.magic-shop-close-button:hover,
+.battle-magic-close-button:hover,
+#shopCloseButton:hover,
+.job-choice-button:hover {
+    background: rgba(72, 188, 255, 0.16);
+}
+
+.job-work-button,
+.inventory-item-use-button,
+.asset-purchase-button,
+.magic-shop-buy-button,
+.battle-magic-use-button,
+.shop-category-button {
+    border-color: var(--popup-gold-border);
+}
+
+/* 戦闘 */
+.battle-popup {
+    width: min(92vw, 440px);
+    padding: clamp(12px, 2vw, 24px) clamp(12px, 2vw, 20px);
+}
+
+.battle-status { gap: clamp(5px, 1.5vw, 10px); }
+.battle-player,
+.battle-monster { padding: clamp(8px, 1.5vw, 14px) 8px; }
+.battle-name { font-size: clamp(15px, 2vw, 18px); }
+#battlePlayerStats,
+#battleMonsterStats { font-size: clamp(12px, 1.7vw, 15px); line-height: 1.55; }
+.battle-round { font-size: clamp(12px, 1.7vw, 15px); margin-bottom: clamp(8px, 2vh, 20px); }
+.battle-message { margin-top: clamp(10px, 2vh, 20px); min-height: clamp(36px, 6vh, 50px); font-size: clamp(13px, 1.8vw, 17px); }
+
+.battle-magic-popup {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(92vw, 560px);
+    height: auto;
+    max-height: calc(100dvh - 16px);
+    padding: clamp(10px, 2vw, 18px) clamp(10px, 2vw, 16px);
+}
+.battle-magic-list { max-height: min(34dvh, 190px); }
+.battle-magic-item-info { text-align: left; }
+.battle-magic-item-name { font-size: clamp(13px, 1.8vw, 17px); }
+.battle-magic-item-effect,
+.battle-magic-item-cost { font-size: clamp(11px, 1.5vw, 14px); }
+.battle-magic-use-button { width: clamp(68px, 13vw, 90px); padding: 7px 9px; }
+
+/* ショップ */
+#shopPopup,
+.magic-shop-popup {
+    width: min(92vw, 420px);
+    max-height: calc(100dvh - 16px);
+    padding: clamp(14px, 2.5vw, 28px);
+}
+.magic-shop-item-name,
+.inventory-item-name,
+.magic-item-name,
+.asset-purchase-name { font-size: clamp(14px, 1.8vw, 18px); }
+.magic-shop-item-effect,
+.inventory-item-effect,
+.magic-item-effect,
+.asset-purchase-detail { font-size: clamp(12px, 1.5vw, 15px); }
+
+/* 所持品・魔法・資産 */
+#inventoryPopup,
+#magicPopup,
+#assetPopup,
+#assetPurchasePopup {
+    width: min(92vw, 600px);
+    height: min(650px, calc(100dvh - 16px));
+    max-height: calc(100dvh - 16px);
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: clamp(14px, 2.5vw, 28px) clamp(12px, 2.2vw, 22px);
+}
+
+#inventoryPopup .inventory-list,
+#magicPopup .magic-list,
+#assetPopup .inventory-list,
+#assetPurchasePopup .inventory-list {
+    min-height: 0;
+    max-height: calc(100dvh - 150px);
+}
+
+/* バイト */
+.job-popup {
+    width: min(92vw, 420px);
+    max-height: calc(100dvh - 16px);
+    padding: clamp(12px, 2.2vw, 18px) clamp(12px, 2.5vw, 20px);
+}
+.job-name { font-size: clamp(15px, 2.2vw, 21px); }
+.job-wage { font-size: clamp(13px, 1.9vw, 18px); }
+
+/* ルーレットは縦幅だけ最適化。見た目は既存を維持 */
+.gold-roulette,
+.dice-roulette,
+.item-roulette,
+.multi-dice-roulette {
+    max-height: calc(100dvh - 16px);
+    overflow: hidden;
+}
+.gold-roulette-number,
+.dice-roulette-number,
+.item-roulette-name,
+.multi-dice-total {
+    font-size: clamp(24px, 7vw, 42px);
+}
+
+/* 現在地に戻る：画面サイズに応じて文字サイズを変える */
+.game-screen .dice-movement-return-button .action-menu-label {
+    font-size: clamp(11px, min(1.5vw, 2.8vh), 16px);
+    line-height: 1.15;
+    white-space: nowrap;
+}
+
+/* スマホ縦 */
+@media (max-width: 700px) {
+    .event-popup, .monster-choice-popup, .battle-popup, .reward-popup,
+    .inventory-popup, .magic-popup, .job-popup, .magic-shop-popup,
+    .battle-magic-popup, #shopPopup, .item-roulette, .multi-dice-roulette {
+        max-width: calc(100vw - 12px);
+        max-height: calc(100dvh - 12px);
+    }
+    .event-popup, .monster-choice-popup, .reward-popup, .battle-popup,
+    .job-popup, .magic-shop-popup, #shopPopup {
+        width: min(92vw, 420px);
+    }
+    .event-popup-message, .monster-choice-message, .reward-message,
+    .battle-message, .job-question {
+        font-size: clamp(12px, 3.6vw, 16px);
+    }
+    .event-popup-button, .monster-choice-button, .reward-choice-button,
+    .inventory-close-button, .magic-close-button, .magic-shop-close-button,
+    .battle-magic-close-button, .job-choice-button, #shopCloseButton {
+        font-size: clamp(12px, 3.4vw, 15px);
+    }
+    .battle-status { gap: 4px; }
+    .battle-player, .battle-monster { width: 43%; padding: 7px 5px; }
+    #inventoryPopup, #magicPopup, #assetPopup, #assetPurchasePopup {
+        width: min(94vw, 600px);
+        height: calc(100dvh - 12px);
+        max-height: calc(100dvh - 12px);
+    }
+}
+
+/* スマホ横画面 */
+@media (orientation: landscape) and (max-height: 600px) {
+    .event-popup, .monster-choice-popup, .battle-popup, .reward-popup,
+    .inventory-popup, .magic-popup, .job-popup, .magic-shop-popup,
+    .battle-magic-popup, #shopPopup, .item-roulette, .multi-dice-roulette {
+        max-width: calc(100vw - 12px);
+        max-height: calc(100dvh - 10px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+    .event-popup, .monster-choice-popup, .reward-popup, .job-popup,
+    .magic-shop-popup, #shopPopup {
+        width: min(78vw, 430px);
+        padding: 10px 14px;
+        border-radius: 14px;
+    }
+    .event-popup-title, .monster-choice-title, .battle-title, .reward-title,
+    .inventory-title, .magic-title, .magic-shop-title, .battle-magic-title {
+        font-size: clamp(14px, 3.8vh, 19px);
+        margin-bottom: 6px;
+    }
+    .event-popup-message, .monster-choice-message, .reward-message,
+    .battle-message, .job-question {
+        font-size: clamp(11px, 3.1vh, 14px);
+        line-height: 1.35;
+        margin-bottom: 7px;
+    }
+    .battle-popup { width: min(86vw, 450px); padding: 9px 12px; }
+    .battle-round { margin-bottom: 7px; font-size: clamp(10px, 2.8vh, 13px); }
+    .battle-name { margin-bottom: 4px; font-size: clamp(12px, 3vh, 15px); }
+    #battlePlayerStats, #battleMonsterStats {
+        font-size: clamp(10px, 2.7vh, 13px);
+        line-height: 1.35;
+    }
+    .battle-message { margin-top: 6px; min-height: 28px; }
+    .battle-magic-popup { width: min(88vw, 520px); padding: 8px 10px; }
+    .battle-magic-list { max-height: 32dvh; gap: 6px; margin-bottom: 6px; }
+    .battle-magic-item { gap: 7px; padding: 6px 8px; }
+    .battle-magic-item-name, .battle-magic-item-effect, .battle-magic-item-cost {
+        font-size: clamp(10px, 2.7vh, 13px);
+    }
+    .battle-magic-use-button {
+        width: 72px;
+        padding: 5px 7px;
+        font-size: clamp(10px, 2.7vh, 13px);
+    }
+    #inventoryPopup, #magicPopup, #assetPopup, #assetPurchasePopup {
+        width: min(86vw, 600px);
+        height: calc(100dvh - 10px);
+        max-height: calc(100dvh - 10px);
+        padding: 10px 12px;
+    }
+    #inventoryPopup .inventory-list, #magicPopup .magic-list,
+    #assetPopup .inventory-list, #assetPurchasePopup .inventory-list {
+        max-height: calc(100dvh - 105px);
+    }
+    .inventory-item, .magic-item { min-height: 44px; padding: 7px 8px; gap: 7px; }
+    .inventory-item-name, .magic-item-name { font-size: clamp(11px, 2.7vh, 14px); }
+    .inventory-item-effect, .magic-item-effect, .magic-item-cost {
+        font-size: clamp(10px, 2.5vh, 13px);
+    }
+    .inventory-close-button, .magic-close-button, .magic-shop-close-button,
+    .battle-magic-close-button, .event-popup-button, .job-choice-button, #shopCloseButton {
+        padding: 6px 18px;
+        font-size: clamp(10px, 2.8vh, 13px);
+    }
+    .job-info-row { margin-bottom: 6px; padding-bottom: 5px; }
+    .job-name { font-size: clamp(13px, 3.2vh, 17px); }
+    .job-wage { font-size: clamp(11px, 2.8vh, 14px); }
+    .job-choices { gap: 6px; }
+    .job-choice-button { min-height: 34px; padding: 5px 9px; }
+    .game-screen .dice-movement-return-button .action-menu-label {
+        font-size: clamp(10px, min(1.7vw, 2.9vh), 15px);
+    }
+}
+
+@media (orientation: landscape) and (max-height: 430px) {
+    .event-popup, .monster-choice-popup, .battle-popup, .reward-popup,
+    .job-popup, .magic-shop-popup, #shopPopup, .battle-magic-popup {
+        padding: 7px 10px;
+        border-radius: 12px;
+    }
+    .event-popup-title, .monster-choice-title, .battle-title, .reward-title,
+    .magic-shop-title, .battle-magic-title {
+        font-size: clamp(13px, 3.5vh, 17px);
+        margin-bottom: 4px;
+    }
+    .event-popup-message, .monster-choice-message, .reward-message,
+    .battle-message, .job-question {
+        font-size: clamp(10px, 2.9vh, 12px);
+        line-height: 1.25;
+        margin-bottom: 5px;
+    }
+    .battle-status { gap: 3px; }
+    .battle-player, .battle-monster { padding: 5px 4px; }
+}
+
