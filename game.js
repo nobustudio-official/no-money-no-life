@@ -1353,9 +1353,15 @@ function showGameScreen(
 
         history: [],
 
-        // 強調マスをタップして
+         // 強調マスをタップして
         // 自動移動している最中かどうか
-        autoMoving: false
+        autoMoving: false,
+
+        // =========================
+        // サイコロを振った瞬間に確定した停止可能マスと、その経路
+        // =========================
+        
+        reachablePaths: new Map()
 
     };
 
@@ -4234,7 +4240,6 @@ function highlightDiceReachableSquares(
 
     if (
         !player ||
-        steps <= 0 ||
         !diceMovementState.active ||
         diceMovementState.player !== player ||
         diceMovementState.autoMoving
@@ -4246,21 +4251,130 @@ function highlightDiceReachableSquares(
 
 
     // =========================
-    // 停止可能マスと経路を取得
+    // サイコロを振った瞬間に
+    // 確定した停止候補を使用
     // =========================
     //
-    // ここでは通常の停止可能マス検索を使います。
-    // 直線6マスなら6マス目だけ、
-    // 分岐があれば各ルートの最終地点だけが
-    // 結果になります。
+    // ここでは現在地から再計算しません。
+    //
+    // これが今回の修正の重要ポイントです。
+    //
+    // 例えば「3」が出た場合、
+    // 最初に確定した3歩先の候補だけを
+    // 最後まで基準として使用します。
+    //
+    const fixedReachable =
+        diceMovementState.reachablePaths;
+
+
+    if (
+        !(fixedReachable instanceof Map)
+    ) {
+
+        return;
+
+    }
+
+
+    const history =
+        diceMovementState.history || [];
+
+
+    // =========================
+    // 現在までの移動履歴が
+    // 候補経路の先頭と一致しているか
+    // =========================
+    //
+    // 例：
+    //
+    // 候補経路
+    // [A, B, C, D]
+    //
+    // 現在の履歴
+    // [A, B]
+    //
+    // → 一致しているので候補として残す
+    //
+    // 別ルート
+    // [A, E, F, G]
+    //
+    // → A,Bとは一致しないので消す
+    //
+    function isHistoryPrefixOfPath(
+        currentHistory,
+        path
+    ) {
+
+        if (
+            currentHistory.length >
+            path.length
+        ) {
+
+            return false;
+
+        }
+
+
+        for (
+            let i = 0;
+            i < currentHistory.length;
+            i++
+        ) {
+
+            if (
+                currentHistory[i] !==
+                path[i]
+            ) {
+
+                return false;
+
+            }
+
+        }
+
+
+        return true;
+
+    }
+
+
+    // =========================
+    // 現在の進行ルートに
+    // 一致する候補だけ残す
     // =========================
 
     const reachable =
-        getReachableStopSquares(
-            player.position,
-            steps
-        );
+        new Map();
 
+
+    fixedReachable.forEach(
+        function (path, squareId) {
+
+            if (
+                !Array.isArray(path) ||
+                !isHistoryPrefixOfPath(
+                    history,
+                    path
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            reachable.set(
+                squareId,
+                path
+            );
+
+        }
+    );
+
+
+    // =========================
+    // 停止候補を強調表示
+    // =========================
 
     reachable.forEach(
         function (path, squareId) {
@@ -4284,7 +4398,7 @@ function highlightDiceReachableSquares(
 
 
             // =========================
-            // 強調マスをタップ
+            // 強調された停止マスをタップ
             // =========================
 
             const clickHandler =
@@ -4295,18 +4409,53 @@ function highlightDiceReachableSquares(
                         diceMovementState.autoMoving ||
                         diceMovementState.player !== player
                     ) {
+
                         return;
+
                     }
 
-                    // 今回選択した経路以外の
-                    // クリックイベントを解除
+
+                    // =========================
+                    // 最終確認
+                    // =========================
+                    //
+                    // 現在の移動履歴と
+                    // 選択した経路が一致しているか確認します。
+                    //
+
+                    if (
+                        !isHistoryPrefixOfPath(
+                            diceMovementState.history,
+                            path
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    // =========================
+                    // クリックイベント解除
+                    // =========================
+
                     clearDiceReachableClickHandlers();
 
-                    // 矢印と強調表示を解除
+
+                    // =========================
+                    // 矢印・強調表示を解除
+                    // =========================
+
                     clearDiceMovementArrows();
+
                     clearReachableHighlights();
 
-                    // 選択した停止マスまで自動移動
+
+                    // =========================
+                    // 選択した停止マスまで
+                    // 自動移動
+                    // =========================
+
                     moveDicePlayerToSquare(
                         player,
                         path
@@ -4637,8 +4786,7 @@ function moveDicePlayerToSquare(
     if (
         !diceMovementState.active ||
         diceMovementState.player !== player ||
-        !Array.isArray(path) ||
-        path.length <= 1
+        !Array.isArray(path)
     ) {
 
         return;
@@ -4646,15 +4794,99 @@ function moveDicePlayerToSquare(
     }
 
 
+    const history =
+        diceMovementState.history || [];
+
+
+    // =========================
+    // 現在の移動履歴と
+    // 選択した経路が一致しているか確認
+    // =========================
+
+    if (
+        history.length === 0 ||
+        history[history.length - 1] !==
+            player.position
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        history.length >
+        path.length
+    ) {
+
+        return;
+
+    }
+
+
+    for (
+        let i = 0;
+        i < history.length;
+        i++
+    ) {
+
+        if (
+            history[i] !==
+            path[i]
+        ) {
+
+            return;
+
+        }
+
+    }
+
+
+    // =========================
+    // 自動移動開始
+    // =========================
+
     diceMovementState.autoMoving =
         true;
 
 
-    // 自動移動中の経路を履歴として保持
-    diceMovementState.history =
-        [
-            player.position
-        ];
+    // =========================
+    // 現在地より後ろだけを取得
+    // =========================
+    //
+    // 例：
+    //
+    // 元のpath
+    // [A, B, C, D]
+    //
+    // 現在地
+    // B
+    //
+    // ↓
+    //
+    // [B, C, D]
+    //
+    const remainingPath =
+        path.slice(
+            history.length - 1
+        );
+
+
+    // =========================
+    // すでに目的地の場合
+    // =========================
+
+    if (
+        remainingPath.length <= 1
+    ) {
+
+        finishDiceMovement(
+            player
+        );
+
+        return;
+
+    }
 
 
     let index = 1;
@@ -4663,11 +4895,12 @@ function moveDicePlayerToSquare(
     function moveNext() {
 
         // =========================
-        // 移動終了
+        // 移動完了
         // =========================
 
         if (
-            index >= path.length
+            index >=
+            remainingPath.length
         ) {
 
             finishDiceMovement(
@@ -4680,11 +4913,11 @@ function moveDicePlayerToSquare(
 
 
         // =========================
-        // 残り歩数を更新
+        // 残り歩数
         // =========================
 
         remainingSteps =
-            path.length -
+            remainingPath.length -
             index;
 
 
@@ -4694,13 +4927,14 @@ function moveDicePlayerToSquare(
 
         moveOneStep(
             player,
-            path[index]
+            remainingPath[index]
         );
 
 
         diceMovementState.history.push(
-            path[index]
+            remainingPath[index]
         );
+
 
         index += 1;
 
@@ -4709,7 +4943,7 @@ function moveDicePlayerToSquare(
 
 
         // =========================
-        // まだ移動が残っていれば継続
+        // 次のマスへ
         // =========================
 
         setTimeout(
@@ -4986,6 +5220,9 @@ function getShortestDistanceToBoss(
 
         diceMovementState.history =
             [];
+
+        diceMovementState.reachablePaths =
+            new Map();
 
         diceMovementState.autoMoving =
             false;
@@ -5378,7 +5615,7 @@ function getShortestDistanceToBoss(
         diceMovementState.startPosition =
             player.position;
 
-        diceMovementState.history = [
+                diceMovementState.history = [
             player.position
         ];
 
@@ -5387,6 +5624,25 @@ function getShortestDistanceToBoss(
 
         remainingSteps =
             diceNumber;
+
+
+        // =========================
+        // サイコロを振った瞬間に
+        // 停止可能マスを確定
+        // =========================
+        //
+        // ここで一度だけ計算します。
+        //
+        // 以降、プレイヤーが何マス進んでも
+        // 「残り歩数」から新しい候補を
+        // 作り直すことはありません。
+        //
+        diceMovementState.reachablePaths =
+            getReachableStopSquares(
+                player.position,
+                diceNumber
+            );
+
 
         renderTurn();
 
