@@ -11357,9 +11357,13 @@ applyTurnStartItemEffects(
 
     function () {
 
-        finishTurn(
-            nextPlayer
-        );
+        renderTurn();
+        renderPlayers();
+        centerCurrentPlayerOnMap();
+
+        // ルーレット使用可能
+        rouletteButton.disabled =
+            false;
 
     }
 );
@@ -11552,9 +11556,13 @@ applyTurnStartItemEffects(
 
     function () {
 
-        finishTurn(
-            nextPlayer
-        );
+        renderTurn();
+        renderPlayers();
+        centerCurrentPlayerOnMap();
+
+        // ルーレット使用可能
+        rouletteButton.disabled =
+            false;
 
     }
 );
@@ -11723,9 +11731,13 @@ if (
 
     function () {
 
-        finishTurn(
-            nextPlayer
-        );
+        renderTurn();
+        renderPlayers();
+        centerCurrentPlayerOnMap();
+
+        // ルーレット使用可能
+        rouletteButton.disabled =
+            false;
 
     }
 );
