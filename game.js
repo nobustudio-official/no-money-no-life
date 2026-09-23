@@ -8388,12 +8388,23 @@ showEventPopup(
 // デーモンロード撃破後は
 // 以降ずっと「いただきリリィ」
 
+const bossIds =
+    Object.keys(BOSS_CONTENTS)
+        .map(Number)
+        .sort(function (a, b) {
+            return a - b;
+        });
+
+const currentIndex =
+    bossIds.indexOf(currentBossId);
+
 if (
-    currentBossId === 1
+    currentIndex >= 0 &&
+    currentIndex < bossIds.length - 1
 ) {
 
     currentBossId =
-        2;
+        bossIds[currentIndex + 1];
 
 }
 
