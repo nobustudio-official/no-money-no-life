@@ -4830,6 +4830,7 @@ function clearReachableHighlights() {
             function (node) {
 
                 node.classList.remove("reachable-stop-highlight");
+            
 
                 node.style.cursor =
                     "";
