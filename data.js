@@ -467,19 +467,29 @@ const BOSS_CONTENTS = {
     1: {
         name: "デーモンロード",
         hp: 200,
-        attack: 50
+        attack: 50,
+        reward: 10000
     },
 
     2: {
         name: "いただきリリィ",
         hp: 500,
-        attack: 500
+        attack: 500,
+        reward: 20000
     }
 
     3: {
         name: "ギャング",
-        hp: 1000,
-        attack: 1000
+        hp: 3000,
+        attack: 1000,
+        reward: 50000
+    }
+
+    4: {
+        name: "水原二平",
+        hp: 5000,
+        attack: 2000,
+        reward: 100000
     }
 
     
