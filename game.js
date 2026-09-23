@@ -8267,21 +8267,21 @@ if (
                 damageReward;
 
             // 先着報酬
-            if (
-                p === bossFirstPlayer
-            ) {
+           if (
+    p === bossFirstPlayer
+) {
 
-                p.money +=
-                    BOSS_FIRST_REWARD;
+    p.money +=
+        BOSS_CONTENTS[currentBossId].reward;
 
-            }
+}
 
         }
     );
 
     // 撃破報酬
     player.money +=
-        BOSS_DEFEAT_REWARD;
+    BOSS_CONTENTS[currentBossId].reward;
 
     // 報酬配布済みにする
     bossRewardGiven =
