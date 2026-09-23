@@ -354,14 +354,9 @@ let bossRewardGiven = false;
 
 // ボス報酬設定
 
-const BOSS_FIRST_REWARD =
-    10000;
-
 const BOSS_DAMAGE_MULTIPLIER =
     3;
 
-const BOSS_DEFEAT_REWARD =
-    10000;
 
 
 
@@ -8266,8 +8261,8 @@ if (
             p.money +=
                 damageReward;
 
-            // 先着報酬
-           if (
+           // 先着報酬
+if (
     p === bossFirstPlayer
 ) {
 
@@ -8330,7 +8325,7 @@ bossRewardMessage +=
     `🥇 先着報酬<br>`;
 
 bossRewardMessage +=
-    `${bossFirstPlayer.name}：+${formatG(BOSS_FIRST_REWARD)}G<br>`;
+    `${bossFirstPlayer.name}：+${formatG(BOSS_CONTENTS[currentBossId].reward)}G<br>`;
 
 
 // =========================
@@ -8362,7 +8357,7 @@ bossRewardMessage +=
     `👑 撃破報酬<br>`;
 
 bossRewardMessage +=
-    `${player.name}：+${formatG(BOSS_DEFEAT_REWARD)}G`;
+    `${player.name}：+${formatG(BOSS_CONTENTS[currentBossId].reward)}G`;
 
 
 // =========================
