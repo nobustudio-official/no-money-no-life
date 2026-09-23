@@ -3033,29 +3033,26 @@ assetIds.forEach(
                 "asset-purchase-item";
 
 
- // =========================
+// =========================
 // 所有者アイコン
+// =========================
+// 上部バナーと同じプレイヤー画像を使用
 // =========================
 
 let ownerIcon = "";
-
-const ownerIcons = [
-    "🔴",
-    "🔵",
-    "🟢",
-    "🟡",
-    "🟣",
-    "🟠"
-];
-
 
 if (
     asset.owner !== null &&
     asset.owner !== undefined
 ) {
 
-    ownerIcon =
-        ownerIcons[asset.owner] || "";
+    ownerIcon = `
+        <img
+            src="${getPlayerCharacterImage(asset.owner)}"
+            alt="プレイヤー"
+            class="asset-owner-player-icon"
+        >
+    `;
 
 }
 
