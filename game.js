@@ -4565,7 +4565,7 @@ function highlightDiceReachableSquares(
             }
 
             node.style.boxShadow =
-            "0 0 0 5px rgba(72,188,255,0.95), 0 0 25px rgba(72,188,255,0.9)";
+            "0 0 0 5px rgba(100,160,255,0.95), 0 0 25px rgba(100,160,255,0.9)";
 
             node.style.cursor =
                 "pointer";
@@ -4754,7 +4754,7 @@ function highlightReachableSquares(
             // =========================
 
            node.style.boxShadow =
-            "0 0 0 5px rgba(72,188,255,0.95), 0 0 25px rgba(72,188,255,0.9)";
+            "0 0 0 5px rgba(100,160,255,0.95), 0 0 25px rgba(100,160,255,0.9)";
 
             node.style.cursor =
                 "pointer";
@@ -4882,7 +4882,7 @@ function highlightReachableSquaresWithin(
             // =========================
 
             node.style.boxShadow =
-                "0 0 0 5px rgba(255,215,0,0.95), 0 0 25px rgba(255,215,0,0.9)";
+                "0 0 0 5px rgba(100,160,255,0.95), 0 0 25px rgba(100,160,255,0.9)";
 
             node.style.cursor =
                 "pointer";
