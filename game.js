@@ -1755,9 +1755,15 @@ window.showMagicPopup = function (player) {
 
                 <div class="magic-item-cost">
 
-                    💰 ${formatG(magic.cost)}G
+    💰 ${formatG(
+        calculateMagicCost(
+            player,
+            magic,
+            null
+        )
+    )}G
 
-                </div>
+</div>
 
             `;
 
@@ -6973,40 +6979,52 @@ const monsterDamage =
                             }
 
 
-                            // =========================
-                            // 使用コストチェック
-                            // =========================
+// =========================
+// 魔法コスト計算
+// =========================
 
-                            if (
-                                player.money <
-                                magic.cost
-                            ) {
-
-                                showEventPopup(
-                                    "💰 G不足",
-
-                                    `${magic.name}を使うには` +
-                                    `<br><br>` +
-                                    `💰 ${formatG(magic.cost)}G 必要です。` +
-                                    `<br>` +
-                                    `現在の所持金：${formatG(player.money)}G`,
-
-                                    function () {
-
-                                    }
-                                );
-
-                                return;
-
-                            }
+const magicCost =
+    calculateMagicCost(
+        player,
+        magic,
+        battleState
+    );
 
 
-                            // =========================
-                            // 魔法コストを支払う
-                            // =========================
+// =========================
+// 使用コストチェック
+// =========================
 
-                            player.money -=
-                                magic.cost;
+if (
+    player.money <
+    magicCost
+) {
+
+    showEventPopup(
+        "💰 G不足",
+
+        `${magic.name}を使うには` +
+        `<br><br>` +
+        `💰 ${formatG(magicCost)}G 必要です。` +
+        `<br>` +
+        `現在の所持金：${formatG(player.money)}G`,
+
+        function () {
+
+        }
+    );
+
+    return;
+
+}
+
+
+// =========================
+// 魔法コストを支払う
+// =========================
+
+player.money -=
+    magicCost;
                
 // =========================
 // バフ魔法の処理
@@ -7853,43 +7871,55 @@ if (
                         "none";
 
 
-                    // =========================
-                    // 使用コストチェック
-                    // =========================
+// =========================
+// 魔法コスト計算
+// =========================
 
-                    if (
-                        player.money <
-                        magic.cost
-                    ) {
-
-                        magicButton.disabled =
-                            false;
-
-                        showEventPopup(
-                            "💰 G不足",
-
-                            `${magic.name}を使うには` +
-                            `<br><br>` +
-                            `💰 ${formatG(magic.cost)}G 必要です。` +
-                            `<br>` +
-                            `現在の所持金：${formatG(player.money)}G`,
-
-                            function () {
-
-                            }
-                        );
-
-                        return;
-
-                    }
+const magicCost =
+    calculateMagicCost(
+        player,
+        magic,
+        battleState
+    );
 
 
-                    // =========================
-                    // 魔法コストを支払う
-                    // =========================
+// =========================
+// 使用コストチェック
+// =========================
 
-                    player.money -=
-                        magic.cost;
+if (
+    player.money <
+    magicCost
+) {
+
+    magicButton.disabled =
+        false;
+
+    showEventPopup(
+        "💰 G不足",
+
+        `${magic.name}を使うには` +
+        `<br><br>` +
+        `💰 ${formatG(magicCost)}G 必要です。` +
+        `<br>` +
+        `現在の所持金：${formatG(player.money)}G`,
+
+        function () {
+
+        }
+    );
+
+    return;
+
+}
+
+
+// =========================
+// 魔法コストを支払う
+// =========================
+
+player.money -=
+    magicCost;
 
 // =========================
 // バフ魔法の処理
