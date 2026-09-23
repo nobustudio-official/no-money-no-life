@@ -439,7 +439,8 @@ const mapData = [
 },
 {
     id: 52,
-    type: "money",
+    type: "asset",
+    typeIds: [2],
     next: [53],
     x: 6,
     y: 20
@@ -462,7 +463,8 @@ const mapData = [
 
 {
     id: 55,
-    type: "money",
+    type: "asset",
+    typeIds: [3],
     next: [56],
     x: -10,
     y: 5
