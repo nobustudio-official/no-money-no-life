@@ -1753,16 +1753,14 @@ window.showMagicPopup = function (player) {
 
                 </div>
 
-                <div class="magic-item-cost">
-
+                <div class="battle-magic-item-cost">
     💰 ${formatG(
         calculateMagicCost(
             player,
             magic,
-            null
+            battleState
         )
     )}G
-
 </div>
 
             `;
@@ -1790,6 +1788,7 @@ window.showMagicPopup = function (player) {
 window.showBattleMagicPopup = function (
     player,
     monster,
+    battleState,
     onUseMagic
 ) {
 
@@ -1869,8 +1868,14 @@ window.showBattleMagicPopup = function (
         </div>
 
         <div class="battle-magic-item-cost">
-            💰 ${formatG(magic.cost)}G
-        </div>
+    💰 ${formatG(
+        calculateMagicCost(
+            player,
+            magic,
+            battleState
+        )
+    )}G
+</div>
 
     </div>
 
@@ -6935,11 +6940,12 @@ const monsterDamage =
             magicButton.onclick =
                 function () {
 
-                    showBattleMagicPopup(
-                        player,
-                        monster,
+    showBattleMagicPopup(
+    player,
+    monster,
+    battleState,
 
-                        function (magic) {
+    function (magic) {
 
                             // =========================
                             // 魔法選択画面を閉じる
@@ -6950,31 +6956,7 @@ const monsterDamage =
                             ).style.display =
                                 "none";
 
-
-                            // =========================
-                            // 必要魔力チェック
-                            // =========================
-
-                            if (
-                                player.magicPower <
-                                magic.requiredMagicPower
-                            ) {
-
-                                showEventPopup(
-                                    "🔮 魔力不足",
-
-                                    `${magic.name}を使うには` +
-                                    `<br><br>` +
-                                    `🔮 必要魔力：${magic.requiredMagicPower}` +
-                                    `<br>` +
-                                    `🔮 現在の魔力：${player.magicPower}`,
-
-                                    function () {
-
-                                    }
-                                );
-
-                                return;
+                              return;
 
                             }
 
