@@ -4569,9 +4569,8 @@ function highlightDiceReachableSquares(
                 return;
             }
 
-
             node.style.boxShadow =
-                "0 0 0 5px rgba(255,215,0,0.95), 0 0 25px rgba(255,215,0,0.9)";
+            "0 0 0 5px rgba(72,188,255,0.95), 0 0 25px rgba(72,188,255,0.9)";
 
             node.style.cursor =
                 "pointer";
@@ -4759,8 +4758,8 @@ function highlightReachableSquares(
             // 光らせる
             // =========================
 
-            node.style.boxShadow =
-                "0 0 0 5px rgba(255,215,0,0.95), 0 0 25px rgba(255,215,0,0.9)";
+           node.style.boxShadow =
+            "0 0 0 5px rgba(72,188,255,0.95), 0 0 25px rgba(72,188,255,0.9)";
 
             node.style.cursor =
                 "pointer";
