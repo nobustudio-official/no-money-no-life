@@ -476,6 +476,13 @@ const BOSS_CONTENTS = {
         attack: 500
     }
 
+    3: {
+        name: "ギャング",
+        hp: 1000,
+        attack: 1000
+    }
+
+    
 };
 
 
