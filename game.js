@@ -6958,8 +6958,6 @@ const monsterDamage =
                             ).style.display =
                                 "none";
 
-                              return;
-
 
 // =========================
 // 魔法コスト計算
@@ -7835,11 +7833,12 @@ if (
                 true;
 
 
-            showBattleMagicPopup(
+           showBattleMagicPopup(
     player,
     BOSS_CONTENTS[
         currentBossId
     ],
+    battleState,
 
     function (magic) {
 
