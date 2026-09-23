@@ -6392,7 +6392,7 @@ body:has(.game-screen) {
     top: 50%;
     transform: translate(-50%, -50%);
     width: min(90%, 420px);
-    max-height: calc(100dvh - 20px);
+    max-height: calc(100dvh - 20px);   
     padding: 18px 20px;
     overflow-y: auto;
     box-sizing: border-box;
@@ -7029,15 +7029,15 @@ body:has(.game-screen) {
     }
 
 
-    50% {
-
-        box-shadow:
-            0 0 0 5px rgba(80,180,255,1),
-            0 0 60px rgba(80,180,255,1),
-            0 0 90px rgba(80,180,255,0.8),
-            0 0 120px rgba(80,180,255,0.35);
-
-    }
+   50% {
+    box-shadow:
+        0 0 0 5px rgba(80,180,255,1),
+        0 0 10px rgba(180,230,255,1),
+        0 0 35px rgba(80,200,255,1),
+        0 0 70px rgba(80,180,255,0.9),
+        0 0 110px rgba(80,180,255,0.55),
+        0 0 120px rgba(80,180,255,0.25);
+}
 
 
     100% {
