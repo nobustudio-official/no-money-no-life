@@ -4564,8 +4564,7 @@ function highlightDiceReachableSquares(
                 return;
             }
 
-            node.style.boxShadow =
-            "0 0 0 5px rgba(100,160,255,0.95), 0 0 25px rgba(100,160,255,0.9)";
+            node.classList.add("reachable-stop-highlight");
 
             node.style.cursor =
                 "pointer";
@@ -4753,8 +4752,7 @@ function highlightReachableSquares(
             // 光らせる
             // =========================
 
-           node.style.boxShadow =
-            "0 0 0 5px rgba(100,160,255,0.95), 0 0 25px rgba(100,160,255,0.9)";
+           node.classList.add("reachable-stop-highlight");
 
             node.style.cursor =
                 "pointer";
@@ -4831,8 +4829,7 @@ function clearReachableHighlights() {
         .forEach(
             function (node) {
 
-                node.style.boxShadow =
-                    "";
+                node.classList.remove("reachable-stop-highlight");
 
                 node.style.cursor =
                     "";
@@ -4881,8 +4878,7 @@ function highlightReachableSquaresWithin(
             // 光らせる
             // =========================
 
-            node.style.boxShadow =
-                "0 0 0 5px rgba(100,160,255,0.95), 0 0 25px rgba(100,160,255,0.9)";
+            node.classList.add("reachable-stop-highlight");
 
             node.style.cursor =
                 "pointer";
