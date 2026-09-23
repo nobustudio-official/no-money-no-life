@@ -4,7 +4,8 @@
 
 function calculateMagicDamage(
     player,
-    magic
+    magic,
+    battleState
 ) {
 
     if (
@@ -18,14 +19,30 @@ function calculateMagicDamage(
     }
 
 
-    // 魔法の基本ダメージ
-    // 魔力 × 魔法ごとの倍率
-    const baseDamage =
+    // =========================
+    // バフ込みの魔力
+    // =========================
+
+    const magicPower =
         Number(player.magicPower || 0) *
+        Number(
+            battleState?.magicPowerRate || 1
+        );
+
+
+    // =========================
+    // 魔法の基本ダメージ
+    // =========================
+
+    const baseDamage =
+        magicPower *
         Number(magic.powerRate || 0);
 
 
-    // アイテムによる与ダメージ補正を適用
+    // =========================
+    // アイテムによる与ダメージ補正
+    // =========================
+
     return getPlayerDamage(
         player,
         baseDamage
