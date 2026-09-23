@@ -3803,6 +3803,29 @@ button {
     text-align: center;
 }
 
+/* =========================
+   資産所有者：プレイヤー顔アイコン
+========================= */
+
+.asset-owner-player-icon {
+    width: 32px;
+    height: 32px;
+
+    flex: 0 0 32px;
+
+    background-repeat: no-repeat;
+    background-size: 200% 200%;
+
+    background-position: 16.7% 0%;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    display: block;
+
+    box-sizing: border-box;
+}
 
 /* =========================
    購入ボタン
