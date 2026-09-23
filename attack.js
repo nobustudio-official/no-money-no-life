@@ -34,6 +34,40 @@ function calculateMagicDamage(
 }
 
 // =========================
+// 魔法コスト計算
+// =========================
+
+function calculateMagicCost(
+    player,
+    magic,
+    battleState
+) {
+
+    if (
+        !player ||
+        !magic
+    ) {
+
+        return 0;
+
+    }
+
+
+    const magicPower =
+        Number(player.magicPower || 0) *
+        Number(
+            battleState?.magicPowerRate || 1
+        );
+
+
+    return Math.floor(
+        magicPower *
+        Number(magic.costRate || 0)
+    );
+
+}
+
+// =========================
 // モンスターHPへのダメージ適用
 // =========================
 
