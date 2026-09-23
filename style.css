@@ -7000,41 +7000,52 @@ body:has(.game-screen) {
         inset 0 1px 0 rgba(255,255,255,0.18);
 
 /* =========================================================
-   いけるかなマス：青いオーラ
+   いけるかなマス：青い発光
    ========================================================= */
 
 .map-node.reachable-stop-highlight {
+
     animation:
         reachableStopAura 1.8s ease-in-out infinite;
+
+    box-shadow:
+        0 0 0 5px rgba(100,160,255,0.95),
+        0 0 18px rgba(100,160,255,0.75),
+        0 0 32px rgba(100,160,255,0.45);
+
 }
 
 
 @keyframes reachableStopAura {
 
     0% {
+
         box-shadow:
             0 0 0 5px rgba(100,160,255,0.95),
-            0 0 18px rgba(100,160,255,0.65),
-            0 0 32px rgba(100,160,255,0.25);
+            0 0 18px rgba(100,160,255,0.75),
+            0 0 32px rgba(100,160,255,0.45);
+
     }
+
 
     50% {
+
         box-shadow:
-            0 0 0 5px rgba(100,160,255,1),
-            0 0 30px rgba(100,160,255,0.95),
-            0 0 55px rgba(100,160,255,0.45);
+            0 0 0 5px rgba(80,180,255,1),
+            0 0 30px rgba(80,180,255,1),
+            0 0 55px rgba(80,180,255,0.8),
+            0 0 75px rgba(80,180,255,0.35);
+
     }
+
 
     100% {
+
         box-shadow:
             0 0 0 5px rgba(100,160,255,0.95),
-            0 0 18px rgba(100,160,255,0.65),
-            0 0 32px rgba(100,160,255,0.25);
+            0 0 18px rgba(100,160,255,0.75),
+            0 0 32px rgba(100,160,255,0.45);
+
     }
-
-}
-
-    animation:
-        reachableStopAura 1.8s ease-in-out infinite !important;
 
 }
