@@ -33,7 +33,7 @@ const mapData = [
     {
         id: 3,
         type: "asset",
-        typeIds: [1],
+        typeIds: [4],
         next: [4],
         x: 54,
         y: 80
