@@ -3036,7 +3036,8 @@ assetIds.forEach(
 // =========================
 // 所有者アイコン
 // =========================
-// 上部バナーと同じプレイヤー画像を使用
+// 上部バナーと同じプレイヤー画像を使用。
+// 正面の顔付近だけを切り出して表示します。
 // =========================
 
 let ownerIcon = "";
@@ -3047,11 +3048,14 @@ if (
 ) {
 
     ownerIcon = `
-        <img
-            src="${getPlayerCharacterImage(asset.owner)}"
-            alt="プレイヤー"
+        <div
             class="asset-owner-player-icon"
-        >
+            style="
+                background-image: url('${getPlayerCharacterImage(asset.owner)}');
+                background-position: 16.7% 0%;
+            "
+            aria-label="プレイヤー${asset.owner + 1}"
+        ></div>
     `;
 
 }
