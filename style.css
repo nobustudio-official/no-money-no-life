@@ -6999,7 +6999,7 @@ body:has(.game-screen) {
         0 4px 10px rgba(0,0,0,0.35),
         inset 0 1px 0 rgba(255,255,255,0.18);
 
-   /* =========================================================
+ /* =========================================================
    いけるかなマス：青いオーラ
    ========================================================= */
 
@@ -7007,34 +7007,35 @@ body:has(.game-screen) {
 
     0% {
         box-shadow:
-            0 0 0 5px rgba(100,160,255,0.95),
-            0 0 18px rgba(100,160,255,0.65),
-            0 0 32px rgba(100,160,255,0.25);
+            0 0 0 5px rgba(100,160,255,0.95) !important,
+            0 0 18px rgba(100,160,255,0.65) !important,
+            0 0 32px rgba(100,160,255,0.25) !important;
     }
 
     50% {
         box-shadow:
-            0 0 0 5px rgba(100,160,255,1),
-            0 0 30px rgba(100,160,255,0.95),
-            0 0 55px rgba(100,160,255,0.45);
+            0 0 0 5px rgba(100,160,255,1) !important,
+            0 0 30px rgba(100,160,255,0.95) !important,
+            0 0 55px rgba(100,160,255,0.45) !important;
     }
 
     100% {
         box-shadow:
-            0 0 0 5px rgba(100,160,255,0.95),
-            0 0 18px rgba(100,160,255,0.65),
-            0 0 32px rgba(100,160,255,0.25);
+            0 0 0 5px rgba(100,160,255,0.95) !important,
+            0 0 18px rgba(100,160,255,0.65) !important,
+            0 0 32px rgba(100,160,255,0.25) !important;
     }
 
 }
 
 
-.map-node.reachable-stop-highlight {
+/*
+   game.js が直接設定している
+   box-shadow を青いオーラに変更
+*/
+.map-node[style*="box-shadow"] {
 
     animation:
-        reachableStopAura 1.8s ease-in-out infinite;
+        reachableStopAura 1.8s ease-in-out infinite !important;
 
-}
-
-    color: white;
 }
