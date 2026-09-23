@@ -6972,11 +6972,9 @@ body:has(.game-screen) {
 
 /* =========================
    「現在地に戻る」ボタン
-   ラベルの文字サイズ調整
 ========================= */
 
 .dice-movement-return-button .action-menu-label {
-    font-size: 16px;
     white-space: nowrap;
 }
 
