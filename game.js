@@ -3052,7 +3052,6 @@ if (
             class="asset-owner-player-icon"
             style="
                 background-image: url('${getPlayerCharacterImage(asset.owner)}');
-                background-position: 16.7% 0%;
             "
             aria-label="プレイヤー${asset.owner + 1}"
         ></div>
