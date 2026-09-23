@@ -7007,7 +7007,7 @@ body:has(.game-screen) {
 .map-node.reachable-stop-highlight {
 
     animation:
-        reachableStopAura 1.0s ease-in-out infinite;
+        reachableStopAura 2.0s ease-in-out infinite;
 
     box-shadow:
         0 0 0 5px rgba(100,160,255,0.95),
