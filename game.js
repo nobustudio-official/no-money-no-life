@@ -7234,9 +7234,9 @@ document.getElementById(
 const magicDamage =
     calculateMagicDamage(
         player,
-        magic
-    ) *
-    battleState.magicPowerRate;
+        magic,
+        battleState
+    );
 
  // =========================
  // モンスターHPを減らす
@@ -8199,9 +8199,9 @@ if (
 const magicDamage =
     calculateMagicDamage(
         player,
-        magic
-    ) *
-    battleState.magicPowerRate;
+        magic,
+        battleState
+    );
                    
 
 
