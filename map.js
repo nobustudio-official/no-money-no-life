@@ -340,7 +340,7 @@ const mapData = [
     id: 39,
     type: "treasure",
     treasureBoxId: 1,
-    next: [40, 44],
+    next: [40],
     x: -10,
     y: 65
 },
