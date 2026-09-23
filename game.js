@@ -1753,12 +1753,14 @@ window.showMagicPopup = function (player) {
 
                 </div>
 
-                <div class="battle-magic-item-cost">
+               <div class="magic-item-cost">
     💰 ${formatG(
         calculateMagicCost(
             player,
             magic,
-            battleState
+            {
+                magicPowerRate: 1
+            }
         )
     )}G
 </div>
