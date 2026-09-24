@@ -429,7 +429,7 @@ const ASSET_CONTENTS = {
         price: 4000000,
         yield: 1,
         owner: null
-    }
+    },
 
     18: {
         name: "ヤニ猫",
