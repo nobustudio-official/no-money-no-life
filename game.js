@@ -11940,11 +11940,11 @@ function centerPlayerOnMap(
 
             const targetScrollLeft =
                 zoomedSquareCenterX -
-                mapArea.clientWidth / 2;
+                mapArea.clientWidth / 2-35;
 
             const targetScrollTop =
                 zoomedSquareCenterY -
-                mapArea.clientHeight / 2;
+                mapArea.clientHeight / 2-68;
 
 
             // =========================
