@@ -334,29 +334,29 @@ const ASSET_CONTENTS = {
     },
 
     4: {
-        name: "キャサリン",
-        price: 100,
+        name: "ナンシー",
+        price: 500,
         yield: 100,
         owner: null
     },
 
     5: {
-        name: "キャサリン",
-        price: 100,
+        name: "ロシシー",
+        price: 2000,
         yield: 100,
         owner: null
     },
 
     6: {
-        name: "キャサリン",
-        price: 100,
+        name: "エシス",
+        price: 4000,
         yield: 100,
         owner: null
     },
 
     7: {
-        name: "キャサリン",
-        price: 100,
+        name: "シルフィネット",
+        price: 5000,
         yield: 100,
         owner: null
     },
@@ -371,14 +371,14 @@ const ASSET_CONTENTS = {
     9: {
         name: "市原",
         price: 10000,
-        yield: 50,
+        yield: 80,
         owner: null
     },
 
     10: {
         name: "山田",
         price: 10000,
-        yield: 50,
+        yield: 80,
         owner: null
     },
 
@@ -428,6 +428,40 @@ const ASSET_CONTENTS = {
         name: "オズワーリ",
         price: 4000000,
         yield: 1,
+        owner: null
+    }
+
+    18: {
+        name: "ヤニ猫",
+        price: 200000,
+        yield: 5,
+        owner: null
+    },
+
+    19: {
+        name: "ヤク猫",
+        price: 100000,
+        yield: 5,
+        owner: null
+    },
+
+    20: {
+        name: "ハメ猫",
+        price: 80000,
+        yield: 5,
+        owner: null
+    },
+
+    21: {
+        name: "アル猫",
+        price: 40000,
+        yield: 5,
+        owner: null
+    }
+    22: {
+        name: "かんさい",
+        price: 50,
+        yield: 10000,
         owner: null
     }
 
@@ -576,6 +610,11 @@ const ASSET_BOXES = {
     4: {
         name: "ロリの賃貸",
         contents: [11, 12, 13, 14, 15, 16, 17]
+    },
+    
+    5: {
+        name: "西急ストア",
+        contents: [18, 19, 20, 21, 22]
     }
 
 };
