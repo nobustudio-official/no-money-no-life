@@ -921,7 +921,7 @@ startButton.addEventListener(
     money: 1000,
     magicPower: 100,
     bossDamage: 0,
-    position: 0,
+    position: 17,
     color: playerColors[index],
     inventory: [],
     assets: [],
@@ -7405,8 +7405,6 @@ if (player.money <= 0) {
     player.money = 0;
     
 
-    updatePlayerStatusUI(player);
-
     renderPlayers();
 
     // 戦闘画面に攻撃結果を表示
@@ -7421,13 +7419,13 @@ if (player.money <= 0) {
 battleMessage.textContent =
     `👾 ${monster.name}の攻撃！ ${formatG(monsterDamage)}Gのダメージ！`;
 
-
 }
 
+updatePlayerStatusUI(player);
 
-                            // =========================
-                            // プレイヤー表示更新
-                            // =========================
+             // =========================
+            // プレイヤー表示更新
+            // =========================
 
                             document.getElementById(
                                 "battlePlayerStats"
@@ -8312,51 +8310,7 @@ player.bossDamage +=
                         passButton.style.display =
                         "none";
 
-  // =========================
-// ボス報酬を計算・配布
-// =========================
-
-if (
-    bossRewardGiven === false
-) {
-
-    players.forEach(
-        function (p) {
-
-            // ダメージ報酬
-            const damageReward =
-                p.bossDamage *
-                BOSS_DAMAGE_MULTIPLIER;
-
-            p.money +=
-                damageReward;
-
-           // 先着報酬
-if (
-    p === bossFirstPlayer
-) {
-
-    p.money +=
-        BOSS_CONTENTS[currentBossId].reward;
-
-}
-
-            updatePlayerStatusUI(p);
-
-        }
-    );
-
-    // 撃破報酬
-    player.money +=
-    BOSS_CONTENTS[currentBossId].reward;
-
-    updatePlayerStatusUI(player);
-
-    // 報酬配布済みにする
-    bossRewardGiven =
-        true;
-
-}
+ 
 
 
                         document.getElementById(
@@ -8442,6 +8396,53 @@ showEventPopup(
     "ボス撃破！",
     bossRewardMessage,
     function () {
+
+
+ // =========================
+// ボス報酬を計算・配布
+// =========================
+
+if (
+    bossRewardGiven === false
+) {
+
+    players.forEach(
+        function (p) {
+
+            // ダメージ報酬
+            const damageReward =
+                p.bossDamage *
+                BOSS_DAMAGE_MULTIPLIER;
+
+            p.money +=
+                damageReward;
+
+           // 先着報酬
+if (
+    p === bossFirstPlayer
+) {
+
+    p.money +=
+        BOSS_CONTENTS[currentBossId].reward;
+
+}
+
+            updatePlayerStatusUI(p);
+
+        }
+    );
+
+    // 撃破報酬
+    player.money +=
+    BOSS_CONTENTS[currentBossId].reward;
+
+    updatePlayerStatusUI(player);
+
+    // 報酬配布済みにする
+    bossRewardGiven =
+        true;
+
+}
 
         // =========================
         // 現在のボスを記録
