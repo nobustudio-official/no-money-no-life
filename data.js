@@ -9,19 +9,23 @@ const MONEY_CONTENTS = {
         rewards: [
             {
                 amount: 100,
-                probability: 50
+                probability: 20
             },
             {
                 amount: 300,
-                probability: 25
+                probability: 20
             },
             {
                 amount: 500,
-                probability: 15
+                probability: 20
+            },
+            {
+                amount: 800,
+                probability: 20
             },
             {
                 amount: 1000,
-                probability: 10
+                probability: 20
             }
         ]
 
@@ -358,23 +362,23 @@ const ASSET_CONTENTS = {
     },
 
     8: {
-        name: "キャサリン",
-        price: 100,
+        name: "足立",
+        price: 3000,
         yield: 100,
         owner: null
     },
 
     9: {
-        name: "キャサリン",
-        price: 100,
-        yield: 100,
+        name: "市原",
+        price: 10000,
+        yield: 50,
         owner: null
     },
 
     10: {
-        name: "キャサリン",
-        price: 100,
-        yield: 100,
+        name: "山田",
+        price: 10000,
+        yield: 50,
         owner: null
     },
 
@@ -561,12 +565,12 @@ const ASSET_BOXES = {
 
     2: {
         name: "タウンハウシング",
-        contents: [4, 5, 6]
+        contents: [4, 5, 6, 7]
     },
 
     3: {
         name: "西急リバブル",
-        contents: [7, 8, 9, 10]
+        contents: [8, 9, 10]
     },
 
     4: {
