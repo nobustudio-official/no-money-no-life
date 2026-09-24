@@ -3711,6 +3711,8 @@ function updatePlayerStatusUI(player) {
 
     }
 
+
+    
     // =========================
     // 戦闘画面
     // =========================
@@ -3960,6 +3962,9 @@ updateDiceMovementCounter();
     }
 
 }
+
+    window.updatePlayerStatusUI =
+    updatePlayerStatusUI;
 
 
     // =========================
@@ -12576,23 +12581,13 @@ function showRewardPopup(
             button.onclick =
                 function () {
 
-                    // =========================
-                    // 魔力アップ
-                    // =========================
+                   // 魔力アップ
+if (reward.type === "magicPower") {
+    player.magicPower += reward.value;
+    window.updatePlayerStatusUI(player);
+}
 
-                    if (
-                        reward.type ===
-                        "magicPower"
-                    ) {
-
-                        player.magicPower +=
-                            reward.value;
-
-                        updatePlayerStatusUI(player);
-
-                    }
-
-                    console.log(
+console.log(
     "報酬反映:",
     player.name,
     "魔力:",
@@ -12605,27 +12600,10 @@ function showRewardPopup(
                     // G獲得
                     // =========================
 
-                    if (
-                        reward.type ===
-                        "money"
-                    ) {
-
-                        player.money +=
-                            reward.value;
-
-                        updatePlayerStatusUI(player);
-
-                    }
-
-
-                  
-
-                    // =========================
-                    // 報酬画面を閉じる
-                    // =========================
-
-                    rewardPopup.style.display =
-                        "none";
+                    if (reward.type === "money") {
+    player.money += reward.value;
+    window.updatePlayerStatusUI(player);
+}
 
 
                     // =========================
