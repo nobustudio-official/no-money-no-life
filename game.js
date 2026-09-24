@@ -7090,8 +7090,7 @@ if (
 
 player.money -=
     magicCost;
-
-updatePlayerStatusUI(player);
+window.updatePlayerStatusUI(player);
                
 // =========================
 // バフ魔法の処理
