@@ -60,7 +60,7 @@ const mapData = [
         type: "monster",
         next: [17],
         x: 48,
-        y: 65
+        y: 70
     },
     
     {
@@ -69,7 +69,7 @@ const mapData = [
         typeId: 1,
         next: [8],
         x: 56,
-        y: 65
+        y: 70
     },
 
     {
@@ -77,7 +77,7 @@ const mapData = [
         type: "monster",
         next: [9],
         x: 64,
-        y: 65
+        y: 70
     },
 
     {
@@ -86,7 +86,7 @@ const mapData = [
         typeId: 1,
         next: [10],
         x: 72,
-        y: 65
+        y: 70
     },
 
     {
@@ -95,7 +95,7 @@ const mapData = [
         treasureBoxId: 1,
         next: [11],
         x: 80,
-        y: 65
+        y: 70
     },
 
     {
@@ -104,7 +104,7 @@ const mapData = [
         typeIds: [3],
         next: [12],
         x: 88,
-        y: 65
+        y: 70
     },
 
     {
@@ -112,7 +112,7 @@ const mapData = [
         type: "monster",
         next: [13, 23],
         x: 88,
-        y: 50
+        y: 60
     },
 
     {
@@ -120,7 +120,7 @@ const mapData = [
         type: "money",
         next: [14],
         x: 80,
-        y: 50
+        y: 60
     },
 
     {
@@ -129,7 +129,7 @@ const mapData = [
         jobId: 2,
         next: [15, 21],
         x: 72,
-        y: 50
+        y: 60
     },
 
     {
@@ -137,7 +137,7 @@ const mapData = [
         type: "money",
         next: [16],
         x: 64,
-        y: 50
+        y: 60
     },
 
     {
@@ -146,7 +146,7 @@ const mapData = [
         typeId: 2,
         next: [17],
         x: 56,
-        y: 50
+        y: 60
     },
 
     {
@@ -154,7 +154,7 @@ const mapData = [
         type: "money",
         next: [18,44],
         x: 48,
-        y: 50
+        y: 60
     },
 
     {
@@ -162,7 +162,7 @@ const mapData = [
         type: "monster",
         next: [19,24],
         x: 48,
-        y: 35
+        y: 50
     },
 
     {
@@ -171,7 +171,7 @@ const mapData = [
         typeId: 2,
         next: [20, 25],
         x: 56,
-        y: 35
+        y: 50
     },
 
     {
@@ -180,7 +180,7 @@ const mapData = [
         treasureBoxId: 1,
         next: [21],
         x: 64,
-        y: 35
+        y: 50
     },
 
     {
@@ -189,7 +189,7 @@ const mapData = [
         jobId: 3,
         next: [22],
         x: 72,
-        y: 35
+        y: 50
     },
 
     {
@@ -197,7 +197,7 @@ const mapData = [
         type: "money",
         next: [23],
         x: 80,
-        y: 35
+        y: 50
     },
 
     {
@@ -205,7 +205,7 @@ const mapData = [
         type: "monster",
         next: [29],
         x: 88,
-        y: 35
+        y: 50
     },
 
     {
@@ -214,7 +214,7 @@ const mapData = [
         treasureBoxId: 1,
         next: [25],
         x: 48,
-        y: 20
+        y: 40
     },
 
     {
@@ -222,7 +222,7 @@ const mapData = [
         type: "money",
         next: [26],
         x: 56,
-        y: 20
+        y: 40
     },
 
     {
@@ -231,7 +231,7 @@ const mapData = [
         typeId: 1,
         next: [27],
         x: 64,
-        y: 20
+        y: 40
     },
 
     {
@@ -239,7 +239,7 @@ const mapData = [
         type: "monster",
         next: [28],
         x: 72,
-        y: 20
+        y: 40
     },
 
     {
@@ -248,7 +248,7 @@ const mapData = [
         typeId: 2,
         next: [29],
         x: 80,
-        y: 20
+        y: 40
     },
 
     {
@@ -257,200 +257,200 @@ const mapData = [
         jobId: 4,
         next: [],
         x: 88,
-        y: 20
+        y: 40
     },
 
     {
-    id: 30,
-    type: "money",
-    next: [31, 35],
-    x: 40,
-    y: 80
-},
-{
-    id: 31,
-    type: "monster",
-    next: [32],
-    x: 32,
-    y: 80
-},
-{
-    id: 32,
-    type: "job",
-    jobId: 1,
-    next: [33,37],
-    x: 24,
-    y: 80
-},
-{
-    id: 33,
-    type: "shop",
-    typeId: 1,
-    next: [34],
-    x: 16,
-    y: 80
-},
-{
-    id: 34,
-    type: "monster",
-    next: [39],
-    x: 8,
-    y: 80
-},
+        id: 30,
+        type: "money",
+        next: [31, 35],
+        x: 40,
+        y: 80
+    },
+    {
+        id: 31,
+        type: "monster",
+        next: [32],
+        x: 32,
+        y: 80
+    },
+    {
+        id: 32,
+        type: "job",
+        jobId: 1,
+        next: [33,37],
+        x: 24,
+        y: 80
+    },
+    {
+        id: 33,
+        type: "shop",
+        typeId: 1,
+        next: [34],
+        x: 16,
+        y: 80
+    },
+    {
+        id: 34,
+        type: "monster",
+        next: [39],
+        x: 8,
+        y: 80
+    },
 
-{
-    id: 35,
-    type: "monster",
-    next: [36,44],
-    x: 40,
-    y: 65
-},
-{
-    id: 36,
-    type: "magic_shop",
-    typeId: 1,
-    next: [37],
-    x: 32,
-    y: 65
-},
-{
-    id: 37,
-    type: "money",
-    next: [38],
-    x: 24,
-    y: 65
-},
-{
-    id: 38,
-    type: "asset",
-    typeIds: [2],
-    next: [39],
-    x: 16,
-    y: 65
-},
-{
-    id: 39,
-    type: "treasure",
-    treasureBoxId: 1,
-    next: [40],
-    x: 8,
-    y: 65
-},
+    {
+        id: 35,
+        type: "monster",
+        next: [36,44],
+        x: 40,
+        y: 70
+    },
+    {
+        id: 36,
+        type: "magic_shop",
+        typeId: 1,
+        next: [37],
+        x: 32,
+        y: 70
+    },
+    {
+        id: 37,
+        type: "money",
+        next: [38],
+        x: 24,
+        y: 70
+    },
+    {
+        id: 38,
+        type: "asset",
+        typeIds: [2],
+        next: [39],
+        x: 16,
+        y: 70
+    },
+    {
+        id: 39,
+        type: "treasure",
+        treasureBoxId: 1,
+        next: [40],
+        x: 8,
+        y: 70
+    },
 
-{
-    id: 40,
-    type: "money",
-    next: [41,49],
-    x: 8,
-    y: 50
-},
-{
-    id: 41,
-    type: "monster",
-    next: [42,48],
-    x: 16,
-    y: 50
-},
-{
-    id: 42,
-    type: "job",
-    jobId: 1,
-    next: [43],
-    x: 24,
-    y: 50
-},
-{
-    id: 43,
-    type: "shop",
-    typeId: 1,
-    next: [44],
-    x: 32,
-    y: 50
-},
-{
-    id: 44,
-    type: "monster",
-    next: [45],
-    x: 40,
-    y: 50
-},
+    {
+        id: 40,
+        type: "money",
+        next: [41,49],
+        x: 8,
+        y: 60
+    },
+    {
+        id: 41,
+        type: "monster",
+        next: [42,48],
+        x: 16,
+        y: 60
+    },
+    {
+        id: 42,
+        type: "job",
+        jobId: 1,
+        next: [43],
+        x: 24,
+        y: 60
+    },
+    {
+        id: 43,
+        type: "shop",
+        typeId: 1,
+        next: [44],
+        x: 32,
+        y: 60
+    },
+    {
+        id: 44,
+        type: "monster",
+        next: [45],
+        x: 40,
+        y: 60
+    },
 
-{
-    id: 45,
-    type: "magic_shop",
-    typeId: 1,
-    next: [46, 50],
-    x: 40,
-    y: 35
-},
-{
-    id: 46,
-    type: "money",
-    next: [47,51],
-    x: 32,
-    y: 35
-},
-{
-    id: 47,
-    type: "asset",
-    typeIds: [1],
-    next: [48],
-    x: 24,
-    y: 35
-},
-{
-    id: 48,
-    type: "worst",
-    next: [49],
-    x: 16,
-    y: 35
-},
-{
-    id: 49,
-    type: "monster",
-    next: [54],
-    x: 8,
-    y: 35
-},
+    {
+        id: 45,
+        type: "magic_shop",
+        typeId: 1,
+        next: [46, 50],
+        x: 40,
+        y: 50
+    },
+    {
+        id: 46,
+        type: "money",
+        next: [47,51],
+        x: 32,
+        y: 50
+    },
+    {
+        id: 47,
+        type: "asset",
+        typeIds: [1],
+        next: [48],
+        x: 24,
+        y: 50
+    },
+    {
+        id: 48,
+        type: "worst",
+        next: [49],
+        x: 16,
+        y: 50
+    },
+    {
+        id: 49,
+        type: "monster",
+        next: [54],
+        x: 8,
+        y: 50
+    },
 
-{
-    id: 50,
-    type: "treasure",
-    treasureBoxId: 1,
-    next: [51],
-    x: 40,
-    y: 20
-},
-{
-    id: 51,
-    type: "job",
-    jobId: 1,
-    next: [52],
-    x: 32,
-    y: 20
-},
-{
-    id: 52,
-    type: "asset",
-    typeIds: [5],
-    next: [53],
-    x: 24,
-    y: 20
-},
-{
-    id: 53,
-    type: "shop",
-    typeId: 1,
-    next: [54],
-    x: 16,
-    y: 20
-},
-{
-    id: 54,
-    type: "monster",
-    next: [55],
-    x: 8,
-    y: 20
-},
+    {
+        id: 50,
+        type: "treasure",
+        treasureBoxId: 1,
+        next: [51],
+        x: 40,
+        y: 40
+    },
+    {
+        id: 51,
+        type: "job",
+        jobId: 1,
+        next: [52],
+        x: 32,
+        y: 40
+    },
+    {
+        id: 52,
+        type: "asset",
+        typeIds: [5],
+        next: [53],
+        x: 24,
+        y: 40
+    },
+    {
+        id: 53,
+        type: "shop",
+        typeId: 1,
+        next: [54],
+        x: 16,
+        y: 40
+    },
+    {
+        id: 54,
+        type: "monster",
+        next: [55],
+        x: 8,
+        y: 40
+    },
 
 ];
