@@ -457,7 +457,8 @@ const ASSET_CONTENTS = {
         price: 40000,
         yield: 5,
         owner: null
-    }
+    },
+
     22: {
         name: "かんさい",
         price: 50,
