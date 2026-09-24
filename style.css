@@ -3817,7 +3817,7 @@ button {
     background-repeat: no-repeat;
     background-size: 500% 500%;
 
-    background-position: 20% 0%;
+    background-position: 21% 0%;
 
     border-radius: 50%;
 
@@ -7204,4 +7204,16 @@ body:has(.game-screen) {
 .map-node.boss-node.reachable-stop-highlight::before,
 .map-node.boss-node.reachable-stop-highlight::after {
     opacity: 0;
+}
+
+/* =========================================================
+   PC：マップ外側にスクロール余白を追加
+   ========================================================= */
+
+@media (min-width: 601px) {
+
+    .game-screen > .map-area > .map-board {
+        margin: 80px;
+    }
+
 }
