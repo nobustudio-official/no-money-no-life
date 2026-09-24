@@ -2534,11 +2534,8 @@ if (
 // スマホ：マップ ピンチズーム
 // =========================
 
-let mapZoom =
-    window.innerWidth <= 600
-        ? 0.85
-        : 1;
-
+let mapZoom = 1;
+    
 let mapPinchStartDistance = 0;
 let mapPinchStartZoom = 1;
 let mapPinchInitialized = false;
@@ -12154,7 +12151,6 @@ if (destinationButton) {
 // =========================
 
 renderMap();
-applyMapZoom();
 
 renderPlayers();
 
