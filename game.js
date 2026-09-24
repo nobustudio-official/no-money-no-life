@@ -8958,10 +8958,8 @@ case "asset":
                     // =========================
 
                     showEventPopup(
-                        "💰 " +
-                        currentSquare.name,
-
-                        `${formatG(reward)}G 獲得！`,
+                    "",
+                    `💰 ${formatG(reward)}G獲得！`,
 
                         function () {
 
