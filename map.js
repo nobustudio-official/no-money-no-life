@@ -152,7 +152,7 @@ const mapData = [
     {
         id: 17,
         type: "money",
-        next: [18],
+        next: [18,44],
         x: 30,
         y: 50
     },
@@ -195,7 +195,7 @@ const mapData = [
     {
         id: 22,
         type: "money",
-        next: [23,44],
+        next: [23],
         x: 62,
         y: 35
     },
