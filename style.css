@@ -4718,6 +4718,11 @@ body:has(.game-screen) {
 .map-node {
     width: 58px;
     height: 58px;
+
+   transform:
+    translate(-50%, -50%)
+    scale(0.85);
+   
     overflow: visible;
 
     background: rgba(255,255,255,0.78);
@@ -4812,6 +4817,35 @@ body:has(.game-screen) {
     height: 78px;
 }
 
+/* =========================================================
+   マップ要素の縮小
+   ※背景画像・mapBoard本体のサイズは変更しない
+   ========================================================= */
+
+/* マップのマス */
+.map-node {
+    transform:
+        translate(-50%, -50%)
+        scale(0.85);
+}
+
+/* マスのアイコン */
+.map-space-icon {
+    width: 56px;
+    height: 56px;
+}
+
+/* ボスのアイコン */
+.boss-node .map-space-icon {
+    width: 66px;
+    height: 66px;
+}
+
+/* 分岐矢印 */
+.branch-arrow-map {
+    transform: scale(0.85);
+    transform-origin: center center;
+}
 
 /* =========================
    左側アクションメニュー
