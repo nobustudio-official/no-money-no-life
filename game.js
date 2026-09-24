@@ -7156,7 +7156,7 @@ if (
 
     }
 
-    updatePlayerStatusUI(player);
+    window.updatePlayerStatusUI(player);
 
 
     renderPlayers();
