@@ -9745,6 +9745,12 @@ if (
 // 戦闘UIから呼び出すため公開
 // =========================
 
+window.renderMap =
+    renderMap;
+
+window.showBossDestinationPopup =
+    showBossDestinationPopup;
+
 window.finishTurn =
     finishTurn;
 
