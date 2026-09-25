@@ -85,30 +85,7 @@
 
                 <div class="battle-main-screen">
 
-                    <div class="battle-hud">
-
-                        <div class="battle-hud-player">
-                            <span
-                                id="battleNewPlayerName"
-                                class="battle-hud-name"
-                            ></span>
-                        </div>
-
-                        <div class="battle-hud-status">
-                            <span class="battle-hud-stat battle-hud-gold">
-                                <span class="battle-hud-stat-label">G</span>
-                                <strong id="battleNewGold">0</strong>
-                            </span>
-
-                            <span class="battle-hud-stat battle-hud-magic">
-                                <span class="battle-hud-stat-label">魔力</span>
-                                <strong id="battleNewMagic">0</strong>
-                            </span>
-                        </div>
-
-                    </div>
-
-
+                    
                     <div class="battle-round-badge">
                         <span id="battleNewRound">ROUND 1 / 3</span>
                     </div>
@@ -325,7 +302,6 @@
 
     function showBattleIntro(player, monster) {
 
-        ensureBattleUI();
 
         hideLayer("battleMainPopup");
 
@@ -400,17 +376,8 @@
         const monster =
             activeBattle.monster;
 
-        document.getElementById("battleNewPlayerName").textContent =
-            player.name;
-
-        document.getElementById("battleNewGold").textContent =
-            formatBattleNumber(player.money);
-
-        document.getElementById("battleNewMagic").textContent =
-            formatBattleNumber(player.magicPower);
-
-        document.getElementById("battleNewRound").textContent =
-            `ROUND ${activeBattle.round} / 3`;
+       document.getElementById("battleNewRound").textContent =
+    `ROUND ${activeBattle.round} / 3`;
 
         document.getElementById("battleNewMonsterName").textContent =
             monster.name;
@@ -999,42 +966,56 @@ attackButton.disabled = false;
 
 
     // =========================
-    // 撃破判定
+// 撃破判定
+// =========================
+
+if (
+    activeBattle.monsterHP <= 0
+) {
+
+    console.log(
+        "【戦闘】モンスター撃破"
+    );
+
+
+    // =========================
+    // ボス撃破
     // =========================
 
-    if (
-        activeBattle.monsterHP <= 0
-    ) {
+    if (activeBattle.isBoss) {
 
-        console.log(
-            "【戦闘】モンスター撃破"
-        );
+        currentBossHP =
+            0;
 
-
-        if (activeBattle.isBoss) {
-            currentBossHP = 0;
-            finishBossBattle();
-            return;
-        }
-
-        activeBattle.busy =
-            false;
-
-        activeBattle.phase =
-            "waitBattleEnd";
-
-        activeBattle.endWithReward =
-            true;
-
-        showBattleMessage(
-            `${magic.name}！ ${damage}ダメージ！ ${monster.name}を倒した！　画面をタップして終了`
-        );
-
-        disableBattleActions();
+        finishBossBattle();
 
         return;
 
     }
+
+
+    // =========================
+    // 通常モンスター撃破
+    // =========================
+
+    activeBattle.busy =
+        false;
+
+    activeBattle.phase =
+        "waitBattleEnd";
+
+    activeBattle.endWithReward =
+        true;
+
+    showBattleMessage(
+        `${magic.name}！ ${damage}ダメージ！ ${monster.name}を倒した！　画面をタップして終了`
+    );
+
+    disableBattleActions();
+
+    return;
+
+}
 
 
     // =========================
@@ -1262,28 +1243,28 @@ attackButton.disabled = false;
     }
 
 
-    // =========================
-    // 次のROUND
-    // =========================
+   // =========================
+// 次のROUND
+// =========================
 
-    activeBattle.busy =
-        false;
+activeBattle.busy =
+    false;
 
-    activeBattle.phase =
-        "waitNextRound";
+activeBattle.phase =
+    "waitNextRound";
 
-    activeBattle.selectedMagic =
-        null;
+activeBattle.selectedMagic =
+    null;
 
-    console.log(
-        "【戦闘】次ROUND待機"
-    );
+console.log(
+    "【戦闘】次ROUND待機"
+);
 
-    disableBattleActions();
+disableBattleActions();
 
-    showBattleMessage(
-        `ROUND ${activeBattle.round} 終了　画面をタップして次のROUNDへ`
-    );
+showBattleMessage(
+    `${monster.name}の反撃！ ${damage}Gのダメージ！　画面をタップして次のROUNDへ`
+);
 
 }
 
@@ -1442,44 +1423,55 @@ attackButton.disabled = false;
     }
 
 
-    function finishBattleNow(giveReward) {
+   function finishBattleNow(giveReward) {
 
-        if (!activeBattle) {
-            return;
+    if (!activeBattle) {
+        return;
+    }
+
+    const player =
+        activeBattle.player;
+
+    hideLayer("battleMainPopup");
+
+    if (giveReward) {
+
+        if (typeof showRewardPopup === "function") {
+
+            showRewardPopup(
+                player,
+                function () {
+
+                    activeBattle = null;
+
+                    window.finishTurn(
+                        player
+                    );
+
+                }
+            );
+
+        } else {
+
+            activeBattle = null;
+
+            window.finishTurn(
+                player
+            );
+
         }
 
-        const player =
-            activeBattle.player;
-
-        hideLayer("battleMainPopup");
-
-        if (giveReward) {
-
-            if (typeof showRewardPopup === "function") {
-
-                showRewardPopup(
-                    player,
-                    function () {
-                        activeBattle = null;
-                        finishTurn(player);
-                    }
-                );
-
-            } else {
-
-                activeBattle = null;
-                finishTurn(player);
-
-            }
-
-            return;
-
-        }
-
-        activeBattle = null;
-        finishTurn(player);
+        return;
 
     }
+
+    activeBattle = null;
+
+    window.finishTurn(
+        player
+    );
+
+}
 
 
     function showBattleEndButton(giveReward) {
@@ -1544,16 +1536,16 @@ attackButton.disabled = false;
 
         if (bossRewardGiven === false) {
 
-            players.forEach(function (p) {
-                const damageReward =
-                    p.bossDamage * BOSS_DAMAGE_MULTIPLIER;
+           window.players.forEach(function (p) {
+    const damageReward =
+        p.bossDamage * BOSS_DAMAGE_MULTIPLIER;
 
-                p.money += damageReward;
+    p.money += damageReward;
 
-                if (p === bossFirstPlayer) {
-                    p.money += boss.reward;
-                }
-            });
+    if (p === bossFirstPlayer) {
+        p.money += boss.reward;
+    }
+});
 
             player.money += boss.reward;
             bossRewardGiven = true;
@@ -1571,12 +1563,12 @@ attackButton.disabled = false;
         }
 
         bossRewardMessage += `⚔️ ダメージ報酬<br>`;
-        players.forEach(function (p) {
-            const damageReward =
-                p.bossDamage * BOSS_DAMAGE_MULTIPLIER;
-            bossRewardMessage +=
-                `${p.name}：+${formatBattleNumber(damageReward)}G<br>`;
-        });
+       window.players.forEach(function (p) {
+    const damageReward =
+        p.bossDamage * BOSS_DAMAGE_MULTIPLIER;
+    bossRewardMessage +=
+        `${p.name}：+${formatBattleNumber(damageReward)}G<br>`;
+});
 
         bossRewardMessage += `👑 撃破報酬<br>`;
         bossRewardMessage +=
@@ -1610,15 +1602,15 @@ attackButton.disabled = false;
                 bossFirstPlayer = null;
                 bossRewardGiven = false;
 
-                players.forEach(function (p) {
-                    p.bossDamage = 0;
+               window.players.forEach(function (p) {
+                p.bossDamage = 0;
                 });
 
                 renderMap();
                 activeBattle = null;
 
                 showBossDestinationPopup(function () {
-                    finishTurn(player);
+                     window.finishTurn(player);
                 });
 
             }
@@ -1632,7 +1624,9 @@ attackButton.disabled = false;
         activeBattle = {
             player: player,
             monster: enemy,
-            monsterHP: isBoss ? currentBossHP : enemy.hp,
+            monsterHP: isBoss 
+            ? currentBossHP 
+            : enemy.hp,
             round: 1,
             selectedMagic: null,
             busy: false,
