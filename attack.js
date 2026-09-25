@@ -5,7 +5,8 @@
 function calculateMagicDamage(
     player,
     magic,
-    battleState
+    battleState,
+    shouldLog = true
 ) {
 
     if (
@@ -19,33 +20,18 @@ function calculateMagicDamage(
     }
 
 
-    // =========================
-    // バフ込みの魔力
-    // =========================
-
-    const magicPower =
-        Number(player.magicPower || 0) *
-        Number(
-            battleState?.magicPowerRate || 1
-        );
-
-
-    // =========================
     // 魔法の基本ダメージ
-    // =========================
-
+    // 魔力 × 魔法ごとの倍率
     const baseDamage =
-        magicPower *
+        Number(player.magicPower || 0) *
         Number(magic.powerRate || 0);
 
 
-    // =========================
-    // アイテムによる与ダメージ補正
-    // =========================
-
+    // アイテムによる与ダメージ補正を適用
     return getPlayerDamage(
         player,
-        baseDamage
+        baseDamage,
+        shouldLog
     );
 
 }
@@ -77,9 +63,13 @@ function calculateMagicCost(
         );
 
 
-    return Math.floor(
-        magicPower *
-        Number(magic.costRate || 0)
+    // 魔法コスト = 魔力 × costRate
+    return Math.max(
+        0,
+        Math.floor(
+            magicPower *
+            Number(magic.costRate)
+        )
     );
 
 }
@@ -179,7 +169,8 @@ function getMonsterDamage(
 
 function getPlayerDamage(
     player,
-    damage
+    damage,
+    shouldLog = true
 ) {
 
     const damageBonus =
@@ -197,9 +188,11 @@ function getPlayerDamage(
         );
 
 
-    console.log(
-        `${player.name}：${finalDamage}ダメージを与えました`
-    );
+    if (shouldLog) {
+        console.log(
+            `${player.name}：${finalDamage}ダメージを与えました`
+        );
+    }
 
 
     return finalDamage;
