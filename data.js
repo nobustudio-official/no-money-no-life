@@ -39,23 +39,23 @@ const MONEY_CONTENTS = {
 
 const MONSTER_CONTENTS = {
 
-    1: {
-        name: "ゴブリン",
-        icon: "👾",
+   1: {
+        name: "スライム",
+        icon: "images/characters/enemy/normal/スライム.png",
         hp: 150,
         attack: 120
     },
 
     2: {
-        name: "ゾンビ",
-        icon: "🧟‍♂️",
+        name: "アンデット",
+        icon: "images/characters/enemy/normal/アンデット.png",
         hp: 110,
         attack: 180
     },
 
     3: {
-        name: "ワーウルフ",
-        icon: "🐺",
+        name: "デビルこうもり",
+        icon:  "images/characters/enemy/normal/デビルこうもり.png",
         hp: 300,
         attack: 250
     }
@@ -191,6 +191,7 @@ const MAGIC_CONTENTS = {
     1: {
         name: "ファイア",
         type: "attack",
+        icon: "images/magic/ファイア.png",
         effect: "魔力の100%で攻撃",
         powerRate: 1.0,
         costRate: 1.0,
@@ -205,6 +206,7 @@ const MAGIC_CONTENTS = {
 
     2: {
         name: "ブリザド",
+        icon: "images/magic/ブリザド.png",
         type: "attack",
         effect: "魔力の150％で攻撃",
         powerRate: 1.5,
@@ -221,6 +223,7 @@ const MAGIC_CONTENTS = {
     3: {
         name: "ダークスパイク",
         type: "attack",
+        icon: "images/magic/ダークスパイク.png",
         effect: "魔力の500％で攻撃",
         powerRate: 5.0,
         costRate: 5.0,
@@ -236,6 +239,7 @@ const MAGIC_CONTENTS = {
     4: {
         name: "メテオ",
         type: "attack",
+        icon: "未設定",
         effect: "魔力の1000％で攻撃",
         powerRate: 10.0,
         costRate: 11.0,
@@ -251,9 +255,10 @@ const MAGIC_CONTENTS = {
     5: {
         name: "パワアプ",
         type: "buff",
+        icon: "未設定",
         effect: "次のターンの魔力が3倍",
         powerRate: null,
-        costRate: 0.8,
+        costRate: 2,
         buffTarget: "self",
         buffStat: "magicPower",
         buffRate: 3,
@@ -266,9 +271,10 @@ const MAGIC_CONTENTS = {
     6: {
         name: "ディフェアプ",
         type: "buff",
+        icon: "未設定",
         effect: "このターンの相手の攻撃力を半分",
         powerRate: null,
-        costRate: 0.8,
+        costRate: 1.5,
         buffTarget: "enemy",
         buffStat: "attackPower",
         buffRate: 0.5,
@@ -476,7 +482,7 @@ const JOB_CONTENTS = {
 
     1: {
         name: "居酒屋",
-        unitPrice: 1000
+        unitPrice: 5000
     },
 
     2: {
@@ -487,12 +493,12 @@ const JOB_CONTENTS = {
 
     3: {
         name: "パン屋",
-        unitPrice: 1500
+        unitPrice: 4000
     },
 
     4: {
         name: "引っ越し",
-        unitPrice: 2000
+        unitPrice: 10000
     }
 
 };
@@ -504,31 +510,35 @@ const JOB_CONTENTS = {
 const BOSS_CONTENTS = {
 
     1: {
-        name: "デーモンロード",
+        name: "デビルロード",
+        icon: "images/characters/enemy/boss/デビルロード.png",
         hp: 200,
         attack: 50,
-        reward: 10000
+        reward: 5000
     },
 
     2: {
-        name: "いただきリリィ",
+        name: "アイスクイーン",
+        icon: "images/characters/enemy/boss/アイスクイーン.png",
         hp: 500,
         attack: 500,
-        reward: 20000
+        reward: 8000
     },
 
     3: {
-        name: "ギャング",
-        hp: 3000,
+        name: "いただきリリィ",
+        icon: "images/characters/enemy/boss/いただきリリィ.png",
+        hp: 2000,
         attack: 1000,
-        reward: 50000
+        reward: 15000
     },
 
     4: {
         name: "水原二平",
+        icon: "images/characters/enemy/boss/水原二平.png",
         hp: 5000,
         attack: 2000,
-        reward: 100000
+        reward: 20000
     }
 
     
