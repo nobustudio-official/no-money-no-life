@@ -1567,7 +1567,7 @@ button {
         center;
 
     z-index:
-        12000;
+        92000;
 
     display:
         none;
@@ -1597,47 +1597,88 @@ button {
         0.9;
 }
 
-
 .reward-choices {
     display:
         flex;
 
     flex-direction:
-        column;
+        row;
 
     gap:
-        12px;
+        14px;
+
+    width:
+        100%;
 }
 
 
 .reward-choice-button {
+    flex:
+        1 1 0;
+
     width:
-        100%;
+        auto;
+
+    min-width:
+        0;
+
+    min-height:
+        90px;
 
     padding:
-        14px 16px;
+        16px 10px;
 
     border:
-        1px solid
-        rgba(255, 255, 255, 0.3);
+        2px solid
+        rgba(255, 215, 120, 0.45);
 
     border-radius:
-        14px;
+        16px;
 
     background:
-        rgba(255, 255, 255, 0.1);
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.12),
+            rgba(255, 255, 255, 0.05)
+        );
 
     color:
         white;
 
     font-size:
-        17px;
+        18px;
 
     font-weight:
         bold;
 
     cursor:
         pointer;
+
+    transition:
+        0.2s;
+
+    box-sizing:
+        border-box;
+}
+
+
+.reward-choice-button:hover {
+    transform:
+        translateY(-2px);
+
+    border-color:
+        rgba(255, 215, 120, 0.9);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 215, 120, 0.22),
+            rgba(255, 255, 255, 0.08)
+        );
+
+    box-shadow:
+        0 0 18px
+        rgba(255, 215, 120, 0.2);
 }
 
 
@@ -1646,6 +1687,79 @@ button {
         scale(0.97);
 }
 
+/* =========================================================
+   報酬選択：スマホ対応
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .reward-popup {
+
+        width:
+            min(92%, 420px);
+
+        padding:
+            20px 14px;
+
+        border-radius:
+            18px;
+
+    }
+
+
+    .reward-title {
+
+        font-size:
+            20px;
+
+        margin-bottom:
+            8px;
+
+    }
+
+
+    .reward-message {
+
+        font-size:
+            14px;
+
+        margin-bottom:
+            14px;
+
+    }
+
+
+    .reward-choices {
+
+        flex-direction:
+            row;
+
+        gap:
+            8px;
+
+    }
+
+
+    .reward-choice-button {
+
+        min-height:
+            82px;
+
+        padding:
+            12px 6px;
+
+        border-radius:
+            14px;
+
+        font-size:
+            15px;
+
+        line-height:
+            1.4;
+
+    }
+
+}
 
 /* =========================================================
    27. 所持品画面
@@ -7189,18 +7303,48 @@ body:has(.game-screen) {
 }
 
 .battle-new-popup {
-    position: fixed;
-    top: 92px;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 12px;
-    box-sizing: border-box;
-    background: rgba(0, 0, 0, 0.58);
-    pointer-events: auto;
+    position:
+        fixed;
+
+    top:
+        92px;
+
+    right:
+        0;
+
+    bottom:
+        0;
+
+    left:
+        0;
+
+    display:
+        none;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        12px;
+
+    box-sizing:
+        border-box;
+
+    background:
+        linear-gradient(
+            rgba(5, 10, 18, 0.25),
+            rgba(5, 10, 18, 0.45)
+        ),
+        url("images/back-image/戦闘1.png")
+        center /
+        cover
+        no-repeat;
+
+    pointer-events:
+        auto;
 }
 
 .battle-new-popup.is-visible {
@@ -7269,10 +7413,8 @@ body:has(.game-screen) {
 }
 
 .battle-main-popup {
-    background:
-        linear-gradient(rgba(5, 10, 18, 0.18), rgba(5, 10, 18, 0.38)),
-        url("images/back-image/戦闘1.png") center / cover no-repeat;
-    overflow: hidden;
+    overflow:
+        hidden;
 }
 
 .battle-main-screen {
