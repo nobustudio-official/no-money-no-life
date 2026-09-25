@@ -602,11 +602,14 @@ damage.textContent =
 effect.textContent =
     magic.effect || "";
 
-// 魔法を選択したら「戦う」を押せるようにする。
-// 所持金不足の判定は performSelectedMagic() 側で行う。
-attackButton.disabled = false;
+if (
+    activeBattle.phase === "playerAction" &&
+    !activeBattle.busy
+) {
+    attackButton.disabled = false;
+}
 
-    }
+}
 
 
     function showBattleMessage(message) {
@@ -1385,7 +1388,7 @@ showBattleMessage(
 }
 
 
-    function disableBattleActions() {
+       function disableBattleActions() {
 
         const attackButton =
             document.getElementById("battleNewAttackButton");
@@ -1393,12 +1396,20 @@ showBattleMessage(
         const escapeButton =
             document.getElementById("battleNewEscapeButton");
 
+        const magicList =
+            document.getElementById("battleNewMagicList");
+
         if (attackButton) {
             attackButton.disabled = true;
         }
 
         if (escapeButton) {
             escapeButton.disabled = true;
+        }
+
+        if (magicList) {
+            magicList.style.pointerEvents = "none";
+            magicList.style.opacity = "0.5";
         }
 
     }
@@ -1412,12 +1423,20 @@ showBattleMessage(
         const escapeButton =
             document.getElementById("battleNewEscapeButton");
 
+        const magicList =
+            document.getElementById("battleNewMagicList");
+
         if (attackButton) {
             attackButton.disabled = false;
         }
 
         if (escapeButton) {
             escapeButton.disabled = false;
+        }
+
+        if (magicList) {
+            magicList.style.pointerEvents = "auto";
+            magicList.style.opacity = "1";
         }
 
     }
@@ -1430,40 +1449,56 @@ showBattleMessage(
     }
 
     const player =
-        activeBattle.player;
+    activeBattle.player;
 
-    hideLayer("battleMainPopup");
+if (giveReward) {
 
-    if (giveReward) {
+    if (typeof showRewardPopup === "function") {
 
-        if (typeof showRewardPopup === "function") {
+        showRewardPopup(
+            player,
+            function () {
 
-            showRewardPopup(
-                player,
-                function () {
+                hideLayer(
+                    "battleMainPopup"
+                );
 
-                    activeBattle = null;
+                activeBattle = null;
 
-                    window.finishTurn(
-                        player
-                    );
+                window.finishTurn(
+                    player
+                );
 
-                }
-            );
+            }
+        );
 
-        } else {
+    } else {
 
-            activeBattle = null;
+        hideLayer(
+            "battleMainPopup"
+        );
 
-            window.finishTurn(
-                player
-            );
+        activeBattle = null;
 
-        }
-
-        return;
+        window.finishTurn(
+            player
+        );
 
     }
+
+    return;
+
+}
+
+hideLayer(
+    "battleMainPopup"
+);
+
+activeBattle = null;
+
+window.finishTurn(
+    player
+);
 
     activeBattle = null;
 
@@ -1534,21 +1569,48 @@ showBattleMessage(
         const player = activeBattle.player;
         const boss = activeBattle.monster;
 
-        if (bossRewardGiven === false) {
+               if (bossRewardGiven === false) {
 
-           window.players.forEach(function (p) {
-    const damageReward =
-        p.bossDamage * BOSS_DAMAGE_MULTIPLIER;
+            window.players.forEach(function (p) {
 
-    p.money += damageReward;
+                const damageReward =
+                    p.bossDamage * BOSS_DAMAGE_MULTIPLIER;
 
-    if (p === bossFirstPlayer) {
-        p.money += boss.reward;
-    }
-});
+                p.money += damageReward;
 
-            player.money += boss.reward;
-            bossRewardGiven = true;
+                if (p === bossFirstPlayer) {
+                    p.money += boss.reward;
+                }
+
+                if (
+                    typeof updatePlayerStatusUI === "function"
+                ) {
+                    updatePlayerStatusUI(
+                        p
+                    );
+                }
+
+            });
+
+            player.money +=
+                boss.reward;
+
+            if (
+                typeof updatePlayerStatusUI === "function"
+            ) {
+                updatePlayerStatusUI(
+                    player
+                );
+            }
+
+            if (
+                typeof renderPlayers === "function"
+            ) {
+                renderPlayers();
+            }
+
+            bossRewardGiven =
+                true;
         }
 
         activeBattle.busy = true;
@@ -1574,47 +1636,75 @@ showBattleMessage(
         bossRewardMessage +=
             `${player.name}：+${formatBattleNumber(boss.reward)}G`;
 
-        hideLayer("battleMainPopup");
+       showEventPopup(
+    "ボス撃破！",
+    bossRewardMessage,
+    function () {
 
-        showEventPopup(
-            "ボス撃破！",
-            bossRewardMessage,
-            function () {
+        hideLayer(
+            "battleMainPopup"
+        );
 
-                previousBossSquareId = currentBossSquareId;
+        previousBossSquareId =
+            currentBossSquareId;
 
-                const bossIds =
-                    Object.keys(BOSS_CONTENTS)
-                        .map(Number)
-                        .sort(function (a, b) { return a - b; });
-
-                const currentIndex =
-                    bossIds.indexOf(currentBossId);
-
-                if (currentIndex >= 0 &&
-                    currentIndex < bossIds.length - 1) {
-                    currentBossId = bossIds[currentIndex + 1];
-                }
-
-                currentBossHP = BOSS_CONTENTS[currentBossId].hp;
-                selectBossSquare();
-
-                bossFirstPlayer = null;
-                bossRewardGiven = false;
-
-               window.players.forEach(function (p) {
-                p.bossDamage = 0;
+        const bossIds =
+            Object.keys(BOSS_CONTENTS)
+                .map(Number)
+                .sort(function (a, b) {
+                    return a - b;
                 });
 
-                renderMap();
-                activeBattle = null;
+        const currentIndex =
+            bossIds.indexOf(currentBossId);
 
-                showBossDestinationPopup(function () {
-                     window.finishTurn(player);
-                });
+        if (
+            currentIndex >= 0 &&
+            currentIndex < bossIds.length - 1
+        ) {
+
+            currentBossId =
+                bossIds[currentIndex + 1];
+
+        }
+
+        currentBossHP =
+            BOSS_CONTENTS[currentBossId].hp;
+
+        selectBossSquare();
+
+        bossFirstPlayer =
+            null;
+
+        bossRewardGiven =
+            false;
+
+        window.players.forEach(
+            function (p) {
+
+                p.bossDamage =
+                    0;
 
             }
         );
+
+        window.renderMap();
+
+        activeBattle =
+            null;
+
+        window.showBossDestinationPopup(
+            function () {
+
+                window.finishTurn(
+                    player
+                );
+
+              }
+           );
+
+         }
+     );
 
     }
 
