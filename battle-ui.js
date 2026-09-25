@@ -299,6 +299,22 @@
 
     }
 
+    function bringPopupToFront(id) {
+
+    const popup =
+        document.getElementById(id);
+
+    if (!popup) {
+        return;
+    }
+
+    if (popup.parentElement !== document.body) {
+        document.body.appendChild(popup);
+    }
+
+    popup.style.zIndex = "30000";
+
+}
 
     function showBattleIntro(player, monster) {
 
@@ -1442,65 +1458,62 @@ showBattleMessage(
     }
 
 
-   function finishBattleNow(giveReward) {
+ function finishBattleNow(giveReward) {
 
     if (!activeBattle) {
         return;
     }
 
     const player =
-    activeBattle.player;
+        activeBattle.player;
 
-if (giveReward) {
 
-    if (typeof showRewardPopup === "function") {
+    // =========================
+    // 通常モンスター撃破
+    // 報酬選択が終わるまで
+    // 戦闘画面を閉じない
+    // =========================
+
+    if (giveReward) {
 
         showRewardPopup(
             player,
             function () {
 
+                // =========================
+                // 報酬選択完了後
+                // =========================
+
                 hideLayer(
                     "battleMainPopup"
                 );
 
-                activeBattle = null;
+                activeBattle =
+                    null;
 
                 window.finishTurn(
                     player
                 );
 
-            }
+            },
+             window.getCurrentTurn()
         );
 
-    } else {
-
-        hideLayer(
-            "battleMainPopup"
-        );
-
-        activeBattle = null;
-
-        window.finishTurn(
-            player
-        );
+        return;
 
     }
 
-    return;
 
-}
+    // =========================
+    // 報酬なしで戦闘終了
+    // =========================
 
-hideLayer(
-    "battleMainPopup"
-);
+    hideLayer(
+        "battleMainPopup"
+    );
 
-activeBattle = null;
-
-window.finishTurn(
-    player
-);
-
-    activeBattle = null;
+    activeBattle =
+        null;
 
     window.finishTurn(
         player
@@ -1560,153 +1573,280 @@ window.finishTurn(
     }
 
 
-    function finishBossBattle() {
+   function finishBossBattle() {
 
-        if (!activeBattle) {
-            return;
-        }
+    if (!activeBattle) {
+        return;
+    }
 
-        const player = activeBattle.player;
-        const boss = activeBattle.monster;
 
-               if (bossRewardGiven === false) {
+    const player =
+        activeBattle.player;
 
-            window.players.forEach(function (p) {
+    const boss =
+        activeBattle.monster;
 
-                const damageReward =
-                    p.bossDamage * BOSS_DAMAGE_MULTIPLIER;
 
-                p.money += damageReward;
+    // =========================
+    // ボス報酬を1回だけ付与
+    // =========================
 
-                if (p === bossFirstPlayer) {
-                    p.money += boss.reward;
-                }
-
-                if (
-                    typeof updatePlayerStatusUI === "function"
-                ) {
-                    updatePlayerStatusUI(
-                        p
-                    );
-                }
-
-            });
-
-            player.money +=
-                boss.reward;
-
-            if (
-                typeof updatePlayerStatusUI === "function"
-            ) {
-                updatePlayerStatusUI(
-                    player
-                );
-            }
-
-            if (
-                typeof renderPlayers === "function"
-            ) {
-                renderPlayers();
-            }
-
-            bossRewardGiven =
-                true;
-        }
-
-        activeBattle.busy = true;
-
-        let bossRewardMessage =
-            `${boss.name}を倒した！<br>`;
-
-        bossRewardMessage += `🥇 先着報酬<br>`;
-        if (bossFirstPlayer) {
-            bossRewardMessage +=
-                `${bossFirstPlayer.name}：+${formatBattleNumber(boss.reward)}G<br>`;
-        }
-
-        bossRewardMessage += `⚔️ ダメージ報酬<br>`;
-       window.players.forEach(function (p) {
-    const damageReward =
-        p.bossDamage * BOSS_DAMAGE_MULTIPLIER;
-    bossRewardMessage +=
-        `${p.name}：+${formatBattleNumber(damageReward)}G<br>`;
-});
-
-        bossRewardMessage += `👑 撃破報酬<br>`;
-        bossRewardMessage +=
-            `${player.name}：+${formatBattleNumber(boss.reward)}G`;
-
-       showEventPopup(
-    "ボス撃破！",
-    bossRewardMessage,
-    function () {
-
-        hideLayer(
-            "battleMainPopup"
-        );
-
-        previousBossSquareId =
-            currentBossSquareId;
-
-        const bossIds =
-            Object.keys(BOSS_CONTENTS)
-                .map(Number)
-                .sort(function (a, b) {
-                    return a - b;
-                });
-
-        const currentIndex =
-            bossIds.indexOf(currentBossId);
-
-        if (
-            currentIndex >= 0 &&
-            currentIndex < bossIds.length - 1
-        ) {
-
-            currentBossId =
-                bossIds[currentIndex + 1];
-
-        }
-
-        currentBossHP =
-            BOSS_CONTENTS[currentBossId].hp;
-
-        selectBossSquare();
-
-        bossFirstPlayer =
-            null;
-
-        bossRewardGiven =
-            false;
+    if (bossRewardGiven === false) {
 
         window.players.forEach(
             function (p) {
 
-                p.bossDamage =
-                    0;
+                const damageReward =
+                    p.bossDamage *
+                    BOSS_DAMAGE_MULTIPLIER;
+
+                p.money +=
+                    damageReward;
+
+
+                if (
+                    p ===
+                    bossFirstPlayer
+                ) {
+
+                    p.money +=
+                        boss.reward;
+
+                }
+
+
+                if (
+                    typeof updatePlayerStatusUI ===
+                    "function"
+                ) {
+
+                    updatePlayerStatusUI(
+                        p
+                    );
+
+                }
 
             }
         );
 
-        window.renderMap();
 
-        activeBattle =
-            null;
+        player.money +=
+            boss.reward;
 
-        window.showBossDestinationPopup(
-            function () {
 
-                window.finishTurn(
-                    player
-                );
+        if (
+            typeof updatePlayerStatusUI ===
+            "function"
+        ) {
 
-              }
-           );
+            updatePlayerStatusUI(
+                player
+            );
 
-         }
-     );
+        }
+
+
+        if (
+            typeof renderPlayers ===
+            "function"
+        ) {
+
+            renderPlayers();
+
+        }
+
+
+        bossRewardGiven =
+            true;
 
     }
+
+
+    // =========================
+    // 戦闘終了状態
+    // =========================
+
+    activeBattle.busy =
+        true;
+
+
+    // =========================
+    // ボス報酬メッセージ
+    // =========================
+
+    let bossRewardMessage =
+        `${boss.name}を倒した！<br>`;
+
+
+    bossRewardMessage +=
+        `🥇 先着報酬<br>`;
+
+
+    if (bossFirstPlayer) {
+
+        bossRewardMessage +=
+            `${bossFirstPlayer.name}：+${formatBattleNumber(boss.reward)}G<br>`;
+
+    }
+
+
+    bossRewardMessage +=
+        `⚔️ ダメージ報酬<br>`;
+
+
+    window.players.forEach(
+        function (p) {
+
+            const damageReward =
+                p.bossDamage *
+                BOSS_DAMAGE_MULTIPLIER;
+
+            bossRewardMessage +=
+                `${p.name}：+${formatBattleNumber(damageReward)}G<br>`;
+
+        }
+    );
+
+
+    bossRewardMessage +=
+        `👑 撃破報酬<br>`;
+
+
+    bossRewardMessage +=
+        `${player.name}：+${formatBattleNumber(boss.reward)}G`;
+
+
+    // =========================
+    // ボス報酬ポップアップ
+    // =========================
+    // この時点では
+    // 戦闘画面を閉じない
+    // =========================
+
+    showEventPopup(
+        "ボス撃破！",
+        bossRewardMessage,
+        function () {
+
+
+            // =========================
+            // 報酬確認後
+            // 戦闘画面を閉じる
+            // =========================
+
+            hideLayer(
+                "battleMainPopup"
+            );
+
+
+            // =========================
+            // 次のボスを設定
+            // =========================
+
+            previousBossSquareId =
+                currentBossSquareId;
+
+
+            const bossIds =
+                Object.keys(
+                    BOSS_CONTENTS
+                )
+                .map(Number)
+                .sort(
+                    function (a, b) {
+                        return a - b;
+                    }
+                );
+
+
+            const currentIndex =
+                bossIds.indexOf(
+                    currentBossId
+                );
+
+
+            if (
+                currentIndex >= 0 &&
+                currentIndex <
+                    bossIds.length - 1
+            ) {
+
+                currentBossId =
+                    bossIds[
+                        currentIndex + 1
+                    ];
+
+            }
+
+
+            currentBossHP =
+                BOSS_CONTENTS[
+                    currentBossId
+                ].hp;
+
+
+            selectBossSquare();
+
+
+            // =========================
+            // ボス戦情報をリセット
+            // =========================
+
+            bossFirstPlayer =
+                null;
+
+            bossRewardGiven =
+                false;
+
+
+            window.players.forEach(
+                function (p) {
+
+                    p.bossDamage =
+                        0;
+
+                }
+            );
+
+
+            // =========================
+            // マップ更新
+            // =========================
+
+            window.renderMap();
+
+
+            // =========================
+            // 戦闘データを終了
+            // =========================
+
+            activeBattle =
+                null;
+
+
+            // =========================
+            // 次のボス目的地を表示
+            // =========================
+
+            window.showBossDestinationPopup(
+                function () {
+
+                    // =========================
+                    // 目的地確認後
+                    // ターン終了
+                    // =========================
+
+                    window.finishTurn(
+                        player
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
 
 
     function startSharedBattle(player, enemy, isBoss) {
