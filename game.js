@@ -1338,6 +1338,10 @@ function showGameScreen(
     let remainingSteps = 0;
     let currentTurn = 1;
 
+    window.getCurrentTurn = function () {
+    return currentTurn;
+    };
+
     // =========================
     // サイコロ移動状態
     // =========================
@@ -6305,8 +6309,8 @@ window.showEventPopup = function (
     // ポップアップ表示
     // =========================
 
-    popup.style.display =
-        "block";
+    popup.style.display = "block";
+    popup.style.zIndex = "99999";
 
 
     // =========================
@@ -10444,7 +10448,8 @@ function startJob(
 
 function showRewardPopup(
     player,
-    callback
+    callback,
+    turn
 ) {
 
     const rewardPopup =
@@ -10459,6 +10464,26 @@ function showRewardPopup(
 
 
     // =========================
+    // 現在のターン数に応じて
+    // 報酬をインフレさせる
+    // =========================
+
+    const magicReward =
+    10 +
+    (
+        (turn - 1) *
+        10
+    );
+
+const goldReward =
+    1000 +
+    (
+        (turn - 1) *
+        500
+    );
+
+
+    // =========================
     // 報酬候補
     // =========================
 
@@ -10466,24 +10491,24 @@ function showRewardPopup(
 
         {
             text:
-                "🔮 魔力 +10",
+                `🔮 魔力 +${magicReward}`,
 
             type:
                 "magicPower",
 
             value:
-                10
+                magicReward
         },
 
         {
             text:
-                "💰 200G",
+                `💰 ${formatG(goldReward)}G`,
 
             type:
                 "money",
 
             value:
-                200
+                goldReward
         }
 
     ];
@@ -10510,14 +10535,15 @@ function showRewardPopup(
                 );
 
 
-            // ボタンの標準動作を無効化
+            // =========================
+            // ボタン設定
+            // =========================
+
             button.type =
                 "button";
 
-
             button.className =
                 "reward-choice-button";
-
 
             button.textContent =
                 reward.text;
@@ -10530,39 +10556,67 @@ function showRewardPopup(
             button.onclick =
                 function () {
 
-                   // 魔力アップ
-if (reward.type === "magicPower") {
-    player.magicPower += reward.value;
-    window.updatePlayerStatusUI(player);
-}
+                    // =========================
+                    // 魔力アップ
+                    // =========================
 
-console.log(
+                    if (
+                        reward.type ===
+                        "magicPower"
+                    ) {
+
+                        player.magicPower +=
+                            reward.value;
+
+                        window.updatePlayerStatusUI(
+                            player
+                        );
+
+                    }
+
+
+                    // =========================
+                    // ゴールド獲得
+                    // =========================
+
+                    if (
+                        reward.type ===
+                        "money"
+                    ) {
+
+                        player.money +=
+                            reward.value;
+
+                        window.updatePlayerStatusUI(
+                            player
+                        );
+
+                    }
+
+
+     console.log(
     "報酬反映:",
     player.name,
     "魔力:",
     player.magicPower,
     "G:",
-    player.money
+    player.money,
+    "ターン:",
+    turn
 );
 
                     // =========================
-                    // G獲得
+                    // 報酬画面を閉じて次へ
                     // =========================
 
-                    if (reward.type === "money") {
-    player.money += reward.value;
-    window.updatePlayerStatusUI(player);
-}
+                    rewardPopup.style.display =
+                        "none";
 
 
-                    // =========================
-                    // // 報酬画面を閉じて次へ
-                    // // =========================
+                    if (callback) {
 
-                rewardPopup.style.display = "none";
+                        callback();
 
-                if (callback) {
-                    callback();
                     }
 
                 };
