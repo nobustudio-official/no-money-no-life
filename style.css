@@ -9229,27 +9229,27 @@ body:has(.game-screen) {
             1.2;
     }
 
-    .battle-new-magic-icon-wrap {
-        width:
-            80px !important;
+  .battle-new-magic-icon-wrap {
+    width:
+        40px !important;
 
-        height:
-            80px !important;
-    }
+    height:
+        40px !important;
+}
 
-    .battle-new-magic-icon-wrap img {
-        width:
-            80px !important;
+.battle-new-magic-icon-wrap img {
+    width:
+        40px !important;
 
-        height:
-            80px !important;
+    height:
+        40px !important;
 
-        max-width:
-            80px !important;
+    max-width:
+        40px !important;
 
-        max-height:
-            80px !important;
-    }
+    max-height:
+        40px !important;
+}
 }
 
 /* =========================================================
