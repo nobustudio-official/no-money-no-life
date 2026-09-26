@@ -7811,8 +7811,10 @@ body:has(.game-screen) {
 
     display: flex;
 
-    align-items: center;
+    flex-direction: column;
 
+    align-items: center;
+    
     justify-content: center;
 
     padding: 8px;
@@ -7851,8 +7853,8 @@ body:has(.game-screen) {
 }
 
 .battle-new-magic-icon-wrap {
-    width: 40px;
-    height: 40px;
+    width: 100px;
+    height: 100px;
 
     display: flex;
     align-items: center;
@@ -9212,7 +9214,7 @@ body:has(.game-screen) {
             center;
 
         gap:
-            4px;
+            0px;
 
         box-sizing:
             border-box;
@@ -9249,5 +9251,154 @@ body:has(.game-screen) {
 
         max-height:
             80px !important;
+    }
+}
+
+/* =========================================================
+   スマホ横画面：バトルUI最終調整
+   ・魔法一覧の幅を半分
+   ・魔法詳細の高さを半分
+   ・バトルログの高さを魔法詳細に合わせる
+   ・戦う／パスの高さを半分
+   ・コスト／予測ダメージを表示
+========================================================= */
+
+@media (max-width: 700px) and (orientation: landscape) {
+
+    /* =========================
+       バトル画面全体
+    ========================= */
+
+    .battle-main-screen {
+        grid-template-columns:
+            90px
+            minmax(0, 1fr);
+    }
+
+
+    /* =========================
+       魔法一覧
+       180px → 90px
+    ========================= */
+
+    .battle-magic-panel {
+        width:
+            90px !important;
+    }
+
+
+    /* =========================
+       魔法選択
+       105px → 約53px
+    ========================= */
+
+    .battle-selected-magic {
+        height:
+            53px !important;
+
+        min-height:
+            53px !important;
+    }
+
+
+    /* =========================
+       バトルログ
+       魔法選択と同じ高さ
+    ========================= */
+
+    .battle-new-message {
+        height:
+            53px !important;
+
+        min-height:
+            53px !important;
+    }
+
+
+    /* =========================
+       戦う／パス
+       84px → 42px
+    ========================= */
+
+    .battle-action-row {
+        height:
+            42px !important;
+    }
+
+    .battle-new-action-button {
+        height:
+            42px !important;
+
+        min-height:
+            42px !important;
+
+        font-size:
+            16px;
+    }
+
+
+    /* =========================
+       コスト／予測ダメージ
+       右側へ正常に表示
+    ========================= */
+
+    .battle-selected-magic-info {
+        grid-template-columns:
+            minmax(0, 1fr)
+            170px !important;
+
+        column-gap:
+            8px !important;
+    }
+
+    .battle-selected-magic-right {
+        width:
+            170px !important;
+
+        min-width:
+            170px !important;
+
+        transform:
+            none !important;
+
+        justify-self:
+            end;
+    }
+
+    .battle-selected-magic-cost,
+    .battle-selected-magic-damage {
+        width:
+            170px !important;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            60px;
+
+        column-gap:
+            6px;
+
+        font-size:
+            12px !important;
+
+        white-space:
+            nowrap;
+    }
+
+    .battle-selected-magic-cost strong,
+    .battle-selected-magic-damage strong {
+        width:
+            60px !important;
+
+        min-width:
+            60px !important;
+
+        margin-left:
+            0 !important;
+
+        text-align:
+            right !important;
+
+        font-size:
+            18px !important;
     }
 }
