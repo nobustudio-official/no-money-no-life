@@ -145,51 +145,110 @@
                         </div>
 
 
-                        <div class="battle-detail-panel">
+                                                                    <div
+                            class="battle-selected-magic"
+                            style="
+                                grid-area: detail;
+                                min-width: 0;
+                                width: 100%;
+                                height: auto;
+                                min-height: 116px;
+                                margin: 0;
+                                padding: 10px 14px;
+                                box-sizing: border-box;
+                                border: 1px solid rgba(255, 255, 255, 0.35);
+                                border-radius: 12px;
+                                background: rgba(16, 26, 45, 0.82);
+                                box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
+                                overflow: hidden;
+                            "
+                        >
 
-                            <div class="battle-panel-title">
-                                選択中の魔法
-                            </div>
-
-                            <div class="battle-selected-magic">
-
-                                <div
+                                 <div
                                     id="battleNewSelectedMagicIcon"
                                     class="battle-selected-magic-icon"
+                                    style="
+                                        flex: 0 0 72px;
+                                        width: 72px;
+                                        height: 72px;
+                                    "
                                 ></div>
 
-                                <div class="battle-selected-magic-info">
+                            <div class="battle-selected-magic-info">
 
-                                    <div
-                                        id="battleNewSelectedMagicName"
-                                        class="battle-selected-magic-name"
-                                    >
-                                        魔法を選択してください
-                                    </div>
+                                <div class="battle-selected-magic-left">
 
-                                    <div class="battle-selected-magic-meta">
-                                        <span>
-                                            コスト
-                                            <strong id="battleNewSelectedMagicCost">—</strong>G
-                                        </span>
-                                        <span>
-                                            予測ダメージ
-                                            <strong id="battleNewSelectedMagicDamage">—</strong>
-                                        </span>
-                                    </div>
+                                                   <div
+                                            id="battleNewSelectedMagicName"
+                                            class="battle-selected-magic-name"
+                                            style="
+                                                font-size: 25px;
+                                                line-height: 1.2;
+                                            "
+                                        >
+                                            魔法を選択してください
+                                        </div>
 
-                                    <div
-                                        id="battleNewSelectedMagicEffect"
-                                        class="battle-selected-magic-effect"
-                                    ></div>
-
+                                                                 <div
+                                            id="battleNewSelectedMagicEffect"
+                                            class="battle-selected-magic-effect"
+                                            style="
+                                                margin-top: 6px;
+                                                font-size: 14px;
+                                                line-height: 1.3;
+                                            "
+                                        ></div>
                                 </div>
+
+                                        <div
+                                        class="battle-selected-magic-right"
+                                        style="
+                                            gap: 6px;
+                                        "
+                                    >
+
+                                        <div
+                                            class="battle-selected-magic-cost"
+                                            style="
+                                                font-size: 18px;
+                                                line-height: 1.3;
+                                            "
+                                        >
+                                            <span>コスト</span>
+                                            <strong
+                                                style="
+                                                    font-size: 28px;
+                                                    line-height: 1.2;
+                                                    white-space: nowrap;
+                                                "
+                                            >
+                                                <span id="battleNewSelectedMagicCost">—</span>G
+                                            </strong>
+                                        </div>
+
+                                        <div
+                                            class="battle-selected-magic-damage"
+                                            style="
+                                                font-size: 18px;
+                                                line-height: 1.3;
+                                            "
+                                        >
+                                            <span>予測ダメージ</span>
+                                            <strong
+                                                id="battleNewSelectedMagicDamage"
+                                                style="
+                                                    font-size: 28px;
+                                                    line-height: 1.2;
+                                                    white-space: nowrap;
+                                                "
+                                            >—</strong>
+                                        </div>
+
+                                    </div>
 
                             </div>
 
                         </div>
-
-                    </div>
 
 
                     <div
@@ -439,6 +498,11 @@
         renderMagicList();
         renderSelectedMagic();
 
+        // プレイヤーの行動ターンに戻ったら、前ターンのバトルログを消す。
+        if (activeBattle.phase === "playerAction") {
+            showBattleMessage("");
+        }
+
     }
 
 
@@ -628,17 +692,27 @@ if (
 }
 
 
-    function showBattleMessage(message) {
+ function showBattleMessage(message) {
 
-        const element =
-            document.getElementById("battleNewMessage");
+    const element =
+        document.getElementById("battleNewMessage");
 
-        if (element) {
-            element.textContent =
-                message || "";
-        }
-
+    if (!element) {
+        return;
     }
+
+    const text =
+        message || "";
+
+    element.textContent =
+        text;
+
+    element.classList.toggle(
+        "is-active",
+        Boolean(text)
+    );
+
+}
 
 
   function bindMainButtons() {
@@ -748,9 +822,7 @@ if (
             renderBattleMain();
             enableBattleActions();
 
-            showBattleMessage(
-                `ROUND ${activeBattle.round} / 3`
-            );
+            showBattleMessage("");
 
         }
 
