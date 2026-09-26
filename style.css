@@ -9324,7 +9324,7 @@ body:has(.game-screen) {
         font-size:
             20px;
 
-         transform: translateY(2px) !important;
+         transform: translateY(3px) !important;
     }
 
 
