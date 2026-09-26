@@ -9184,10 +9184,10 @@ body:has(.game-screen) {
 
     .battle-selected-magic {
         height:
-            82px !important;
+            70px !important;
 
         min-height:
-            82px !important;
+            70px !important;
 
         padding:
             5px 8px !important;
@@ -9195,7 +9195,7 @@ body:has(.game-screen) {
         gap:
             7px !important;
 
-       transform: translateY(50px) !important;
+       transform: translateY(65px) !important;
     }
 
 
