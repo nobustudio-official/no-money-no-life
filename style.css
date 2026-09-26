@@ -8735,7 +8735,7 @@ body:has(.game-screen) {
     grid-template-rows:
         minmax(0, 1fr)
         0
-        105px
+        70px
         84px;
 }
 
@@ -8747,10 +8747,10 @@ body:has(.game-screen) {
 
 .battle-selected-magic {
     height:
-        105px !important;
+        70px !important;
 
     min-height:
-        105px !important;
+        70px !important;
 
     box-sizing:
         border-box;
