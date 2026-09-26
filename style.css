@@ -9195,7 +9195,7 @@ body:has(.game-screen) {
         gap:
             7px !important;
 
-       transform: translateY(80px) !important;
+       transform: translateY(78px) !important;
     }
 
 
@@ -9323,7 +9323,7 @@ body:has(.game-screen) {
         font-size:
             20px;
 
-         transform: translateY(5px) !important;
+         transform: translateY(6px) !important;
     }
 
 
