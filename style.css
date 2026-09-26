@@ -9249,7 +9249,7 @@ body:has(.game-screen) {
         min-width:
             85px;
 
-        transform: translateX(-100px) !important;
+        transform: translateX(-150px) !important;
     }
 
 
@@ -9276,10 +9276,12 @@ body:has(.game-screen) {
             42px;
 
         margin-left:
-            0;
+            10;
 
         font-size:
             14px !important;
+
+        text-align: left !important;
     }
 
 
