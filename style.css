@@ -9309,9 +9309,9 @@ body:has(.game-screen) {
     ----------------------------------------- */
 
     .battle-action-row {
-    height:64px;
-    position:relative;
-    margin-top:0px;
+    height: 50px;
+    align-self: end;
+    transform: none !important;
 }
 
 
@@ -9324,6 +9324,8 @@ body:has(.game-screen) {
 
         font-size:
             20px;
+
+         transform: translateY(10px) !important;
     }
 
 
@@ -9332,7 +9334,7 @@ body:has(.game-screen) {
             28px;
 
         height:
-            28px;
+            2px;
     }
 
 }
