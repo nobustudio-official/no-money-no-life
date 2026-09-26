@@ -133,9 +133,10 @@
 
                         <div class="battle-magic-panel">
 
-                            <div class="battle-panel-title">
-                                魔法
-                            </div>
+        <div class="battle-panel-title">
+    <img src="images/ui-icons/magic.png" alt="">
+    <span>魔法一覧</span>
+</div>
 
                             <div
                                 id="battleNewMagicList"
@@ -164,6 +165,7 @@
                             "
                         >
 
+                        
                                  <div
                                     id="battleNewSelectedMagicIcon"
                                     class="battle-selected-magic-icon"
@@ -554,13 +556,7 @@
                     return;
                 }
 
-                const cost =
-                    calculateMagicCost(
-                        activeBattle.player,
-                        magic,
-                        activeBattle.battleState
-                    );
-
+               
                 const item =
                     document.createElement("button");
 
@@ -577,18 +573,17 @@
                     item.classList.add("is-selected");
                 }
 
-                item.innerHTML = `
-                    <span class="battle-new-magic-icon-wrap">
-                        <img
-                            src="${magic.image || magic.icon || ""}"
-                            alt="${magic.name}"
-                            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-                        >
-                        <span class="battle-new-magic-fallback">✨</span>
-                    </span>
-                    <span class="battle-new-magic-name">${magic.name}</span>
-                    <span class="battle-new-magic-cost">${formatBattleNumber(cost)}G</span>
-                `;
+               item.innerHTML = `
+    <span class="battle-new-magic-name">${magic.name}</span>
+    <span class="battle-new-magic-icon-wrap">
+        <img
+            src="${magic.image || magic.icon || ""}"
+            alt="${magic.name}"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+        >
+        <span class="battle-new-magic-fallback">✨</span>
+    </span>
+`;
 
                 item.addEventListener(
                     "click",
