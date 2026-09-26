@@ -709,6 +709,24 @@ if (
 
 }
 
+function setBattleMagicPanelVisible(visible) {
+
+    const panel =
+        document.querySelector(
+            "#battleMainPopup .battle-magic-panel"
+        );
+
+    if (!panel) {
+        return;
+    }
+
+    panel.style.visibility =
+        visible ? "visible" : "hidden";
+
+    panel.style.pointerEvents =
+        visible ? "auto" : "none";
+}
+
 
   function bindMainButtons() {
 
@@ -792,11 +810,31 @@ if (
 
     function handleBattleScreenTap() {
 
-        if (!activeBattle) {
-            return;
-        }
+    if (!activeBattle) {
+        return;
+    }
 
-        if (activeBattle.phase === "waitEnemyCounter") {
+    // =========================
+    // 戦闘開始メッセージを閉じる
+    // =========================
+
+    if (activeBattle.phase === "battleIntro") {
+
+        activeBattle.phase =
+            "playerAction";
+
+        showBattleMessage("");
+
+        setBattleMagicPanelVisible(true);
+
+        renderBattleMain();
+
+        enableBattleActions();
+
+        return;
+    }
+
+    if (activeBattle.phase === "waitEnemyCounter") {
 
             activeBattle.phase =
                 "enemyCounter";
@@ -1945,7 +1983,15 @@ showBattleMessage(
             actionButton.textContent = isBoss ? "パス" : "逃げる";
         }
 
-        showBattleIntro(player, enemy);
+activeBattle.phase = "battleIntro";
+
+showBattleMain();
+
+showBattleMessage(
+       `${enemy.name}が現れた！　タップして戦闘へ`
+);
+
+setBattleMagicPanelVisible(false);
 
     }
 
