@@ -9086,7 +9086,7 @@ body:has(.game-screen) {
 
         .battle-magic-panel {
         height:
-        calc(100% + 60px) !important;
+        calc(100% + 80px) !important;
 
         padding:
             6px;
@@ -9239,16 +9239,16 @@ body:has(.game-screen) {
 
     .battle-selected-magic-effect {
         font-size:
-            9px !important;
+            12px !important;
     }
 
 
     .battle-selected-magic-right {
         width:
-            105px !important;
+            85px !important;
 
         min-width:
-            105px;
+            85px;
 
         transform:
             none !important;
@@ -9258,7 +9258,7 @@ body:has(.game-screen) {
     .battle-selected-magic-cost,
     .battle-selected-magic-damage {
         width:
-            105px !important;
+            85px !important;
 
         grid-template-columns:
             minmax(0, 1fr)
@@ -9331,10 +9331,10 @@ body:has(.game-screen) {
 
     .battle-new-attack-button img {
         width:
-            28px;
+            24px;
 
         height:
-            2px;
+            24px;
     }
 
 }
