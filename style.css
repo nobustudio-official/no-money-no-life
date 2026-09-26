@@ -9312,8 +9312,7 @@ body:has(.game-screen) {
         height:
             50px;
 
-        transform:
-            none !important;
+          transform: translateY(10px) !important;
     }
 
 
