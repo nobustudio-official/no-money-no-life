@@ -9310,7 +9310,7 @@ body:has(.game-screen) {
 
     .battle-action-row {
         height:
-            64px;
+            50px;
 
         transform:
             none !important;
@@ -9319,22 +9319,22 @@ body:has(.game-screen) {
 
     .battle-new-action-button {
         height:
-            64px;
+            50px;
 
         min-height:
-            64px !important;
+            50px !important;
 
         font-size:
-            16px;
+            20px;
     }
 
 
     .battle-new-attack-button img {
         width:
-            22px;
+            28px;
 
         height:
-            22px;
+            28px;
     }
 
 }
