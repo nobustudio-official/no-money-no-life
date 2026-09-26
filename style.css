@@ -239,8 +239,8 @@ button {
     grid-template-rows:
         auto
         minmax(0, 1fr)
-        auto
-        auto;
+        80px
+        50px;
 
     overflow: hidden;
 
@@ -8742,7 +8742,6 @@ body:has(.game-screen) {
 
 /* =========================
    魔法詳細パネル
-   70px → 105px
 ========================= */
 
 .battle-selected-magic {
@@ -9062,7 +9061,7 @@ body:has(.game-screen) {
 
     .battle-main-screen {
         grid-template-columns:
-            145px
+            45px
             minmax(0, 1fr);
     }
 
@@ -9086,7 +9085,7 @@ body:has(.game-screen) {
 
     .battle-magic-panel {
         height:
-            100% !important;
+             calc(100% + 40px) !important;
 
         padding:
             6px;
@@ -9184,10 +9183,10 @@ body:has(.game-screen) {
 
     .battle-selected-magic {
         height:
-            82px !important;
+            45px !important;
 
         min-height:
-            82px !important;
+            45px !important;
 
         padding:
             5px 8px !important;
@@ -9250,8 +9249,8 @@ body:has(.game-screen) {
         min-width:
             105px;
 
-        transform:
-            none !important;
+         transform:
+        translateX(-20px) !important;
     }
 
 
@@ -9291,10 +9290,10 @@ body:has(.game-screen) {
 
     .battle-new-message {
         width:
-            100%;
+            45%;
 
         height:
-            100%;
+            45%;
 
         padding:
             6px 10px;
@@ -9310,7 +9309,7 @@ body:has(.game-screen) {
 
     .battle-action-row {
         height:
-            64px;
+            45px;
 
         transform:
             none !important;
@@ -9319,22 +9318,22 @@ body:has(.game-screen) {
 
     .battle-new-action-button {
         height:
-            64px;
+            45px;
 
         min-height:
-            64px !important;
+            45px !important;
 
         font-size:
-            16px;
+            20px;
     }
 
 
     .battle-new-attack-button img {
         width:
-            22px;
+            24px;
 
         height:
-            22px;
+            24px;
     }
 
 }
