@@ -9050,220 +9050,15 @@ body:has(.game-screen) {
 }
 
 /* =========================================================
-   スマホ横向き
-   PCと同じバトルUIレイアウトを使用
+   スマホ横向き：バトルUI
+   PC版の構造を維持して各パーツだけ縮小
 ========================================================= */
 
-@media (max-width: 700px) and (orientation: landscape) {
+@media (orientation: landscape) and (max-height: 500px) {
 
-    /* =========================
-       バトル画面全体
-    ========================= */
-
-    .battle-main-screen {
-        grid-template-columns:
-            180px
-            minmax(0, 1fr);
-
-        grid-template-rows:
-            minmax(0, 1fr)
-            auto
-            auto
-            auto;
-
-        grid-template-areas:
-            "magic   monster"
-            "magic   message"
-            "magic   detail"
-            ".       actions";
-
-        column-gap:
-            8px;
-
-        row-gap:
-            4px;
-
-        padding:
-            6px;
-    }
-
-
-    /* =========================
-       魔法詳細
-       PCと同じサイズへ戻す
-    ========================= */
-
-    .battle-selected-magic {
-        height:
-            50px !important;
-
-        min-height:
-            50px !important;
-
-        margin:
-            0 !important;
-
-        box-sizing:
-            border-box;
-    }
-
-
-    /* =========================
-       戦う・逃げる
-       PCと同じサイズへ戻す
-    ========================= */
-
-    .battle-action-row {
-        height:
-            40px;
-
-        align-self:
-            stretch;
-    }
-
-    .battle-new-action-button {
-        height:
-            40px;
-
-        min-height:
-            40px !important;
-
-        font-size:
-            clamp(16px, 2.2vw, 24px);
-    }
-
-
-    /* =========================
-       魔法詳細右側情報
-       PC設定へ戻す
-    ========================= */
-
-    .battle-selected-magic-info {
-        grid-template-columns:
-            minmax(0, 1fr)
-            190px;
-
-        min-width:
-            0;
-    }
-
-    .battle-selected-magic-right {
-        width:
-            200px !important;
-
-        min-width:
-            200px;
-
-        justify-self:
-            end;
-
-        transform:
-            translateX(-400px) !important;
-    }
-
-    .battle-selected-magic-cost,
-    .battle-selected-magic-damage {
-        width:
-            200px !important;
-
-        grid-template-columns:
-            minmax(0, 1fr)
-            80px;
-
-        column-gap:
-            18px;
-    }
-
-    .battle-selected-magic-cost strong,
-    .battle-selected-magic-damage strong {
-        width:
-            80px !important;
-
-        min-width:
-            40px;
-
-        margin-left:
-            20px;
-
-        text-align:
-            left;
-    }
-
-
-    /* =========================
-       魔法一覧
-       PCと同じ大きさへ
-    ========================= */
-
-    .battle-new-magic-item {
-        min-height:
-            40px;
-
-        display:
-            flex;
-
-        flex-direction:
-            column;
-
-        align-items:
-            center;
-
-        justify-content:
-            center;
-
-        gap:
-            0px;
-
-        box-sizing:
-            border-box;
-    }
-
-    .battle-new-magic-name {
-        font-size:
-            16px;
-
-        font-weight:
-            900;
-
-        line-height:
-            1.2;
-    }
-
-  .battle-new-magic-icon-wrap {
-    width:
-        40px !important;
-
-    height:
-        40px !important;
-}
-
-.battle-new-magic-icon-wrap img {
-    width:
-        40px !important;
-
-    height:
-        40px !important;
-
-    max-width:
-        4px !important;
-
-    max-height:
-        4px !important;
-}
-}
-
-/* =========================================================
-   スマホ横向き：バトルUI最終調整
-   PC版のレイアウト構造を維持したまま縮小
-========================================================= */
-
-@media (max-width: 700px) and (orientation: landscape) {
-
-    /* =====================================================
-       ① バトル画面の左右幅
-       PC版：205px
-       スマホ：145px
-    ===================================================== */
+    /* -----------------------------------------
+       魔法一覧の幅
+    ----------------------------------------- */
 
     .battle-main-screen {
         grid-template-columns:
@@ -9272,7 +9067,9 @@ body:has(.game-screen) {
     }
 
 
-    /* ROUND表示も魔法一覧の幅に合わせる */
+    /* -----------------------------------------
+       ROUND
+    ----------------------------------------- */
 
     .battle-round-badge {
         left:
@@ -9283,14 +9080,11 @@ body:has(.game-screen) {
     }
 
 
-    /* =====================================================
-       ② 魔法一覧パネル
-    ===================================================== */
+    /* -----------------------------------------
+       魔法一覧パネル
+    ----------------------------------------- */
 
     .battle-magic-panel {
-        width:
-            100%;
-
         height:
             100% !important;
 
@@ -9302,29 +9096,7 @@ body:has(.game-screen) {
     }
 
 
-    /* 魔法一覧タイトル */
-
-    .battle-panel-title {
-        font-size:
-            14px;
-
-        margin-bottom:
-            4px;
-    }
-
-
-    .battle-panel-title img {
-        width:
-            20px;
-
-        height:
-            20px;
-    }
-
-
-    /* =====================================================
-       ③ 魔法一覧
-    ===================================================== */
+    /* 魔法一覧 */
 
     .battle-new-magic-list {
         gap:
@@ -9338,15 +9110,11 @@ body:has(.game-screen) {
     }
 
 
-    /* =====================================================
-       ④ 魔法1個のサイズ
-       116px → 78px
-    ===================================================== */
+    /* -----------------------------------------
+       魔法カード
+    ----------------------------------------- */
 
     .battle-new-magic-item {
-        width:
-            100%;
-
         min-height:
             78px;
 
@@ -9361,10 +9129,9 @@ body:has(.game-screen) {
     }
 
 
-    /* =====================================================
-       ⑤ 魔法アイコン
-       40pxではなく、カードに合わせて48px
-    ===================================================== */
+    /* -----------------------------------------
+       魔法アイコン
+    ----------------------------------------- */
 
     .battle-new-magic-icon-wrap {
         width:
@@ -9373,7 +9140,6 @@ body:has(.game-screen) {
         height:
             48px !important;
     }
-
 
     .battle-new-magic-icon-wrap img {
         width:
@@ -9390,16 +9156,13 @@ body:has(.game-screen) {
     }
 
 
-    /* =====================================================
-       ⑥ 魔法名
-    ===================================================== */
+    /* -----------------------------------------
+       魔法名
+    ----------------------------------------- */
 
     .battle-new-magic-name {
         font-size:
             12px;
-
-        font-weight:
-            900;
 
         line-height:
             1.1;
@@ -9412,21 +9175,14 @@ body:has(.game-screen) {
 
         text-overflow:
             ellipsis;
-
-        max-width:
-            100%;
     }
 
 
-    /* =====================================================
-       ⑦ 選択中魔法詳細
-       PC版の情報構成を維持して縮小
-    ===================================================== */
+    /* -----------------------------------------
+       選択中魔法
+    ----------------------------------------- */
 
     .battle-selected-magic {
-        width:
-            100%;
-
         height:
             82px !important;
 
@@ -9439,15 +9195,10 @@ body:has(.game-screen) {
         gap:
             7px !important;
 
-        margin:
-            0 !important;
-
         transform:
-            none;
+            none !important;
     }
 
-
-    /* 選択中魔法アイコン */
 
     .battle-selected-magic-icon {
         flex:
@@ -9470,33 +9221,6 @@ body:has(.game-screen) {
     }
 
 
-    /* 魔法名 */
-
-    .battle-selected-magic-name {
-        font-size:
-            14px !important;
-
-        line-height:
-            1.1 !important;
-    }
-
-
-    /* 効果 */
-
-    .battle-selected-magic-effect {
-        margin-top:
-            2px !important;
-
-        font-size:
-            9px !important;
-
-        line-height:
-            1.1 !important;
-    }
-
-
-    /* コスト・予測ダメージ */
-
     .battle-selected-magic-info {
         grid-template-columns:
             minmax(0, 1fr)
@@ -9504,6 +9228,18 @@ body:has(.game-screen) {
 
         column-gap:
             5px !important;
+    }
+
+
+    .battle-selected-magic-name {
+        font-size:
+            14px !important;
+    }
+
+
+    .battle-selected-magic-effect {
+        font-size:
+            9px !important;
     }
 
 
@@ -9530,9 +9266,6 @@ body:has(.game-screen) {
 
         column-gap:
             4px;
-
-        font-size:
-            9px !important;
     }
 
 
@@ -9549,16 +9282,12 @@ body:has(.game-screen) {
 
         font-size:
             14px !important;
-
-        text-align:
-            right;
     }
 
 
-    /* =====================================================
-       ⑧ バトルログ
-       選択魔法詳細と同じ右側幅
-    ===================================================== */
+    /* -----------------------------------------
+       バトルログ
+    ----------------------------------------- */
 
     .battle-new-message {
         width:
@@ -9575,44 +9304,30 @@ body:has(.game-screen) {
     }
 
 
-    /* =====================================================
-       ⑨ 戦う・逃げる
-    ===================================================== */
+    /* -----------------------------------------
+       戦う・逃げる
+    ----------------------------------------- */
 
     .battle-action-row {
-        width:
-            100%;
-
         height:
             64px;
 
-        gap:
-            3px;
-
         transform:
-            none;
+            none !important;
     }
 
 
     .battle-new-action-button {
-        width:
-            100%;
-
         height:
             64px;
 
         min-height:
             64px !important;
 
-        border-radius:
-            8px;
-
         font-size:
             16px;
     }
 
-
-    /* 戦うアイコン */
 
     .battle-new-attack-button img {
         width:
