@@ -9265,7 +9265,7 @@ body:has(.game-screen) {
 
     .battle-main-screen {
         grid-template-columns:
-            100px
+            40px
             minmax(0, 1fr);
     }
 
