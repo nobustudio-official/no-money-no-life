@@ -9309,11 +9309,10 @@ body:has(.game-screen) {
     ----------------------------------------- */
 
     .battle-action-row {
-        height:
-            50px;
-
-          transform: translateY(10px) !important;
-    }
+    height:64px;
+    position:relative;
+    top:10px;
+}
 
 
     .battle-new-action-button {
