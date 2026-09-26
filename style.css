@@ -9084,9 +9084,9 @@ body:has(.game-screen) {
        魔法一覧パネル
     ----------------------------------------- */
 
-    .battle-magic-panel {
+        .battle-magic-panel {
         height:
-            100% !important;
+        calc(100% + 20px) !important;
 
         padding:
             6px;
