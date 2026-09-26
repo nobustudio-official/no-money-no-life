@@ -9195,7 +9195,7 @@ body:has(.game-screen) {
         gap:
             7px !important;
 
-       transform: translateY(10px) !important;
+       transform: translateY(50px) !important;
     }
 
 
