@@ -78,36 +78,44 @@ const PLAYER_DIRECTIONS = {
 // =========================
 
 // マップ移動用の4方向スプライト
-function getPlayerCharacterSprite(
-    playerIndex
-) {
+function getPlayerCharacterSprite(playerIndex) {
+
+    const player =
+        players[playerIndex];
+
+    if (!player) {
+        return "";
+    }
 
     const character =
-        PLAYER_CONTENTS[playerIndex + 1];
+        PLAYER_CONTENTS[player.characterId];
 
     if (!character) {
         return "";
     }
 
     return character.sprite;
-
 }
 
 
 // プレイヤーアイコン表示用
-function getPlayerCharacterIcon(
-    playerIndex
-) {
+function getPlayerCharacterIcon(playerIndex) {
+
+    const player =
+        players[playerIndex];
+
+    if (!player) {
+        return "";
+    }
 
     const character =
-        PLAYER_CONTENTS[playerIndex + 1];
+        PLAYER_CONTENTS[player.characterId];
 
     if (!character) {
         return "";
     }
 
     return character.icon;
-
 }
 
 // プレイヤーの現在の向きを取得します。
@@ -1138,9 +1146,15 @@ characterButtons.forEach(
     bossDamage: 0,
     position: 17,
     color: playerColors[index],
+    characterId:
+    Number(
+        document.querySelectorAll(
+            ".player-character-button"
+        )[index].dataset.characterId || 1
+    ),
     inventory: [],
     assets: [],
-    magic: [1,7],
+    magic: [1],
 
     // バイト関連
     jobTurnsRemaining: 0,
