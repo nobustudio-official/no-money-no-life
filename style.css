@@ -9153,7 +9153,7 @@ body:has(.game-screen) {
     left: calc(50% + 100px) !important;
     top: 50% !important;
 
-    width: 180px !important;
+    width: 150px !important;
     height: 10px !important;
     min-height: 10px !important;
 
