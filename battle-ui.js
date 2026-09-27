@@ -70,7 +70,7 @@
                     ></div>
 
                     <div class="battle-intro-hint">
-                        画面をタップして戦闘開始
+                        　⇒
                     </div>
 
                 </div>
@@ -1132,7 +1132,7 @@ if (
         true;
 
     showBattleMessage(
-        `${magic.name}！ ${damage}ダメージ！ ${monster.name}を倒した！　画面をタップして終了`
+        `${magic.name}！ ${damage}ダメージ！ ${monster.name}を倒した！　⇒`
     );
 
     disableBattleActions();
@@ -1152,7 +1152,7 @@ if (
 
 
     console.log(
-        "【戦闘】攻撃結果表示。画面タップ待ち"
+        "【戦闘】攻撃結果表示。　画面タップ待ち"
     );
 
     activeBattle.busy =
@@ -1162,7 +1162,7 @@ if (
         "waitEnemyCounter";
 
     showBattleMessage(
-        `${magic.name}！ ${damage}ダメージ！　画面をタップして反撃`
+        `${magic.name}！ ${damage}ダメージ！　⇒`
     );
 
     disableBattleActions();
@@ -1357,7 +1357,7 @@ if (
             false;
 
         showBattleMessage(
-            `${monster.name}の反撃！ ${damage}Gのダメージ！　3ラウンド終了！　画面をタップして終了`
+            `${monster.name}の反撃！ ${damage}Gのダメージ！　戦闘が終わった！　　⇒`
         );
 
         disableBattleActions();
@@ -1387,7 +1387,7 @@ console.log(
 disableBattleActions();
 
 showBattleMessage(
-    `${monster.name}の反撃！ ${damage}Gのダメージ！　画面をタップして次のROUNDへ`
+    `${monster.name}の反撃！ ${damage}Gのダメージ！　次のROUNDへ　⇒`
 );
 
 }
