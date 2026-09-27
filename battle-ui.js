@@ -1242,18 +1242,29 @@ if (
     }
 
 
-    // =========================
-    // 通常モンスター撃破
-    // =========================
+ // =========================
+// 通常モンスター撃破
+// =========================
 
-    activeBattle.busy =
-        false;
+activeBattle.busy =
+    false;
 
-    activeBattle.phase =
-        "waitBattleEnd";
+activeBattle.phase =
+    "waitBattleEnd";
 
-    activeBattle.endWithReward =
-        true;
+activeBattle.endWithReward =
+    true;
+
+// モンスターを消す
+const monsterImage =
+    document.getElementById(
+        "battleNewMonsterImage"
+    );
+
+if (monsterImage) {
+    monsterImage.style.display =
+        "none";
+}
 
     showBattleMessage(
         `${magic.name}！ ${damage}ダメージ！ ${monster.name}を倒した！　＞＞`
