@@ -21,10 +21,16 @@ function calculateMagicDamage(
 
 
     // 魔法の基本ダメージ
-    // 魔力 × 魔法ごとの倍率
-    const baseDamage =
-        Number(player.magicPower || 0) *
-        Number(magic.powerRate || 0);
+// 魔力 × バフ倍率 × 魔法ごとの倍率
+const magicPowerRate =
+    Number(
+        battleState?.magicPowerRate || 1
+    );
+
+const baseDamage =
+    Number(player.magicPower || 0) *
+    magicPowerRate *
+    Number(magic.powerRate || 0);
 
 
     // アイテムによる与ダメージ補正を適用
@@ -56,11 +62,8 @@ function calculateMagicCost(
     }
 
 
-    const magicPower =
-        Number(player.magicPower || 0) *
-        Number(
-            battleState?.magicPowerRate || 1
-        );
+   const magicPower =
+    Number(player.magicPower || 0);
 
 
     // 魔法コスト = 魔力 × costRate
