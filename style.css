@@ -9504,3 +9504,199 @@ body:has(.game-screen) {
     }
 
 }
+
+/* =========================================================
+   キャラクター選択画面
+   ========================================================= */
+
+.player-character-window {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.75);
+
+    box-sizing: border-box;
+}
+
+
+/* タイトル */
+
+.player-character-window-title {
+    margin-bottom: 20px;
+
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+
+/* キャラクター一覧 */
+
+.player-character-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+    gap: 15px;
+
+    width: 100%;
+    max-width: 650px;
+}
+
+
+/* キャラクター1人分 */
+
+.player-character-option {
+    width: 110px;
+    height: 135px;
+
+    padding: 8px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    box-sizing: border-box;
+
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.15);
+
+    color: #ffffff;
+
+    cursor: pointer;
+}
+
+
+/* キャラクター画像 */
+
+.player-character-option img {
+    width: 85px;
+    height: 85px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* キャラクター名 */
+
+.player-character-option span {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.2;
+}
+/* =========================================================
+   プレイヤー設定画面のキャラクター変更ボタン
+   ========================================================= */
+
+.player-character-button {
+    width: 90px;
+    height: 90px;
+
+    padding: 5px;
+    margin: 8px auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.15);
+
+    cursor: pointer;
+}
+
+
+/* 選択中キャラクターのアイコン */
+
+.player-character-preview {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+}
+/* =========================================================
+   キャラクター選択画面
+   スマホ用レイアウト
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .player-character-window {
+        padding: 10px;
+    }
+
+
+    /* タイトル */
+
+    .player-character-window-title {
+        margin-bottom: 12px;
+
+        font-size: 20px;
+    }
+
+
+    /* キャラクター一覧 */
+
+    .player-character-list {
+        width: 100%;
+        max-width: 360px;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 8px;
+    }
+
+
+    /* キャラクター1人分 */
+
+    .player-character-option {
+        width: 100%;
+        height: 105px;
+
+        padding: 5px;
+
+        gap: 3px;
+    }
+
+
+    /* キャラクター画像 */
+
+    .player-character-option img {
+        width: 65px;
+        height: 65px;
+    }
+
+
+    /* キャラクター名 */
+
+    .player-character-option span {
+        font-size: 14px;
+    }
+
+}   
