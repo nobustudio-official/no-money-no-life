@@ -58,11 +58,6 @@ const MAP_TYPE_ICON_FALLBACKS = {
     treasure: "🎁"
 };
 
-const PLAYER_CHARACTER_IMAGES = [
-    "images/characters/player-male.png",
-    "images/characters/player-female.png"
-];
-
 // 4方向スプライトシートの配置
 //
 // 元画像は2×2配置です。
@@ -77,11 +72,41 @@ const PLAYER_DIRECTIONS = {
     right: { row: 1, column: 1 }
 };
 
-function getPlayerCharacterImage(playerIndex) {
 
-    return PLAYER_CHARACTER_IMAGES[
-        playerIndex % PLAYER_CHARACTER_IMAGES.length
-    ];
+// =========================
+// プレイヤー画像取得
+// =========================
+
+// マップ移動用の4方向スプライト
+function getPlayerCharacterSprite(
+    playerIndex
+) {
+
+    const character =
+        PLAYER_CONTENTS[playerIndex + 1];
+
+    if (!character) {
+        return "";
+    }
+
+    return character.sprite;
+
+}
+
+
+// プレイヤーアイコン表示用
+function getPlayerCharacterIcon(
+    playerIndex
+) {
+
+    const character =
+        PLAYER_CONTENTS[playerIndex + 1];
+
+    if (!character) {
+        return "";
+    }
+
+    return character.icon;
 
 }
 
@@ -105,7 +130,7 @@ function updatePlayerSprite(element, playerIndex, player) {
     }
 
     const imagePath =
-        getPlayerCharacterImage(playerIndex);
+    getPlayerCharacterSprite(playerIndex);
 
     const direction =
         getPlayerDirection(player);
@@ -139,7 +164,7 @@ function updateHudPlayerAvatar(
     }
 
     element.style.backgroundImage =
-        `url("${getPlayerCharacterImage(playerIndex)}")`;
+    `url("${getPlayerCharacterIcon(playerIndex)}")`;
 
     element.dataset.direction =
         "down";
@@ -877,29 +902,43 @@ startButton.addEventListener(
                                 },
                                 function (_, index) {
 
-                                    return `
+                                  return `
 
-                                        <div
-                                            class="player-name-input">
+    <div
+        class="player-name-input">
 
-                                            <label>
+        <div>
+            プレイヤー${index + 1}
+        </div>
 
-                                                プレイヤー${index + 1}
+        <button
+            type="button"
+            class="player-character-button"
+            data-player-index="${index}">
 
-                                                <input
-                                                    type="text"
-                                                    class="player-name"
-                                                    placeholder="名前を入力"
-                                                    maxlength="10"
-                                                >
+            <img
+                class="player-character-preview"
+                src="${PLAYER_CONTENTS[1].icon}"
+                alt="キャラクター">
 
-                                            </label>
+        </button>
 
-                                        </div>
+        <input
+            type="text"
+            class="player-name"
+            placeholder="名前を入力"
+            maxlength="8"
+        >
 
-                                    `;
+    </div>
+
+`;
+
+
 
                                 }
+
+                                
                             ).join("")}
 
 
@@ -908,6 +947,159 @@ startButton.addEventListener(
                                 決定
                             </button>
                         `;
+
+ // =========================
+// キャラクター選択ボタン
+// =========================
+
+const characterButtons =
+    document.querySelectorAll(
+        ".player-character-button"
+    );
+
+
+characterButtons.forEach(
+    function (button) {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                // キャラクター選択ウィンドウ
+                const characterWindow =
+                    document.createElement("div");
+
+                characterWindow.className =
+                    "player-character-window";
+
+                characterWindow.innerHTML = `
+
+                    <div
+                        class="player-character-window-title">
+
+                        キャラクターを選択
+
+                    </div>
+
+                    <div
+                        class="player-character-list">
+
+                        ${Object.entries(
+                            PLAYER_CONTENTS
+                        ).map(
+                            function (
+                                [id, character]
+                            ) {
+
+                                return `
+
+                                    <button
+                                        type="button"
+                                        class="player-character-option"
+                                        data-character-id="${id}">
+
+                                        <img
+                                            src="${character.icon}"
+                                            alt="${character.name}">
+
+                                        <span>
+                                            ${character.name}
+                                        </span>
+
+                                    </button>
+
+                                `;
+
+                            }
+                        ).join("")}
+
+                    </div>
+
+                `;
+
+                document.body.appendChild(
+                    characterWindow
+                );
+
+
+                // =========================
+                // キャラクター選択
+                // =========================
+
+                const options =
+                    characterWindow.querySelectorAll(
+                        ".player-character-option"
+                    );
+
+
+                options.forEach(
+                    function (option) {
+
+                        option.addEventListener(
+                            "click",
+                            function () {
+
+                                const characterId =
+                                    Number(
+                                        option.dataset.characterId
+                                    );
+
+                                const character =
+                                    PLAYER_CONTENTS[
+                                        characterId
+                                    ];
+
+
+                                // 選択したアイコンを表示
+                                const preview =
+                                    button.querySelector(
+                                        ".player-character-preview"
+                                    );
+
+                                preview.src =
+                                    character.icon;
+
+
+                                // 選択したキャラクターIDを保存
+                                button.dataset.characterId =
+                                    characterId;
+
+
+                                // ウィンドウを閉じる
+                                characterWindow.remove();
+
+                            }
+                        );
+
+                    }
+                );
+
+
+                // =========================
+                // ウィンドウ外をクリック
+                // =========================
+
+                characterWindow.addEventListener(
+                    "click",
+                    function (event) {
+
+                        if (
+                            event.target ===
+                            characterWindow
+                        ) {
+
+                            characterWindow.remove();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
 
 
                         const confirmButton =
@@ -3107,7 +3299,7 @@ if (
         <div
             class="asset-owner-player-icon"
             style="
-                background-image: url('${getPlayerCharacterImage(asset.owner)}');
+                background-image: url('${getPlayerCharacterIcon(asset.owner)}');
             "
             aria-label="プレイヤー${asset.owner + 1}"
         ></div>
