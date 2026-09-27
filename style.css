@@ -9091,7 +9091,7 @@ body:has(.game-screen) {
     right: 0 !important;
     top: 3px !important;
     justify-content: center !important;
-    transform: translateX(-150px) !important;
+    transform: translateX(-180px) !important;
 }
 
 
@@ -9111,30 +9111,29 @@ body:has(.game-screen) {
 }
 
 .battle-monster-area {
-    width:
-        100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
 
-    height:
-        100% !important;
-
-    min-height:
-        0 !important;
-
-    overflow:
-        visible !important;
-
-    display:
-        flex !important;
-
-    flex-direction:
-        column !important;
-
-    align-items:
-        center !important;
-
-    justify-content:
-        center !important;
+    transform: translateY(10px) !important;
 }
+
+    .battle-hp-bar {
+        width: 220px !important;
+        height: 10px !important;
+        min-height: 10px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .battle-monster-hp {
+        min-height: 18px !important;
+        flex-shrink: 0 !important;
+    }
 
 
     /* -----------------------------------------
@@ -9333,7 +9332,7 @@ body:has(.game-screen) {
             42px;
 
         margin-left:
-            10;
+            12;
 
         font-size:
             14px !important;
