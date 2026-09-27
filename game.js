@@ -547,6 +547,26 @@ function showBossDestinationPopup(
                     );
                 }
 
+/// =========================
+// 凱旋BGM停止
+// 冒険BGMを最初から再生
+// =========================
+
+if (
+    bossVictoryBGM.currentTime > 0 ||
+    !bossVictoryBGM.paused
+) {
+
+    bossVictoryBGM.pause();
+
+    bossVictoryBGM.currentTime = 0;
+
+    adventureBGM.currentTime = 0;
+
+    adventureBGM.play();
+
+}
+
                 // =========================
                 // ボス撃破後など
                 // =========================
@@ -557,6 +577,7 @@ function showBossDestinationPopup(
                 }
 
   
+                
 
             }
         );
@@ -595,6 +616,8 @@ const GAME_LOADING_ASSETS = [
     "images/ui-icons/settings.png",
     "images/ui-icons/yajirushi.png"
 ];
+
+
 
 function preloadGameImage(path) {
 
@@ -918,14 +941,14 @@ startButton.addEventListener(
 
   players.push({
     name: name,
-    money: 1000,
+    money: 2000,
     magicPower: 100,
     bossDamage: 0,
     position: 17,
     color: playerColors[index],
     inventory: [],
     assets: [],
-    magic: [1],
+    magic: [1,7],
 
     // バイト関連
     jobTurnsRemaining: 0,
@@ -945,7 +968,7 @@ players[index].inventory = [1, 8];
 
 addItems(
     players[index],
-    [9, 11],
+    [11],
     1
 );
 
@@ -1128,7 +1151,36 @@ waitForGameAssets().then(function () {
 
 }
 
+// =========================
+// ボス戦BGM
+// =========================
 
+const bossBattleBGM =
+    new Audio(
+        "BGM/ボス戦.mp3"
+    );
+
+bossBattleBGM.loop =
+    true;
+
+bossBattleBGM.volume =
+    0.4;
+
+
+// =========================
+// ボス撃破後BGM
+// =========================
+
+const bossVictoryBGM =
+    new Audio(
+        "BGM/凱旋.mp3"
+    );
+
+bossVictoryBGM.loop =
+    false;
+
+bossVictoryBGM.volume =
+    0.4;
 
 // =========================
 // ゲーム画面
@@ -3471,21 +3523,33 @@ bgmVolumeSlider.oninput =
             ) / 100;
 
         if (
-            location.protocol ===
-            "file:"
-        ) {
+    location.protocol ===
+    "file:"
+) {
 
-            adventureBGM.volume =
-                volume;
+    adventureBGM.volume =
+        volume;
 
-        } else if (
-            adventureBGMGain
-        ) {
+    bossBattleBGM.volume =
+        volume;
 
-            adventureBGMGain.gain.value =
-                volume;
+    bossVictoryBGM.volume =
+        volume;
 
-        }
+} else if (
+    adventureBGMGain
+) {
+
+    adventureBGMGain.gain.value =
+        volume;
+
+    bossBattleBGM.volume =
+        volume;
+
+    bossVictoryBGM.volume =
+        volume;
+
+}
 
         bgmVolumeValue.textContent =
             `${this.value}%`;
@@ -6656,8 +6720,21 @@ function showBossChallengePopup(
         bossFirstPlayer === null
     ) {
 
-        bossFirstPlayer =
-            player;
+       bossFirstPlayer =
+    player;
+
+// =========================
+// 冒険BGM停止
+// =========================
+
+adventureBGM.pause();
+
+// =========================
+// ボス戦BGM開始
+// =========================
+
+bossBattleBGM.currentTime = 0;
+bossBattleBGM.play();
 
     }
 
@@ -9581,6 +9658,9 @@ if (
         )
         %
         players.length;
+
+
+
 
 //SE:プレイヤー切り替え
 switchingSound.currentTime = 0;
