@@ -9121,52 +9121,41 @@ body:has(.game-screen) {
 
 .battle-monster-name {
     position: absolute !important;
-
-    left: calc(50% + 100px) !important;
-    top: calc(50% - 35px) !important;
-
-    width: 180px !important;
+    left: 20px !important;
+    top: 80px !important;
+    width: 150px !important;
     margin: 0 !important;
-
     text-align: left !important;
     font-size: 14px !important;
 }
 
-.battle-monster-area {
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    overflow: visible !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    transform: translateY(20px) !important;
-
-    position: relative !important;
-}
-
 .battle-hp-bar {
     position: absolute !important;
-
-    left: calc(50% + 100px) !important;
-    top: 50% !important;
-
+    left: 20px !important;
+    top: 110px !important;
     width: 150px !important;
     height: 10px !important;
     min-height: 10px !important;
-
     margin: 0 !important;
     flex-shrink: 0 !important;
+}
 
-    transform: translateY(-50%) !important;
+.battle-monster-hp {
+    position: absolute !important;
+    left: 20px !important;
+    top: 125px !important;
+    width: 150px !important;
+    min-height: 18px !important;
+    margin: 0 !important;
+    flex-shrink: 0 !important;
+    font-size: 12px !important;
+    text-align: left !important;
 }
 .battle-monster-hp {
     position: absolute !important;
 
     left: calc(50% + 100px) !important;
-    top: calc(50% + 15px) !important;
+    top: calc(50% + 30px) !important;
 
     width: 180px !important;
     min-height: 18px !important;
