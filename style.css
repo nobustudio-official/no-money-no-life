@@ -9354,16 +9354,16 @@ body:has(.game-screen) {
 
     .battle-selected-magic-cost,
     .battle-selected-magic-damage {
-        width:
-            85px !important;
+    width:
+        100px !important;
 
-        grid-template-columns:
-            minmax(0, 1fr)
-            42px;
+    grid-template-columns:
+        minmax(0, 1fr)
+        42px;
 
-        column-gap:
-            6px;
-    }
+    column-gap:
+        21px !important;
+}
 
 
     .battle-selected-magic-cost strong,
@@ -9374,7 +9374,7 @@ body:has(.game-screen) {
         min-width:
             42px;
 
-        margin-left: 25px !important;
+        margin-left: 0px !important;
 
         font-size:
             14px !important;
