@@ -9060,17 +9060,16 @@ body:has(.game-screen) {
        魔法一覧の幅
     ----------------------------------------- */
 
+    .battle-main-popup {
+        padding-top:
+            60px !important;
+    }
+
     .battle-main-screen {
         grid-template-columns:
             120px
             minmax(0, 1fr);
-    height:
-        calc(100vh - 74px) !important;
-
-    max-height:
-        calc(100vh - 74px) !important;
     }
-
 
     /* -----------------------------------------
        ROUND
