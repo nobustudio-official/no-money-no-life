@@ -9087,17 +9087,11 @@ body:has(.game-screen) {
 ----------------------------------------- */
 
 .battle-round-badge {
-    left:
-        120px !important;
-
-    right:
-        0 !important;
-
-    top:
-        3px !important;
-
-    justify-content:
-        center !important;
+    left: 120px !important;
+    right: 0 !important;
+    top: 3px !important;
+    justify-content: center !important;
+    transform: translateX(-55px) !important;
 }
 
 
@@ -9110,28 +9104,20 @@ body:has(.game-screen) {
         visible !important;
 }
 
-.battle-monster-area {
-    overflow:
-        visible !important;
-}
 
 .battle-monster-visual-wrap {
-    width:
-        220px !important;
-
-    height:
-        150px !important;
+    width: 220px !important;
+    height: 150px !important;
 }
 
 .battle-monster-image {
-    width:
-        100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+}
 
-    height:
-        100% !important;
-
-    object-fit:
-        contain !important;
+.battle-monster-area {
+    overflow: visible !important;
 }
 
 .battle-hp-bar {
@@ -9264,7 +9250,7 @@ body:has(.game-screen) {
             5px 8px !important;
 
         gap:
-            7px !important;
+            8px !important;
 
        transform: translateY(78px) !important;
     }
