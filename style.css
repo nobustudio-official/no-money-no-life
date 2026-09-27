@@ -9111,12 +9111,10 @@ body:has(.game-screen) {
 }
 
 .battle-monster-image {
-    width: 120% !important;
-    height: 120% !important;
+    width: 130% !important;
+    height: 130% !important;
     object-fit: contain;
-
-    transform:
-        translateY(25px) !important;
+    transform: translate(-50px, 25px) !important;
 }
 
 .battle-monster-name {
