@@ -898,6 +898,63 @@ function setBattleMagicPanelVisible(visible) {
 
     const magic =
         activeBattle.selectedMagic;
+// =========================
+// バフ魔法
+// =========================
+
+if (
+    magic.type === "buff"
+) {
+
+    if (
+        magic.buffTarget === "self" &&
+        magic.buffStat === "magicPower"
+    ) {
+
+        activeBattle.battleState.magicPowerRate =
+            Number(
+                magic.buffRate || 1
+            );
+
+        console.log(
+            "【戦闘】魔力バフ適用：",
+            activeBattle.battleState.magicPowerRate
+        );
+
+    }
+
+    if (
+        magic.buffTarget === "enemy" &&
+        magic.buffStat === "attackPower"
+    ) {
+
+        activeBattle.battleState.enemyAttackRate =
+            Number(
+                magic.buffRate || 1
+            );
+
+        console.log(
+            "【戦闘】敵攻撃力バフ適用：",
+            activeBattle.battleState.enemyAttackRate
+        );
+
+    }
+
+    showBattleMessage(
+        `${magic.name}を使った！`
+    );
+
+    activeBattle.busy =
+        false;
+
+    activeBattle.phase =
+        "waitEnemyCounter";
+
+    disableBattleActions();
+
+    return;
+
+}
 
 
     console.log(
