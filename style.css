@@ -9443,3 +9443,64 @@ body:has(.game-screen) {
     }
 
 }
+
+/* =========================================================
+   エンカウント直後
+   ・モンスターアイコン
+   ・バトルログ
+   だけを表示
+========================================================= */
+
+.battle-main-popup.battle-intro-mode
+.battle-round-badge,
+.battle-main-popup.battle-intro-mode
+.battle-monster-name,
+.battle-main-popup.battle-intro-mode
+.battle-hp-bar,
+.battle-main-popup.battle-intro-mode
+.battle-monster-hp,
+.battle-main-popup.battle-intro-mode
+.battle-action-row {
+
+    display:
+        none !important;
+}
+
+/* =========================================================
+   モンスター被ダメージ点滅
+========================================================= */
+
+.monster-damage-flash {
+    animation:
+        monsterDamageFlash
+        0.4s
+        ease-in-out;
+}
+
+@keyframes monsterDamageFlash {
+
+    0% {
+        opacity: 1;
+    }
+
+    20% {
+        opacity: 0.15;
+    }
+
+    40% {
+        opacity: 1;
+    }
+
+    60% {
+        opacity: 0.15;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 1;
+    }
+
+}
