@@ -9374,8 +9374,7 @@ body:has(.game-screen) {
         min-width:
             42px;
 
-        margin-left:
-            10px;
+        margin-left: 25px !important;
 
         font-size:
             14px !important;
