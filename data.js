@@ -6,31 +6,37 @@ const　PLAYER_CONTENTS = {
 
    1: {
         name: "男",
-        icon: "images/characters/player-male",
+        icon: "images/characters/player-male-icon.png",
+        sprite: "images/characters/player-male.png"
     },
     2: {
         name: "女",
-        icon: "images/characters/player-female",
+        icon: "images/characters/player-female-icon.png",
+        sprite: "images/characters/player-female.png"
     },
 
     3: {
         name: "アクア",
-        icon: "images/characters/player-w-aqua",
+        icon: "images/characters/player-w-aqua-icon.png",
+        sprite: "images/characters/player-w-aqua.png"
     },
 
     4: {
         name: "レッド",
-        icon: "images/characters/player-w-red",
+        icon: "images/characters/player-w-red-icon.png",
+        sprite: "images/characters/player-w-red.png"
     },
 
     5: {
         name: "イエロー",
-        icon: "images/characters/player-w-yellow",
+        icon: "images/characters/player-w-yellow-icon.png",
+        sprite: "images/characters/player-w-yellow.png"
     },
     
     6: {
         name: "パープル",
-        icon: "images/characters/player-w-purple",
+        icon: "images/characters/player-w-purple-icon.png",
+        sprite: "images/characters/player-w-purple.png"
     }
 }
 
