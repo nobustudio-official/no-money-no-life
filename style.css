@@ -9355,7 +9355,7 @@ body:has(.game-screen) {
     .battle-selected-magic-cost,
     .battle-selected-magic-damage {
     width:
-        100px !important;
+        110px !important;
 
     grid-template-columns:
         minmax(0, 1fr)
@@ -9374,7 +9374,7 @@ body:has(.game-screen) {
         min-width:
             42px;
 
-        margin-left: 0px !important;
+        margin-left: 10px !important;
 
         font-size:
             14px !important;
