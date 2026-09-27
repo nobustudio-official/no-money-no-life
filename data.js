@@ -1,4 +1,40 @@
 // =========================
+// プレイヤーcontents
+// =========================
+
+const　PLAYER_CONTENTS = {
+
+   1: {
+        name: "男",
+        icon: "images/characters/player-male",
+    },
+    2: {
+        name: "女",
+        icon: "images/characters/player-female",
+    },
+
+    3: {
+        name: "アクア",
+        icon: "images/characters/player-w-aqua",
+    },
+
+    4: {
+        name: "レッド",
+        icon: "images/characters/player-w-red",
+    },
+
+    5: {
+        name: "イエロー",
+        icon: "images/characters/player-w-yellow",
+    },
+    
+    6: {
+        name: "パープル",
+        icon: "images/characters/player-w-purple",
+    }
+}
+
+// =========================
 // お金 contents
 // =========================
 
