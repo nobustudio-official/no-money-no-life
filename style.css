@@ -9091,49 +9091,49 @@ body:has(.game-screen) {
     right: 0 !important;
     top: 3px !important;
     justify-content: center !important;
-    transform: translateX(-55px) !important;
+    transform: translateX(-150px) !important;
 }
 
 
 /* -----------------------------------------
-   モンスター
+   モンスター表示領域
 ----------------------------------------- */
 
 .battle-field {
+    grid-area:
+        monster !important;
+
+    min-height:
+        0 !important;
+
     overflow:
         visible !important;
 }
 
-
-.battle-monster-visual-wrap {
-    width: 220px !important;
-    height: 150px !important;
-}
-
-.battle-monster-image {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: contain !important;
-}
-
 .battle-monster-area {
-    overflow: visible !important;
-}
-
-.battle-hp-bar {
     width:
-        230px !important;
+        100% !important;
 
     height:
-        8px !important;
-}
+        100% !important;
 
-.battle-monster-hp {
-    margin-top:
-        3px !important;
+    min-height:
+        0 !important;
 
-    font-size:
-        13px !important;
+    overflow:
+        visible !important;
+
+    display:
+        flex !important;
+
+    flex-direction:
+        column !important;
+
+    align-items:
+        center !important;
+
+    justify-content:
+        center !important;
 }
 
 
