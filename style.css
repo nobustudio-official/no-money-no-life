@@ -9095,6 +9095,56 @@ body:has(.game-screen) {
     }
 
 
+/* -----------------------------------------
+   モンスター
+----------------------------------------- */
+
+.battle-field {
+    overflow:
+        visible !important;
+}
+
+.battle-monster-area {
+    overflow:
+        visible !important;
+}
+
+.battle-monster-visual-wrap {
+    width:
+        260px !important;
+
+    height:
+        180px !important;
+}
+
+.battle-monster-image {
+    width:
+        100% !important;
+
+    height:
+        100% !important;
+
+    object-fit:
+        contain !important;
+}
+
+.battle-hp-bar {
+    width:
+        230px !important;
+
+    height:
+        8px !important;
+}
+
+.battle-monster-hp {
+    margin-top:
+        3px !important;
+
+    font-size:
+        13px !important;
+}
+
+
     /* -----------------------------------------
        魔法一覧パネル
     ----------------------------------------- */
