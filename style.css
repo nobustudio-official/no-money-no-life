@@ -9082,17 +9082,23 @@ body:has(.game-screen) {
             60px !important;
     }
 
-    /* -----------------------------------------
-       ROUND
-    ----------------------------------------- */
+   /* -----------------------------------------
+   ROUND
+----------------------------------------- */
 
-    .battle-round-badge {
-        left:
-            145px;
+.battle-round-badge {
+    left:
+        120px !important;
 
-        right:
-            0;
-    }
+    right:
+        0 !important;
+
+    top:
+        3px !important;
+
+    justify-content:
+        center !important;
+}
 
 
 /* -----------------------------------------
@@ -9111,10 +9117,10 @@ body:has(.game-screen) {
 
 .battle-monster-visual-wrap {
     width:
-        260px !important;
+        220px !important;
 
     height:
-        180px !important;
+        150px !important;
 }
 
 .battle-monster-image {
