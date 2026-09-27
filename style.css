@@ -9120,7 +9120,7 @@ body:has(.game-screen) {
     align-items: center !important;
     justify-content: center !important;
 
-    transform: translateY(10px) !important;
+    transform: translateY(20px) !important;
 }
 
     .battle-hp-bar {
@@ -9332,7 +9332,7 @@ body:has(.game-screen) {
             42px;
 
         margin-left:
-            12;
+            12px;
 
         font-size:
             14px !important;
