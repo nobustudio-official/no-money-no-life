@@ -9091,7 +9091,7 @@ body:has(.game-screen) {
     right: 0 !important;
     top: 3px !important;
     justify-content: center !important;
-    transform: translateX(-180px) !important;
+    transform: translateX(180px) !important;
 }
 
 
