@@ -7644,7 +7644,7 @@ body:has(.game-screen) {
         contents;
 }
 
-
+    
 .battle-magic-panel {
     grid-area:
         magic;
