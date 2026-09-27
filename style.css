@@ -9043,7 +9043,7 @@ body:has(.game-screen) {
     width: 80px !important;
     min-width: 80px;
 
-    margin-left: 28px;
+    margin-left: 35px;
 
     text-align: left;
     white-space: nowrap;
@@ -9300,16 +9300,19 @@ body:has(.game-screen) {
     }
 
 
-    /* -----------------------------------------
-       バトルログ
-    ----------------------------------------- */
+/* -----------------------------------------
+   バトルログ
+----------------------------------------- */
 
-   .battle-new-message {
+.battle-new-message {
+    grid-area:
+        detail !important;
+
     width:
-        calc(100% - 20px);
+        100% !important;
 
     height:
-        70px;
+        70px !important;
 
     padding:
         6px 10px;
@@ -9318,7 +9321,10 @@ body:has(.game-screen) {
         14px;
 
     transform:
-        translate(-10px, 20px) !important;
+        translateY(78px) !important;
+
+    z-index:
+        5001 !important;
 }
 
 
