@@ -9065,7 +9065,7 @@ body:has(.game-screen) {
             120px
             minmax(0, 1fr);
     height:
-            calc(100% + 30px) !important;
+            calc(100% - 30px) !important;
 
         max-height:
             none !important;
