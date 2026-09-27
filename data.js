@@ -4,7 +4,6 @@
 
 const　PLAYER_CONTENTS = {
 
-   
    1: {
         name: "かずま",
         icon: "images/characters/player-male-icon.png",
@@ -38,7 +37,14 @@ const　PLAYER_CONTENTS = {
         name: "魔術師",
         icon: "images/characters/player-w-purple-icon.png",
         sprite: "images/characters/player-w-purple.png"
+    },
+
+    7: {
+        name: "盗賊",
+        icon: "images/characters/player-w-green-icon.png",
+        sprite: "images/characters/player-w-green.png"
     }
+
 }
 
 // =========================
