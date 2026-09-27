@@ -429,16 +429,49 @@
 
     function showBattleMain() {
 
-        hideLayer("battleIntroPopup");
-        showLayer("battleMainPopup");
+    hideLayer("battleIntroPopup");
+    showLayer("battleMainPopup");
 
-        if (!activeBattle) {
-            return;
-        }
-
-        renderBattleMain();
-
+    if (!activeBattle) {
+        return;
     }
+
+    renderBattleMain();
+
+    // エンカウント表示を終了
+    document
+        .getElementById("battleMainPopup")
+        .classList.remove("battle-intro-mode");
+
+}
+
+// =========================
+// モンスター被ダメージ点滅
+// =========================
+
+function flashMonsterOnDamage() {
+
+    const image =
+        document.getElementById(
+            "battleNewMonsterImage"
+        );
+
+    if (!image) {
+        return;
+    }
+
+    image.classList.remove(
+        "monster-damage-flash"
+    );
+
+    // アニメーションを確実に再実行
+    void image.offsetWidth;
+
+    image.classList.add(
+        "monster-damage-flash"
+    );
+
+}
 
 
     function renderBattleMain() {
@@ -822,6 +855,10 @@ function setBattleMagicPanelVisible(visible) {
 
         activeBattle.phase =
             "playerAction";
+        
+    document
+    .getElementById("battleMainPopup")
+    .classList.remove("battle-intro-mode");
 
         showBattleMessage("");
 
@@ -1086,6 +1123,28 @@ if (
     );
 
 
+// =========================
+// 魔法SE
+// =========================
+
+if (magic.sound) {
+
+    const magicSE =
+        new Audio(magic.sound);
+
+    magicSE.currentTime = 0;
+
+    magicSE.play().catch(
+        function (error) {
+            console.warn(
+                "【戦闘】魔法SE再生失敗：",
+                error
+            );
+        }
+    );
+
+}
+
     // =========================
     // ダメージ計算
     // =========================
@@ -1134,11 +1193,19 @@ if (
     );
 
 
+    
     // =========================
     // 画面だけ更新
     // =========================
 
     renderBattleMain();
+
+
+    // =========================    
+    // 被ダメージ演出
+    // =========================
+
+    flashMonsterOnDamage();
 
 
     console.log(
@@ -1560,7 +1627,7 @@ showBattleMessage(
     disableBattleActions();
 
     showBattleMessage(
-        "逃げられなかった！　画面をタップして反撃"
+        "逃げられなかったｗｗｗ　＞＞"
     );
 
 }
@@ -1741,6 +1808,18 @@ showBattleMessage(
         return;
     }
 
+    // =========================
+    // ボス戦BGM停止
+    // 凱旋BGM開始
+    // =========================
+
+    bossBattleBGM.pause();
+
+    bossBattleBGM.currentTime = 0;
+
+    bossVictoryBGM.currentTime = 0;
+
+    bossVictoryBGM.play();
 
     const player =
         activeBattle.player;
@@ -2044,8 +2123,12 @@ activeBattle.phase = "battleIntro";
 
 showBattleMain();
 
+document
+    .getElementById("battleMainPopup")
+    .classList.add("battle-intro-mode");
+
 showBattleMessage(
-       `${enemy.name}が現れた！　タップして戦闘へ`
+    `${enemy.name}が現れた！　＞＞`
 );
 
 setBattleMagicPanelVisible(false);
