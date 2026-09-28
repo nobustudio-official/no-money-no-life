@@ -221,7 +221,7 @@ const ITEM_CONTENTS = {
         name: "幸運の財布",
         price: 800,
         category: "passive",
-        effect: "ターン開始時に500G獲得",
+        effect: "ターン開始時に500G獲(5ターンで消滅)",
         effectType: "goldGain",
         effectTarget: "self",
         effectValue: 500,
@@ -404,49 +404,49 @@ const ASSET_CONTENTS = {
 
     1: {
         name: "キャサリン",
-        price: 100,
+        price: 1000,
         yield: 100,
         owner: null
     },
 
     2: {
         name: "キャサリン",
-        price: 100,
+        price: 1000,
         yield: 100,
         owner: null
     },
 
     3: {
         name: "キャサリン",
-        price: 100,
+        price: 1000,
         yield: 100,
         owner: null
     },
 
     4: {
         name: "ナンシー",
-        price: 500,
+        price: 5000,
         yield: 100,
         owner: null
     },
 
     5: {
         name: "ロシシー",
-        price: 2000,
+        price: 20000,
         yield: 100,
         owner: null
     },
 
     6: {
         name: "エシス",
-        price: 4000,
+        price: 40000,
         yield: 100,
         owner: null
     },
 
     7: {
         name: "シルフィネット",
-        price: 5000,
+        price: 50000,
         yield: 100,
         owner: null
     },
@@ -530,14 +530,14 @@ const ASSET_CONTENTS = {
 
     19: {
         name: "ヤク猫",
-        price: 100000,
+        price: 10000,
         yield: 5,
         owner: null
     },
 
     20: {
         name: "ハメ猫",
-        price: 80000,
+        price: 8000,
         yield: 5,
         owner: null
     },
@@ -551,8 +551,8 @@ const ASSET_CONTENTS = {
 
     22: {
         name: "かんさい",
-        price: 50,
-        yield: 10000,
+        price: 500,
+        yield: 2000,
         owner: null
     }
 
@@ -566,7 +566,7 @@ const JOB_CONTENTS = {
 
     1: {
         name: "居酒屋",
-        unitPrice: 5000
+        unitPrice: 30000
     },
 
     2: {
@@ -577,12 +577,12 @@ const JOB_CONTENTS = {
 
     3: {
         name: "パン屋",
-        unitPrice: 4000
+        unitPrice: 40000
     },
 
     4: {
         name: "引っ越し",
-        unitPrice: 10000
+        unitPrice: 20000
     }
 
 };
@@ -676,7 +676,7 @@ const SHOP_BOXES = {
         name: "スターバック",
         magicContents: [6],
         powerContents: [1, 2, 3],
-        itemContents: [4, 5, 6, 12]
+        itemContents: [4, 5, 6]
     }
 
 };
@@ -703,7 +703,7 @@ const ASSET_BOXES = {
     },
 
     4: {
-        name: "ロリの賃貸",
+        name: "Re:０から始まる異世界ライフ",
         contents: [11, 12, 13, 14, 15, 16, 17]
     },
     
