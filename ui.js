@@ -90,6 +90,117 @@ function setupItemShopUI(
 
 }
 
+// =========================
+// アイテムショップメニューUI
+// 「アイテムを購入」を選択
+// =========================
+
+function showItemShopMenuUI(
+    onItem,
+    onClose
+) {
+
+    const popup =
+        document.getElementById(
+            "shopPopup"
+        );
+
+    const list =
+    document.getElementById(
+        "shopItemList"
+    );
+
+    const closeButton =
+        document.getElementById(
+            "shopCloseButton"
+        );
+
+
+    list.innerHTML =
+        "";
+
+    list.style.display =
+        "flex";
+
+        const title =
+    popup.querySelector(
+        ".shop-title"
+    );
+
+if (title) {
+    title.style.display =
+        "block";
+}
+
+const shopName =
+    document.getElementById(
+        "shopName"
+    );
+
+if (shopName) {
+    shopName.style.display =
+        "none";
+}
+
+
+    // =========================
+    // アイテム購入
+    // =========================
+
+    const itemButton =
+        document.createElement(
+            "button"
+        );
+
+    itemButton.className =
+        "shop-category-button";
+
+    itemButton.type =
+        "button";
+
+    itemButton.innerHTML = `
+        <img
+            src="images/ui-icons/item.png"
+            class="shop-category-icon"
+            alt=""
+        >
+        <span>
+            アイテムを購入
+        </span>
+    `;
+
+    itemButton.onclick =
+        function () {
+
+            onItem();
+
+        };
+
+
+    list.appendChild(
+        itemButton
+    );
+
+
+    closeButton.textContent =
+        "やめる";
+
+    closeButton.onclick =
+        function () {
+
+            popup.style.display =
+                "none";
+
+            onClose();
+
+        };
+
+
+    popup.style.display =
+        "block";
+
+}
+
 
 // =========================
 // 魔法店メニューUI
@@ -285,3 +396,4 @@ function hideItemShopUI() {
         "none";
 
 }
+
