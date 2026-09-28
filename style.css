@@ -6727,6 +6727,12 @@ body:has(.game-screen) {
         -webkit-overflow-scrolling: touch;
     }
 
+    .game-screen .magic-shop-popup,
+    .game-screen .shop-popup {
+        top: 72px;
+        transform: translateX(-50%);
+     }
+
     .game-screen .job-popup {
         width: min(82%, 430px);
         padding: 10px 14px;
