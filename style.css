@@ -998,7 +998,7 @@ button {
         24px 20px;
 
     background:
-        rgba(25, 35, 60, 0.97);
+        rgba(20, 20, 35, 0.98);
 
     border:
         1px solid
@@ -1220,7 +1220,7 @@ button {
         26px 20px;
 
     background:
-        rgba(20, 30, 55, 0.98);
+       rgba(20, 20, 35, 0.98);
 
     border:
         2px solid
@@ -1358,7 +1358,7 @@ button {
         24px 20px;
 
     background:
-        rgba(20, 30, 55, 0.98);
+         rgba(20, 20, 35, 0.98);
 
     border:
         2px solid
@@ -1550,7 +1550,7 @@ button {
         24px 20px;
 
     background:
-        rgba(20, 30, 55, 0.98);
+         rgba(20, 20, 35, 0.98);
 
     border:
         2px solid
@@ -1790,7 +1790,7 @@ button {
         border-box;
 
     background:
-        rgba(20, 30, 55, 0.98);
+         rgba(20, 20, 35, 0.98);
 
     border:
         2px solid
@@ -4034,8 +4034,22 @@ button {
    資産購入：所持金
 ========================= */
 
+.asset-purchase-type-name {
+    margin-bottom: 4px;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    color: #ffffff;
+
+    text-align: center;
+
+    flex-shrink: 0;
+}
+
 .asset-purchase-money {
-    padding: 8px 4px;
+    padding: 8px 4px;   
 
     margin-bottom: 4px;
 
@@ -6716,22 +6730,43 @@ body:has(.game-screen) {
 
 @media (orientation: landscape) and (max-height: 600px) {
 
-    .game-screen .job-popup,
-    .game-screen .event-popup,
-    .game-screen .reward-popup,
-    .game-screen .battle-popup,
-    .game-screen .magic-shop-popup,
-    .game-screen .shop-popup {
-        max-height: calc(100dvh - 12px);
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+.game-screen .job-popup,
+.game-screen .event-popup,
+.game-screen .reward-popup,
+.game-screen .battle-popup,
+.game-screen .magic-shop-popup,
+.game-screen .shop-popup,
+.game-screen .inventory-popup {
+    max-height:
+        calc(100dvh - 80px);
 
-    .game-screen .magic-shop-popup,
-    .game-screen .shop-popup {
-        top: 72px;
-        transform: translateX(-50%);
-     }
+    overflow-y:
+        auto;
+
+    -webkit-overflow-scrolling:
+        touch;
+}
+
+.game-screen .magic-popup,
+.game-screen .magic-shop-popup,
+.game-screen .shop-popup,
+.game-screen .inventory-popup {
+
+    top:
+        72px;
+
+    width:
+        90vw;
+
+    height:
+        calc(100dvh - 80px);
+
+    max-height:
+        calc(100dvh - 80px);
+
+    transform:
+        translateX(-50%);
+}
 
     .game-screen .job-popup {
         width: min(82%, 430px);
@@ -9776,6 +9811,189 @@ body:has(.game-screen) {
     vertical-align: middle;
 
 }
+/* 魔法店画面の所持金表示を非表示 */
 .magic-shop-money {
     display: none;
+}
+/* ショップ画面の所持金表示を非表示 */
+#magicShopMoney {
+    display: none;
+}
+
+.magic-shop-title {
+    font-size: 20px;
+}
+
+.magicShopPopup .shop-name {
+    font-size: 20px;
+}
+
+/* =========================================
+   アイテムショップ画面
+========================================= */
+
+
+/* 所持金は非表示 */
+#shopPopup #shopMoney {
+    display:
+        none !important;
+}
+
+
+/* =========================================
+   最初のショップメニュー
+   ショップ名は非表示
+========================================= */
+
+#shopPopup:has(#shopItemList[style*="display: none"])
+.shop-name {
+    display:
+        none;
+}
+
+/* =========================
+   アイテムショップメニュー
+========================= */
+
+#shopPopup .shop-title {
+    font-size: 20px;
+}
+#shopPopup .shop-name {
+    font-size: 20px;
+}
+
+/* =========================
+   アイテム購入ポップアップ
+========================= */
+
+.event-popup.item-purchase-popup {
+    background:
+        rgba(20, 20, 35, 0.98);
+}
+
+.event-popup.item-purchase-popup
+.event-popup-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.event-popup.item-purchase-popup
+.event-popup-title::before {
+    content: "";
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+
+    background:
+        url("images/ui-icons/item.png")
+        center / contain
+        no-repeat;
+}
+
+/* =========================
+   ゴールド不足ポップアップ
+========================= */
+
+.event-popup.gold-insufficient-popup {
+    background:
+        rgba(73, 29, 73, 0.98);
+}
+
+/* =========================
+   魔力購入ポップアップ
+========================= */
+
+.event-popup.power-purchase-popup {
+    background:
+        rgba(20, 20, 35, 0.98);
+}
+
+.event-popup.power-purchase-popup
+.event-popup-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.event-popup.power-purchase-popup
+.event-popup-title::before {
+    content: "";
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+
+    background:
+        url("images/ui-icons/mana.png")
+        center / contain
+        no-repeat;
+}
+/* =========================
+   魔法習得ポップアップ
+========================= */
+
+.event-popup.magic-purchase-popup {
+    background:
+        rgba(20, 20, 35, 0.98);
+}
+
+.event-popup.magic-purchase-popup
+.event-popup-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.event-popup.magic-purchase-popup
+.event-popup-title::before {
+    content: "";
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+
+    background:
+        url("images/ui-icons/magic.png")
+        center / contain
+        no-repeat;
+}
+
+/* =========================
+   資産購入画面：バトル画面と高さを統一
+========================= */
+
+#assetPurchasePopup {
+    top: 84px;
+
+    height:
+        calc(100vh - 104px);
+
+    max-height:
+        calc(100vh - 104px);
+}
+
+
+/* 所持金は非表示 */
+
+#assetPurchasePopup
+.asset-purchase-money {
+    display: none !important;
+}
+
+/* =========================
+   資産購入タイトル：資産マスアイコン
+========================= */
+
+.asset-purchase-title-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+.inventory-popup-title {
+    font-size: 24px;
+    font-weight: bold;
 }
