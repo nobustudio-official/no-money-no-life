@@ -47,12 +47,18 @@ const　PLAYER_CONTENTS = {
 
     8: {
         name: "看護師",
-        icon: "images/characters/player-w-pink-icon.png",
-        sprite: "images/characters/player-w-pink.png"
+        icon: "images/characters/player-w-white-icon.png",
+        sprite: "images/characters/player-w-white.png"
     },
 
     9: {
         name: "獣人",
+        icon: "images/characters/player-w-cat-icon.png",
+        sprite: "images/characters/player-w-cat.png"
+    },
+
+   10: {
+        name: "エルフ",
         icon: "images/characters/player-w-cat-icon.png",
         sprite: "images/characters/player-w-cat.png"
     }
