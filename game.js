@@ -1558,8 +1558,8 @@ function showGameScreen(
 
             <div id="otherMenuPopup" class="other-menu-popup">
                 <div class="other-menu-title">その他</div>
-                <button id="otherAssetButton" type="button" class="other-menu-item">🏰 資産を見る</button>
-                <button id="otherSoundButton" type="button" class="other-menu-item">⚙️ サウンド設定</button>
+                <button id="otherAssetButton" type="button" class="other-menu-item">資産を見る</button>
+                <button id="otherSoundButton" type="button" class="other-menu-item">サウンド設定</button>
                 <button id="otherMenuCloseButton" type="button" class="other-menu-close">閉じる</button>
             </div>
 
@@ -1568,7 +1568,7 @@ function showGameScreen(
             ========================= -->
 
             <div id="assetPopup" class="inventory-popup">
-                <div class="inventory-popup-title">🏰 資産一覧</div>
+                <div class="inventory-popup-title">資産一覧</div>
                 <div id="assetList" class="inventory-list"></div>
                 <button id="assetCloseButton" class="inventory-close-button" type="button">閉じる</button>
             </div>
@@ -1578,7 +1578,14 @@ function showGameScreen(
             ========================= -->
 
             <div id="assetPurchasePopup" class="inventory-popup">
-                <div class="inventory-popup-title">🏰 資産購入</div>
+                <div class="inventory-popup-title">
+    <img
+        src="images/map-icons/asset.png"
+        alt=""
+        class="asset-purchase-title-icon"
+    >
+    資産購入
+</div>
                 <div id="assetPurchaseList" class="inventory-list"></div>
                 <button id="assetPurchaseCloseButton" class="inventory-close-button" type="button">閉じる</button>
             </div>
@@ -3250,6 +3257,54 @@ function showAssetPurchasePopup(
 
     list.innerHTML = "";
 
+    // =========================
+// 資産タイプ名
+// =========================
+
+const currentSquare =
+    mapData.find(
+        function (square) {
+
+            return square.id ===
+                player.position;
+
+        }
+    );
+
+const assetTypeNames =
+    (currentSquare?.typeIds || [])
+        .map(
+            function (typeId) {
+
+                const assetBox =
+                    ASSET_BOXES[typeId];
+
+                return assetBox
+                    ? assetBox.name
+                    : null;
+
+            }
+        )
+        .filter(
+            function (name) {
+
+                return name;
+
+            }
+        );
+
+const assetTypeDisplay =
+    document.createElement("div");
+
+assetTypeDisplay.className =
+    "asset-purchase-type-name";
+
+assetTypeDisplay.textContent =
+    assetTypeNames.join(" / ");
+
+list.appendChild(
+    assetTypeDisplay
+);
 
     // =========================
     // 現在の所持金
@@ -3443,23 +3498,40 @@ if (
                             asset.price
                         ) {
 
-                            showEventPopup(
-                                "💰 ゴールド不足",
+                           const eventPopup =
+    document.getElementById(
+        "eventPopup"
+    );
 
-                                `
-                                この資産を購入するには
-                                <strong>
-                                ${formatG(asset.price)}G
-                                </strong>
-                                必要です。<br><br>
+if (eventPopup) {
+    eventPopup.classList.add(
+        "gold-insufficient-popup"
+    );
+}
 
-                                現在の所持金：
-                                <strong>
-                                ${formatG(player.money)}G
-                                </strong>
-                                `,
+showEventPopup(
+    "💰 ゴールド不足",
 
-                                function () {
+    `
+    この資産を購入するには
+    <strong>
+    ${formatG(asset.price)}G
+    </strong>
+    必要です。<br><br>
+
+    現在の所持金：
+    <strong>
+    ${formatG(player.money)}G
+    </strong>
+    `,
+
+    function () {
+
+        if (eventPopup) {
+            eventPopup.classList.remove(
+                "gold-insufficient-popup"
+            );
+        }
 
                                     showAssetPurchasePopup(
                                         player,
@@ -3608,12 +3680,15 @@ function renderPlayers() {
 
                         <!-- 資産ボタン -->
 
-                        <button
-                            class="player-asset-button"
-                            type="button"
-                        >
-                            👩
-                        </button>
+<button
+    class="player-asset-button"
+    type="button"
+>
+    <img
+        src="images/map-icons/asset.png"
+        alt="資産"
+    >
+</button>
 
 
                         <!-- 魔力 -->
@@ -7003,10 +7078,10 @@ bossBattleBGM.play();
     // =========================
 
     fightButton.textContent =
-        "⚔️ 挑戦する";
+        "挑戦する";
 
     escapeButton.textContent =
-        "🏃 今回はやめる";
+        "今回はやめる";
 
 
     // =========================
@@ -7684,6 +7759,9 @@ function showShopPopup(
 
     shopName.textContent =
         shopBox.name;
+    shopName.style.display =
+    "none";
+
 
     const shopMoney =
         document.getElementById(
@@ -7701,40 +7779,7 @@ function showShopPopup(
     // =========================
     // カテゴリー一覧を確実に用意
     // =========================
-    // 最新index.htmlにはカテゴリー用DOMが存在しないため、
-    // ここで不足していれば自動生成します。
-
-    let shopCategoryList =
-        document.getElementById(
-            "shopCategoryList"
-        );
-
-    if (!shopCategoryList) {
-
-        shopCategoryList =
-            document.createElement(
-                "div"
-            );
-
-        shopCategoryList.id =
-            "shopCategoryList";
-
-        shopCategoryList.className =
-            "shop-category-list";
-
-        shopItemList.parentNode.insertBefore(
-            shopCategoryList,
-            shopItemList
-        );
-
-    }
-
-
-    shopCategoryList.innerHTML =
-        "";
-
-    shopCategoryList.style.display =
-        "flex";
+    
 
     shopItemList.innerHTML =
         "";
@@ -7743,94 +7788,62 @@ function showShopPopup(
         "none";
 
 
-    // =========================
-    // カテゴリーボタン作成
-    // =========================
+// =========================
+// 通常ショップはアイテムのみ
+// =========================
 
-    function createCategoryButton(
-        id,
-        label,
-        visible,
-        onClick
-    ) {
+if (
+    shopBox.itemContents &&
+    shopBox.itemContents.length
+) {
 
-        const button =
-            document.createElement(
-                "button"
+    showItemShopMenuUI(
+        function () {
+
+            showItemShopPopup(
+                player
             );
 
-        button.id = id;
-        button.type = "button";
-        button.className =
-            "shop-category-button";
-        button.textContent = label;
-        button.style.display =
-            visible ? "block" : "none";
+        },
 
-        button.addEventListener(
-            "click",
-            onClick
-        );
-
-        shopCategoryList.appendChild(
-            button
-        );
-
-        return button;
-
-    }
-
-
-    // =========================
-    // 通常ショップはアイテムのみ
-    // =========================
-
-    createCategoryButton(
-        "shopItemButton",
-        "🎒 アイテムを購入",
-        !!(shopBox.itemContents && shopBox.itemContents.length),
         function () {
-            showItemShopPopup(player);
+
+            shopPopup.style.display =
+                "none";
+
+          
+            shopItemList.style.display =
+                "none";
+
+            finishTurn(
+                player
+            );
+
         }
     );
+
+}
 
 
     // =========================
     // ショップを表示
     // =========================
 
-    shopPopup.style.display =
-        "block";
+   shopCloseButton.textContent =
+    "やめる";
 
-
-    shopCloseButton.textContent =
-        "🏃 やめる";
-
-
-    // =========================
-    // ショップ終了
-    // =========================
-
-    shopCloseButton.onclick =
-        function () {
-
-            shopPopup.style.display =
+shopCloseButton.onclick =
+    function () {
+        shopPopup.style.display =
+            "none";
+        shopItemList.style.display =
+            "none";
+        if (shopMoney) {
+            shopMoney.style.display =
                 "none";
-
-            shopCategoryList.style.display =
-                "none";
-
-            shopItemList.style.display =
-                "none";
-
-            if (shopMoney) {
-                shopMoney.style.display =
-                    "none";
-            }
-
-            finishTurn(player);
-
-        };
+        }
+        finishTurn(player);
+    };
 
 }
 
@@ -7954,7 +7967,7 @@ function showMagicShopPopup(
     }
 
         magicShopTitle.textContent =
-        `🏪 ${shopBox.name}`;
+        `${shopBox.name}`;
 
 
 // =========================
@@ -8134,8 +8147,19 @@ shopBox.magicContents.forEach(
                         // 習得メッセージ
                         // =========================
 
+const eventPopup =
+    document.getElementById(
+        "eventPopup"
+    );
+
+if (eventPopup) {
+    eventPopup.classList.add(
+        "magic-purchase-popup"
+    );
+}
+
                         showEventPopup(
-                            "🪄 魔法習得",
+                            "魔法習得",
                             `
 
                             <strong>
@@ -8151,6 +8175,12 @@ shopBox.magicContents.forEach(
 
                             `,
                             function () {
+
+                                 if (eventPopup) {
+                      eventPopup.classList.remove(
+                       "magic-purchase-popup"
+                            );
+                    }
 
                                 // =========================
                                 // ショップを再表示
@@ -8285,6 +8315,18 @@ function showItemShopPopup(
 
     shopName.textContent =
     shopBox.name;
+    shopName.style.display =
+    "block";
+    
+    const shopTitle =
+    shopPopup.querySelector(
+        ".shop-title"
+    );
+
+if (shopTitle) {
+    shopTitle.style.display =
+        "none";
+}
 
 // =========================
 // 所持金表示
@@ -8311,14 +8353,7 @@ if (shopCloseButton) {
 
 }
 
-    // =========================
-    // カテゴリーメニューを非表示
-    // =========================
-
-    shopCategoryList.style.display =
-        "none";
-
-
+   
     // =========================
     // 商品一覧を初期化
     // =========================
@@ -8428,24 +8463,41 @@ if (shopCloseButton) {
                         item.price
                     ) {
 
-                        showEventPopup(
-                            "💰 ゴールド不足",
+                       const eventPopup =
+    document.getElementById(
+        "eventPopup"
+    );
 
-                            `
-                            ${item.name}を購入するには
-                            <strong>
-                                ${formatG(item.price)}G
-                            </strong>
-                            必要です。
-                            <br><br>
+if (eventPopup) {
+    eventPopup.classList.add(
+        "gold-insufficient-popup"
+    );
+}
 
-                            現在の所持金：
-                            <strong>
-                                ${formatG(player.money)}G
-                            </strong>
-                            `,
+showEventPopup(
+    "💰 ゴールド不足",
 
-                            function () {
+    `
+    ${item.name}を購入するには
+    <strong>
+        ${formatG(item.price)}G
+    </strong>
+    必要です。
+    <br><br>
+
+    現在の所持金：
+    <strong>
+        ${formatG(player.money)}G
+    </strong>
+    `,
+
+    function () {
+
+        if (eventPopup) {
+            eventPopup.classList.remove(
+                "gold-insufficient-popup"
+            );
+            }
 
                             }
                         );
@@ -8484,32 +8536,49 @@ if (shopCloseButton) {
 
 
                     // =========================
-                    // 購入完了
-                    // =========================
+// 購入完了
+// =========================
 
-                    showEventPopup(
-                        "🎒 アイテム購入",
+const eventPopup =
+    document.getElementById(
+        "eventPopup"
+    );
 
-                        `
-                        <strong>
-                            ${item.name}
-                        </strong>
-                        を購入した！
-                        <br><br>
+if (eventPopup) {
+    eventPopup.classList.add(
+        "item-purchase-popup"
+    );
+}
 
-                        💰
-                        ${formatG(item.price)}G
-                        を支払った。
-                        `,
+showEventPopup(
+    "アイテム購入",
 
-                        function () {
+    `
+    <strong>
+        ${item.name}
+    </strong>
+    を購入した！
+    <br><br>
 
-                            showItemShopPopup(
-                                player
-                            );
+    💰
+    ${formatG(item.price)}G
+    を支払った。
+    `,
 
-                        }
-                    );
+    function () {
+
+        if (eventPopup) {
+            eventPopup.classList.remove(
+                "item-purchase-popup"
+            );
+        }
+
+        showItemShopPopup(
+            player
+        );
+
+    }
+);
 
                 }
             );
@@ -8570,10 +8639,10 @@ shopCloseButton.onclick =
             "none";
 
 
-        // ショップを閉じたらターン終了
+        // アイテムショップのメニューへ戻る
 
-        finishTurn(
-            player
+        showShopPopup(
+         player
         );
 
     };
@@ -8651,7 +8720,7 @@ function showPowerShopPopup(
     // =========================
 
     powerShopTitle.textContent =
-        `🏪 ${shopBox.name}`;
+        `${shopBox.name}`;
 
 
     // =========================
@@ -8775,24 +8844,41 @@ function showPowerShopPopup(
                         power.price
                     ) {
 
-                        showEventPopup(
-                            "💰 ゴールド不足",
+                        const eventPopup =
+    document.getElementById(
+        "eventPopup"
+    );
 
-                            `
-                            魔力を購入するには
-                            <strong>
-                                ${formatG(power.price)}G
-                            </strong>
-                            必要です。
-                            <br><br>
+if (eventPopup) {
+    eventPopup.classList.add(
+        "gold-insufficient-popup"
+    );
+}
 
-                            現在の所持金：
-                            <strong>
-                                ${formatG(player.money)}G
-                            </strong>
-                            `,
+showEventPopup(
+    "💰 ゴールド不足",
 
-                            function () {
+    `
+    魔力を購入するには
+    <strong>
+        ${formatG(power.price)}G
+    </strong>
+    必要です。
+    <br><br>
+
+    現在の所持金：
+    <strong>
+        ${formatG(player.money)}G
+    </strong>
+    `,
+
+    function () {
+
+        if (eventPopup) {
+            eventPopup.classList.remove(
+                "gold-insufficient-popup"
+            );
+        }
 
                             }
                         );
@@ -8852,30 +8938,47 @@ function showPowerShopPopup(
                     renderPlayers();
 
 
-                    // =========================
-                    // 購入完了
-                    // =========================
+                   // =========================
+// 購入完了
+// =========================
 
-                    showEventPopup(
-                        "🔮 魔力購入",
+const eventPopup =
+    document.getElementById(
+        "eventPopup"
+    );
 
-                        `
-                        <strong>
-                            ${power.effect}
-                        </strong>
-                        した！
-                        <br><br>
+if (eventPopup) {
+    eventPopup.classList.add(
+    "power-purchase-popup"
+);
+}
 
-                        💰
-                        ${formatG(power.price)}G
-                        を支払った。
-                        `,
+showEventPopup(
+    "魔力購入",
 
-                        function () {
+    `
+    <strong>
+        ${power.effect}
+    </strong>
+    増えた！
+    <br><br>
 
-                            showPowerShopPopup(
-                                player
-                            );
+    💰
+    ${formatG(power.price)}G
+    を支払った。
+    `,
+
+    function () {
+
+        if (eventPopup) {
+           eventPopup.classList.remove(
+    "power-purchase-popup"
+);
+        }
+
+        showPowerShopPopup(
+            player
+        );
 
                         }
                     );
@@ -9285,7 +9388,7 @@ function showAssetRankingPopup(callback) {
         ">
             <div style="font-weight:bold;text-align:center;">順位</div>
             <div style="font-weight:bold;">名前</div>
-            <div style="font-weight:bold;text-align:right;">💰＋👩</div>
+            <div style="font-weight:bold;text-align:right;">総資産</div>
 
             ${ranking.map(function (result, index) {
                 return `
