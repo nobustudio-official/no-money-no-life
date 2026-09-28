@@ -65,7 +65,7 @@ function setupItemShopUI(
         "flex";
 
     shopCloseButton.textContent =
-        "🏃 やめる";
+        "やめる";
 
 
     shopPopup.style.display =
@@ -130,7 +130,7 @@ function showMagicShopMenuUI(
 
 
     title.textContent =
-        "🔮 魔法店";
+        "魔法店";
 
     money.textContent =
         `💰 所持金：${formatG(player.money)}G`;
@@ -157,8 +157,19 @@ function showMagicShopMenuUI(
     powerButton.type =
         "button";
 
-    powerButton.textContent =
-        "🔮 魔力を購入";
+    powerButton.innerHTML = `
+
+    <img
+        class="shop-category-icon"
+        src="images/ui-icons/mana.png"
+        alt=""
+    >
+
+    <span>
+        魔力を購入
+    </span>
+
+`;
 
     powerButton.onclick =
         function () {
@@ -183,8 +194,19 @@ function showMagicShopMenuUI(
     magicButton.type =
         "button";
 
-    magicButton.textContent =
-        "🪄 魔法を購入";
+    magicButton.innerHTML = `
+
+    <img
+        class="shop-category-icon"
+        src="images/ui-icons/magic.png"
+        alt=""
+    >
+
+    <span>
+        魔法を購入
+    </span>
+
+`;
 
     magicButton.onclick =
         function () {
@@ -204,7 +226,7 @@ function showMagicShopMenuUI(
 
 
     closeButton.textContent =
-        "🏃 やめる";
+        "やめる";
 
     closeButton.onclick =
         function () {
