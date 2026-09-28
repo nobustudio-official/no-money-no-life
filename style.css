@@ -9991,3 +9991,14 @@ body:has(.game-screen) {
     font-size: 24px;
     font-weight: bold;
 }
+
+/* =========================
+   報酬魔力icon
+========================= */
+
+.reward-magic-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    vertical-align: middle;
+}
