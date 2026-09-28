@@ -1174,7 +1174,7 @@ players[index].inventory = [1, 8];
 
 addItems(
     players[index],
-    [11],
+    [12],
     1
 );
 
@@ -10879,15 +10879,15 @@ const goldReward =
     const rewards = [
 
         {
-            text:
-                `🔮 魔力 +${magicReward}`,
+    text:
+        `<img src="images/ui-icons/mana.png" class="reward-magic-icon" alt="魔力"> 魔力 +${magicReward}`,
 
-            type:
-                "magicPower",
+    type:
+        "magicPower",
 
-            value:
-                magicReward
-        },
+    value:
+        magicReward
+},
 
         {
             text:
@@ -10934,8 +10934,8 @@ const goldReward =
             button.className =
                 "reward-choice-button";
 
-            button.textContent =
-                reward.text;
+            button.innerHTML =
+        reward.text;
 
 
             // =========================
