@@ -49,6 +49,12 @@ const　PLAYER_CONTENTS = {
         name: "看護師",
         icon: "images/characters/player-w-pink-icon.png",
         sprite: "images/characters/player-w-pink.png"
+    },
+
+    9: {
+        name: "獣人",
+        icon: "images/characters/player-w-cat-icon.png",
+        sprite: "images/characters/player-w-cat.png"
     }
 
 }
