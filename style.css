@@ -10749,7 +10749,7 @@
     }
 
     .event-popup:has(.boss-counter-player-list) .event-popup-title {
-        font-size: 24px;
+        font-size: 16px;
         margin-bottom: 8px;
     }
 
@@ -10759,13 +10759,18 @@
     }
 
     .event-popup:has(.boss-counter-player-list) .boss-counter-popup-icon {
-        width: 90px;
-        height: 90px;
+        width: 30px;
+        height: 30px;
     }
 
     .event-popup:has(.boss-counter-player-list) .boss-counter-player-row {
         font-size: 17px;
         padding: 5px 8px;
+    }
+
+    .event-popup:has(.boss-counter-player-list) .boss-counter-player-list {
+    max-height: 120px;
+    overflow-y: auto;
     }
 
 }
