@@ -10738,50 +10738,34 @@
 }
 
 /* =========================
-   スマホ横画面
-========================= */
+   スマホ：ボスカウンター
+   ボス撃破画面と同じサイズ
+   ========================= */
 
-@media (orientation: landscape) and (max-height: 500px) {
+@media (max-width: 700px) {
 
-    .event-popup.boss-counter-popup {
+    .event-popup:has(.boss-counter-player-list) {
 
-    width:
-        82vw;
+        width:
+            90vw;
 
-    height:
-        200px;
+        height:
+            min(72vh, 600px);
 
-    max-width:
-        1100px;
+        max-width:
+            90vw;
 
-    max-height:
-        calc(100dvh - 40px);
+        max-height:
+            calc(100dvh - 80px);
 
-    padding:
-        18px 30px;
+        padding:
+            28px 22px;
 
-    border-radius:
-        14px;
+        border-width:
+            2px;
 
-    top:
-        50%;
-
-    left:
-        50%;
-
-    transform:
-        translate(-50%, -50%);
-}
-
-
-    .event-popup.boss-counter-popup
-    .event-popup-title {
-
-        font-size:
-            24px;
-
-        margin-bottom:
-            8px;
+        border-radius:
+            16px;
 
     }
 
