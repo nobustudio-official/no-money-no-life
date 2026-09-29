@@ -10737,167 +10737,35 @@
 
 }
 
-/* =========================
-   ボスカウンター
-   ボス撃破画面と同じサイズ
-   ========================= */
 
-@media (max-width: 700px) {
-
-    .event-popup:has(.boss-counter-player-list) {
-
-        width:
-            90vw;
-
-        height:
-            min(72vh, 600px);
-
-        max-width:
-            90vw;
-
-        max-height:
-            calc(100dvh - 80px);
-
-        padding:
-            28px 22px;
-
-        border-width:
-            2px;
-
-        border-radius:
-            16px;
-
-    }
-
-}
-
-
-/* =========================
-   ボスカウンター
-   スマホ横画面
-   ボス撃破画面と同じサイズ
-   ========================= */
-
+/* ボスカウンター：スマホ横画面 */
 @media (orientation: landscape) and (max-height: 500px) {
 
     .event-popup:has(.boss-counter-player-list) {
-
-        width:
-            82vw;
-
-        height:
-            270px;
-
-        max-width:
-            1100px;
-
-        max-height:
-            calc(100dvh - 40px);
-
-        padding:
-            18px 30px;
-
-        border-radius:
-            14px;
-
+        width: 82vw;
+        height: 270px;
+        padding: 18px 30px;
+        border-radius: 14px;
     }
 
-}
-
-/* =========================
-   ボスカウンター
-   横画面：ボス撃破画面と同じ文字サイズ
-   ========================= */
-
-@media (orientation: landscape) and (max-height: 500px) {
-
-    .event-popup:has(.boss-counter-player-list)
-    .event-popup-title {
-
-        font-size:
-            24px;
-
-        margin-bottom:
-            8px;
-
+    .event-popup:has(.boss-counter-player-list) .event-popup-title {
+        font-size: 24px;
+        margin-bottom: 8px;
     }
 
-
-    .event-popup:has(.boss-counter-player-list)
-    .event-popup-message {
-
-        font-size:
-            17px;
-
-        line-height:
-            1.3;
-
-        margin-bottom:
-            10px;
-
+    .event-popup:has(.boss-counter-player-list) .event-popup-message {
+        font-size: 17px;
+        line-height: 1.3;
     }
 
-
-    .event-popup:has(.boss-counter-player-list)
-    .boss-counter-image-wrap {
-
-        height:
-            110px;
-
-        margin:
-            0 0 6px;
-
+    .event-popup:has(.boss-counter-player-list) .boss-counter-popup-icon {
+        width: 90px;
+        height: 90px;
     }
 
-
-    .event-popup:has(.boss-counter-player-list)
-    .boss-counter-popup-icon {
-
-        width:
-            110px;
-
-        height:
-            110px;
-
-    }
-
-
-    .event-popup:has(.boss-counter-player-list)
-    .boss-counter-player-list {
-
-        margin-top:
-            6px;
-
-    }
-
-
-    .event-popup:has(.boss-counter-player-list)
-    .boss-counter-player-row {
-
-        font-size:
-            17px;
-
-        line-height:
-            1.3;
-
-        padding:
-            5px 8px;
-
-    }
-
-
-    .event-popup:has(.boss-counter-player-list)
-    .event-popup-button {
-
-        bottom:
-            12px;
-
-        padding:
-            7px 24px;
-
-        font-size:
-            17px;
-
+    .event-popup:has(.boss-counter-player-list) .boss-counter-player-row {
+        font-size: 17px;
+        padding: 5px 8px;
     }
 
 }
