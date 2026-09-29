@@ -9698,18 +9698,37 @@ bossCounterSE.play().catch(
             }
         );
 
-        // =========================
-        // ボスカウンター終了後
-        // 次のプレイヤーのターンを開始
-        // =========================
+       // =========================
+// ボスカウンター終了後
+// 次のプレイヤーのターンを開始
+// =========================
 
-        renderTurn();
-        renderPlayers();
-        centerCurrentPlayerOnMap();
+renderTurn();
+renderPlayers();
+centerCurrentPlayerOnMap();
 
-        // ルーレット使用可能
-        rouletteButton.disabled =
-            false;
+// =========================
+// 次のプレイヤーがボスマスにいる場合
+// 再挑戦確認
+// =========================
+
+if (
+    players[currentPlayer].position ===
+    currentBossSquareId
+) {
+
+    showBossChallengePopup(
+        players[currentPlayer],
+        true
+    );
+
+    return;
+
+}
+
+// ルーレット使用可能
+rouletteButton.disabled =
+    false;
 
     }
 );
@@ -10081,17 +10100,36 @@ bossCounterSE.play().catch(
         );
 
         // =========================
-        // ボスカウンター終了後
-        // 次のプレイヤーのターンを開始
-        // =========================
+// ボスカウンター終了後
+// 次のプレイヤーのターンを開始
+// =========================
 
-        renderTurn();
-        renderPlayers();
-        centerCurrentPlayerOnMap();
+renderTurn();
+renderPlayers();
+centerCurrentPlayerOnMap();
 
-        // ルーレット使用可能
-        rouletteButton.disabled =
-            false;
+// =========================
+// 次のプレイヤーがボスマスにいる場合
+// 再挑戦確認
+// =========================
+
+if (
+    players[currentPlayer].position ===
+    currentBossSquareId
+) {
+
+    showBossChallengePopup(
+        players[currentPlayer],
+        true
+    );
+
+    return;
+
+}
+
+// ルーレット使用可能
+rouletteButton.disabled =
+    false;
 
     }
 );
