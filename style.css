@@ -9714,20 +9714,44 @@ bottom:
    プレイヤーHP
 ----------------------------------------- */
 
+/* -----------------------------------------
+   プレイヤーHP
+   モンスターHPと縦並び
+----------------------------------------- */
+
 .battle-player-hp {
     left:
-        calc(50% - 255px) !important;
+        calc(50% + 100px) !important;
 
     bottom:
-        200px !important;
+        calc(50% - 95px) !important;
 
     width:
-        195px !important;
+        150px !important;
+
+    align-items:
+        flex-start !important;
 }
 
 .battle-player-hp-bar {
     width:
-        195px !important;
+        150px !important;
+
+    height:
+        10px !important;
+}
+
+.battle-player-hp-status {
+    width:
+        180px !important;
+
+    margin-top:
+        4px !important;
+}
+
+.battle-player-hp-max {
+    font-size:
+        12px !important;
 }
 
 }
