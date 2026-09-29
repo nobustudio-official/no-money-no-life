@@ -986,7 +986,7 @@
         position: fixed;
 
         left: 50%;
-        top: 38%;
+        top: 50%;
 
         transform:
             translate(-50%,-50%);
@@ -1071,7 +1071,7 @@
         position: fixed;
 
         left: 50%;
-        top: 38%;
+        top: 50%;
 
         transform:
             translate(-50%, -50%);
@@ -6747,19 +6747,14 @@
     .game-screen .inventory-popup {
 
         top:
-            72px;
-
-        width:
-            90vw;
+            60px;
 
         height:
-            calc(100dvh - 80px);
+            calc(100dvh - 60px);
 
         max-height:
-            calc(100dvh - 80px);
+            calc(100dvh - 60px);
 
-        transform:
-            translateX(-50%);
     }
 
         .game-screen .job-popup {
@@ -9390,8 +9385,8 @@
     .battle-monster-name {
         position: absolute !important;
 
-        left: calc(50% + 110px) !important;
-        top: calc(50% - 30px) !important;
+        left: calc(50% + 100px) !important;
+        top: calc(50% - 40px) !important;
 
         width: 180px !important;
         margin: 0 !important;
@@ -9418,7 +9413,7 @@
     .battle-hp-bar {
         position: absolute !important;
 
-        left: calc(50% + 110px) !important;
+        left: calc(50% + 100px) !important;
         top: calc(50% - 5px) !important;
 
         width: 150px !important;
@@ -10192,10 +10187,10 @@
     top: 60px;
 
     height:
-        calc(100vh - 60px);
+        calc(100vh - 70px);
 
     max-height:
-        calc(100vh - 60px);
+        calc(100vh - 70px);
 }
 
     /* 所持金は非表示 */
