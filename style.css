@@ -9322,7 +9322,395 @@ bottom:
    PC版の構造を維持して各パーツだけ縮小
 ========================================================= */
 
+@media (orientation: landscape) and (max-height: 500px) {
 
+   
+/* -----------------------------------------
+       戦闘画面の幅
+    ----------------------------------------- */
+
+    .battle-main-screen {
+        grid-template-columns:
+            120px
+            minmax(0, 1fr);
+
+        height:
+            calc(100vh - 74px) !important;
+
+        max-height:
+            calc(100vh - 74px) !important;
+    }
+
+ /* -----------------------------------------
+       魔法一覧の幅
+    ----------------------------------------- */
+
+    .battle-main-popup {
+        padding-top:
+            60px !important;
+    }
+
+   /* -----------------------------------------
+   ROUND
+----------------------------------------- */
+
+.battle-round-badge {
+    left: 120px !important;
+    right: 0 !important;
+    top: 3px !important;
+    justify-content: center !important;
+    transform: translateX(180px) !important;
+}
+
+
+/* -----------------------------------------
+   モンスター表示領域
+----------------------------------------- */
+
+.battle-field {
+    grid-area:
+        monster !important;
+
+    min-height:
+        0 !important;
+
+    overflow:
+        visible !important;
+}
+
+.battle-monster-image {
+    width: 130% !important;
+    height: 130% !important;
+    object-fit: contain;
+    transform: translate(-50px, 25px) !important;
+}
+
+.battle-monster-name {
+    position: absolute !important;
+
+    left: calc(50% + 100px) !important;
+    top: calc(50% - 20px) !important;
+
+    width: 180px !important;
+    margin: 0 !important;
+
+    text-align: left !important;
+    font-size: 14px !important;
+}
+
+.battle-monster-area {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    transform: translateY(20px) !important;
+
+    position: relative !important;
+}
+
+.battle-hp-bar {
+    position: absolute !important;
+
+    left: calc(50% + 100px) !important;
+    top: calc(50% + 15px) !important;
+
+    width: 150px !important;
+    height: 10px !important;
+    min-height: 10px !important;
+
+    margin: 0 !important;
+    flex-shrink: 0 !important;
+
+    transform: translateY(-50%) !important;
+}
+.battle-monster-hp {
+    position: absolute !important;
+
+    left: calc(50% + 100px) !important;
+    top: calc(50% + 30px) !important;
+
+    width: 180px !important;
+    min-height: 18px !important;
+
+    margin: 0 !important;
+    flex-shrink: 0 !important;
+
+    font-size: 12px !important;
+    text-align: left !important;
+}
+
+
+    /* -----------------------------------------
+       魔法一覧パネル
+    ----------------------------------------- */
+
+        .battle-magic-panel {
+        height:
+        calc(100% + 88px) !important;
+
+        padding:
+            6px;
+
+        overflow:
+            hidden;
+    }
+
+
+    /* 魔法一覧 */
+
+    .battle-new-magic-list {
+        gap:
+            4px;
+
+        height:
+            calc(100% - 22px);
+
+        padding:
+            2px;
+    }
+
+
+    /* -----------------------------------------
+       魔法カード
+    ----------------------------------------- */
+
+    .battle-new-magic-item {
+        min-height:
+            78px;
+
+        padding:
+            4px;
+
+        border-radius:
+            9px;
+
+        gap:
+            0;
+    }
+
+
+    /* -----------------------------------------
+       魔法アイコン
+    ----------------------------------------- */
+
+    .battle-new-magic-icon-wrap {
+        width:
+            48px !important;
+
+        height:
+            48px !important;
+    }
+
+    .battle-new-magic-icon-wrap img {
+        width:
+            48px !important;
+
+        height:
+            48px !important;
+
+        max-width:
+            48px !important;
+
+        max-height:
+            48px !important;
+    }
+
+
+    /* -----------------------------------------
+       魔法名
+    ----------------------------------------- */
+
+    .battle-new-magic-name {
+        font-size:
+            12px;
+
+        line-height:
+            1.1;
+
+        white-space:
+            nowrap;
+
+        overflow:
+            hidden;
+
+        text-overflow:
+            ellipsis;
+    }
+
+
+    /* -----------------------------------------
+       選択中魔法
+    ----------------------------------------- */
+
+    .battle-selected-magic {
+        height:
+            70px !important;
+
+        min-height:
+            70px !important;
+
+        padding:
+            5px 8px !important;
+
+        gap:
+            10px !important;
+
+       transform: translateY(78px) !important;
+    }
+
+
+    .battle-selected-magic-icon {
+        flex:
+            0 0 44px !important;
+
+        width:
+            44px !important;
+
+        height:
+            44px !important;
+    }
+
+
+    .battle-selected-magic-icon img {
+        width:
+            38px !important;
+
+        height:
+            38px !important;
+    }
+
+
+    .battle-selected-magic-info {
+        grid-template-columns:
+            minmax(0, 1fr)
+            105px !important;
+
+        column-gap:
+            5px !important;
+    }
+
+
+    .battle-selected-magic-name {
+        font-size:
+            14px !important;
+    }
+
+
+    .battle-selected-magic-effect {
+        font-size:
+            12px !important;
+    }
+
+
+    .battle-selected-magic-right {
+        width:
+            85px !important;
+
+        min-width:
+            85px;
+
+        transform: translateX(-150px) !important;
+    }
+
+
+    .battle-selected-magic-cost,
+    .battle-selected-magic-damage {
+    width:
+        110px !important;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        42px;
+
+    column-gap:
+        21px !important;
+}
+
+
+    .battle-selected-magic-cost strong,
+    .battle-selected-magic-damage strong {
+        width:
+            42px !important;
+
+        min-width:
+            42px;
+
+        margin-left: 10px !important;
+
+        font-size:
+            14px !important;
+
+        text-align: left !important;
+    }
+
+
+/* -----------------------------------------
+   バトルログ
+----------------------------------------- */
+
+.battle-new-message {
+    grid-area:
+        detail !important;
+
+    width:
+        100% !important;
+
+    height:
+        70px !important;
+
+    padding:
+        6px 10px;
+
+    font-size:
+        14px;
+
+    transform:
+        translateY(78px) !important;
+
+    z-index:
+        5001 !important;
+}
+
+
+    /* -----------------------------------------
+       戦う・逃げる
+    ----------------------------------------- */
+
+    .battle-action-row {
+    height: 50px;
+    align-self: end;
+    transform: none !important;
+}
+
+
+    .battle-new-action-button {
+        height:
+            40px;
+
+        min-height:
+            40px !important;
+
+        font-size:
+            20px;
+
+         transform: translateY(6px) !important;
+    }
+
+
+    .battle-new-attack-button img {
+        width:
+            24px;
+
+        height:
+            24px;
+    }
+
+}
 
 /* =========================================================
    エンカウント直後
