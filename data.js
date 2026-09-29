@@ -57,7 +57,7 @@ const　PLAYER_CONTENTS = {
         sprite: "images/characters/player-w-cat.png"
     },
 
-   10: {
+    10: {
         name: "エルフ",
         icon: "images/characters/player-w-white-icon.png",
         sprite: "images/characters/player-w-white.png"
@@ -603,7 +603,8 @@ const BOSS_CONTENTS = {
         name: "デビルロード",
         icon: "images/characters/enemy/boss/デビルロード.png",
         hp: 200,
-        attack: 50,
+        attack: 100,
+        counterDamage: 100,
         reward: 5000
     },
 
@@ -612,6 +613,7 @@ const BOSS_CONTENTS = {
         icon: "images/characters/enemy/boss/アイスクイーン.png",
         hp: 500,
         attack: 500,
+        counterDamage: 150,
         reward: 8000
     },
 
@@ -620,18 +622,46 @@ const BOSS_CONTENTS = {
         icon: "images/characters/enemy/boss/いただきリリィ.png",
         hp: 2000,
         attack: 1000,
+        counterDamage: 200,
         reward: 15000
     },
 
     4: {
+        name: "スカルゴースト",
+        icon: "images/characters/enemy/boss/スカルゴースト.png",
+        hp: 3000,
+        attack: 2000,
+        counterDamage: 300,
+        reward: 20000
+    },
+
+    5: {
         name: "水原二平",
         icon: "images/characters/enemy/boss/水原二平.png",
         hp: 5000,
-        attack: 2000,
-        reward: 20000
+        attack: 2500,
+        counterDamage: 400,
+        reward: 25000
+    },
+
+    6: {
+        name: "ロックス",
+        icon: "images/characters/enemy/boss/ロックス.png",
+        hp: 6000,
+        attack: 3000,
+        counterDamage: 500,
+        reward: 30000
+    },
+
+    7: {
+        name: "野々村",
+        icon: "images/characters/enemy/boss/野々村.png",
+        hp: 8000,
+        attack: 5000,
+        counterDamage: 600,
+        reward: 50000
     }
 
-    
 };
 
 
