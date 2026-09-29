@@ -10738,7 +10738,7 @@
 }
 
 /* =========================
-   スマホ：ボスカウンター
+   ボスカウンター
    ボス撃破画面と同じサイズ
    ========================= */
 
@@ -10766,6 +10766,39 @@
 
         border-radius:
             16px;
+
+    }
+
+}
+
+
+/* =========================
+   ボスカウンター
+   スマホ横画面
+   ボス撃破画面と同じサイズ
+   ========================= */
+
+@media (orientation: landscape) and (max-height: 500px) {
+
+    .event-popup:has(.boss-counter-player-list) {
+
+        width:
+            82vw;
+
+        height:
+            270px;
+
+        max-width:
+            1100px;
+
+        max-height:
+            calc(100dvh - 40px);
+
+        padding:
+            18px 30px;
+
+        border-radius:
+            14px;
 
     }
 
