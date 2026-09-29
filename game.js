@@ -7017,6 +7017,12 @@ adventureBGM.pause();
 // =========================
 
 bossBattleBGM.currentTime = 0;
+
+bossBattleBGM.volume =
+    Number(
+        bgmVolumeSlider.value
+    ) / 100;
+
 bossBattleBGM.play();
 
 bossCounterEnabled = true;
