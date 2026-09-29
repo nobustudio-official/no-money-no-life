@@ -1174,7 +1174,7 @@ players[index].inventory = [1, 8];
 
 addItems(
     players[index],
-    [12],
+    [],
     1
 );
 
