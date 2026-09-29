@@ -6049,7 +6049,7 @@
 
         /* 左ボタンは高さを抑え、マップを広く使う */
         .game-screen > .action-menu {
-            top: 70px;
+            top: 110px;
             left: 4px;
             width: 108px;
             gap: 4px;
