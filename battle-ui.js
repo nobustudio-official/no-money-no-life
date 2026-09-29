@@ -1,2818 +1,10619 @@
-/* =========================================================
-   battle-ui.js
-   新バトルUI
-
-   役割：
-   ・通常モンスター戦のイントロ表示
-   ・新バトルUIの生成／表示
-   ・魔法選択と詳細表示
-   ・攻撃／逃げる操作
-   ・3ラウンド制の戦闘進行
-
-   ※ 既存の game.js のデータ・ダメージ計算・報酬処理を利用します。
-   ※ 旧 battle.js / battle-ui.js / battle-effect.js には依存しません。
-========================================================= */
-
-(function () {
-
-    "use strict";
+    /* =========================================================
+    異世界冒険人生ゲーム
+    style.css
+    ========================================================= */
 
 
-    const BATTLE_BACKGROUND_PATH =
-        "images/back-image/戦闘1.png";
+    /* =========================================================
+    1. 基本設定
+    ========================================================= */
 
-    const BATTLE_ATTACK_ICON_PATH =
-        "images/ui-icons/戦う.png";
-
-    const BATTLE_ESCAPE_RATE =
-        0.5; // 仮設定：逃げる成功率。正式値決定後ここだけ変更。
-
-
-    let activeBattle = null;
+    * {
+        box-sizing: border-box;
+    }
 
 
-    function ensureBattleUI() {
+    body {
+        margin: 0;
 
-        let battleRoot =
-            document.getElementById("battleUIRoot");
+        min-height: 100vh;
 
-        if (!battleRoot) {
+        font-family:
+            "Yu Gothic",
+            "Hiragino Kaku Gothic ProN",
+            sans-serif;
 
-            battleRoot =
-                document.createElement("div");
-
-            battleRoot.id =
-                "battleUIRoot";
-
-            document.body.appendChild(
-                battleRoot
+        background:
+            radial-gradient(
+                circle at 50% 30%,
+                #344b72 0%,
+                #18233d 45%,
+                #0b1020 100%
             );
 
-        }
-
-        battleRoot.innerHTML = `
-
-            <div
-                id="battleIntroPopup"
-                class="battle-new-popup battle-intro-popup"
-                aria-hidden="true"
-            >
-                <div class="battle-intro-inner">
-
-                    <div
-                        id="battleIntroMonster"
-                        class="battle-intro-monster"
-                    ></div>
-
-                    <div
-                        id="battleIntroMessage"
-                        class="battle-intro-message"
-                    ></div>
-
-                    <div class="battle-intro-hint">
-                        　＞＞
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div
-                id="battleMainPopup"
-                class="battle-new-popup battle-main-popup"
-                aria-hidden="true"
-            >
-
-                <div class="battle-main-screen">
-
-                    
-                    <div class="battle-round-badge">
-                        <span id="battleNewRound">ROUND 1 / 3</span>
-                    </div>
-
-
-                    <div class="battle-field">
-
-
-                        <div class="battle-monster-area">
-
-                            <div
-                                id="battleNewMonsterName"
-                                class="battle-monster-name"
-                            ></div>
-
-                            <div class="battle-monster-visual-wrap">
-                                <img
-                                    id="battleNewMonsterImage"
-                                    class="battle-monster-image"
-                                    alt="モンスター"
-                                >
-                                <div
-                                    id="battleNewMonsterFallback"
-                                    class="battle-monster-fallback"
-                                ></div>
-                            </div>
-
-                            <div class="battle-hp-bar">
-                                <div
-                                    id="battleNewMonsterHpFill"
-                                    class="battle-hp-fill"
-                                ></div>
-                            </div>
-
-                            <div
-                                id="battleNewMonsterHp"
-                                class="battle-monster-hp"
-                            ></div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="battle-control-panel">
-
-                        <div class="battle-magic-panel">
-
-        <div class="battle-panel-title">
-    <img src="images/ui-icons/magic.png" alt="">
-    <span>魔法一覧</span>
-</div>
-
-                            <div
-                                id="battleNewMagicList"
-                                class="battle-new-magic-list"
-                            ></div>
-
-
-
-                        </div>
-
-<!-- =========================
-     プレイヤーHP
-========================= -->
-
-<div
-    class="battle-player-hp"
->
-
-    <div
-        class="battle-player-hp-bar"
-    >
-        <div
-            id="battlePlayerHpFill"
-            class="battle-player-hp-fill"
-        ></div>
-    </div>
-
-    <div
-        class="battle-player-hp-status"
-    >
-
-        <img
-            id="battlePlayerHpIcon"
-            class="battle-player-hp-icon"
-            src=""
-            alt=""
-        >
-
-        <div
-            id="battlePlayerHpMax"
-            class="battle-player-hp-max"
-        >
-            / 0G
-        </div>
-
-    </div>
-
-</div>
-
-                            <div
-                            class="battle-selected-magic"
-                            style="
-                                grid-area: detail;
-                                min-width: 0;
-                                width: 100%;
-                                height: auto;
-                                min-height: 116px;
-                                margin: 0;
-                                padding: 10px 14px;
-                                box-sizing: border-box;
-                                border: 1px solid rgba(255, 255, 255, 0.35);
-                                border-radius: 12px;
-                                background: rgba(16, 26, 45, 0.82);
-                                box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
-                                overflow: hidden;
-                            "
-                        >
-
-                        
-                                 <div
-                                    id="battleNewSelectedMagicIcon"
-                                    class="battle-selected-magic-icon"
-                                    style="
-                                        flex: 0 0 72px;
-                                        width: 72px;
-                                        height: 72px;
-                                    "
-                                ></div>
-
-                            <div class="battle-selected-magic-info">
-
-                                <div class="battle-selected-magic-left">
-
-                                                   <div
-                                            id="battleNewSelectedMagicName"
-                                            class="battle-selected-magic-name"
-                                            style="
-                                                font-size: 25px;
-                                                line-height: 1.2;
-                                            "
-                                        >
-                                            魔法を選択してください
-                                        </div>
-
-                                                                 <div
-                                            id="battleNewSelectedMagicEffect"
-                                            class="battle-selected-magic-effect"
-                                            style="
-                                                margin-top: 6px;
-                                                font-size: 14px;
-                                                line-height: 1.3;
-                                            "
-                                        ></div>
-                                </div>
-
-                                        <div
-                                        class="battle-selected-magic-right"
-                                        style="
-                                            gap: 6px;
-                                        "
-                                    >
-
-                                        <div
-                                            class="battle-selected-magic-cost"
-                                            style="
-                                                font-size: 18px;
-                                                line-height: 1.3;
-                                            "
-                                        >
-                                            <span>コスト</span>
-                                            <strong
-                                                style="
-                                                    font-size: 28px;
-                                                    line-height: 1.2;
-                                                    white-space: nowrap;
-                                                "
-                                            >
-                                                <span id="battleNewSelectedMagicCost">—</span>G
-                                            </strong>
-                                        </div>
-
-                                        <div
-                                            class="battle-selected-magic-damage"
-                                            style="
-                                                font-size: 18px;
-                                                line-height: 1.3;
-                                            "
-                                        >
-                                            <span>予測ダメージ</span>
-                                            <strong
-                                                id="battleNewSelectedMagicDamage"
-                                                style="
-                                                    font-size: 28px;
-                                                    line-height: 1.2;
-                                                    white-space: nowrap;
-                                                "
-                                            >—</strong>
-                                        </div>
-
-                                    </div>
-
-                            </div>
-
-                        </div>
-
-
-                    <div
-                        id="battleNewMessage"
-                        class="battle-new-message"
-                    ></div>
-
-
-                    <div class="battle-action-row">
-
-                        <button
-                            id="battleNewAttackButton"
-                            class="battle-new-action-button battle-new-attack-button"
-                            type="button"
-                            disabled
-                        >
-                            <img
-                                src="${BATTLE_ATTACK_ICON_PATH}"
-                                alt=""
-                            >
-                            <span>戦う</span>
-                        </button>
-
-                        <button
-                            id="battleNewEscapeButton"
-                            class="battle-new-action-button battle-new-escape-button"
-                            type="button"
-                        >
-                            <span>逃げる</span>
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-        bindIntroEvents();
-
-        return battleRoot;
-
+        color: white;
     }
 
 
-    function bindIntroEvents() {
-
-        const intro =
-            document.getElementById("battleIntroPopup");
-
-        if (!intro) {
-            return;
-        }
-
-        intro.onclick =
-            function () {
-
-                if (
-                    !activeBattle ||
-                    intro.getAttribute("aria-hidden") === "true"
-                ) {
-                    return;
-                }
-
-                showBattleMain();
-
-            };
-
+    button {
+        cursor: pointer;
+        color: white;
     }
 
 
-    function showLayer(id) {
+    /* =========================================================
+    2. ゲーム全体
+    ========================================================= */
 
-        const element =
-            document.getElementById(id);
+    .game-container {
+        min-height: 100vh;
 
-        if (!element) {
-            return;
-        }
+        display: flex;
+        flex-direction: column;
 
-        element.setAttribute(
-            "aria-hidden",
-            "false"
-        );
+        justify-content: center;
+        align-items: center;
 
-        element.classList.add("is-visible");
+        text-align: center;
 
+        padding: 30px;
     }
 
 
-    function hideLayer(id) {
+    /* =========================================================
+    3. ゲームタイトル
+    ========================================================= */
 
-        const element =
-            document.getElementById(id);
+    .game-title {
+        position: relative;
 
-        if (!element) {
-            return;
-        }
+        font-family:
+            "Cinzel",
+            Georgia,
+            "Times New Roman",
+            serif;
 
-        element.setAttribute(
-            "aria-hidden",
-            "true"
-        );
+        font-size:
+            clamp(32px, 8vw, 64px);
 
-        element.classList.remove("is-visible");
+        font-weight: 800;
 
-    }
+        letter-spacing: 3px;
 
-    function bringPopupToFront(id) {
+        text-align: center;
 
-    const popup =
-        document.getElementById(id);
-
-    if (!popup) {
-        return;
-    }
-
-    if (popup.parentElement !== document.body) {
-        document.body.appendChild(popup);
-    }
-
-    popup.style.zIndex = "30000";
-
-}
-
-    function showBattleIntro(player, monster) {
-
-
-        hideLayer("battleMainPopup");
-
-        const introMonster =
-            document.getElementById("battleIntroMonster");
-
-        const introMessage =
-            document.getElementById("battleIntroMessage");
-
-        introMonster.innerHTML =
-            createMonsterImageHTML(monster, "battle-intro-monster-image");
-
-        introMessage.textContent =
-            `${monster.name}が現れた！`;
-
-        showLayer("battleIntroPopup");
-
-    }
-
-
-    function createMonsterImageHTML(monster, className) {
-
-        const name =
-            monster && monster.name
-                ? monster.name
-                : "";
-
-        const icon =
-            monster && monster.icon
-                ? monster.icon
-                : "👾";
-
-        const imagePath =
-            monster.icon || "";
-
-        return `
-            <img
-                src="${imagePath}"
-                alt="${name}"
-                class="${className}"
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-            >
-            <span class="battle-monster-fallback-text">${icon}</span>
-        `;
-
-    }
-
-
-    function showBattleMain() {
-
-    hideLayer("battleIntroPopup");
-    showLayer("battleMainPopup");
-
-    if (!activeBattle) {
-        return;
-    }
-
-    renderBattleMain();
-
-    // エンカウント表示を終了
-    document
-        .getElementById("battleMainPopup")
-        .classList.remove("battle-intro-mode");
-
-}
-
-// =========================
-// モンスター被ダメージ点滅
-// =========================
-
-function flashMonsterOnDamage(callback) {
-
-    const image =
-        document.getElementById(
-            "battleNewMonsterImage"
-        );
-
-    if (!image) {
-        if (callback) {
-            callback();
-        }
-        return;
-    }
-
-    image.classList.remove(
-        "monster-damage-flash"
-    );
-
-    // アニメーションを確実に再実行
-    void image.offsetWidth;
-
-    if (callback) {
-        image.addEventListener(
-            "animationend",
-            callback,
-            { once: true }
-        );
-    }
-
-    image.classList.add(
-        "monster-damage-flash"
-    );
-
-}
-
-// =========================
-// プレイヤー被ダメージ点滅
-// =========================
-
-function flashPlayerOnDamage() {
-
-   const targets = [
-    document.getElementById("battleNewMagicList"),
-    document.querySelector("#battleMainPopup .battle-selected-magic"),
-    document.querySelector("#battleMainPopup .battle-action-row")
-];
-
-
-    targets.forEach(
-        function (target) {
-
-            if (!target) {
-                return;
-            }
-
-            target.classList.remove(
-                "player-damage-flash"
+        background:
+            linear-gradient(
+                180deg,
+                #fff8d6 0%,
+                #f5df8a 25%,
+                #d8a928 55%,
+                #fff0a8 75%,
+                #b8860b 100%
             );
 
-            // アニメーションを確実に再実行
-            void target.offsetWidth;
+        -webkit-background-clip: text;
+        background-clip: text;
 
-            target.classList.add(
-                "player-damage-flash"
+        color: transparent;
+
+        text-shadow:
+            0 0 4px rgba(255, 235, 150, 0.8),
+            0 0 10px rgba(255, 200, 60, 0.6),
+            0 0 20px rgba(220, 160, 30, 0.4),
+            3px 3px 0 rgba(70, 45, 5, 0.8),
+            6px 6px 10px rgba(0, 0, 0, 0.7);
+
+        margin: 0 0 24px;
+
+        line-height: 1.1;
+    }
+
+
+    .game-title::before,
+    .game-title::after {
+        display: block;
+
+        font-family:
+            Georgia,
+            serif;
+
+        font-size: 14px;
+
+        letter-spacing: 2px;
+
+        color: #d8a928;
+
+        text-shadow:
+            0 0 8px rgba(255, 200, 50, 0.8);
+
+        white-space: nowrap;
+    }
+
+
+    .game-title::before {
+        content: "✦ ───────────────── ✦";
+
+        margin-bottom: 14px;
+    }
+
+
+    .game-title::after {
+        content: "✦ ───────────────── ✦";
+
+        margin-top: 14px;
+    }
+
+
+    /* =========================================================
+    4. ゲームサブタイトル
+    ========================================================= */
+
+    .game-subtitle {
+        font-family:
+            "Cinzel",
+            Georgia,
+            "Times New Roman",
+            serif !important;
+
+        font-size:
+            clamp(13px, 3.5vw, 21px) !important;
+
+        font-weight: 500 !important;
+
+        letter-spacing: 3px !important;
+
+        text-align: center !important;
+
+        color: #f3d77a !important;
+
+        text-shadow:
+            0 0 5px rgba(255, 220, 130, 0.7),
+            0 0 10px rgba(220, 170, 50, 0.4),
+            2px 2px 5px rgba(0, 0, 0, 0.8) !important;
+
+        margin-top: 4px !important;
+    }
+
+
+    /* =========================================================
+    5. スタートボタン
+    ========================================================= */
+
+    #startButton {
+        padding: 16px 45px;
+
+        border: 2px solid #ffffff;
+
+        border-radius: 50px;
+
+        background:
+            rgba(255, 255, 255, 0.12);
+
+        color: white;
+
+        font-size: 1.2rem;
+
+        font-weight: bold;
+
+        letter-spacing: 0.08em;
+
+        transition:
+            transform 0.2s ease,
+            background 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    #startButton:hover {
+        transform: scale(1.05);
+
+        background:
+            rgba(255, 255, 255, 0.22);
+
+        box-shadow:
+            0 0 15px rgba(255, 255, 255, 0.5),
+            0 0 35px rgba(100, 180, 255, 0.5);
+    }
+
+
+    #startButton:active {
+        transform: scale(0.98);
+    }
+
+
+    /* =========================================================
+    6. ゲーム画面
+    ========================================================= */
+
+    .game-screen {
+        width: 100%;
+        max-width: 1400px;
+
+        height: 100dvh;
+
+        margin: 0 auto;
+
+        display: grid;
+
+        grid-template-rows:
+            auto
+            minmax(0, 1fr)
+            auto
+            auto;
+
+        overflow: hidden;
+
+        position: relative;
+    }
+
+
+    /* =========================================================
+    7. 目的地
+    ========================================================= */
+
+    .destination {
+        background:
+            rgba(255, 255, 255, 0.12);
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.25);
+
+        border-radius: 15px;
+
+        padding: 12px 16px;
+
+        margin-bottom: 15px;
+
+        font-size: 1rem;
+
+        font-weight: bold;
+
+        text-align: center;
+
+        box-shadow:
+            0 4px 15px
+            rgba(0, 0, 0, 0.2);
+    }
+
+
+    /* =========================================================
+    8. マップ
+    ========================================================= */
+
+    .map-area {
+        grid-row: 3;
+
+        min-height: 0;
+
+        width: 100%;
+        height: 100%;
+
+        background:
+            rgba(0, 0, 0, 0.15);
+
+        border-radius: 20px;
+
+        padding: 15px;
+
+        margin: 0;
+
+        overflow: auto;
+
+        box-sizing: border-box;
+
+        -webkit-overflow-scrolling: touch;
+
+        scrollbar-width: none;
+
+        touch-action:
+        pan-x
+        pan-y;
+    }
+
+
+    .map-area::-webkit-scrollbar {
+        display: none;
+    }
+
+    .map-area h2 {
+        margin-top: 0;
+
+        margin-bottom: 15px;
+
+        font-size: 1.3rem;
+    }
+
+
+    .map-board {
+        position: relative;
+
+        width: 1200px;
+        height: 800px;
+
+        max-width: none;
+
+        margin: 0 auto;
+
+        padding: 0;
+
+        flex-shrink: 0;
+
+        background-image: url("images/map2.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+    }
+
+    /* =========================================================
+    9. マップの道
+    ========================================================= */
+
+    .map-lines {
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+
+        z-index: 0;
+
+        pointer-events: none;
+    }
+
+
+    .map-line {
+        stroke:
+            rgba(231, 168, 108, 0.9);
+
+        stroke-width: 1.2;
+
+        stroke-linecap: round;
+    }
+
+
+    /* =========================================================
+    10. マップのマス
+    ========================================================= */
+
+    .map-node {
+        position: absolute;
+
+        width: 50px;
+        height: 50px;
+
+        transform:
+            translate(-50%, -50%);
+
+        display: flex;
+
+        flex-direction: column;
+
+        justify-content: center;
+        align-items: center;
+
+        background:
+            rgba(255, 255, 255, 0.8);
+
+        border:
+            2px solid
+            rgba(48, 47, 47, 0.247);
+
+        border-radius: 14px;
+
+        font-size: 1.5rem;
+
+        z-index: 1;
+    }
+
+
+    .square-icon {
+        font-size: 1.6rem;
+    }
+
+    /* =========================
+    ボスマス
+    ========================= */
+
+    .boss-node {
+        transform:
+            translate(-50%, -50%)
+            scale(1.15);
+
+        background:
+            rgba(247, 177, 177, 0.9);
+            
+        box-shadow:
+            0 0 0 4px rgba(255, 80, 80, 0.9),
+            0 0 25px rgba(255, 80, 80, 0.9);
+
+        border-color:
+            rgba(255, 80, 80, 0.9);
+    }
+
+
+    .boss-node .square-icon {
+        font-size: 2rem;
+    }
+
+    .square-number {
+        position: absolute;
+
+        top: 3px;
+        left: 5px;
+
+        font-size: 0.65rem;
+
+        opacity: 0.6;
+    }
+
+
+
+    /* =========================================================
+    12. ターン表示
+    ========================================================= */
+
+    .turn-display {
+        margin-bottom: 12px;
+
+        padding: 12px;
+
+        text-align: center;
+
+        background:
+            rgba(255, 255, 255, 0.15);
+
+        border-radius: 12px;
+
+        font-weight: bold;
+
+        font-size: 1.1rem;
+    }
+
+
+    /* =========================================================
+    13. プレイヤー情報
+    ========================================================= */
+
+    .player-status {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 8px;
+
+        margin-bottom: 20px;
+    }
+
+
+    .player-card {
+        display: flex;
+
+        align-items: center;
+
+        gap: 15px;
+
+        background:
+            rgba(255, 255, 255, 0.1);
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.2);
+
+        border-radius: 12px;
+
+        padding: 12px 15px;
+
+        font-size: 1rem;
+    }
+
+
+    .player-card strong {
+        min-width: 100px;
+
+        font-size: 1.05rem;
+
+        text-align: left;
+    }
+
+
+    .player-icon {
+        display: inline-block;
+
+        width: 16px;
+        height: 16px;
+
+        flex-shrink: 0;
+
+        border-radius: 50%;
+
+        margin-right: 8px;
+
+        vertical-align: middle;
+
+        border: 2px solid white;
+
+        box-shadow:
+            0 0 6px
+            rgba(255, 255, 255, 0.5);
+    }
+
+
+    /* 現在のプレイヤー */
+
+    .current-player {
+        border:
+            2px solid
+            rgba(255, 220, 100, 0.8);
+
+        box-shadow:
+            0 0 12px
+            rgba(255, 220, 100, 0.25);
+    }
+
+
+    /* =========================================================
+    14. ゲームメニューボタン
+    ========================================================= */
+
+    .roulette-area {
+        display: flex;
+
+        flex-direction: row;
+
+        justify-content: center;
+        align-items: center;
+
+        gap: 12px;
+
+        flex-wrap: nowrap;
+
+        padding: 10px 0 20px;
+    }
+
+
+    #rouletteNumber {
+        display: none;
+    }
+
+
+
+    /* =========================================================
+    15. 分岐選択
+    ========================================================= */
+
+    .choice-area {
+        margin-top: 15px;
+    }
+
+
+    .choice-box {
+        padding: 18px;
+
+        background:
+            rgba(0, 0, 0, 0.25);
+
+        border-radius: 15px;
+
+        text-align: center;
+    }
+
+
+    .choice-box h3 {
+        margin-top: 0;
+    }
+
+
+    .choice-buttons {
+        display: flex;
+
+        gap: 10px;
+
+        justify-content: center;
+    }
+
+
+    .branch-button {
+        flex: 1;
+
+        padding: 14px 10px;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.5);
+
+        border-radius: 12px;
+
+        background:
+            rgba(255, 255, 255, 0.12);
+
+        color: white;
+
+        font-size: 0.95rem;
+
+        font-weight: bold;
+    }
+
+
+    .branch-button:active {
+        transform: scale(0.96);
+    }
+
+
+    /* =========================================================
+    16. マップ上の分岐矢印
+    ========================================================= */
+
+    .branch-message {
+        text-align: center;
+
+        margin-bottom: 10px;
+
+        font-weight: bold;
+
+        font-size: 1rem;
+    }
+
+
+    .branch-hint {
+        margin-top: 6px;
+
+        font-size: 0.85rem;
+
+        opacity: 0.8;
+    }
+
+
+    .branch-arrow-map {
+        position: absolute;
+
+        z-index: 20;
+
+        width: 46px;
+        height: 46px;
+
+        padding: 0;
+
+        display: flex;
+
+        justify-content: center;
+        align-items: center;
+
+        border: 3px solid white;
+
+        border-radius: 50%;
+
+        background:
+            rgba(20, 30, 60, 0.95);
+
+        color: white;
+
+        cursor: pointer;
+
+        box-shadow:
+            0 0 8px rgba(255,255,255,0.8),
+            0 0 20px rgba(100,160,255,0.7);
+
+        animation:
+            branchArrowGlow 1.2s infinite;
+    }
+
+
+    .map-arrow-symbol {
+        display: block;
+
+        font-size: 2rem;
+
+        font-weight: bold;
+
+        line-height: 1;
+
+        text-shadow:
+            0 0 5px black,
+            0 0 10px black;
+    }
+
+
+    .branch-arrow-map:active {
+        filter: brightness(1.5);
+    }
+
+
+    /* =========================================================
+    サイコロ移動：画像矢印
+    ========================================================= */
+
+    .dice-movement-arrow {
+        appearance: none !important;
+        -webkit-appearance: none !important;
+
+        padding: 0 !important;
+
+        border: none !important;
+        border-radius: 0 !important;
+
+        background: transparent !important;
+        background-image: none !important;
+
+        box-shadow: none !important;
+
+        animation: none !important;
+
+        outline: none !important;
+    }
+
+
+    .dice-movement-arrow:focus,
+    .dice-movement-arrow:focus-visible,
+    .dice-movement-arrow:hover,
+    .dice-movement-arrow:active {
+        background: transparent !important;
+        background-image: none !important;
+
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+
+        filter: none;
+    }
+
+
+    .dice-movement-arrow img {
+        display: block;
+
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        pointer-events: none;
+
+        user-select: none;
+    }
+
+
+    /* ========================================================= */
+
+
+    @keyframes branchArrowGlow {
+
+        0% {
+            box-shadow:
+                0 0 8px rgba(255,255,255,0.7),
+                0 0 15px rgba(100,160,255,0.5);
+        }
+
+        50% {
+            box-shadow:
+                0 0 15px rgba(255,255,255,1),
+                0 0 30px rgba(100,160,255,0.9);
+        }
+
+        100% {
+            box-shadow:
+                0 0 8px rgba(255,255,255,0.7),
+                0 0 15px rgba(100,160,255,0.5);
+        }
+
+    }
+
+
+    /* =========================================================
+    17. プレイヤー人数選択
+    ========================================================= */
+
+    .player-count-buttons {
+        display: flex;
+
+        justify-content: center;
+
+        gap: 10px;
+
+        flex-wrap: wrap;
+
+        margin-top: 25px;
+    }
+
+
+    .player-count {
+        min-width: 55px;
+
+        padding: 12px 10px;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.5);
+
+        border-radius: 12px;
+
+        background:
+            rgba(255, 255, 255, 0.12);
+
+        color: white;
+
+        font-size: 1rem;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+        transition:
+            transform 0.15s ease,
+            background 0.15s ease,
+            box-shadow 0.15s ease;
+    }
+
+
+    .player-count:hover {
+        background:
+            rgba(255, 255, 255, 0.25);
+
+        transform:
+            translateY(-2px);
+
+        box-shadow:
+            0 4px 12px
+            rgba(0, 0, 0, 0.25);
+    }
+
+
+    .player-count:active {
+        transform: scale(0.95);
+    }
+
+
+    /* =========================================================
+    18. プレイヤー決定ボタン
+    ========================================================= */
+
+    #confirmPlayers {
+        margin-top: 15px;
+
+        padding: 12px 35px;
+
+        border: 2px solid white;
+
+        border-radius: 50px;
+
+        background:
+            rgba(255, 255, 255, 0.15);
+
+        color: white;
+
+        font-size: 1rem;
+
+        font-weight: bold;
+
+        letter-spacing: 0.08em;
+
+        cursor: pointer;
+
+        transition:
+            transform 0.15s ease,
+            background 0.15s ease,
+            box-shadow 0.15s ease;
+    }
+
+
+    #confirmPlayers:hover {
+        background:
+            rgba(255, 255, 255, 0.25);
+
+        box-shadow:
+            0 0 15px
+            rgba(255, 255, 255, 0.4);
+    }
+
+
+    #confirmPlayers:active {
+        transform: scale(0.95);
+    }
+
+
+    /* =========================================================
+    19. ターン数選択
+    ========================================================= */
+
+    .turn-count-buttons {
+        display: flex;
+
+        justify-content: center;
+
+        gap: 10px;
+
+        flex-wrap: wrap;
+
+        margin-top: 25px;
+    }
+
+
+    .turn-count {
+        min-width: 110px;
+
+        padding: 14px 18px;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.5);
+
+        border-radius: 14px;
+
+        background:
+            rgba(255, 255, 255, 0.12);
+
+        color: white;
+
+        font-size: 1rem;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+        transition:
+            transform 0.15s ease,
+            background 0.15s ease,
+            box-shadow 0.15s ease;
+    }
+
+
+    .turn-count:hover {
+        background:
+            rgba(255, 255, 255, 0.25);
+
+        transform:
+            translateY(-2px);
+
+        box-shadow:
+            0 4px 12px
+            rgba(0, 0, 0, 0.25);
+    }
+
+
+    .turn-count:active {
+        transform: scale(0.95);
+    }
+
+
+    /* =========================================================
+    20. イベントポップアップ
+    ========================================================= */
+
+    .event-popup {
+        position: fixed;
+
+        left: 50%;
+        top: 50%;
+
+        transform:
+            translate(-50%,-50%);
+
+        width:
+            min(85%, 420px);
+
+        padding:
+            24px 20px;
+
+        background:
+            rgba(20, 20, 35, 0.98);
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.35);
+
+        border-radius:
+            18px;
+
+        box-shadow:
+            0 10px 40px
+            rgba(0, 0, 0, 0.45);
+
+        text-align:
+            center;
+
+        z-index:
+            14000;
+
+        display:
+            none;
+    }
+
+
+    .event-popup-title {
+        font-size: 20px;
+
+        font-weight: bold;
+
+        margin-bottom: 16px;
+    }
+
+
+    .event-popup-message {
+        font-size: 18px;
+
+        line-height: 1.7;
+
+        margin-bottom: 20px;
+    }
+
+
+    .event-popup-button {
+        padding: 10px 36px;
+
+        border: none;
+
+        border-radius: 999px;
+
+        background:
+            rgba(255, 255, 255, 0.15);
+
+        color: white;
+
+        font-size: 16px;
+
+        cursor: pointer;
+    }
+
+
+    .event-popup-button:active {
+        transform: scale(0.96);
+    }
+
+
+    /* =========================================================
+    21. ゴールドルーレット
+    ========================================================= */
+
+    .gold-roulette {
+        position: fixed;
+
+        left: 50%;
+        top: 50%;
+
+        transform:
+            translate(-50%, -50%);
+
+        width:
+            min(82%, 400px);
+
+        padding:
+            18px 20px;
+
+        background:
+            linear-gradient(
+                rgba(35, 45, 70, 0.98),
+                rgba(20, 30, 55, 0.98)
             );
 
-        }
-    );
+        border:
+            3px solid
+            #d8a900;
 
+        border-radius:
+            20px;
 
-    // =========================
-// ダメージSE
-// =========================
+        box-shadow:
+            0 8px 35px
+            rgba(0, 0, 0, 0.55);
 
-const damageSEPath =
-    activeBattle.isBoss
-        ? "sounds/戦闘/中パンチ.mp3"
-        : "sounds/戦闘/小パンチ.mp3";
+        text-align:
+            center;
 
-        console.log(
-    "【被ダメージSE】Boss戦：",
-    activeBattle.isBoss,
-    "使用SE：",
-    damageSEPath
-);
+        z-index:
+            10000;
 
-
-const damageSE =
-    new Audio(
-        damageSEPath
-    );
-
-damageSE.currentTime = 0;
-
-damageSE.play().catch(
-    function (error) {
-
-        console.warn(
-            "【戦闘】ダメージSE再生失敗：",
-            error
-        );
-
-    }
-);
-
-}
-
-    function renderBattleMain() {
-
-        if (!activeBattle) {
-            return;
-        }
-
-        const player =
-            activeBattle.player;
-
-        const monster =
-            activeBattle.monster;
-
-       document.getElementById("battleNewRound").textContent =
-    `ROUND ${activeBattle.round} / 3`;
-
-        document.getElementById("battleNewMonsterName").textContent =
-            monster.name;
-
-        const image =
-            document.getElementById("battleNewMonsterImage");
-
-        const fallback =
-            document.getElementById("battleNewMonsterFallback");
-
-        image.src =
-            monster.icon || "";
-
-        image.alt =
-            monster.name;
-
-        image.style.display =
-            "block";
-
-        fallback.textContent =
-            "👾";
-
-        fallback.style.display =
-            "none";
-
-        image.onerror =
-            function () {
-                image.style.display = "none";
-                fallback.style.display = "block";
-            };
-
-                const hpRate =
-            monster.hp > 0
-                ? Math.max(
-                    0,
-                    Math.min(
-                        1,
-                        activeBattle.monsterHP / monster.hp
-                    )
-                )
-                : 0;
-
-        document.getElementById(
-            "battleNewMonsterHpFill"
-        ).style.width =
-            `${hpRate * 100}%`;
-
-        document.getElementById(
-            "battleNewMonsterHp"
-        ).textContent =
-            `HP ${activeBattle.monsterHP} / ${monster.hp}`;
-
-
-        // =========================
-        // プレイヤーHP
-        // 開始時ゴールドを100%として計算
-        // =========================
-
-        const playerStartGold =
-            activeBattle.battleStartGold;
-
-        const playerCurrentGold =
-            activeBattle.player.money;
-
-        const playerHpRate =
-            playerStartGold > 0
-                ? Math.max(
-                    0,
-                    Math.min(
-                        1,
-                        playerCurrentGold / playerStartGold
-                    )
-                )
-                : 0;
-
-
-        const playerHpFill =
-            document.getElementById(
-                "battlePlayerHpFill"
-            );
-
-        if (playerHpFill) {
-
-            playerHpFill.style.width =
-                `${playerHpRate * 100}%`;
-
-        }
-
-
-        const playerHpMax =
-            document.getElementById(
-                "battlePlayerHpMax"
-            );
-
-        if (playerHpMax) {
-
-            playerHpMax.textContent =
-                `/ ${formatBattleNumber(playerStartGold)}G`;
-
-        }
-
-// =========================
-// プレイヤーHPアイコン
-// =========================
-
-const playerHpIcon =
-    document.getElementById(
-        "battlePlayerHpIcon"
-    );
-
-if (playerHpIcon) {
-
-    const playerIndex =
-        players.indexOf(
-            activeBattle.player
-        );
-
-    playerHpIcon.src =
-        getPlayerCharacterIcon(
-            playerIndex
-        );
-
-}
-
-        renderMagicList();
-        renderSelectedMagic();
-
-        // プレイヤーの行動ターンに戻ったら、前ターンのバトルログを消す。
-        if (activeBattle.phase === "playerAction") {
-            showBattleMessage("");
-        }
-
+        display:
+            none;
     }
 
 
-    function formatBattleNumber(value) {
+    .gold-roulette-title {
+        font-size: 18px;
 
-        if (
-            typeof formatG === "function"
-        ) {
-            return formatG(value);
-        }
+        font-weight: bold;
 
-        return Number(value || 0).toLocaleString("ja-JP");
-
+        margin-bottom: 8px;
     }
 
 
-    function renderMagicList() {
+    .gold-roulette-number {
+        font-size: 42px;
 
-        const list =
-            document.getElementById("battleNewMagicList");
+        font-weight: bold;
 
-        if (!list || !activeBattle) {
-            return;
-        }
+        line-height: 1.2;
 
-        list.innerHTML = "";
-
-        const magicIds =
-            Array.isArray(activeBattle.player.magic)
-                ? activeBattle.player.magic
-                : [];
-
-        if (magicIds.length === 0) {
-
-            list.innerHTML =
-                `<div class="battle-new-magic-empty">魔法を覚えていません。</div>`;
-
-            return;
-
-        }
-
-        magicIds.forEach(
-            function (magicId) {
-
-                const magic =
-                    MAGIC_CONTENTS[magicId];
-
-                if (!magic) {
-                    return;
-                }
-
-               
-                const item =
-                    document.createElement("button");
-
-                item.type =
-                    "button";
-
-                item.className =
-                    "battle-new-magic-item";
-
-                if (
-                    activeBattle.selectedMagic &&
-                    activeBattle.selectedMagic === magic
-                ) {
-                    item.classList.add("is-selected");
-                }
-
-               item.innerHTML = `
-    <span class="battle-new-magic-name">${magic.name}</span>
-    <span class="battle-new-magic-icon-wrap">
-        <img
-            src="${magic.image || magic.icon || ""}"
-            alt="${magic.name}"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-        >
-        <span class="battle-new-magic-fallback">✨</span>
-    </span>
-`;
-
-                item.addEventListener(
-                    "click",
-                    function () {
-                        activeBattle.selectedMagic = magic;
-                        renderBattleMain();
-                    }
-                );
-
-                list.appendChild(item);
-
-            }
-        );
-
+        letter-spacing: 2px;
     }
 
 
-    function renderSelectedMagic() {
-
-        const magic =
-            activeBattle
-                ? activeBattle.selectedMagic
-                : null;
-
-        const icon =
-            document.getElementById("battleNewSelectedMagicIcon");
-
-        const name =
-            document.getElementById("battleNewSelectedMagicName");
-
-        const cost =
-            document.getElementById("battleNewSelectedMagicCost");
-
-        const damage =
-            document.getElementById("battleNewSelectedMagicDamage");
-
-        const effect =
-            document.getElementById("battleNewSelectedMagicEffect");
-
-        const attackButton =
-            document.getElementById("battleNewAttackButton");
-
-        if (!magic) {
-
-            icon.innerHTML = "";
-            name.textContent = "魔法を選択してください";
-            cost.textContent = "—";
-            damage.textContent = "—";
-            effect.textContent = "";
-            attackButton.disabled = true;
-            return;
-
-        }
-
-        const magicCost =
-            calculateMagicCost(
-                activeBattle.player,
-                magic,
-                activeBattle.battleState
-            );
-
-        const predictedDamage =
-            magic.type === "attack"
-                ? calculateMagicDamage(
-                    activeBattle.player,
-                    magic,
-                    activeBattle.battleState
-                )
-                : 0;
-
-        icon.innerHTML = `
-            <img
-                src="${magic.image || magic.icon || ""}"
-                alt="${magic.name}"
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-            >
-            <span>✨</span>
-        `;
-
-       name.textContent =
-    magic.name;
-
-cost.textContent =
-    formatBattleNumber(magicCost);
-
-damage.textContent =
-    magic.type === "attack"
-        ? formatBattleNumber(predictedDamage)
-        : "—";
-
-effect.textContent =
-    magic.effect || "";
-
-if (
-    activeBattle.phase === "playerAction" &&
-    !activeBattle.busy
-) {
-    attackButton.disabled = false;
-}
-
-}
-
-
- function showBattleMessage(message) {
-
-    const element =
-        document.getElementById("battleNewMessage");
-
-    if (!element) {
-        return;
-    }
-
-    const text =
-        message || "";
-
-    element.textContent =
-        text;
-
-    element.classList.toggle(
-        "is-active",
-        Boolean(text)
-    );
-
-}
-
-function setBattleMagicPanelVisible(visible) {
-
-    const panel =
-        document.querySelector(
-            "#battleMainPopup .battle-magic-panel"
-        );
-
-    if (!panel) {
-        return;
-    }
-
-    panel.style.visibility =
-        visible ? "visible" : "hidden";
-
-    panel.style.pointerEvents =
-        visible ? "auto" : "none";
-}
-
-
-  function bindMainButtons() {
-
-    const attackButton =
-        document.getElementById("battleNewAttackButton");
-
-    const escapeButton =
-        document.getElementById("battleNewEscapeButton");
-
-    const battleScreen =
-        document.querySelector(
-            "#battleMainPopup .battle-main-screen"
-        );
-
-
-    if (!attackButton || !escapeButton) {
-
-        console.error(
-            "【戦闘エラー】戦闘ボタンが見つかりません"
-        );
-
-        return;
-
+    .gold-roulette.spinning
+    .gold-roulette-number {
+        transform: scale(1.08);
     }
 
 
-    attackButton.onclick =
-        function (event) {
+    /* =========================================================
+    22. サイコロルーレット
+    ========================================================= */
 
-            event.preventDefault();
-            event.stopPropagation();
+    .dice-roulette {
+        position: fixed;
 
-            console.log(
-                "【戦闘】戦うボタン押下"
-            );
+        left: 50%;
+        top: 38%;
 
-            performSelectedMagic();
+        transform:
+            translate(-50%, -50%);
 
-        };
+        width:
+            min(70%, 300px);
 
+        padding:
+            20px;
 
-    escapeButton.onclick =
-        function (event) {
+        background:
+            rgba(25, 35, 60, 0.98);
 
-            event.preventDefault();
-            event.stopPropagation();
+        border:
+            3px solid
+            rgba(255, 255, 255, 0.55);
 
-            console.log(
-                "【戦闘】逃げるボタン押下"
-            );
+        border-radius:
+            20px;
 
-            attemptEscape();
+        box-shadow:
+            0 8px 35px
+            rgba(0, 0, 0, 0.55);
 
-        };
+        text-align:
+            center;
 
+        z-index:
+            10000;
 
-    if (battleScreen) {
-
-        battleScreen.onclick =
-            function (event) {
-
-                if (
-                    event.target.closest(
-                        "button, input, select, textarea, a"
-                    )
-                ) {
-
-                    return;
-
-                }
-
-
-                handleBattleScreenTap();
-
-            };
-
-    }
-
-}
-
-
-    function handleBattleScreenTap() {
-
-    if (!activeBattle) {
-        return;
-    }
-
-    // =========================
-    // 戦闘開始メッセージを閉じる
-    // =========================
-
-    if (activeBattle.phase === "battleIntro") {
-
-        activeBattle.phase =
-            "playerAction";
-        
-    document
-    .getElementById("battleMainPopup")
-    .classList.remove("battle-intro-mode");
-
-        showBattleMessage("");
-
-        setBattleMagicPanelVisible(true);
-
-        renderBattleMain();
-
-        enableBattleActions();
-
-        return;
-    }
-
-    if (activeBattle.phase === "waitBossReward") {
-
-        activeBattle.busy =
-            true;
-
-        showBossRewardPopup(
-            activeBattle.player,
-            activeBattle.monster,
-            activeBattle.bossRewardMessage
-        );
-
-        return;
-
-    }
-
-    if (activeBattle.phase === "waitEnemyCounter") {
-
-            activeBattle.phase =
-                "enemyCounter";
-
-            enemyCounterAttack();
-
-            return;
-
-        }
-
-        if (activeBattle.phase === "waitNextRound") {
-
-            activeBattle.round += 1;
-            activeBattle.selectedMagic = null;
-            activeBattle.busy = false;
-            activeBattle.phase = "playerAction";
-
-            renderBattleMain();
-            enableBattleActions();
-
-            showBattleMessage("");
-
-        }
-
-        if (activeBattle.phase === "waitBattleEnd") {
-
-            finishBattleNow(
-                activeBattle.endWithReward === true
-            );
-
-        }
-
+        display:
+            none;
     }
 
 
-   function performSelectedMagic() {
+    .dice-roulette-title {
+        font-size: 20px;
 
-    console.log("【戦闘】攻撃処理開始");
+        font-weight: bold;
 
-
-    // =========================
-    // 戦闘データ確認
-    // =========================
-
-    if (!activeBattle) {
-
-        console.error(
-            "【戦闘エラー】activeBattle がありません"
-        );
-
-        return;
-
+        margin-bottom: 10px;
     }
 
 
-    const player =
-        activeBattle.player;
+    .dice-roulette-number {
+        font-size: 64px;
 
-    const monster =
-        activeBattle.monster;
+        font-weight: bold;
 
-    const magic =
-        activeBattle.selectedMagic;
-// =========================
-// バフ魔法
-// =========================
+        line-height: 1.2;
 
-if (
-    magic.type === "buff"
-) {
-
-    if (
-        magic.buffTarget === "self" &&
-        magic.buffStat === "magicPower"
-    ) {
-
-        activeBattle.battleState.magicPowerRate =
-            Number(
-                magic.buffRate || 1
-            );
-
-        console.log(
-            "【戦闘】魔力バフ適用：",
-            activeBattle.battleState.magicPowerRate
-        );
-
-    }
-
-    if (
-        magic.buffTarget === "enemy" &&
-        magic.buffStat === "attackPower"
-    ) {
-
-        activeBattle.battleState.enemyAttackRate =
-            Number(
-                magic.buffRate || 1
-            );
-
-        console.log(
-            "【戦闘】敵攻撃力バフ適用：",
-            activeBattle.battleState.enemyAttackRate
-        );
-
-    }
-
-    showBattleMessage(
-        `${magic.name}を使った！`
-    );
-
-    activeBattle.busy =
-        false;
-
-    activeBattle.phase =
-        "waitEnemyCounter";
-
-    disableBattleActions();
-
-    return;
-
-}
-
-
-    console.log(
-        "【戦闘】選択魔法：",
-        magic
-    );
-
-
-    if (!player) {
-
-        console.error(
-            "【戦闘エラー】player がありません"
-        );
-
-        return;
-
+        letter-spacing: 2px;
     }
 
 
-    if (!monster) {
+    /* =========================================================
+    23. モンスター遭遇選択
+    ========================================================= */
 
-        console.error(
-            "【戦闘エラー】monster がありません"
-        );
+    .monster-choice-popup {
+        position: fixed;
 
-        return;
+        left: 50%;
+        top: 50%;
 
+        transform:
+            translate(-50%, -50%);
+
+        width:
+            min(90%, 420px);
+
+        padding:
+            26px 20px;
+
+        background:
+        rgba(20, 20, 35, 0.98);
+
+        border:
+            2px solid
+            rgba(255,255,255,0.4);
+
+        border-radius:
+            20px;
+
+        box-shadow:
+            0 10px 40px
+            rgba(0,0,0,0.6);
+
+        text-align:
+            center;
+
+        z-index:
+            12500;
+
+        display:
+            none;
     }
 
 
-    if (!magic) {
+    .monster-choice-title {
+        font-size:
+            24px;
 
-        console.error(
-            "【戦闘エラー】魔法が選択されていません"
-        );
+        font-weight:
+            bold;
 
-        return;
-
+        margin-bottom:
+            14px;
     }
 
 
-    // =========================
-    // 連打防止
-    // =========================
+    .monster-choice-message {
+        font-size:
+            17px;
 
-    if (activeBattle.busy) {
-
-        console.log(
-            "【戦闘】現在処理中です"
-        );
-
-        return;
-
+        margin-bottom:
+            24px;
     }
 
 
-    activeBattle.busy =
-        true;
+    .monster-choice-buttons {
+        display:
+            flex;
 
-
-    // =========================
-    // 魔法コスト
-    // =========================
-
-    const magicCost =
-        calculateMagicCost(
-            player,
-            magic,
-            activeBattle.battleState
-        );
-
-
-    console.log(
-        "【戦闘】魔法コスト：",
-        magicCost
-    );
-
-
-    // =========================
-    // G不足
-    // =========================
-
-    if (
-        player.money < magicCost
-    ) {
-
-        activeBattle.busy =
-            false;
-
-        showBattleMessage(
-            "所持金が足りません。"
-        );
-
-        return;
-
+        gap:
+            12px;
     }
 
 
-    // =========================
-    // 魔法コストを消費
-    // =========================
+    .monster-choice-button {
+        flex:
+            1;
 
-    player.money -=
-        magicCost;
+        height:
+            52px;
 
+        border:
+            1px solid
+            rgba(255,255,255,0.5);
 
-    if (
-        typeof updatePlayerStatusUI === "function"
-    ) {
+        border-radius:
+            999px;
 
-        updatePlayerStatusUI(
-            player
-        );
+        background:
+            rgba(255,255,255,0.1);
 
+        color:
+            white;
+
+        font-size:
+            16px;
+
+        font-weight:
+            bold;
+
+        cursor:
+            pointer;
     }
 
 
-    if (
-        typeof renderPlayers === "function"
-    ) {
-
-        renderPlayers();
-
+    .monster-choice-button:active {
+        transform:
+            scale(0.96);
     }
 
 
-    console.log(
-        "【戦闘】魔法コスト消費完了"
-    );
+    /* モンスターのステータス */
 
+    .monster-choice-stats {
+        margin-top:
+            16px;
 
-// =========================
-// 魔法SE
-// =========================
+        padding:
+            12px 16px;
 
-if (magic.sound) {
+        background:
+            rgba(255,255,255,0.06);
 
-    const magicSE =
-        new Audio(magic.sound);
+        border:
+            1px solid
+            rgba(255,255,255,0.15);
 
-    magicSE.currentTime = 0;
+        border-radius:
+            12px;
 
-    magicSE.play().catch(
-        function (error) {
-            console.warn(
-                "【戦闘】魔法SE再生失敗：",
-                error
-            );
-        }
-    );
+        font-size:
+            15px;
 
-}
-
-    // =========================
-    // ダメージ計算
-    // =========================
-
-       const damage =
-        calculateMagicDamage(
-            player,
-            magic,
-            activeBattle.battleState
-        );
-
-
-    activeBattle.lastDamage =
-        Number(damage);
-
-
-    console.log(
-        "【戦闘】実ダメージ：",
-        damage
-    );
-
-
-    // =========================
-    // モンスターHP
-    // =========================
-
-    const beforeHP =
-        Number(
-            activeBattle.monsterHP
-        );
-
-
-    activeBattle.monsterHP =
-        Math.max(
-            0,
-            beforeHP - Number(damage)
-        );
-
-    if (activeBattle.isBoss) {
-        currentBossHP = activeBattle.monsterHP;
-        activeBattle.player.bossDamage += Number(damage);
+        line-height:
+            1.8;
     }
 
 
-    console.log(
-        "【戦闘】モンスターHP：",
-        beforeHP,
-        "→",
-        activeBattle.monsterHP
-    );
+    /* =========================================================
+    24. モンスターバトル
+    ========================================================= */
+
+    .battle-popup {
+        position: fixed;
+
+        left: 50%;
+        top: 50%;
+
+        transform:
+            translate(-50%, -50%);
+
+        width:
+            min(90%, 440px);
+
+        padding:
+            24px 20px;
+
+        background:
+            rgba(20, 20, 35, 0.98);
+
+        border:
+            2px solid
+            rgba(255, 255, 255, 0.4);
+
+        border-radius:
+            20px;
+
+        box-shadow:
+            0 10px 40px
+            rgba(0, 0, 0, 0.6);
+
+        text-align:
+            center;
+
+        z-index:
+            11000;
+
+        display:
+            none;
+    }
 
 
-    
-    // =========================
-    // 画面だけ更新
-    // =========================
+    .battle-title {
+        font-size:
+            22px;
 
-    renderBattleMain();
+        font-weight:
+            bold;
 
-
- // =========================    
-// 被ダメージ演出
-// =========================
-
-if (activeBattle.monsterHP <= 0) {
-
-    // 撃破時だけ、点滅が終わるまで待つ
-    flashMonsterOnDamage(function () {
-
-        // 点滅終了後にモンスターを消す
-        const monsterImage =
-            document.getElementById(
-                "battleNewMonsterImage"
-            );
-
-        if (monsterImage) {
-            monsterImage.style.display =
-                "none";
-        }
-
-        // ここから先は、既存の撃破処理へ進む
-        if (activeBattle.isBoss) {
-
-            currentBossHP =
-                0;
-
-            finishBossBattle();
-
-            return;
-        }
-
-        activeBattle.busy =
-            false;
-
-        activeBattle.phase =
-            "waitBattleEnd";
-
-        activeBattle.endWithReward =
-            true;
-
-        showBattleMessage(
-            `${magic.name}！ ${damage}ダメージ！ ${monster.name}を倒した！　＞＞`
-        );
-
-        disableBattleActions();
-
-    });
-
-    return;
-}
-
-// HPが残っている場合は、今までどおり点滅だけ
-flashMonsterOnDamage();
+        margin-bottom:
+            8px;
+    }
 
 
-console.log(
-    "【戦闘】画面更新完了"
-);
+    .battle-round {
+        font-size:
+            15px;
+
+        opacity:
+            0.8;
+
+        margin-bottom:
+            20px;
+    }
 
 
-    // =========================
-// 撃破判定
-// =========================
+    .battle-status {
+        display:
+            flex;
 
-if (
-    activeBattle.monsterHP <= 0
-) {
+        align-items:
+            center;
 
-    console.log(
-        "【戦闘】モンスター撃破"
-    );
+        justify-content:
+            space-around;
+
+        gap:
+            10px;
+    }
 
 
-    // =========================
-    // ボス撃破
-    // =========================
+    .battle-player,
+    .battle-monster {
+        width:
+            42%;
 
-    if (activeBattle.isBoss) {
+        padding:
+            14px 8px;
 
-        currentBossHP =
+        background:
+            rgba(255, 255, 255, 0.08);
+
+        border-radius:
+            14px;
+    }
+
+
+    .battle-name {
+        font-size:
+            18px;
+
+        font-weight:
+            bold;
+
+        margin-bottom:
+            10px;
+    }
+
+
+    #battlePlayerStats,
+    #battleMonsterStats {
+        line-height:
+            1.8;
+
+        font-size:
+            15px;
+    }
+
+
+    .battle-vs {
+        font-size:
+            18px;
+
+        font-weight:
+            bold;
+    }
+
+
+    .battle-message {
+        margin-top:
+            20px;
+
+        min-height:
+            50px;
+
+        font-size:
+            17px;
+
+        line-height:
+            1.6;
+    }
+
+
+    /* =========================================================
+    25. バトル攻撃ボタン
+    ========================================================= */
+
+    .battle-attack-button {
+        width:
+            80%;
+
+        margin-top:
+            10px;
+
+        padding:
+            14px 20px;
+
+        border:
+            none;
+
+        border-radius:
+            999px;
+
+        background:
+            rgba(255, 255, 255, 0.15);
+
+        color:
+            white;
+
+        font-size:
+            18px;
+
+        font-weight:
+            bold;
+
+        cursor:
+            pointer;
+    }
+
+
+    .battle-attack-button:active {
+        transform:
+            scale(0.96);
+    }
+
+
+    /* =========================================================
+    26. 報酬選択
+    ========================================================= */
+
+    .reward-popup {
+        position:
+            fixed;
+
+        left:
+            50%;
+
+        top:
+            50%;
+
+        transform:
+            translate(-50%, -50%);
+
+        width:
+            min(90%, 420px);
+
+        padding:
+            24px 20px;
+
+        background:
+            rgba(20, 20, 35, 0.98);
+
+        border:
+            2px solid
+            rgba(255, 255, 255, 0.4);
+
+        border-radius:
+            20px;
+
+        box-shadow:
+            0 10px 40px
+            rgba(0, 0, 0, 0.6);
+
+        text-align:
+            center;
+
+        z-index:
+            92000;
+
+        display:
+            none;
+    }
+
+
+    .reward-title {
+        font-size:
+            22px;
+
+        font-weight:
+            bold;
+
+        margin-bottom:
+            12px;
+    }
+
+
+    .reward-message {
+        font-size:
+            16px;
+
+        margin-bottom:
+            20px;
+
+        opacity:
+            0.9;
+    }
+
+    .reward-choices {
+        display:
+            flex;
+
+        flex-direction:
+            row;
+
+        gap:
+            14px;
+
+        width:
+            100%;
+    }
+
+
+    .reward-choice-button {
+        flex:
+            1 1 0;
+
+        width:
+            auto;
+
+        min-width:
             0;
 
-        finishBossBattle();
-
-        return;
-
-    }
-
-
- // =========================
-// 通常モンスター撃破
-// =========================
-
-activeBattle.busy =
-    false;
-
-activeBattle.phase =
-    "waitBattleEnd";
-
-activeBattle.endWithReward =
-    true;
-
-// モンスターを消す
-const monsterImage =
-    document.getElementById(
-        "battleNewMonsterImage"
-    );
-
-if (monsterImage) {
-    monsterImage.style.display =
-        "none";
-}
-
-    showBattleMessage(
-        `${magic.name}！ ${damage}ダメージ！ ${monster.name}を倒した！　＞＞`
-    );
-
-    disableBattleActions();
-
-    return;
-
-}
-
-
-    // =========================
-    // 攻撃結果表示
-    // =========================
-
-    showBattleMessage(
-        `${magic.name}！ ${damage}ダメージ！`
-    );
-
-
-    console.log(
-        "【戦闘】攻撃結果表示。　画面タップ待ち"
-    );
-
-    activeBattle.busy =
-        false;
-
-    activeBattle.phase =
-        "waitEnemyCounter";
-
-    showBattleMessage(
-        `${magic.name}！ ${damage}ダメージ！　＞＞`
-    );
-
-    disableBattleActions();
-
-}
-
-  function enemyCounterAttack() {
-
-    console.log(
-        "【戦闘】敵反撃開始"
-    );
-
-
-    if (!activeBattle) {
-
-        console.error(
-            "【戦闘エラー】activeBattle がありません"
-        );
-
-        return;
-
-    }
-
-
-    const player =
-        activeBattle.player;
-
-    const monster =
-        activeBattle.monster;
-
-
-    // =========================
-    // 敵の攻撃力
-    // =========================
-
-    const enemyAttackRate =
-        Number(
-            activeBattle.battleState?.enemyAttackRate || 1
-        );
-
-
-    const baseDamage =
-        Math.floor(
-            Number(monster.attack || 0) *
-            enemyAttackRate
-        );
-
-
-    console.log(
-        "【戦闘】敵攻撃力：",
-        baseDamage
-    );
-
-
-    // =========================
-    // 実ダメージ
-    // =========================
-
-    const damage =
-        getMonsterDamage(
-            player,
-            baseDamage
-        );
-
-
-    console.log(
-        "【戦闘】敵からのダメージ：",
-        damage
-    );
-
-
-    // =========================
-    // Gを減らす
-    // =========================
-
-    player.money -=
-    damage;
-
-
-if (
-    player.money < 0
-) {
-
-    player.money =
-        0;
-
-}
-// =========================
-// プレイヤーHPバー即時更新
-// =========================
-
-const playerStartGold =
-    activeBattle.battleStartGold;
-
-const playerCurrentGold =
-    player.money;
-
-const playerHpRate =
-    playerStartGold > 0
-        ? Math.max(
-            0,
-            Math.min(
-                1,
-                playerCurrentGold / playerStartGold
-            )
-        )
-        : 0;
-
-const playerHpFill =
-    document.getElementById(
-        "battlePlayerHpFill"
-    );
-
-if (playerHpFill) {
-
-    playerHpFill.style.width =
-        `${playerHpRate * 100}%`;
-
-}
-
-
-// =========================
-// プレイヤー被ダメージ演出
-// =========================
-
-flashPlayerOnDamage();
-
-
-    // =========================
-    // HUD更新
-    // =========================
-
-    if (
-        typeof updatePlayerStatusUI === "function"
-    ) {
-
-        updatePlayerStatusUI(
-            player
-        );
-
-    }
-
-
-    if (
-        typeof renderPlayers === "function"
-    ) {
-
-        renderPlayers();
-
-    }
-
-
-    console.log(
-        "【戦闘】敵反撃後G：",
-        player.money
-    );
-
-
-    // =========================
-    // プレイヤー0G
-    // =========================
-
-    if (
-        player.money <= 0
-    ) {
-
-        showBattleMessage(
-            `${monster.name}の反撃！ ${damage}Gのダメージ！`
-        );
-
-
-        activeBattle.busy =
-            false;
-
-
-        hideLayer(
-            "battleMainPopup"
-        );
-
-
-        if (
-            typeof checkPlayerRespawn === "function"
-        ) {
-
-            checkPlayerRespawn(
-                player,
-                function () {
-
-                    activeBattle =
-                        null;
-
-                    finishTurn(
-                        player
-                    );
-
-                }
+        min-height:
+            90px;
+
+        padding:
+            16px 10px;
+
+        border:
+            2px solid
+            rgba(255, 215, 120, 0.45);
+
+        border-radius:
+            16px;
+
+        background:
+            linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 0.12),
+                rgba(255, 255, 255, 0.05)
             );
 
-        } else {
+        color:
+            white;
 
-            activeBattle =
-                null;
+        font-size:
+            18px;
 
-            finishTurn(
-                player
+        font-weight:
+            bold;
+
+        cursor:
+            pointer;
+
+        transition:
+            0.2s;
+
+        box-sizing:
+            border-box;
+    }
+
+
+    .reward-choice-button:hover {
+        transform:
+            translateY(-2px);
+
+        border-color:
+            rgba(255, 215, 120, 0.9);
+
+        background:
+            linear-gradient(
+                180deg,
+                rgba(255, 215, 120, 0.22),
+                rgba(255, 255, 255, 0.08)
             );
+
+        box-shadow:
+            0 0 18px
+            rgba(255, 215, 120, 0.2);
+    }
+
+
+    .reward-choice-button:active {
+        transform:
+            scale(0.97);
+    }
+
+    /* =========================================================
+    報酬選択：スマホ対応
+    ========================================================= */
+
+    @media (max-width: 700px) {
+
+        .reward-popup {
+
+            width:
+                min(92%, 420px);
+
+            padding:
+                20px 14px;
+
+            border-radius:
+                18px;
 
         }
 
 
-        return;
+        .reward-title {
+
+            font-size:
+                20px;
+
+            margin-bottom:
+                8px;
+
+        }
+
+
+        .reward-message {
+
+            font-size:
+                14px;
+
+            margin-bottom:
+                14px;
+
+        }
+
+
+        .reward-choices {
+
+            flex-direction:
+                row;
+
+            gap:
+                8px;
+
+        }
+
+
+        .reward-choice-button {
+
+            min-height:
+                82px;
+
+            padding:
+                12px 6px;
+
+            border-radius:
+                14px;
+
+            font-size:
+                15px;
+
+            line-height:
+                1.4;
+
+        }
+
+    }
+
+    /* =========================================================
+    27. 所持品画面
+    ========================================================= */
+
+    .inventory-popup {
+        position: fixed;
+
+        left: 50%;
+        top: 20px;
+
+        transform:
+            translateX(-50%);
+
+        width:
+            min(94%, 600px);
+
+        height:
+            650px;
+
+        max-height:
+            calc(100vh - 120px);
+
+        padding:
+            28px 22px;
+
+        box-sizing:
+            border-box;
+
+        background:
+            rgba(20, 20, 35, 0.98);
+
+        border:
+            2px solid
+            rgba(255, 255, 255, 0.4);
+
+        border-radius:
+            20px;
+
+        box-shadow:
+            0 10px 40px
+            rgba(0, 0, 0, 0.6);
+
+        text-align:
+            center;
+
+        z-index:
+            13000;
+
+        display:
+            none;
+
+        overflow:
+        auto;
+    }
+
+
+    /* =========================
+    所持品タイトル
+    ========================= */
+
+    .inventory-title {
+        font-size:
+            26px;
+
+        font-weight:
+            bold;
+
+        margin-bottom:
+            20px;
+    }
+
+
+    /* =========================
+    所持品一覧
+    ========================= */
+
+    .inventory-list {
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        gap:
+            10px;
+
+        padding:
+            4px;
+
+        text-align:
+            left;
+    }
+
+
+    /* =========================
+    所持品1つ分
+    ========================= */
+
+    .inventory-item {
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        gap:
+            14px;
+
+        width:
+            100%;
+
+        min-height:
+            60px;
+
+        padding:
+            14px 16px;
+
+        box-sizing:
+            border-box;
+
+        background:
+            rgba(255, 255, 255, 0.08);
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.2);
+
+        border-radius:
+            12px;
+
+        flex-shrink:
+            0;
+    }
+
+
+    /* =========================
+    アイテム名
+    ========================= */
+
+    .inventory-item-name {
+        flex:
+            0 0 24%;
+
+        font-size:
+            17px;
+
+        font-weight:
+            bold;
+
+        white-space:
+            normal;
+
+        word-break:
+            break-word;
+    }
+
+
+    /* =========================
+    アイテム効果
+    ========================= */
+
+    .inventory-item-effect {
+        flex:
+            1 1 auto;
+
+        min-width:
+            0;
+
+        font-size:
+            15px;
+
+        line-height:
+            1.5;
+
+        color:
+            rgba(255, 255, 255, 0.9);
+
+        text-align:
+            left;
+
+        white-space:
+            normal;
+
+        overflow-wrap:
+            anywhere;
+    }
+
+
+    /* =========================
+    アイテム使用ボタン
+    ========================= */
+
+    .inventory-item-use-button {
+        flex:
+            0 0 80px;
+
+        height:
+            40px;
+
+        border:
+            1px solid
+            rgba(245, 215, 110, 0.7);
+
+        border-radius:
+            999px;
+
+        background:
+            rgba(245, 215, 110, 0.15);
+
+        color:
+            #ffffff;
+
+        font-size:
+            14px;
+
+        font-weight:
+            bold;
+
+        cursor:
+            pointer;
+
+        transition:
+            background 0.2s ease,
+            transform 0.1s ease;
+    }
+
+
+    .inventory-item-use-button:hover {
+        background:
+            rgba(245, 215, 110, 0.28);
+    }
+
+
+    .inventory-item-use-button:active {
+        transform:
+            scale(0.96);
+    }
+
+
+    /* =========================
+    所持品なし
+    ========================= */
+
+    .inventory-empty {
+        padding:
+            40px 20px;
+
+        text-align:
+            center;
+
+        opacity:
+            0.7;
+
+        font-size:
+            16px;
+    }
+
+
+    /* =========================
+    閉じるボタン
+    ========================= */
+
+    .inventory-close-button {
+        display:
+            block;
+
+        margin:
+            14px auto 0;
+
+        padding:
+            12px 40px;
+
+        border:
+            none;
+
+        border-radius:
+            999px;
+
+        background:
+            rgba(255, 255, 255, 0.15);
+
+        color:
+            white;
+
+        font-size:
+            16px;
+
+        font-weight:
+            bold;
+
+        cursor:
+            pointer;
+    }
+
+
+    .inventory-close-button:active {
+        transform:
+            scale(0.96);
+    }
+
+
+    /* =========================================================
+    28. 魔法画面
+    ========================================================= */
+
+    .magic-popup {
+        position: fixed;
+
+        left: 50%;
+        top: 20px;
+
+        transform:
+            translateX(-50%);
+
+        width:
+            min(94%, 600px);
+
+        height:
+            650px;
+
+        max-height:
+            calc(100vh - 120px);
+
+        padding:
+            28px 22px;
+
+        box-sizing:
+            border-box;
+
+        background:
+            rgba(25, 35, 60, 0.98);
+
+        border:
+            2px solid
+            rgba(255, 255, 255, 0.4);
+
+        border-radius:
+            20px;
+
+        box-shadow:
+            0 10px 40px
+            rgba(0, 0, 0, 0.6);
+
+        text-align:
+            center;
+
+        z-index:
+            13000;
+
+        display:
+            none;
+
+        overflow:
+            hidden;
+    }
+
+
+    /* =========================
+    魔法タイトル
+    ========================= */
+
+    .magic-title {
+        font-size:
+            26px;
+
+        font-weight:
+            bold;
+
+        margin-bottom:
+            20px;
+    }
+
+
+    /* =========================
+    魔法一覧
+    ========================= */
+
+    .magic-list {
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        gap:
+            10px;
+
+        height:
+            calc(100% - 100px);
+
+        overflow-y:
+            auto;
+
+        padding:
+            4px;
+
+        text-align:
+            left;
+    }
+
+
+    /* =========================
+    魔法1つ分
+    ========================= */
+
+    .magic-item {
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        gap:
+            14px;
+
+        width:
+            100%;
+
+        min-height:
+            60px;
+
+        padding:
+            14px 16px;
+
+        box-sizing:
+            border-box;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.2);
+
+        border-radius:
+            12px;
+
+        background:
+            rgba(255, 255, 255, 0.06);
+
+        flex-shrink:
+            0;
+    }
+
+
+    /* =========================
+    魔法名
+    ========================= */
+
+    .magic-item-name {
+        flex:
+            0 0 24%;
+
+        font-size:
+            17px;
+
+        font-weight:
+            bold;
+
+        white-space:
+            normal;
+
+        word-break:
+            break-word;
+    }
+
+
+    /* =========================
+    魔法効果
+    ========================= */
+
+    .magic-item-effect {
+        flex:
+            1 1 auto;
+
+        min-width:
+            0;
+
+        font-size:
+            15px;
+
+        line-height:
+            1.5;
+
+        color:
+            rgba(255, 255, 255, 0.9);
+
+        text-align:
+            left;
+
+        white-space:
+            normal;
+
+        overflow-wrap:
+            anywhere;
+    }
+
+
+    /* =========================
+    魔法使用コスト
+    ========================= */
+
+    .magic-item-cost {
+        flex:
+            0 0 auto;
+
+        font-size:
+            15px;
+
+        font-weight:
+            bold;
+
+        color:
+            #f5d76e;
+
+        white-space:
+            nowrap;
+    }
+
+
+    /* =========================
+    魔法なし
+    ========================= */
+
+    .magic-empty {
+        padding:
+            40px 20px;
+
+        text-align:
+            center;
+
+        opacity:
+            0.7;
+
+        font-size:
+            16px;
+    }
+
+
+    /* =========================
+    閉じるボタン
+    ========================= */
+
+    .magic-close-button {
+        display:
+            block;
+
+        margin:
+            14px auto 0;
+
+        padding:
+            12px 40px;
+
+        border:
+            none;
+
+        border-radius:
+            999px;
+
+        background:
+            rgba(255, 255, 255, 0.15);
+
+        color:
+            #ffffff;
+
+        font-size:
+            16px;
+
+        font-weight:
+            bold;
+
+        cursor:
+            pointer;
+    }
+
+
+    .magic-close-button:active {
+        transform:
+            scale(0.96);
+    }
+
+    /* =========================================================
+    29. スマホ対応
+    ========================================================= */
+
+    @media (max-width: 500px) {
+
+        .game-container {
+            padding:
+                15px;
+        }
+
+
+        .map-board {
+            padding:
+                8px;
+        }
+
+
+        .map-node {
+            width:
+                45px;
+
+            height:
+                45px;
+        }
+
+
+        .square-icon {
+            font-size:
+                1.4rem;
+        }
+
+
+        .player-card {
+            gap:
+                8px;
+
+            padding:
+                10px;
+        }
+
+
+
+
+
+        .player-count {
+            min-width:
+                50px;
+
+            padding:
+                10px 8px;
+
+            font-size:
+                0.9rem;
+        }
+
+
+        /*
+        メニューボタンは現在の横並びを維持。
+        画面が狭すぎる場合だけ少し縮小。
+        */
+
+        .roulette-area {
+            gap:
+                8px;
+        }
+
+        .inventory-popup,
+        .magic-popup {
+            width:
+                94%;
+
+            height:
+                90vh;
+
+            padding:
+                24px 14px;
+        }
+
+
+        .inventory-item,
+        .magic-item {
+            gap:
+                8px;
+
+            padding:
+                12px 10px;
+        }
+
+
+        .inventory-item-name,
+        .magic-item-name {
+            flex:
+                0 0 24%;
+
+            font-size:
+                15px;
+        }
+
+
+        .inventory-item-effect,
+        .magic-item-effect {
+            font-size:
+                14px;
+
+            line-height:
+                1.5;
+        }
+
+
+        .inventory-item-use-button {
+            flex:
+                0 0 65px;
+
+            height:
+                38px;
+
+            font-size:
+                13px;
+        }
+
+
+        .magic-item-cost {
+            font-size:
+                13px;
+        }
+
+    }
+    /* =========================
+    バイト選択
+    ========================= */
+
+    .job-popup {
+
+        display: none;
+
+        position: fixed;
+
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-50%, -50%);
+
+        width: min(90%, 420px);
+
+        padding: 28px;
+
+        background: rgba(20, 20, 35, 0.98);
+
+        border: 2px solid rgba(255, 215, 120, 0.7);
+
+        border-radius: 20px;
+
+        box-shadow:
+            0 0 30px rgba(255, 200, 100, 0.25);
+
+        z-index: 1000;
+
+        text-align: center;
+    }
+
+
+    .job-title {
+
+        font-size: 26px;
+
+        font-weight: bold;
+
+        margin-bottom: 12px;
+    }
+
+
+    .job-message {
+
+        margin-bottom: 20px;
+
+        line-height: 1.6;
+
+        font-size: 15px;
+    }
+
+
+    .job-choices {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+
+    .job-choice-button {
+
+        width: 100%;
+
+        padding: 14px 18px;
+
+        border: 1px solid rgba(255, 255, 255, 0.2);
+
+        border-radius: 12px;
+
+        background: rgba(255, 255, 255, 0.08);
+
+        color: white;
+
+        font-size: 16px;
+
+        cursor: pointer;
+
+        transition: 0.2s;
+    }
+
+
+    .job-choice-button:hover {
+
+        background: rgba(255, 215, 120, 0.15);
+
+        transform: translateY(-1px);
+    }
+
+
+    .job-choice-button span {
+
+        display: block;
+
+        margin-top: 4px;
+
+        font-size: 14px;
+
+        color: #ffd76a;
+    }
+
+    /* =========================
+    最終結果
+    ========================= */
+
+    .result-popup {
+        display: none;
+
+        position: fixed;
+
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-50%, -50%);
+
+        width: 90%;
+        max-width: 500px;
+
+        padding: 30px 20px;
+
+        box-sizing: border-box;
+
+        background: rgba(15, 25, 50, 0.97);
+
+        border: 1px solid rgba(255, 255, 255, 0.3);
+
+        border-radius: 18px;
+
+        text-align: center;
+
+        z-index: 1000;
+
+        box-shadow:
+            0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+
+    .result-title {
+
+        font-size: 32px;
+
+        font-weight: bold;
+
+        margin-bottom: 10px;
+
+        color: #f5d76e;
+    }
+
+
+    .result-subtitle {
+
+        font-size: 20px;
+
+        margin-bottom: 25px;
+    }
+
+
+    .result-ranking {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 10px;
+
+        margin-bottom: 25px;
+    }
+
+
+    .result-rank {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        padding: 12px 16px;
+
+        background: rgba(255, 255, 255, 0.08);
+
+        border-radius: 10px;
+
+        font-size: 18px;
+    }
+
+
+    .result-rank-name {
+
+        font-weight: bold;
+    }
+
+
+    .result-rank-money {
+
+        font-weight: bold;
+    }
+
+
+    /* =========================
+    タイトルにもどるボタン
+    ========================= */
+
+    .result-button {
+
+        width: 100%;
+
+        padding: 14px;
+
+        border: 1px solid rgba(255, 255, 255, 0.25);
+
+        border-radius: 10px;
+
+        background: rgba(255, 255, 255, 0.12);
+
+        color: #ffffff;
+
+        font-size: 17px;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+        transition:
+            background 0.2s ease,
+            transform 0.1s ease;
+    }
+
+
+    .result-button:hover {
+
+        background: rgba(255, 255, 255, 0.2);
 
     }
 
 
-    // =========================
-    // 3ROUND終了
-    // =========================
+    .result-button:active {
 
-    if (
-        activeBattle.round >= 3
-    ) {
+        transform: scale(0.98);
 
-        activeBattle.busy =
-            false;
+    }
+    /* =========================
+    ターン数選択画面
+    ========================= */
 
-        activeBattle.phase =
-            "waitBattleEnd";
+    .turn-input-area {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
 
-        activeBattle.endWithReward =
-            false;
+        margin-top: 25px;
+        margin-bottom: 10px;
+    }
 
-        showBattleMessage(
-            `${monster.name}の反撃！ ${damage}Gのダメージ！　戦闘が終わった！　　＞＞`
+    #turnCountInput {
+        width: 150px;
+        height: 70px;
+
+        box-sizing: border-box;
+
+        padding: 8px 15px;
+
+        border: 2px solid rgba(255, 255, 255, 0.35);
+        border-radius: 14px;
+
+        background: rgba(255, 255, 255, 0.1);
+
+        color: #ffffff;
+
+        font-size: 32px;
+        font-weight: bold;
+
+        text-align: center;
+
+        outline: none;
+    }
+
+    #turnCountInput:focus {
+        border-color: #f5d76e;
+        box-shadow: 0 0 15px rgba(245, 215, 110, 0.3);
+    }
+
+    .turn-input-label {
+        font-size: 22px;
+        font-weight: bold;
+        color: #ffffff;
+    }
+
+    .turn-input-hint {
+        margin-top: 10px;
+
+        font-size: 14px;
+
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+
+    /* =========================
+    ターン数決定ボタン
+    ========================= */
+
+    #confirmTurnButton {
+        display: block;
+
+        width: 260px;
+        height: 60px;
+
+        margin: 25px auto 0;
+
+        border: 1px solid rgba(245, 215, 110, 0.6);
+        border-radius: 14px;
+
+        background: rgba(245, 215, 110, 0.15);
+
+        color: #ffffff;
+
+        font-size: 18px;
+        font-weight: bold;
+
+        cursor: pointer;
+
+        transition:
+            background 0.2s ease,
+            transform 0.1s ease,
+            box-shadow 0.2s ease;
+    }
+
+    #confirmTurnButton:hover {
+        background: rgba(245, 215, 110, 0.25);
+
+        box-shadow:
+            0 0 18px rgba(245, 215, 110, 0.25);
+    }
+
+    #confirmTurnButton:active {
+        transform: scale(0.97);
+    }
+
+    /* =========================================================
+    通常ショップ
+    魔法ショップと同じポップアップ枠
+    ========================================================= */
+
+    .shop-popup {
+
+        position: fixed;
+
+        top: 50%;
+        left: 50%;
+
+        transform:
+            translate(-50%, -50%);
+
+        width:
+            min(90%, 420px);
+
+        max-height:
+            80vh;
+
+        padding:
+            28px;
+
+        box-sizing:
+            border-box;
+
+        background:
+            rgba(20, 20, 35, 0.98);
+
+        border:
+            2px solid
+            rgba(255, 215, 120, 0.7);
+
+        border-radius:
+            20px;
+
+        box-shadow:
+            0 0 30px
+            rgba(255, 200, 100, 0.25);
+
+        text-align:
+            center;
+
+        z-index:
+            10000;
+
+        display:
+            none;
+
+        overflow-y:
+            auto;
+    }
+
+    /* =========================================================
+    魔法ショップ
+    ========================================================= */
+
+    .magic-shop-popup {
+
+        position: fixed;
+
+        top: 50%;
+        left: 50%;
+
+        transform:
+            translate(-50%, -50%);
+
+        width:
+            min(90%, 420px);
+
+        max-height:
+            80vh;
+
+        padding:
+            28px;
+
+        box-sizing:
+            border-box;
+
+        background:
+            rgba(20, 20, 35, 0.98);
+
+        border:
+            2px solid
+            rgba(255, 215, 120, 0.7);
+
+        border-radius:
+            20px;
+
+        box-shadow:
+            0 0 30px
+            rgba(255, 200, 100, 0.25);
+
+        text-align:
+            center;
+
+        z-index:
+            10000;
+
+        display:
+            none;
+
+        overflow-y:
+            auto;
+    }
+
+
+    .magic-shop-title {
+        font-size:
+            24px;
+
+        font-weight:
+            bold;
+
+        margin-bottom:
+            12px;
+    }
+
+
+    .magic-shop-money {
+        font-size:
+            17px;
+
+        font-weight:
+            bold;
+
+        margin-bottom:
+            20px;
+
+        color:
+            #f5d76e;
+    }
+
+
+    .magic-shop-list {
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        gap:
+            10px;
+
+        margin-bottom:
+            20px;
+    }
+
+
+    .magic-shop-close-button {
+
+        display: block;
+
+        width: auto;
+
+        margin:
+            8px auto 0;
+
+        padding:
+            8px 18px;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.2);
+
+        border-radius:
+            8px;
+
+        background:
+            rgba(255, 255, 255, 0.08);
+
+        color:
+            white;
+
+        font-size:
+            14px;
+
+        font-weight:
+            bold;
+
+        cursor:
+            pointer;
+    }
+
+
+    .magic-shop-close-button:active {
+        transform:
+            scale(0.97);
+    }
+    /* =========================================================
+    魔法ショップ：商品
+    ========================================================= */
+
+    .magic-shop-item {
+        display: grid;
+
+        grid-template-columns: 1fr auto;
+
+        grid-template-rows: auto auto;
+
+        gap: 5px 12px;
+
+        padding: 12px 14px;
+
+        box-sizing: border-box;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.2);
+
+        border-radius: 12px;
+
+        background:
+            rgba(255, 255, 255, 0.06);
+    }
+
+
+    .magic-shop-item-name {
+        grid-column: 1;
+        grid-row: 1;
+
+        font-size: 18px;
+
+        font-weight: bold;
+
+        margin: 0;
+
+        text-align: left;
+    }
+
+
+    .magic-shop-item-effect {
+        grid-column: 1;
+        grid-row: 2;
+
+        font-size: 14px;
+
+        margin: 0;
+
+        color:
+            rgba(255, 255, 255, 0.8);
+
+        text-align: left;
+
+        line-height: 1.4;
+    }
+
+
+    .magic-shop-item-price {
+        grid-column: 2;
+        grid-row: 1;
+
+        font-size: 15px;
+
+        font-weight: bold;
+
+        margin: 0;
+
+        color:
+            #f5d76e;
+
+        white-space: nowrap;
+
+        text-align: right;
+    }
+
+
+    /* =========================
+    購入ボタン
+    ========================= */
+
+    .magic-shop-buy-button {
+        grid-column: 2;
+        grid-row: 2;
+
+        width: 80px;
+        padding: 2px 12px;
+        font-size: 9px;
+
+        border:
+            1px solid
+            rgba(245, 215, 110, 0.7);
+
+        border-radius: 999px;
+
+        background:
+            rgba(245, 215, 110, 0.15);
+
+        color: #ffffff;
+
+        font-size: 15px;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+        justify-self: end;
+    }
+
+
+    .magic-shop-buy-button:hover {
+        background:
+            rgba(245, 215, 110, 0.28);
+
+        box-shadow:
+            0 0 12px
+            rgba(245, 215, 110, 0.2);
+    }
+
+
+    .magic-shop-buy-button:active {
+        transform:
+            scale(0.95);
+    }
+
+    /* =========================================================
+    戦闘画面：攻撃・魔法ボタン
+    ========================================================= */
+
+    .battle-attack-button,
+    .battle-magic-button {
+        display: block;
+
+        width: 255px;
+        height: 48px;
+
+        margin: 10px auto 0;
+
+        padding: 10px 20px;
+
+        box-sizing: border-box;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.25);
+
+        border-radius: 999px;
+
+        background:
+            rgba(255, 255, 255, 0.12);
+
+        color:
+            #ffffff;
+
+        font-size:
+            16px;
+
+        font-weight:
+            bold;
+
+        cursor:
+            pointer;
+
+        transition:
+            background 0.2s ease,
+            transform 0.1s ease;
+    }
+
+
+    .battle-attack-button:hover,
+    .battle-magic-button:hover {
+        background:
+            rgba(255, 255, 255, 0.2);
+    }
+
+
+    .battle-attack-button:active,
+    .battle-magic-button:active {
+        transform:
+            scale(0.96);
+    }
+
+    /* =========================================================
+    戦闘中の魔法選択
+    ========================================================= */
+
+    .battle-magic-popup {
+        position: fixed;
+
+        left: 50%;
+        top: 58%;
+
+        transform:
+            translateX(-50%);
+
+        width:
+            min(92%, 560px);
+
+        height:
+            280px;
+
+        padding:
+            18px 16px;
+
+        box-sizing:
+            border-box;
+
+        background:
+            rgba(25, 35, 60, 0.98);
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.35);
+
+        border-radius:
+            18px;
+
+        box-shadow:
+            0 10px 40px
+            rgba(0, 0, 0, 0.5);
+
+        text-align:
+            center;
+
+        z-index:
+            11000;
+
+        display:
+            none;
+
+        overflow:
+            hidden;
+    }
+
+
+    .battle-magic-title {
+        font-size:
+            24px;
+
+        font-weight:
+            bold;
+
+        margin-bottom:
+            20px;
+    }
+
+
+    .battle-magic-list {
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        gap:
+            10px;
+
+        margin-bottom:
+            12px;
+
+        max-height:
+            130px;
+
+        overflow-y:
+            auto;
+
+        padding-right:
+            4px;
+    }
+
+
+    .battle-magic-item {
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 12px;
+
+        padding: 10px 14px;
+
+        border: 1px solid
+            rgba(255, 255, 255, 0.2);
+
+        border-radius: 12px;
+
+        background:
+            rgba(255, 255, 255, 0.06);
+
+        box-sizing: border-box;
+    }
+
+
+    .battle-magic-item-info {
+        flex: 1;
+
+        min-width: 0;
+    }
+
+    .battle-magic-item-info {
+        flex: 1;
+        min-width: 0;
+        text-align: left;
+    }
+
+
+    .battle-magic-item-name {
+        font-weight: bold;
+
+        line-height: 1.2;
+    }
+
+
+
+    .battle-magic-item-effect {
+        white-space: nowrap;
+    }
+
+
+    .battle-magic-item-cost {
+        white-space: nowrap;
+
+        display: flex;
+        align-items: center;
+        line-height: 1;
+
+    }
+
+
+    .battle-magic-use-button {
+        flex-shrink: 0;
+    }
+
+
+    .battle-magic-item-name {
+        font-size:
+            17px;
+
+        font-weight:
+            bold;
+
+        white-space:
+            nowrap;
+    }
+
+
+    .battle-magic-item-effect {
+        flex:
+            1;
+
+        font-size:
+            14px;
+
+        color:
+            rgba(255, 255, 255, 0.85);
+    }
+
+
+    .battle-magic-item-cost {
+        font-size:
+            14px;
+
+        font-weight:
+            bold;
+
+        color:
+            #f5d76e;
+
+        white-space:
+            nowrap;
+    }
+
+
+    .battle-magic-use-button {
+        width:
+            90px;
+
+        padding:
+            8px 12px;
+
+        border:
+            1px solid
+            rgba(245, 215, 110, 0.7);
+
+        border-radius:
+            999px;
+
+        background:
+            rgba(245, 215, 110, 0.15);
+
+        color:
+            #ffffff;
+
+        font-size:
+            14px;
+
+        font-weight:
+            bold;
+
+        cursor:
+            pointer;
+    }
+
+
+    .battle-magic-use-button:hover {
+        background:
+            rgba(245, 215, 110, 0.28);
+    }
+
+
+    .battle-magic-use-button:active {
+        transform:
+            scale(0.96);
+    }
+
+
+    .battle-magic-close-button {
+        width:
+            180px;
+
+        padding:
+            12px;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.25);
+
+        border-radius:
+            999px;
+
+        background:
+            rgba(255, 255, 255, 0.12);
+
+        color:
+            #ffffff;
+
+        font-size:
+            16px;
+
+        font-weight:
+            bold;
+
+        cursor:
+            pointer;
+    }
+
+
+    .battle-magic-close-button:active {
+        transform:
+            scale(0.96);
+    }
+
+    .item-roulette {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: min(90%, 500px);
+        padding: 30px 20px;
+        background: rgba(25, 35, 60, 0.98);
+        border: 3px solid #d4af37;
+        border-radius: 18px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+        text-align: center;
+        z-index: 20000;
+    }
+
+    .item-roulette-title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 25px;
+    }
+
+    .item-roulette-name {
+        font-size: 36px;
+        font-weight: bold;
+        min-height: 50px;
+    }
+
+        /* =========================
+    アイテム用 複数サイコロルーレット
+    ========================= */
+
+    .multi-dice-roulette {
+        display: none;
+
+        position: fixed;
+
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-50%, -50%);
+
+        width: min(90%, 600px);
+
+        padding: 30px 20px;
+
+        background: rgba(25, 35, 60, 0.98);
+
+        border: 3px solid #d4af37;
+
+        border-radius: 18px;
+
+        box-shadow:
+            0 0 30px rgba(0, 0, 0, 0.6);
+
+        text-align: center;
+
+        z-index: 20000;
+    }
+
+
+    /* タイトル */
+
+    .multi-dice-title {
+
+        font-size: 28px;
+
+        font-weight: bold;
+
+        margin-bottom: 25px;
+
+    }
+
+
+    /* サイコロを並べる場所 */
+
+    .multi-dice-numbers {
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        gap: 15px;
+
+        flex-wrap: wrap;
+
+    }
+
+
+    /* それぞれのサイコロ */
+
+    .multi-dice-number {
+
+        width: 70px;
+
+        height: 70px;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        background: #ffffff;
+
+        color: #222222;
+
+        border-radius: 12px;
+
+        font-size: 40px;
+
+        font-weight: bold;
+
+        box-shadow:
+            0 4px 10px rgba(0, 0, 0, 0.4);
+
+    }
+
+
+    /* 合計 */
+
+    .multi-dice-total {
+
+        margin-top: 25px;
+
+        font-size: 28px;
+
+        font-weight: bold;
+
+        min-height: 35px;
+
+    }
+
+    /* =========================================================
+    ゲーム画面：レイヤー構造
+    ========================================================= */
+
+    .game-screen > .game-top-row {
+        grid-row: 1;
+    }
+
+    .game-screen > .map-area {
+        grid-row: 2;
+    }
+
+    .game-screen > .roulette-area {
+        grid-row: 3;
+    }
+
+    .game-screen > .player-status {
+        grid-row: 4;
+    }
+
+    /* =========================================================
+    マップレイヤー
+    ========================================================= */
+
+    .game-screen > .map-area {
+        min-height: 0;
+
+        overflow: auto;
+
+        box-sizing: border-box;
+
+        scrollbar-width: none;
+
+        -webkit-overflow-scrolling: touch;
+
+        margin-top: 5px;
+    }
+
+
+    .game-screen > .map-area::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    /* =========================================================
+    下部UI
+    ========================================================= */
+
+    .game-screen > .roulette-area {
+        flex-shrink: 0;
+
+        margin: 0;
+    }
+
+
+    .game-screen > .player-status {
+        flex-shrink: 0;
+
+        margin: 0;
+    }
+
+    /* =========================
+    ゲーム上部レイアウト
+    ========================= */
+
+    .game-top-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 0;
+        padding: 10px 14px;
+        box-sizing: border-box;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 12px;
+    }
+
+    .game-top-row .turn-display {
+        flex: 0 0 auto;
+        padding: 0;
+        margin: 0;
+        background: none;
+        border: none;
+    }
+
+    .game-top-row .destination {
+        flex: 1;
+        margin: 0;
+        padding: 0;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        text-align: center;
+    }
+
+
+
+    /* =========================
+    現在プレイヤー情報
+    ========================= */
+
+    .current-player-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 35px;
+        margin: 8px 0;
+    }
+
+    .current-player-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .remaining-steps-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+
+    /* =========================
+    スマホ版：ゲームボタン縮小
+    ========================= */
+
+    @media (max-width: 600px) {
+
+        .roulette-area {
+            gap: 8px;
+            padding-top: 6px;
+            padding-bottom: 5px;
+        }
+
+    }
+
+    /* =========================
+    スマホ版：プレイヤー一覧
+    ========================= */
+
+    @media (max-width: 600px) {
+
+        .player-card {
+            height: 42px;
+            min-height: 42px;
+            padding: 6px 12px;
+            gap: 8px;
+        }
+
+
+
+    }
+
+    /* =========================
+    スマホ版：マップ拡大
+    ========================= */
+
+    @media (max-width: 600px) {
+
+        .game-screen .map-area {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .map-board {
+            height: 850px;
+            padding: 0;
+        }
+
+        .square-icon {
+            font-size: 1.5rem;
+        }
+
+    }
+
+    /* =========================================================
+    スマホ：分岐矢印を小さく
+    ========================================================= */
+
+    @media (max-width: 500px) {
+
+        .branch-arrow-map {
+            width: 36px;
+            height: 36px;
+            border-width: 2px;
+        }
+
+        .map-arrow-symbol {
+            font-size: 1rem;
+        }
+
+    }
+
+    /* =========================================================
+    スマホ：ゲームタイトル
+    ========================================================= */
+
+    @media (max-width: 500px) {
+
+        .game-title {
+            font-size: 28px;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+    }
+    /* =========================
+    プレイヤーカード 資産ボタン
+    ========================= */
+
+    .player-asset-button {
+        border: none;
+        background: transparent;
+        padding: 2px 6px;
+        margin: 0;
+        font-size: 1.2rem;
+        cursor: pointer;
+        line-height: 1;
+    }
+
+    .player-asset-button:hover {
+        transform: scale(1.1);
+    }
+
+    .player-asset-button:active {
+        transform: scale(0.95);
+    }
+
+    /* =========================
+    資産購入
+    ========================= */
+
+    .asset-purchase-item {
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        width: 100%;
+
+        min-height: 60px;
+
+        padding: 12px 10px;
+
+        box-sizing: border-box;
+
+        background:
+            rgba(255, 255, 255, 0.08);
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.2);
+
+        border-radius: 12px;
+
+        flex-shrink: 0;
+    }
+
+
+    /* =========================
+    資産情報
+    ========================= */
+
+    .asset-purchase-info {
+        flex: 1 1 auto;
+
+        min-width: 0;
+
+        text-align: left;
+    }
+
+
+    .asset-purchase-name {
+        font-size: 17px;
+
+        font-weight: bold;
+
+        white-space: normal;
+
+        word-break: break-word;
+    }
+
+
+    .asset-purchase-detail {
+        margin-top: 4px;
+
+        font-size: 14px;
+
+        line-height: 1.4;
+
+        color:
+            rgba(255, 255, 255, 0.9);
+
+        white-space: nowrap;
+    }
+
+
+    /* =========================
+    所有者アイコン
+    ========================= */
+
+    .asset-purchase-owner {
+        flex:
+            0 0 30px;
+
+        font-size: 1.3rem;
+
+        text-align: center;
+    }
+
+    /* =========================
+    資産所有者：プレイヤー顔アイコン
+    ========================= */
+
+    .asset-owner-player-icon {
+        width: 32px;
+        height: 32px;
+
+        flex: 0 0 32px;
+
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+
+        background-position: 0% 0%;
+
+        border-radius: 50%;
+
+        overflow: hidden;
+
+        display: block;
+
+        box-sizing: border-box;
+    }
+
+    /* =========================
+    購入ボタン
+    ========================= */
+
+    .asset-purchase-button {
+        flex:
+            0 0 85px;
+
+        height: 38px;
+
+        padding: 6px 8px;
+
+        border:
+            1px solid
+            rgba(245, 215, 110, 0.7);
+
+        border-radius: 999px;
+
+        background:
+            rgba(245, 215, 110, 0.15);
+
+        color:
+            #ffffff;
+
+        font-size: 13px;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+        white-space: nowrap;
+    }
+
+
+    .asset-purchase-button:hover {
+        background:
+            rgba(245, 215, 110, 0.28);
+    }
+
+
+    .asset-purchase-button:active {
+        transform:
+            scale(0.96);
+    }
+
+
+    .asset-purchase-button:disabled {
+        opacity: 0.5;
+
+        cursor: default;
+    }
+
+
+    /* =========================
+    スマホ版：資産購入
+    ========================= */
+
+    @media (max-width: 500px) {
+
+        .asset-purchase-item {
+            gap: 6px;
+
+            padding: 10px 8px;
+        }
+
+
+        .asset-purchase-name {
+            font-size: 15px;
+        }
+
+
+        .asset-purchase-detail {
+            font-size: 13px;
+        }
+
+
+        .asset-purchase-owner {
+            flex-basis: 26px;
+
+            font-size: 1.1rem;
+        }
+
+
+        .asset-purchase-button {
+            flex-basis: 75px;
+
+            height: 36px;
+
+            font-size: 12px;
+        }
+
+    }
+    /* =========================
+    資産購入：所持金
+    ========================= */
+
+    .asset-purchase-type-name {
+        margin-bottom: 4px;
+
+        font-size: 20px;
+
+        font-weight: bold;
+
+        color: #ffffff;
+
+        text-align: center;
+
+        flex-shrink: 0;
+    }
+
+    .asset-purchase-money {
+        padding: 8px 4px;   
+
+        margin-bottom: 4px;
+
+        text-align: center;
+
+        font-size: 16px;
+
+        font-weight: bold;
+
+        color: #f5d76e;
+
+        flex-shrink: 0;
+    }
+    /* =========================
+    保有資産サマリー
+    ========================= */
+
+    .asset-summary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+
+        width: 100%;
+        padding: 8px 4px;
+        box-sizing: border-box;
+
+        flex-shrink: 0;
+    }
+
+    .asset-summary-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        font-size: 17px;
+        white-space: nowrap;
+    }
+
+    .asset-summary-item strong {
+        font-size: 18px;
+    }
+
+    /* =========================================================
+    スマホ版：ゲーム画面の横幅調整
+    ========================================================= */
+
+    @media (max-width: 600px) {
+
+        /* ゲーム画面そのもの */
+        .game-screen {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+
+        /* =========================
+        上部：TURN ＋ 次の目的地
+        ========================= */
+
+        .game-top-row {
+            width: 100%;
+            max-width: 100%;
+            padding-left: 8px;
+            padding-right: 8px;
+            gap: 4px;
+        }
+
+        .game-top-row .turn-display {
+            font-size: 13px;
+        }
+
+        .game-top-row .destination {
+            font-size: 13px;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        /* =========================
+        現在プレイヤー ＋ 残りマス
+        ========================= */
+
+        .current-player-row {
+            width: 100%;
+            max-width: 100%;
+            gap: 13px;
+        }
+
+        .current-player-info,
+        .remaining-steps-info {
+            font-size: 13px !important;
+        }
+
+
+        /* =========================
+        ゲームメニューボタン
+        ========================= */
+
+        .roulette-area {
+            width: 100%;
+            max-width: 100%;
+            padding-left: 4px;
+            padding-right: 4px;
+            gap: 5px;
+            box-sizing: border-box;
+        }
+
+        /* =========================
+        プレイヤー一覧：横スクロール
+        ========================= */
+
+        .player-status {
+            width: 100%;
+            max-width: 100%;
+
+            display: flex;
+            flex-direction: row;
+
+            gap: 8px;
+
+            overflow-x: auto;
+            overflow-y: hidden;
+
+            justify-content: flex-start;
+
+            padding: 0 4px;
+
+            box-sizing: border-box;
+
+            scrollbar-width: none;
+
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .player-status::-webkit-scrollbar {
+            display: none;
+        }
+
+
+    .player-card {
+        flex: 0 0 auto;
+
+        width: max-content;
+        min-width: 260px;
+
+        height: 42px;
+        min-height: 42px;
+
+        padding: 6px 12px;
+
+        white-space: nowrap;
+    }
+
+    }
+
+    /* =========================
+    ゴールド表示：改行させない
+    ========================= */
+
+    .player-card span {
+        white-space: nowrap;
+    }
+
+    /* =========================
+    サウンド設定ボタン
+    ========================= */
+
+    .sound-settings-button {
+        flex:
+            0 0 40px;
+
+        width: 40px;
+        height: 40px;
+
+        margin: 0;
+        padding: 0;
+
+        border: none;
+
+        background: none;
+
+        color: white;
+
+        font-size: 24px;
+
+        cursor: pointer;
+    }
+
+    .sound-settings-button:active {
+        transform: scale(0.95);
+    }
+
+    /* =========================
+    サウンド設定
+    スライダー位置を統一
+    ========================= */
+
+    .sound-setting-item {
+        display: flex;
+        align-items: center;
+    }
+
+    .sound-setting-title {
+        width: 70px;
+        min-width: 70px;
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    .sound-volume-slider {
+        width: 145px;
+        flex-shrink: 0;
+    }
+
+    .sound-volume-value {
+        margin-left: 15px;
+    }
+
+    /* =========================
+    ショップ
+    ========================= */
+
+    #shopPopup {
+
+        display: none;
+
+        position: fixed;
+
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-50%, -50%);
+
+        width: min(90%, 420px);
+
+        padding: 28px;
+
+        background: rgba(20, 20, 35, 0.98);
+
+        border: 2px solid rgba(255, 215, 120, 0.7);
+
+        border-radius: 20px;
+
+        box-shadow:
+            0 0 30px rgba(255, 200, 100, 0.25);
+
+        z-index: 1000;
+
+        text-align: center;
+
+        box-sizing: border-box;
+    }
+
+
+    /* =========================
+    ショップ・魔法店カテゴリー選択ボタン
+    旧ショップのカテゴリーUIを共通利用
+    ========================= */
+
+    .shop-category-button {
+        display: block;
+
+        width: 70%;
+        margin: 0 auto;
+
+        padding: 14px 18px;
+
+        border: 1px solid rgba(255, 255, 255, 0.2);
+
+        border-radius: 12px;
+
+        background: rgba(255, 255, 255, 0.08);
+
+        color: white;
+
+        font-size: 16px;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+        transition: 0.2s;
+    }
+
+
+    .shop-category-button:hover {
+        background: rgba(255, 215, 120, 0.15);
+
+        transform: translateY(-1px);
+    }
+
+
+    .shop-category-button:active {
+        transform: scale(0.98);
+    }
+
+
+    @media (max-width: 500px) {
+
+        .shop-category-button {
+            width: 80%;
+
+            padding: 13px 16px;
+
+            font-size: 15px;
+        }
+
+    }
+
+    /* =========================
+    ショップ終了ボタン
+    ========================= */
+    #shopCloseButton {
+        margin-top: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    #shopCloseButton:hover {
+        background: rgba(255, 215, 120, 0.15);
+        transform: translateY(-1px);
+    }
+
+    /* =========================
+    ショップ商品一覧
+    ========================= */
+
+    #shopItemList {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    /* =========================
+    魔力ショップ商品一覧
+    ========================= */
+
+    #powerShopList {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 8px;
+
+        width: 100%;
+    }
+
+    /* =========================
+    ショップ所持金
+    ========================= */
+
+    .shop-money,
+    .magic-shop-money {
+
+        font-size: 17px;
+
+        font-weight: bold;
+
+        margin-top: 8px;
+
+        margin-bottom: 16px;
+
+        color: #f5d76e;
+    }
+
+    /* =========================================================
+    所持品・所持品一覧画面
+    ショップと同じ外枠デザイン
+    ========================================================= */
+
+    #inventoryPopup {
+
+        position: fixed;
+
+        top: 50%;
+        left: 50%;
+
+        transform:
+            translate(-50%, -50%);
+
+        width:
+            min(90%, 420px);
+
+        max-height:
+            80vh;
+
+        padding:
+            28px;
+
+        box-sizing:
+            border-box;
+
+        background:
+            rgba(20, 20, 35, 0.98);
+
+        border:
+            2px solid
+            rgba(255, 215, 120, 0.7);
+
+        border-radius:
+            20px;
+
+        box-shadow:
+            0 0 30px
+            rgba(255, 200, 100, 0.25);
+
+        text-align:
+            center;
+
+        z-index:
+            13000;
+
+        overflow-y:
+            auto;
+    }
+
+    /* =========================================================
+    魔法画面
+    ショップと同じ外枠デザイン
+    ========================================================= */
+
+    #magicPopup {
+
+        position: fixed;
+
+        top: 50%;
+        left: 50%;
+
+        transform:
+            translate(-50%, -50%);
+
+        width:
+            min(90%, 420px);
+
+        max-height:
+            80vh;
+
+        padding:
+            28px;
+
+        box-sizing:
+            border-box;
+
+        background:
+            rgba(20, 20, 35, 0.98);
+
+        border:
+            2px solid
+            rgba(255, 215, 120, 0.7);
+
+        border-radius:
+            20px;
+
+        box-shadow:
+            0 0 30px
+            rgba(255, 200, 100, 0.25);
+
+        text-align:
+            center;
+
+        z-index:
+            13000;
+
+        overflow-y:
+            auto;
+    }
+
+    /* =========================================================
+    所持品・魔法タイトル
+    ========================================================= */
+
+    .inventory-title,
+    .magic-title {
+
+        font-size:
+            24px;
+
+        font-weight:
+            bold;
+
+        margin-bottom:
+            12px;
+    }
+
+    /* =========================================================
+    所持品・魔法：閉じるボタン
+    ========================================================= */
+
+    .inventory-close-button,
+    .magic-close-button {
+
+        display:
+            block;
+
+        width:
+            auto;
+
+        margin:
+            8px auto 0;
+
+        padding:
+            8px 18px;
+
+        box-sizing:
+            border-box;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.2);
+
+        border-radius:
+            8px;
+
+        background:
+            rgba(255, 255, 255, 0.08);
+
+        color:
+            white;
+
+        font-size:
+            14px;
+
+        font-weight:
+            bold;
+
+        cursor:
+            pointer;
+    }
+
+
+    /* =========================================================
+    UI全面改修・第1段階
+    完成イメージ準拠：固定HUD + 左メニュー + 大型マップ
+    ========================================================= */
+
+    body:has(.game-screen) {
+        padding: 0;
+        overflow: hidden;
+        background: #071b3f;
+    }
+
+    .game-container:has(.game-screen) {
+        width: 100vw;
+        height: 100dvh;
+        min-height: 100dvh;
+        padding: 0;
+        margin: 0;
+        display: block;
+        overflow: hidden;
+    }
+
+    .game-screen {
+        width: 100%;
+        max-width: none;
+        height: 100dvh;
+        margin: 0;
+        display: block;
+        position: relative;
+        overflow: hidden;
+        background: #071b3f;
+    }
+
+    /* =========================
+    上部固定HUD
+    ========================= */
+
+    .game-hud {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        right: 8px;
+        height: 76px;
+        z-index: 1000;
+
+        display: grid;
+        grid-template-columns:
+            170px
+            minmax(310px, 1.35fr)
+            minmax(190px, 0.8fr)
+            minmax(320px, 1.25fr)
+            175px;
+        gap: 0;
+        align-items: stretch;
+
+        padding: 0;
+
+        box-sizing: border-box;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                180deg,
+                rgba(9, 63, 129, 0.96),
+                rgba(3, 42, 91, 0.96)
+            );
+
+        border: 2px solid rgba(72, 188, 255, 0.75);
+        border-radius: 14px;
+
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.15),
+            0 6px 16px rgba(0,0,0,0.38);
+
+        overflow: hidden;
+    }
+
+    .hud-box {
+        min-width: 0;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        box-sizing: border-box;
+        padding: 8px 16px;
+
+        color: #ffffff;
+        background: transparent;
+
+        border: 0;
+        border-radius: 0;
+
+        box-shadow: none;
+
+        position: relative;
+    }
+
+    .hud-box + .hud-box {
+        border-left: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .hud-player {
+        justify-content: flex-start;
+        gap: 10px;
+        padding-left: 10px;
+    }
+
+    .hud-player-avatar {
+        width: 60px;
+        height: 60px;
+        flex: 0 0 60px;
+        object-fit: contain;
+        object-position: center bottom;
+        filter: drop-shadow(0 3px 3px rgba(0,0,0,0.35));
+    }
+
+    .hud-player-name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 30px;
+        font-weight: 900;
+    }
+
+    .hud-icon {
+        width: 52px;
+        height: 52px;
+        flex: 0 0 52px;
+        object-fit: contain;
+        margin-right: 10px;
+        filter: drop-shadow(0 3px 3px rgba(0,0,0,0.3));
+    }
+
+    .hud-icon-fallback {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 52px;
+        height: 52px;
+        flex: 0 0 52px;
+        margin-right: 10px;
+        font-size: 34px;
+    }
+
+    .hud-value {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 30px;
+        font-weight: 900;
+        letter-spacing: 0.02em;
+    }
+
+    .hud-destination {
+        gap: 5px;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .hud-destination:hover {
+        filter: brightness(1.12);
+    }
+
+    .hud-destination-icon {
+        width: 52px;
+        height: 52px;
+        flex: 0 0 52px;
+        object-fit: contain;
+        margin-right: 3px;
+    }
+
+    .hud-destination-label {
+        white-space: nowrap;
+        font-size: clamp(14px, 1.35vw, 22px);
+        font-weight: 800;
+    }
+
+    .hud-destination-value {
+        margin: 0 2px;
+        color: #ffe83b;
+        font-size: clamp(30px, 3vw, 48px);
+        line-height: 1;
+    }
+
+    .hud-turn {
+        font-size: 30px;
+        font-weight: 900;
+        white-space: nowrap;
+    }
+
+    /* 既存ロジック互換用。新UIには表示しない。 */
+    .game-hud .remaining-steps-info {
+        display: none !important;
+    }
+
+    /* =========================
+    マップ領域
+    ========================= */
+
+    .game-screen > .map-area {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        width: auto;
+        height: auto;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+
+        overflow: auto;
+        border-radius: 0;
+        background: transparent;
+        scrollbar-width: none;
+
+        z-index: 10;
+        touch-action: pan-x pan-y;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .game-screen > .map-area::-webkit-scrollbar {
+        display: none;
+    }
+
+    .map-board {
+        width: 1800px;
+        height: 1200px;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        flex-shrink: 0;
+
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        transform-origin: center center;
+        will-change: transform;
+    }
+
+    /* =========================
+    マス
+    ========================= */
+
+    .map-node {
+        width: 58px;
+        height: 58px;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0.85);
+    
+        overflow: visible;
+
+        background: rgba(255,255,255,0.78);
+        border: 3px solid rgba(255,255,255,0.95);
+        border-radius: 50%;
+
+        box-shadow:
+            0 3px 8px rgba(0,0,0,0.35),
+            inset 0 1px 2px rgba(255,255,255,0.8);
+
+        z-index: 5;
+    }
+
+    .map-node[data-map-type="start"] {
+        background: rgba(83, 180, 255, 0.9);
+    }
+
+    .map-node[data-map-type="money"] {
+        background: rgba(255, 219, 78, 0.92);
+    }
+
+    .map-node[data-map-type="job"] {
+        background: rgba(91, 205, 123, 0.92);
+    }
+
+    .map-node[data-map-type="shop"] {
+        background: rgba(255, 170, 76, 0.92);
+    }
+
+    .map-node[data-map-type="worst"] {
+        background: rgba(103, 81, 139, 0.9);
+    }
+
+    .map-node[data-map-type="monster"] {
+        background: rgba(247, 109, 91, 0.9);
+    }
+
+    .map-node[data-map-type="magic_shop"] {
+        background: rgba(171, 109, 245, 0.9);
+    }
+
+    .map-node[data-map-type="asset"] {
+        background: rgba(77, 169, 232, 0.9);
+    }
+
+    .map-node[data-map-type="treasure"] {
+        background: rgba(255, 205, 75, 0.92);
+    }
+
+    .square-icon {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.7rem;
+        line-height: 1;
+        pointer-events: none;
+    }
+
+    .map-space-icon {
+        width: 66px;
+        height: 66px;
+        max-width: none;
+        object-fit: contain;
+        display: block;
+        user-select: none;
+        -webkit-user-drag: none;
+        filter: drop-shadow(0 3px 3px rgba(0,0,0,0.38));
+    }
+
+    .square-number {
+        display: none !important;
+    }
+
+    .boss-node {
+        transform:
+            translate(-50%, -50%)
+            scale(1.08);
+
+        background: rgba(191, 49, 52, 0.92);
+        border-color: #ffcf4a;
+
+        box-shadow:
+            0 0 0 3px rgba(255, 89, 64, 0.9),
+            0 0 20px rgba(255, 77, 58, 0.85),
+            0 4px 10px rgba(0,0,0,0.45);
+    }
+
+    .boss-node .map-space-icon {
+        width: 78px;
+        height: 78px;
+    }
+
+
+    /* =========================
+    左側アクションメニュー
+    ========================= */
+
+    .game-screen > .action-menu {
+        position: absolute;
+        top: 105px;
+        left: 8px;
+        bottom: auto;
+
+        width: 190px;
+        padding: 0;
+        margin: 0;
+
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+
+        z-index: 100;
+        background: transparent;
+    }
+
+    .action-menu-button {
+        width: 190px;
+        height: 92px;
+        padding: 8px 12px;
+
+        display: grid;
+        grid-template-columns: 62px 1fr;
+        grid-template-rows: 1fr;
+        align-items: center;
+        justify-items: center;
+        gap: 6px;
+
+        border: 3px solid rgba(37, 202, 255, 0.75);
+        border-radius: 16px;
+
+        background:
+            linear-gradient(
+                180deg,
+                rgba(9, 64, 128, 0.96),
+                rgba(4, 39, 86, 0.96)
+            );
+
+        color: white;
+        font-size: 26px;
+        font-weight: 900;
+
+        box-shadow:
+            0 4px 10px rgba(0,0,0,0.35),
+            inset 0 1px 0 rgba(255,255,255,0.18);
+
+        transition:
+            transform 0.12s ease,
+            filter 0.12s ease,
+            background 0.12s ease;
+    }
+
+    .action-menu-button img {
+        width: 58px;
+        height: 58px;
+        object-fit: contain;
+        display: block;
+        grid-column: 1;
+    }
+
+    .action-menu-fallback {
+        display: none;
+        grid-column: 1;
+        font-size: 48px;
+        line-height: 1;
+    }
+
+    .action-menu-label {
+        grid-column: 2;
+        white-space: nowrap;
+    }
+
+    .action-menu-button:hover {
+        filter: brightness(1.1);
+        transform: translateX(2px);
+    }
+
+    .action-menu-button:active {
+        transform: scale(0.98);
+    }
+
+    /* サイコロも共通のアクションメニューデザインを使用 */
+
+    .action-menu-button:disabled {
+        opacity: 0.48;
+        filter: grayscale(0.45);
+        transform: none;
+    }
+
+    /* =========================
+    既存下部UIは非表示
+    ========================= */
+
+    .game-screen > .player-status,
+    .game-screen > .choice-area {
+        display: none !important;
+    }
+
+    .roulette-number-hidden {
+        display: none !important;
+    }
+
+    /* =========================
+    その他メニュー
+    ========================= */
+
+    .other-menu-popup {
+        display: none;
+        position: absolute;
+        top: 122px;
+        left: 210px;
+        width: 260px;
+        padding: 18px;
+
+        z-index: 1200;
+
+        background:
+            linear-gradient(
+                180deg,
+                rgba(11, 62, 117, 0.98),
+                rgba(4, 29, 66, 0.98)
+            );
+
+        border: 2px solid rgba(91, 208, 255, 0.75);
+        border-radius: 16px;
+        box-shadow: 0 10px 28px rgba(0,0,0,0.5);
+    }
+
+    .other-menu-title {
+        margin-bottom: 12px;
+        text-align: center;
+        font-size: 22px;
+        font-weight: 900;
+    }
+
+    .other-menu-item,
+    .other-menu-close {
+        width: 100%;
+        min-height: 48px;
+        margin-top: 8px;
+        padding: 8px 12px;
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 10px;
+        background: rgba(255,255,255,0.1);
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .other-menu-item:hover,
+    .other-menu-close:hover {
+        background: rgba(255,255,255,0.18);
+    }
+
+    .other-menu-close {
+        margin-top: 14px;
+    }
+
+    /* =========================
+    既存ポップアップを新UIの最前面へ
+    ========================= */
+
+    .game-screen .inventory-popup,
+    .game-screen .magic-popup,
+    .game-screen .shop-popup,
+    .game-screen .magic-shop-popup,
+    .game-screen .battle-popup,
+    .game-screen .event-popup,
+    .game-screen .reward-popup {
+        z-index: 20000;
+    }
+
+    /* =========================
+    横画面を基準にした縮小調整
+    ========================= */
+
+    @media (max-width: 1100px) {
+
+        .game-hud {
+            grid-template-columns:
+                140px
+                minmax(220px, 1.3fr)
+                minmax(150px, 0.8fr)
+                minmax(230px, 1.2fr)
+                125px;
+            gap: 5px;
+        }
+
+        .hud-box {
+            padding-left: 9px;
+            padding-right: 9px;
+        }
+
+        .hud-player-avatar {
+            width: 50px;
+            height: 50px;
+            flex-basis: 50px;
+        }
+
+        .hud-icon {
+            width: 42px;
+            height: 42px;
+            flex-basis: 42px;
+        }
+
+        .hud-icon-fallback {
+            width: 42px;
+            height: 42px;
+            flex-basis: 42px;
+            font-size: 28px;
+        }
+
+        .game-screen > .action-menu {
+            width: 150px;
+        }
+
+        .action-menu-button {
+            width: 150px;
+            height: 88px;
+            grid-template-columns: 48px 1fr;
+            font-size: 18px;
+        }
+
+        .action-menu-button img {
+            width: 46px;
+            height: 46px;
+        }
+
+    }
+
+    @media (max-width: 700px) {
+
+        .game-hud {
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            height: 58px;
+            grid-template-columns:
+                108px
+                minmax(165px, 1.3fr)
+                minmax(105px, 0.8fr)
+                minmax(180px, 1.2fr)
+                100px;
+            gap: 0;
+        }
+
+        .hud-box {
+            height: 58px;
+            padding: 4px 6px;
+            border-width: 1px;
+            border-radius: 8px;
+        }
+
+        .hud-player {
+            gap: 4px;
+        }
+
+        .hud-player-avatar {
+            width: 44px;
+            height: 44px;
+            flex-basis: 44px;
+        }
+
+        .hud-player-name {
+            font-size: 18px;
+        }
+
+        .hud-icon {
+            width: 34px;
+            height: 34px;
+            flex-basis: 34px;
+            margin-right: 4px;
+        }
+
+        .hud-destination-icon {
+            width: 34px;
+            height: 34px;
+            flex-basis: 34px;
+            margin-right: 2px;
+        }
+
+        .hud-icon-fallback {
+            width: 34px;
+            height: 34px;
+            flex-basis: 34px;
+            margin-right: 4px;
+            font-size: 23px;
+        }
+
+        .hud-value {
+            font-size: 19px;
+        }
+
+        .hud-destination-label {
+            font-size: 12px;
+        }
+
+        .hud-destination-value {
+            font-size: 27px;
+        }
+
+        .hud-turn {
+            font-size: 16px;
+        }
+
+        .game-screen > .map-area {
+            top: 0;
+        }
+
+        .game-screen > .action-menu {
+            top: 74px;
+            left: 4px;
+            width: 112px;
+            gap: 4px;
+        }
+
+        .action-menu-button {
+            width: 112px;
+            height: 70px;
+            padding: 4px 6px;
+            grid-template-columns: 38px 1fr;
+            gap: 3px;
+            border-radius: 10px;
+            border-width: 2px;
+            font-size: 14px;
+        }
+
+        .action-menu-button img {
+            width: 36px;
+            height: 36px;
+        }
+
+        .action-menu-fallback {
+            font-size: 30px;
+        }
+
+        .map-board {
+            width: 1500px;
+            height: 1000px;
+        }
+
+        .map-node {
+            width: 50px;
+            height: 50px;
+        }
+
+        .map-space-icon {
+            width: 58px;
+            height: 58px;
+        }
+
+        .boss-node .map-space-icon {
+            width: 68px;
+            height: 68px;
+        }
+
+    }
+
+    /* =========================================================
+    プレイヤーキャラクター：4方向スプライトシート
+    =========================================================
+
+    使用画像：
+    images/characters/player-male.png
+    images/characters/player-female.png
+
+    画像は2×2配置です。
+
+    ┌────────┬────────┐
+    │ 正面   │ 背面   │
+    ├────────┼────────┤
+    │ 左向き │ 右向き │
+    └────────┴────────┘
+
+    game.js の updatePlayerSprite() が
+    background-position を変更します。
+
+    このCSSでは、
+    ・画像全体を表示しない
+    ・1方向分だけ表示
+    ・マス中央に配置できるサイズ
+    ・マップズーム時にプレイヤーだけ縮小しない
+    を担当します。
+    ========================================================= */
+
+    /* 共通のスプライト設定 */
+
+    .player-sprite {
+        display: block;
+
+        background-repeat:
+            no-repeat !important;
+
+        background-size:
+            200% 200% !important;
+
+        background-color:
+            transparent !important;
+
+        border:
+            0 !important;
+
+        border-radius:
+            0 !important;
+
+        box-shadow:
+            none !important;
+
+        object-fit:
+            initial !important;
+
+        object-position:
+            initial !important;
+
+        overflow:
+            visible;
+
+        pointer-events:
+            none;
+
+        user-select:
+            none;
+
+        -webkit-user-drag:
+            none;
+    }
+
+
+    /* =========================================================
+    HUDのプレイヤー
+    ========================================================= */
+
+    .hud-player-avatar.player-sprite {
+
+        flex:
+            0 0 60px;
+
+        width:
+            60px;
+
+        height:
+            60px;
+
+        background-repeat:
+            no-repeat !important;
+
+        background-size:
+            200% 200% !important;
+
+        background-color:
+            transparent !important;
+
+    }
+
+
+    /* =========================================================
+    マップ上のプレイヤー
+    ========================================================= */
+    /*
+    マスの完全中央に配置します。
+
+    width / height はマスより大きめです。
+    プレイヤーを「マスの意味を示すアイコン」より
+    さらに前面に表示します。
+
+    マップ自体をズームした場合は、
+    プレイヤーもマップと一緒に拡大・縮小します。
+    プレイヤーだけ逆方向に縮小する処理はありません。
+    */
+
+    .map-node .player-piece.player-sprite {
+
+        position:
+            absolute;
+
+        left:
+            50%;
+
+        top:
+            50%;
+
+        transform:
+            translate(-50%, -50%);
+
+        width:
+            100px;
+
+        height:
+            100px;
+
+        margin:
+            0 !important;
+
+        background-repeat:
+            no-repeat !important;
+
+        background-size:
+            200% 200% !important;
+
+        background-color:
+            transparent !important;
+
+        border:
+            0 !important;
+
+        border-radius:
+            0 !important;
+
+        box-shadow:
+            none !important;
+
+        z-index:
+            50;
+
+        pointer-events:
+            none;
+
+        user-select:
+            none;
+
+        -webkit-user-drag:
+            none;
+
+    }
+
+
+    /* =========================================================
+    プレイヤーの向き
+    ========================================================= */
+    /*
+    game.js が data-direction を設定します。
+
+    down  = 正面
+    up    = 背面
+    left  = 左向き
+    right = 右向き
+
+    background-position 自体は game.js からも設定されるため、
+    ここではCSS側でも対応関係を明示しておきます。
+    */
+
+    /* 正面 */
+
+    .map-node .player-piece.player-sprite[data-direction="down"] {
+
+        background-position:
+            0% 0%;
+
+    }
+
+
+    /* 背面 */
+
+    .map-node .player-piece.player-sprite[data-direction="up"] {
+
+        background-position:
+            100% 0%;
+
+    }
+
+
+    /* 左向き */
+
+    .map-node .player-piece.player-sprite[data-direction="left"] {
+
+        background-position:
+            0% 100%;
+
+    }
+
+
+    /* 右向き */
+
+    .map-node .player-piece.player-sprite[data-direction="right"] {
+
+        background-position:
+            100% 100%;
+
+    }
+
+
+    /* =========================================================
+    HUD：画面幅が狭い場合
+    ========================================================= */
+
+    @media (max-width: 1100px) {
+
+        .hud-player-avatar.player-sprite {
+
+            flex-basis:
+                50px;
+
+            width:
+                50px;
+
+            height:
+                50px;
+
+        }
+
+    }
+
+
+    /* =========================================================
+    スマートフォン
+    ========================================================= */
+
+    @media (max-width: 700px) {
+
+        .hud-player-avatar.player-sprite {
+
+            flex-basis:
+                44px;
+
+            width:
+                44px;
+
+            height:
+                44px;
+
+        }
+
+
+        /*
+        マップ上のプレイヤーは、
+        スマホでも小さくしません。
+
+        マップ自体のズームに合わせて
+        一緒に拡大・縮小します。
+        */
+
+        .map-node .player-piece.player-sprite {
+
+            width:
+                110px;
+
+            height:
+                130px;
+
+        }
+
+    }
+
+    /* =========================================================
+    UI微修正：今回の最終調整
+    ・プレイヤー名
+    ・左側アクションメニュー
+    ・ショップカテゴリー
+    ・HUD顔アイコン
+    ========================================================= */
+
+    /* =========================
+    HUD：プレイヤー名
+    ========================= */
+
+    .game-hud .hud-player {
+        min-width: 0;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .game-hud .hud-player-name {
+        min-width: 0;
+        flex: 1 1 auto;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: clip;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: 0;
+        text-align: left;
+    }
+
+    /* =========================
+    HUD：正面固定・顔中心アイコン
+    ========================= */
+
+    .hud-avatar-face {
+        width: 60px;
+        height: 60px;
+        flex: 0 0 60px;
+
+        display: block;
+
+        background-repeat: no-repeat !important;
+        background-size: contain !important;
+        background-position: center !important;
+        background-color: transparent !important;
+
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+
+        overflow: hidden;
+        pointer-events: auto;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    /* =========================
+    左側アクションメニュー：表示を統一
+    ========================= */
+
+    .game-screen > .action-menu {
+        width: 190px;
+        gap: 7px;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        width: 190px;
+        height: 92px;
+        box-sizing: border-box;
+    }
+
+    .game-screen > .action-menu .action-menu-button img {
+        width: 58px;
+        height: 58px;
+    }
+
+    /* =========================
+    ショップカテゴリー一覧
+    ========================= */
+
+    .shop-category-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        margin: 8px 0 12px;
+    }
+
+    .shop-category-list .shop-category-button {
+        width: 80%;
+        box-sizing: border-box;
+    }
+
+    /* =========================
+    画面幅1100px以下
+    ========================= */
+
+    @media (max-width: 1100px) {
+
+        .game-hud {
+            grid-template-columns:
+                180px
+                minmax(220px, 1.3fr)
+                minmax(150px, 0.8fr)
+                minmax(230px, 1.2fr)
+                125px;
+        }
+
+        .game-screen > .action-menu,
+        .game-screen > .action-menu .action-menu-button {
+            width: 150px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            height: 88px;
+        }
+
+        .game-screen > .action-menu .action-menu-button img {
+            width: 46px;
+            height: 46px;
+        }
+
+        .hud-avatar-face {
+            width: 50px;
+            height: 50px;
+            flex-basis: 50px;
+        }
+
+    }
+
+    /* =========================
+    画面幅700px以下
+    ========================= */
+
+    @media (max-width: 700px) {
+
+        .game-hud {
+            grid-template-columns:
+                150px
+                minmax(150px, 1.3fr)
+                minmax(105px, 0.8fr)
+                minmax(170px, 1.2fr)
+                100px;
+        }
+
+        .hud-avatar-face {
+            width: 44px;
+            height: 44px;
+            flex-basis: 44px;
+        }
+
+        .game-screen > .action-menu {
+            top: 74px;
+            left: 4px;
+            width: 150px;
+            gap: 5px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            width: 150px;
+            height: 78px;
+            grid-template-columns: 46px 1fr;
+            font-size: 16px;
+        }
+
+        .game-screen > .action-menu .action-menu-button img {
+            width: 42px;
+            height: 42px;
+        }
+
+        .shop-category-list .shop-category-button {
+            width: 88%;
+        }
+
+    }
+
+    /* =========================
+    画面幅500px以下
+    ========================= */
+
+    @media (max-width: 500px) {
+
+        .game-hud {
+            grid-template-columns:
+                140px
+                minmax(145px, 1.2fr)
+                minmax(95px, 0.8fr)
+                minmax(160px, 1.1fr)
+                92px;
+        }
+
+        .game-screen > .action-menu,
+        .game-screen > .action-menu .action-menu-button {
+            width: 140px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            height: 72px;
+            grid-template-columns: 42px 1fr;
+            font-size: 15px;
+        }
+
+        .game-screen > .action-menu .action-menu-button img {
+            width: 38px;
+            height: 38px;
+        }
+
+        .hud-avatar-face {
+            width: 42px;
+            height: 42px;
+            flex-basis: 42px;
+        }
+
+    }
+
+
+    /* =========================================================
+    今回のレスポンシブ最終調整
+    ・プレイヤー名を画面幅に応じて収める
+    ・スマホ横持ち専用レイアウト
+    ・左側アクションメニューを横画面でも最適化
+    ========================================================= */
+
+    /* プレイヤー名は省略せず、縮小表示を優先 */
+    .game-hud .hud-player-name {
+        min-width: 0;
+        flex: 1 1 auto;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: clip;
+        line-height: 1;
+        font-size: clamp(10px, 2vw, 26px);
+        letter-spacing: 0;
+    }
+
+    /* =========================================================
+    画面幅1100px以下
+    ※既存の見た目をなるべく維持しつつ、名前欄を確保
+    ========================================================= */
+
+    @media (max-width: 1100px) {
+
+        .game-hud {
+            grid-template-columns:
+                minmax(125px, 1.05fr)
+                minmax(150px, 1.25fr)
+                minmax(105px, 0.85fr)
+                minmax(200px, 1.45fr)
+                minmax(100px, 0.9fr);
+            gap: 0;
+        }
+
+        .hud-player {
+            padding-left: 7px;
+            padding-right: 7px;
+            gap: 5px;
+        }
+
+        .hud-player-name {
+            font-size: clamp(12px, 1.8vw, 22px);
+        }
+
+    }
+
+    /* =========================================================
+    スマホ縦・狭い画面
+    ========================================================= */
+
+    @media (max-width: 700px) {
+
+        .game-hud {
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            height: 58px;
+
+            grid-template-columns:
+                minmax(78px, 0.9fr)
+                minmax(68px, 0.85fr)
+                minmax(55px, 0.7fr)
+                minmax(115px, 1.35fr)
+                minmax(62px, 0.8fr);
+
+            gap: 0;
+        }
+
+        .hud-box {
+            height: 58px;
+            padding: 4px 4px;
+            border-width: 1px;
+            border-radius: 8px;
+        }
+
+        .hud-player {
+            gap: 3px;
+            padding-left: 4px;
+            padding-right: 3px;
+        }
+
+        .hud-avatar-face {
+            width: 38px;
+            height: 38px;
+            flex: 0 0 38px;
+        }
+
+        .hud-player-name {
+            font-size: clamp(10px, 3.5vw, 18px);
+        }
+
+        .hud-icon {
+            width: 30px;
+            height: 30px;
+            flex-basis: 30px;
+            margin-right: 2px;
+        }
+
+        .hud-destination-icon {
+            width: 28px;
+            height: 28px;
+            flex-basis: 28px;
+            margin-right: 1px;
+        }
+
+        .hud-icon-fallback {
+            width: 30px;
+            height: 30px;
+            flex-basis: 30px;
+            margin-right: 2px;
+            font-size: 20px;
+        }
+
+        .hud-value {
+            font-size: clamp(13px, 4vw, 19px);
+        }
+
+        .hud-destination {
+            gap: 1px;
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+
+        .hud-destination-label {
+            font-size: clamp(8px, 2.7vw, 12px);
+        }
+
+        .hud-destination-value {
+            font-size: clamp(20px, 7vw, 27px);
+            margin: 0 1px;
+        }
+
+        .hud-turn {
+            font-size: clamp(10px, 3.5vw, 16px);
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+
+        /* 左メニュー */
+        .game-screen > .action-menu {
+            top: 70px;
+            left: 4px;
+            width: 112px;
+            gap: 4px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            width: 112px;
+            height: 68px;
+            padding: 4px 5px;
+            grid-template-columns: 36px 1fr;
+            gap: 2px;
+            border-radius: 10px;
+            border-width: 2px;
+            font-size: 14px;
+        }
+
+        .game-screen > .action-menu .action-menu-button img {
+            width: 34px;
+            height: 34px;
+        }
+
+    }
+
+    /* =========================================================
+    スマホ横持ち
+    画面幅ではなく「横向き」で判定する
+    ========================================================= */
+
+    @media (orientation: landscape) and (max-height: 600px) {
+
+        .game-hud {
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            height: 58px;
+
+            grid-template-columns:
+                minmax(100px, 1.0fr)
+                minmax(100px, 1.0fr)
+                minmax(75px, 0.75fr)
+                minmax(160px, 1.35fr)
+                minmax(88px, 0.85fr);
+
+            gap: 0;
+        }
+
+        .hud-box {
+            height: 58px;
+            padding: 4px 6px;
+            border-width: 1px;
+            border-radius: 8px;
+        }
+
+        .hud-player {
+            gap: 4px;
+            padding-left: 5px;
+        }
+
+        .hud-avatar-face {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+        }
+
+        .hud-player-name {
+            font-size: clamp(11px, 2.2vw, 20px);
+        }
+
+        .hud-icon {
+            width: 34px;
+            height: 34px;
+            flex-basis: 34px;
+            margin-right: 3px;
+        }
+
+        .hud-destination-icon {
+            width: 32px;
+            height: 32px;
+            flex-basis: 32px;
+        }
+
+        .hud-destination-label {
+            font-size: clamp(9px, 1.7vw, 15px);
+        }
+
+        .hud-destination-value {
+            font-size: clamp(22px, 4vw, 34px);
+        }
+
+        .hud-value {
+            font-size: clamp(15px, 2.5vw, 24px);
+        }
+
+        .hud-turn {
+            font-size: clamp(12px, 2.4vw, 22px);
+        }
+
+        /* 横持ちではマップを最大限確保 */
+        .game-screen > .map-area {
+            top: 0;
+        }
+
+        /* 左ボタンは高さを抑え、マップを広く使う */
+        .game-screen > .action-menu {
+            top: 70px;
+            left: 4px;
+            width: 108px;
+            gap: 4px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            width: 108px;
+            height: 58px;
+            padding: 3px 5px;
+            grid-template-columns: 34px 1fr;
+            gap: 2px;
+            border-radius: 9px;
+            border-width: 2px;
+            font-size: 13px;
+        }
+
+        .game-screen > .action-menu .action-menu-button img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .game-screen > .action-menu .action-menu-fallback {
+            font-size: 27px;
+        }
+
+    }
+
+    /* =========================================================
+    極端に横長・低い画面
+    ========================================================= */
+
+    @media (orientation: landscape) and (max-height: 430px) {
+
+        .game-hud {
+            height: 50px;
+            top: 3px;
+            left: 3px;
+            right: 3px;
+        }
+
+        .hud-box {
+            height: 50px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+
+        .hud-avatar-face {
+            width: 36px;
+            height: 36px;
+            flex-basis: 36px;
+        }
+
+        .hud-player-name {
+            font-size: clamp(10px, 2vw, 17px);
+        }
+
+        .hud-icon {
+            width: 28px;
+            height: 28px;
+            flex-basis: 28px;
+        }
+
+        .hud-destination-icon {
+            width: 26px;
+            height: 26px;
+            flex-basis: 26px;
+        }
+
+        .hud-destination-label {
+            font-size: 9px;
+        }
+
+        .hud-destination-value {
+            font-size: 22px;
+        }
+
+        .hud-value {
+            font-size: 14px;
+        }
+
+        .hud-turn {
+            font-size: 11px;
+        }
+
+        .game-screen > .action-menu {
+            top: 58px;
+            width: 92px;
+            gap: 3px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            width: 92px;
+            height: 50px;
+            grid-template-columns: 28px 1fr;
+            font-size: 11px;
+            padding: 2px 3px;
+        }
+
+        .game-screen > .action-menu .action-menu-button img {
+            width: 27px;
+            height: 27px;
+        }
+
+        .game-screen > .action-menu .action-menu-fallback {
+            font-size: 22px;
+        }
+
+    }
+
+
+    /* =========================================================
+    極端に狭い縦画面
+    360px前後でも5項目を1列に収める
+    ========================================================= */
+
+    @media (max-width: 380px) {
+
+        .game-hud {
+            grid-template-columns:
+                minmax(70px, 0.85fr)
+                minmax(62px, 0.8fr)
+                minmax(50px, 0.65fr)
+                minmax(105px, 1.25fr)
+                minmax(58px, 0.75fr);
+        }
+
+        .hud-box {
+            padding-left: 3px;
+            padding-right: 3px;
+        }
+
+        .hud-player {
+            gap: 2px;
+            padding-left: 3px;
+        }
+
+        .hud-avatar-face {
+            width: 34px;
+            height: 34px;
+            flex-basis: 34px;
+        }
+
+        .hud-player-name {
+            font-size: 10px;
+        }
+
+        .hud-icon {
+            width: 27px;
+            height: 27px;
+            flex-basis: 27px;
+            margin-right: 1px;
+        }
+
+        .hud-destination-icon {
+            width: 24px;
+            height: 24px;
+            flex-basis: 24px;
+        }
+
+        .hud-destination-label {
+            font-size: 8px;
+        }
+
+        .hud-destination-value {
+            font-size: 20px;
+        }
+
+        .hud-value {
+            font-size: 13px;
+        }
+
+        .hud-turn {
+            font-size: 10px;
+        }
+
+        .game-screen > .action-menu {
+            width: 100px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            width: 100px;
+            height: 64px;
+            grid-template-columns: 32px 1fr;
+            font-size: 13px;
+        }
+
+        .game-screen > .action-menu .action-menu-button img {
+            width: 30px;
+            height: 30px;
+        }
+
+    }
+
+    /* =========================================================
+    今回の追加修正：アイコンサイズ統一・文字のはみ出し防止
+    ・HUD内の全アイコンを同一サイズに統一
+    ・左側4ボタンのアイコンも同じサイズに統一
+    ・画面が狭くなった場合は全アイコンを同じ比率で縮小
+    ========================================================= */
+
+    /* ---------- PC標準 ---------- */
+
+    .game-hud .hud-player-avatar,
+    .game-hud .hud-icon,
+    .game-hud .hud-icon-fallback,
+    .game-hud .hud-destination-icon,
+    .game-screen > .action-menu .action-menu-button img {
+        width: 48px;
+        height: 48px;
+        flex: 0 0 48px;
+        box-sizing: border-box;
+    }
+
+    .game-screen > .action-menu .action-menu-button {
+        grid-template-columns: 48px minmax(0, 1fr);
+    }
+
+    /* 文字が隣の枠へはみ出さないようにする */
+    .game-hud .hud-value,
+    .game-hud .hud-turn,
+    .game-hud .hud-destination-label,
+    .game-hud .hud-destination-value,
+    .game-screen > .action-menu .action-menu-label {
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .game-hud .hud-value,
+    .game-hud .hud-turn {
+        white-space: nowrap;
+        text-overflow: clip;
+        font-size: clamp(14px, 2.2vw, 30px);
+    }
+
+    /* ---------- 1100px以下 ---------- */
+
+    @media (max-width: 1100px) {
+
+        .game-hud .hud-player-avatar,
+        .game-hud .hud-icon,
+        .game-hud .hud-icon-fallback,
+        .game-hud .hud-destination-icon,
+        .game-screen > .action-menu .action-menu-button img {
+            width: 40px;
+            height: 40px;
+            flex-basis: 40px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            grid-template-columns: 40px minmax(0, 1fr);
+        }
+
+    }
+
+    /* ---------- 700px以下 ---------- */
+
+    @media (max-width: 700px) {
+
+        .game-hud .hud-player-avatar,
+        .game-hud .hud-icon,
+        .game-hud .hud-icon-fallback,
+        .game-hud .hud-destination-icon,
+        .game-screen > .action-menu .action-menu-button img {
+            width: 32px;
+            height: 32px;
+            flex-basis: 32px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            grid-template-columns: 32px minmax(0, 1fr);
+        }
+
+        .game-screen > .action-menu .action-menu-fallback {
+            font-size: 28px;
+        }
+
+    }
+
+    /* ---------- スマホ横持ち ---------- */
+
+    @media (orientation: landscape) and (max-height: 600px) {
+
+        .game-hud .hud-player-avatar,
+        .game-hud .hud-icon,
+        .game-hud .hud-icon-fallback,
+        .game-hud .hud-destination-icon,
+        .game-screen > .action-menu .action-menu-button img {
+            width: 32px;
+            height: 32px;
+            flex-basis: 32px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            grid-template-columns: 32px minmax(0, 1fr);
+        }
+
+        .game-hud .hud-value,
+        .game-hud .hud-turn {
+            font-size: clamp(12px, 2.2vw, 22px);
+        }
+
+    }
+
+    /* ---------- 極端に低い横画面 ---------- */
+
+    @media (orientation: landscape) and (max-height: 430px) {
+
+        .game-hud .hud-player-avatar,
+        .game-hud .hud-icon,
+        .game-hud .hud-icon-fallback,
+        .game-hud .hud-destination-icon,
+        .game-screen > .action-menu .action-menu-button img {
+            width: 28px;
+            height: 28px;
+            flex-basis: 28px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            grid-template-columns: 28px minmax(0, 1fr);
+        }
+
+    }
+
+    /* ---------- 極端に狭い縦画面 ---------- */
+
+    @media (max-width: 380px) {
+
+        .game-hud .hud-player-avatar,
+        .game-hud .hud-icon,
+        .game-hud .hud-icon-fallback,
+        .game-hud .hud-destination-icon,
+        .game-screen > .action-menu .action-menu-button img {
+            width: 28px;
+            height: 28px;
+            flex-basis: 28px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            grid-template-columns: 28px minmax(0, 1fr);
+        }
+
+    }
+
+    /* =========================================================
+    ボス決定ポップアップ専用
+    ・3行構成
+    ・ボスをポップアップの下側に見せる
+    ========================================================= */
+
+    .event-popup.boss-destination-popup {
+        top: clamp(76px, 14vh, 150px);
+
+        width:
+            min(88%, 420px);
+
+        padding:
+            18px 20px;
+
+        transform:
+            translateX(-50%);
+    }
+
+
+    .event-popup.boss-destination-popup
+    .event-popup-title {
+        margin-bottom:
+            12px;
+
+        font-size:
+            clamp(18px, 2.2vw, 24px);
+
+        line-height:
+            1.3;
+    }
+
+
+    .event-popup.boss-destination-popup
+    .event-popup-message {
+        margin-bottom:
+            14px;
+
+        font-size:
+            clamp(18px, 2.1vw, 24px);
+
+        line-height:
+            1.35;
+    }
+
+
+    .boss-destination-line {
+        font-weight:
+            900;
+
+        white-space:
+            nowrap;
+    }
+
+
+    .event-popup.boss-destination-popup
+    .event-popup-button {
+        min-width:
+            96px;
+
+        padding:
+            9px 30px;
+
+        font-size:
+            16px;
+    }
+
+
+    @media (max-width: 700px) {
+
+        .event-popup.boss-destination-popup {
+            width:
+                min(90%, 360px);
+
+            padding:
+                16px 14px;
+        }
+
+        .event-popup.boss-destination-popup
+        .event-popup-title {
+            font-size:
+                18px;
+        }
+
+        .event-popup.boss-destination-popup
+        .event-popup-message {
+            font-size:
+                18px;
+        }
+
+    }
+
+
+    @media (orientation: landscape) and (max-height: 600px) {
+
+        .event-popup.boss-destination-popup {
+            top:
+                72px;
+
+            width:
+                min(78%, 390px);
+
+            padding:
+                12px 16px;
+        }
+
+        .event-popup.boss-destination-popup
+        .event-popup-title {
+            margin-bottom:
+                8px;
+
+            font-size:
+                18px;
+        }
+
+        .event-popup.boss-destination-popup
+        .event-popup-message {
+            margin-bottom:
+                8px;
+
+            font-size:
+                18px;
+        }
+
+        .event-popup.boss-destination-popup
+        .event-popup-button {
+            padding:
+                7px 26px;
+        }
+
+    }
+
+
+
+    /* =========================================================
+    今回のUI修正：ボス決定ポップアップ
+    ・ボス画像を適正サイズに固定
+    ・画面内に必ず収める
+    ・横画面ではさらにコンパクトに
+    ========================================================= */
+
+    .event-popup.boss-destination-popup {
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: min(90%, 420px);
+        max-height: calc(100dvh - 20px);   
+        padding: 18px 20px;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    .event-popup.boss-destination-popup .event-popup-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        margin-bottom: 10px;
+        font-size: clamp(18px, 4vw, 24px);
+        line-height: 1.25;
+    }
+
+
+    .boss-destination-image-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 135px;
+        margin: 2px 0 8px;
+    }
+
+    .boss-destination-popup-icon {
+        display: block;
+        width: 135px;
+        height: 135px;
+        object-fit: contain;
+    }
+
+    .boss-destination-subtitle {
+        margin-bottom: 5px;
+        font-size: 17px;
+        line-height: 1.3;
+    }
+
+    .boss-destination-line {
+        margin-bottom: 5px;
+        font-size: 22px;
+        font-weight: 900;
+        line-height: 1.25;
+    }
+
+    .boss-destination-message {
+        margin-bottom: 12px;
+        font-size: 16px;
+        line-height: 1.45;
+    }
+
+    @media (max-width: 700px) {
+        .event-popup.boss-destination-popup {
+            width: min(92%, 390px);
+            padding: 14px 14px;
+        }
+
+        .boss-destination-image-wrap {
+            height: 105px;
+            margin-bottom: 5px;
+        }
+
+        .boss-destination-popup-icon {
+            width: 105px;
+            height: 105px;
+        }
+
+        .boss-destination-subtitle {
+            font-size: 15px;
+        }
+
+        .boss-destination-line {
+            font-size: 20px;
+        }
+
+        .boss-destination-message {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+    }
+
+    /* =========================================================
+    今回のUI修正：バイトマス
+    3行構成
+    ① バイト名　時給
+    ② 1ターン働きますか？
+    ③ 働く　やめる
+    ========================================================= */
+
+    .game-screen .job-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: min(92%, 420px);
+        max-height: calc(100dvh - 20px);
+        padding: 18px 20px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        background: rgba(20, 20, 35, 0.98);
+        border: 2px solid rgba(255, 215, 120, 0.7);
+        border-radius: 18px;
+        box-shadow: 0 0 30px rgba(255, 200, 100, 0.25);
+        text-align: center;
+        z-index: 20000;
+    }
+
+    .job-info-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-width: 0;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .job-name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 21px;
+        font-weight: 900;
+        text-align: left;
+    }
+
+    .job-wage {
+        flex-shrink: 0;
+        color: #ffd76a;
+        font-size: 18px;
+        font-weight: 900;
+        white-space: nowrap;
+    }
+
+    .job-question {
+        margin-bottom: 14px;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.35;
+    }
+
+    .job-choices {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .job-choice-button {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 0;
+        min-height: 46px;
+        padding: 9px 12px;
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 999px;
+        background: rgba(255,255,255,0.1);
+        color: white;
+        font-size: 16px;
+        font-weight: 900;
+    }
+
+    .job-work-button {
+        border-color: rgba(255,215,106,0.75);
+        background: rgba(255,215,106,0.14);
+    }
+
+    .job-choice-button:hover {
+        background: rgba(255,215,120,0.2);
+    }
+
+    .job-choice-button:active {
+        transform: scale(0.97);
+    }
+
+    /* =========================================================
+    横画面：ポップアップを画面内に収める
+    body/game-screen は overflow:hidden のため、
+    ポップアップ自身をスクロール可能にする。
+    ========================================================= */
+
+    @media (orientation: landscape) and (max-height: 600px) {
+
+    .game-screen .job-popup,
+    .game-screen .event-popup,
+    .game-screen .reward-popup,
+    .game-screen .battle-popup,
+    .game-screen .magic-shop-popup,
+    .game-screen .shop-popup,
+    .game-screen .inventory-popup {
+        max-height:
+            calc(100dvh - 80px);
+
+        overflow-y:
+            auto;
+
+        -webkit-overflow-scrolling:
+            touch;
+    }
+
+    .game-screen .magic-popup,
+    .game-screen .magic-shop-popup,
+    .game-screen .shop-popup,
+    .game-screen .inventory-popup {
+
+        top:
+            60px;
+
+        height:
+            calc(100dvh - 60px);
+
+        max-height:
+            calc(100dvh - 60px);
+
+    }
+
+        .game-screen .job-popup {
+            width: min(82%, 430px);
+            padding: 10px 14px;
+            border-radius: 14px;
+        }
+
+        .job-info-row {
+            margin-bottom: 7px;
+            padding-bottom: 6px;
+        }
+
+        .job-name {
+            font-size: 17px;
+        }
+
+        .job-wage {
+            font-size: 15px;
+        }
+
+        .job-question {
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .job-choices {
+            gap: 8px;
+        }
+
+        .job-choice-button {
+            min-height: 38px;
+            padding: 6px 10px;
+            font-size: 14px;
+        }
+
+        .event-popup.boss-destination-popup {
+            width: min(78%, 390px);
+            padding: 10px 14px;
+        }
+
+        .event-popup.boss-destination-popup .event-popup-title {
+            margin-bottom: 5px;
+            font-size: 17px;
+        }
+
+        
+        .boss-destination-image-wrap {
+            height: 78px;
+            margin: 0 0 3px;
+        }
+
+        .boss-destination-popup-icon {
+            width: 78px;
+            height: 78px;
+        }
+
+        .boss-destination-subtitle {
+            font-size: 13px;
+        }
+
+        .boss-destination-line {
+            font-size: 17px;
+            margin-bottom: 2px;
+        }
+
+        .boss-destination-message {
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .event-popup.boss-destination-popup .event-popup-button {
+            padding: 5px 24px;
+            font-size: 14px;
+        }
+    }
+
+    @media (orientation: landscape) and (max-height: 430px) {
+
+        .game-screen .job-popup {
+            width: min(78%, 400px);
+            padding: 8px 12px;
+        }
+
+        .job-name {
+            font-size: 15px;
+        }
+
+        .job-wage {
+            font-size: 13px;
+        }
+
+        .job-question {
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .job-choice-button {
+            min-height: 34px;
+            font-size: 13px;
+        }
+
+        .boss-destination-image-wrap {
+            height: 58px;
+        }
+
+        .boss-destination-popup-icon {
+            width: 58px;
+            height: 58px;
+        }
+    }
+
+
+    /* =========================================================
+    今回の3点改修
+    ① HUDプレイヤー名を小さくする
+    ③ サイコロ・アイテム非活性時も半透明にしない
+    ========================================================= */
+
+    /* =========================
+    ① HUD：プレイヤー名
+    ========================= */
+
+    .game-hud .hud-player-name {
+
+        font-size:
+            clamp(14px, 1.45vw, 20px) !important;
+
+        line-height:
+            1.1;
+
+        cursor:
+            pointer;
+
+        user-select:
+            none;
+
+        -webkit-tap-highlight-color:
+            transparent;
+    }
+
+
+    /* =========================
+    ③ サイコロ・アイテム：非活性時
+    disabled自体は維持するため、
+    タップしても処理は開きません。
+    見た目だけ通常時のままにします。
+    ========================= */
+
+    .action-menu-button:disabled {
+
+        opacity:
+            1 !important;
+
+        filter:
+            none !important;
+
+        transform:
+            none !important;
+
+        cursor:
+            default;
+    }
+
+
+    .action-menu-button:disabled:hover,
+    .action-menu-button:disabled:active {
+
+        filter:
+            none !important;
+
+        transform:
+            none !important;
+    }
+
+    /* =========================================================
+    サイコロ移動：残り歩数カウンター
+    ========================================================= */
+    /*
+    プレイヤーの頭上に浮かぶ、
+    ファンタジー風の残り歩数表示。
+
+    表示例：
+
+            🎲 3
+            ↓
+            🧙
+
+    移動矢印より上に表示することで、
+    上方向の矢印と重ならないようにします。
+    ========================================================= */
+
+    .dice-movement-counter {
+
+        position:
+            absolute;
+
+        /*
+        プレイヤー画像の中央より
+        かなり上へ配置します。
+
+        これにより、プレイヤー直上の
+        移動矢印よりさらに上に表示されます。
+        */
+        left:
+            50%;
+
+        top:
+            -58px;
+
+        transform:
+            translateX(-50%);
+
+
+        /*
+        横並び
+        🎲 3
+        */
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+
+        /*
+        アイコンと数字の間隔
+        */
+        gap:
+            3px;
+
+
+        /*
+        UIを大きくしすぎない
+        */
+        min-width:
+            48px;
+
+        height:
+            30px;
+
+        padding:
+            0 5px;
+
+
+        box-sizing:
+            border-box;
+
+
+        /*
+        背景はほぼ透明。
+        マップの世界観を邪魔しない程度の
+        ほんのりした暗さだけ残します。
+        */
+    background:
+        transparent;
+
+        /*
+        枠はかなり控えめ。
+        */
+    border:
+        none;
+
+
+        border-radius:
+            8px;
+
+
+    box-shadow:
+        none;
+
+
+        /*
+        プレイヤーのz-indexが50、
+        矢印が20なので、
+        カウンターをさらに前面へ。
+        */
+        z-index:
+            100;
+
+
+        /*
+        UIがクリックを邪魔しない
+        */
+        pointer-events:
+            none;
+
+        user-select:
+            none;
+
+        white-space:
+            nowrap;
+
+    }
+
+
+    /* =========================================================
+    サイコロアイコン
+    ========================================================= */
+
+    .dice-movement-counter-icon {
+
+        width:
+            25px;
+
+        height:
+            25px;
+
+        flex:
+            0 0 25px;
+
+        object-fit:
+            contain;
+
+        display:
+            block;
+
+        filter:
+            drop-shadow(
+                0 2px 2px
+                rgba(0, 0, 0, 0.55)
+            );
+
+    }
+
+
+    /* =========================================================
+    残り歩数の数字
+    ========================================================= */
+
+    .dice-movement-counter-value {
+
+        /*
+        今回ここを大きくします。
+        */
+        font-size:
+            24px;
+
+
+        /*
+        ゲームタイトルなどでも使用している
+        ファンタジー寄りのフォント。
+        */
+        font-family:
+            "Cinzel",
+            Georgia,
+            "Times New Roman",
+            serif;
+
+
+        font-weight:
+            900;
+
+
+        line-height:
+            1;
+
+
+        /*
+        金色系にして世界観へ合わせます。
+        */
+        color:
+        #ffffff;
+
+
+        /*
+        数字を背景から浮かせる
+        */
+        text-shadow:
+            0 1px 2px rgba(0, 0, 0, 0.95),
+            0 0 5px rgba(255, 210, 90, 0.65);
+
+
+        min-width:
+            18px;
+
+        text-align:
+            center;
+
+    }
+
+    /* =========================
+    「現在地に戻る」ボタン
+    ========================= */
+
+    .dice-movement-return-button .action-menu-label {
+        white-space: normal;
+        min-width: 0;
+        text-align: center;
+        line-height: 1.1;
+    }
+
+    /* =========================
+    プレイヤー上部のサイコロ表示
+    左側アクションメニューと同じ配色
+    ========================= */
+
+    .dice-movement-counter {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(9, 64, 128, 0.96),
+                rgba(4, 39, 86, 0.96)
+            );
+
+        border: 3px solid rgba(37, 202, 255, 0.75);
+
+        border-radius: 16px;
+
+        box-shadow:
+            0 4px 10px rgba(0,0,0,0.35),
+            inset 0 1px 0 rgba(255,255,255,0.18);
+    }
+
+    /* =========================================================
+    いけるかなマス：青い発光
+    ========================================================= */
+
+    .map-node.reachable-stop-highlight {
+
+        animation:
+            reachableStopAura 2.0s ease-in-out infinite;
+
+        box-shadow:
+            0 0 0 5px rgba(100,160,255,0.95),
+            0 0 18px rgba(100,160,255,0.75),
+            0 0 32px rgba(100,160,255,0.45);
+
+    }
+
+
+    @keyframes reachableStopAura {
+
+        0% {
+
+            box-shadow:
+                0 0 0 5px rgba(255,255,255,1),
+                0 0 12px rgba(255,255,255,1),
+                0 0 30px rgba(255,255,255,0.9),
+                0 0 60px rgba(255,255,255,0.5);
+
+        }
+
+        25% {
+
+            box-shadow:
+                0 0 0 5px rgba(80,180,255,1),
+                0 0 15px rgba(80,200,255,1),
+                0 0 40px rgba(80,180,255,0.95),
+                0 0 80px rgba(80,180,255,0.6),
+                0 0 110px rgba(80,180,255,0.3);
+
+        }
+
+        50% {
+
+            box-shadow:
+                0 0 0 5px rgba(255,255,255,1),
+                0 0 12px rgba(255,255,255,1),
+                0 0 35px rgba(255,255,255,0.9),
+                0 0 70px rgba(255,255,255,0.5);
+
+        }
+
+        75% {
+
+            box-shadow:
+                0 0 0 5px rgba(80,180,255,1),
+                0 0 15px rgba(80,200,255,1),
+                0 0 45px rgba(80,180,255,0.95),
+                0 0 90px rgba(80,180,255,0.6),
+                0 0 120px rgba(80,180,255,0.3);
+
+        }
+
+        100% {
+
+            box-shadow:
+                0 0 0 5px rgba(255,255,255,1),
+                0 0 12px rgba(255,255,255,1),
+                0 0 30px rgba(255,255,255,0.9),
+                0 0 60px rgba(255,255,255,0.5);
+
+        }
+
+
+    }
+
+    /* =========================
+    ボスマス：紫炎
+    ========================= */
+
+    .boss-node {
+        position: relative;
+        box-shadow:
+            0 0 0 3px rgba(190, 90, 255, .9),
+            0 0 18px rgba(170, 60, 255, .7);
+    }
+
+    .boss-node::before,
+    .boss-node::after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+        border-radius: 50%;
+        background: radial-gradient(
+            ellipse,
+            rgba(220, 130, 255, .75),
+            rgba(110, 20, 220, 0)
         );
+        filter: blur(5px);
+    }
 
-        disableBattleActions();
+    .boss-node::before {
+        inset: -8px;
+        animation: bossFlame 1.5s ease-in-out infinite alternate;
+    }
 
-        return;
+    .boss-node::after {
+        inset: -4px;
+        animation: bossFlame 1s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes bossFlame {
+        0% {
+            transform: scale(.9) translateX(-2px);
+            opacity: .65;
+        }
+
+        100% {
+            transform: scale(1.05) translateX(2px);
+            opacity: .9;
+        }
+    }
+
+
+    /* ボスアイコン */
+
+    .boss-node .map-space-icon {
+        position: relative;
+        z-index: 3;
+        filter:
+            drop-shadow(0 3px 3px rgba(0,0,0,.38))
+            drop-shadow(0 0 7px rgba(210,120,255,.8));
+    }
+
+
+    /* =========================
+    いけるかなマスを最優先
+    ========================= */
+
+    .map-node.boss-node.reachable-stop-highlight {
+        box-shadow:
+            0 0 0 4px rgba(80, 180, 255, 1),
+            0 0 25px rgba(80, 180, 255, .8);
+    }
+
+    .map-node.boss-node.reachable-stop-highlight::before,
+    .map-node.boss-node.reachable-stop-highlight::after {
+        opacity: 0;
+    }
+
+
+
+    /* =========================================================
+    新バトルUI
+    ========================================================= */
+
+    #battleUIRoot {
+        position: fixed;
+        inset: 0;
+        z-index: 30000;
+        pointer-events: none;
+    }
+
+    .battle-new-popup {
+        position:
+            fixed;
+
+        inset:
+            0;
+
+        display:
+            none;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        padding:
+            8px;
+
+        box-sizing:
+            border-box;
+
+        background:
+            linear-gradient(
+                rgba(5, 10, 18, 0.25),
+                rgba(5, 10, 18, 0.45)
+            ),
+            url("images/back-image/戦闘1.png")
+            center /
+            cover
+            no-repeat;
+
+        pointer-events:
+            auto;
+
+        overflow:
+            hidden;
+    }
+
+
+    .battle-new-popup.is-visible {
+        display: flex;
+    }
+
+    .battle-intro-popup {
+        background:
+            linear-gradient(rgba(4, 10, 18, 0.28), rgba(4, 10, 18, 0.62)),
+            url("images/back-image/戦闘1.png") center / cover no-repeat;
+    }
+
+    .battle-intro-inner {
+        width: min(92vw, 760px);
+        min-height: min(82vh, 620px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 24px;
+        box-sizing: border-box;
+        background: rgba(10, 18, 32, 0.18);
+    }
+
+    .battle-intro-monster {
+        min-height: 260px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .battle-intro-monster-image {
+        width: min(48vw, 360px);
+        height: min(48vw, 360px);
+        object-fit: contain;
+        filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.55));
+    }
+
+    .battle-monster-fallback-text {
+        display: none;
+        font-size: clamp(100px, 22vw, 180px);
+        line-height: 1;
+    }
+
+    .battle-intro-message {
+        margin-top: 22px;
+        font-size: clamp(24px, 5vw, 42px);
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        text-shadow:
+            0 3px 8px rgba(0, 0, 0, 0.9),
+            0 0 18px rgba(255, 255, 255, 0.28);
+    }
+
+    .battle-intro-hint {
+        margin-top: 30px;
+        font-size: clamp(13px, 2.5vw, 18px);
+        opacity: 0.82;
+        animation: battleIntroHint 1.5s ease-in-out infinite;
+    }
+
+    @keyframes battleIntroHint {
+        0%, 100% { opacity: 0.45; }
+        50% { opacity: 1; }
+    }
+
+    .battle-main-popup {
+        overflow:
+            hidden;
+    }
+
+    .battle-main-screen {
+        width:
+            min(100%, 1100px);
+
+        height:
+            100%;
+
+        max-height:
+            100%;
+
+        min-height:
+            0;
+
+        display:
+            grid;
+
+        grid-template-columns:
+            180px
+            minmax(0, 1fr);
+
+        grid-template-rows:
+            minmax(0, 1fr)
+            auto
+            auto
+            auto;
+
+        grid-template-areas:
+            "magic   monster"
+            "magic   message"
+            "magic   detail"
+            ".       actions";
+
+        column-gap:
+            8px;
+
+        row-gap:
+            4px;
+
+        padding:
+            6px;
+
+        box-sizing:
+            border-box;
+
+        overflow:
+            hidden;
+
+        position:
+            relative;
+    }
+
+    .battle-hud {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-height: 52px;
+        padding: 8px 14px;
+        box-sizing: border-box;
+        border: 1px solid rgba(255, 255, 255, 0.42);
+        border-radius: 14px;
+        background: rgba(20, 31, 51, 0.78);
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(4px);
+    }
+
+    .battle-hud-player {
+        min-width: 0;
+    }
+
+    .battle-hud-name {
+        font-size: clamp(15px, 2vw, 21px);
+        font-weight: 900;
+        white-space: nowrap;
+    }
+
+    .battle-hud-status {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .battle-hud-stat {
+        display: flex;
+        align-items: baseline;
+        gap: 5px;
+        font-size: clamp(14px, 2vw, 18px);
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .battle-hud-stat-label {
+        opacity: 0.88;
+    }
+
+    .battle-hud-gold strong {
+        color: #f7dc78;
+    }
+
+    .battle-hud-magic strong {
+        color: #b9d9ff;
+    }
+
+    .battle-round-badge {
+        position:
+            absolute;
+
+        top:
+            6px;
+
+        left:
+            180px;
+
+        right:
+            180px;
+
+        z-index:
+            20;
+
+        display:
+            flex;
+
+        justify-content:
+            center;
+
+        align-items:
+            flex-start;
+
+        pointer-events:
+            none;
+
+        padding:
+            0;
+    }
+
+    .battle-round-badge span {
+        display:
+            inline-block;
+
+        padding:
+            6px 20px;
+
+        border:
+            2px solid rgba(255, 222, 120, 0.82);
+
+        border-radius:
+            999px;
+
+        background:
+            rgba(25, 35, 53, 0.82);
+
+        color:
+            #ffe99a;
+
+        font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+        font-size:
+            clamp(14px, 2vw, 19px);
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            0.08em;
+
+        box-shadow:
+            0 0 10px rgba(255, 210, 90, 0.22),
+            0 4px 14px rgba(0, 0, 0, 0.28);
+    }
+
+    .battle-field {
+        grid-area:
+            monster;
+
+        min-width:
+            0;
+
+        min-height:
+            0;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        overflow:
+            hidden;
+    }
+
+    .battle-monster-area {
+        width:
+            100%;
+
+        height:
+            100%;
+
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        min-height:
+            0;
+    }
+
+    .battle-monster-name {
+        margin-bottom: 3px;
+        font-size: clamp(18px, 3vw, 28px);
+        font-weight: 900;
+        text-shadow: 0 3px 8px rgba(0, 0, 0, 0.9);
+    }
+
+    .battle-monster-visual-wrap {
+        height: min(28vh, 250px);
+        width: min(48vw, 360px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .battle-monster-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 12px 14px rgba(0, 0, 0, 0.52));
+    }
+
+    .battle-monster-fallback {
+        display: none;
+        font-size: clamp(90px, 18vw, 160px);
+        line-height: 1;
+    }
+
+    .battle-hp-bar {
+        width: min(70vw, 420px);
+        height: 13px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.5);
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45);
+    }
+
+    .battle-hp-fill {
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #6fd56f, #b5eb72);
+        transition: width 0.25s ease;
+    }
+
+    .battle-monster-hp {
+        margin-top:
+            5px;
+
+        font-size:
+            clamp(18px, 2.4vw, 28px);
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            0.03em;
+
+        text-shadow:
+            0 2px 6px rgba(0, 0, 0, 0.9);
+    }
+
+    .battle-control-panel {
+        display:
+            contents;
+    }
+
+        
+    .battle-magic-panel {
+        grid-area:
+            magic;
+
+        min-width:
+            0;
+
+        min-height:
+            0;
+
+        width:
+            100%;
+
+        height:
+            100%;
+
+        align-self:
+            stretch;
+
+        box-sizing:
+            border-box;
+
+        padding:
+            8px;
+
+        border:
+            1px solid rgba(255, 255, 255, 0.35);
+
+        border-radius:
+            14px;
+
+        background:
+            rgba(16, 26, 45, 0.82);
+
+        box-shadow:
+            0 5px 18px rgba(0, 0, 0, 0.25);
+
+        backdrop-filter:
+            blur(4px);
+
+        overflow:
+            hidden;
+    }
+
+
+    .battle-detail-panel {
+        grid-area:
+            detail;
+
+        min-width:
+            0;
+
+        min-height:
+            108px;
+
+        width:
+            100%;
+
+        height:
+            auto;
+
+        align-self:
+            stretch;
+
+        box-sizing:
+            border-box;
+
+        padding:
+            8px;
+
+        border:
+            1px solid rgba(255, 255, 255, 0.35);
+
+        border-radius:
+            14px;
+
+        background:
+            rgba(16, 26, 45, 0.82);
+
+        box-shadow:
+            0 5px 18px rgba(0, 0, 0, 0.25);
+
+        backdrop-filter:
+            blur(4px);
+
+        overflow:
+            hidden;
+    }
+
+    .battle-panel-title {
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 6px;
+
+        margin-bottom: 6px;
+
+        font-size: 16px;
+
+        font-weight: 900;
+
+        color: #fff8dc;
+
+        letter-spacing: 0.04em;
+
+        text-shadow:
+            0 2px 4px rgba(0, 0, 0, 0.7);
+            
+    }
+
+    .battle-panel-title img {
+        width: 24px;
+
+        height: 24px;
+
+        object-fit: contain;
+
+        filter:
+            drop-shadow(
+                0 0 5px
+                rgba(90, 170, 255, 0.7)
+            );
+    }
+
+    .battle-new-magic-list {
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        gap:
+            5px;
+
+        height:
+            calc(100% - 24px);
+
+        overflow-y:
+            auto;
+
+        overflow-x:
+            hidden;
+
+        padding:
+            2px;
+
+        scrollbar-width:
+            thin;
+    }
+
+    .battle-new-magic-list::-webkit-scrollbar {
+        display: none;
+    }
+
+    .battle-new-magic-item {
+        flex: 0 0 auto;
+
+        width: 100%;
+
+        min-height: 104px;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
+        
+        justify-content: center;
+
+        padding: 8px;
+
+        box-sizing: border-box;
+
+        border: 1px solid rgba(255, 255, 255, 0.24);
+
+        border-radius: 12px;
+
+        background:
+            rgba(255, 255, 255, 0.07);
+
+        color: #fff;
+
+        cursor: pointer;
+
+        transition:
+            transform 0.12s ease,
+            background 0.12s ease,
+            border-color 0.12s ease;
+    }
+
+    .battle-new-magic-item:hover {
+        background: rgba(255, 255, 255, 0.13);
+    }
+
+    .battle-new-magic-item:active {
+        transform: scale(0.97);
+    }
+
+    .battle-new-magic-item.is-selected {
+        border-color: rgba(255, 225, 120, 0.95);
+        background: rgba(255, 214, 90, 0.16);
+        box-shadow: 0 0 12px rgba(255, 210, 90, 0.18);
+    }
+
+    .battle-new-magic-icon-wrap {
+        width: 100px;
+        height: 100px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .battle-new-magic-icon-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+
+    .battle-new-magic-fallback {
+        display: none;
+        font-size: 27px;
+    }
+
+
+
+    .battle-new-magic-empty {
+        padding: 16px 8px;
+        opacity: 0.7;
+        font-size: 13px;
+    }
+    /* =========================
+    選択中の魔法
+    ========================= */
+
+    .battle-detail-panel {
+        grid-area:
+            detail;
+
+        min-width:
+            0;
+
+        min-height:
+            0;
+
+        width:
+            100%;
+
+        height:
+            auto;
+
+        align-self:
+            stretch;
+
+        box-sizing:
+            border-box;
+
+        padding:
+            4px 0 0;
+
+        overflow:
+            hidden;
+    }
+
+
+    .battle-selected-magic {
+        min-height:
+            104px;
+
+        width:
+            100%;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        gap:
+            12px;
+
+        padding:
+            8px 12px;
+
+        box-sizing:
+            border-box;
+
+        border:
+            1px solid rgba(255, 255, 255, 0.35);
+
+        border-radius:
+            12px;
+
+        background:
+            rgba(16, 26, 45, 0.82);
+
+        box-shadow:
+            0 5px 18px rgba(0, 0, 0, 0.25);
+
+        overflow:
+            hidden;
+    }
+
+
+    .battle-selected-magic-icon {
+        flex:
+            0 0 62px;
+
+        width:
+            62px;
+
+        height:
+            62px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border:
+            1px solid rgba(255, 255, 255, 0.18);
+
+        border-radius:
+            10px;
+
+        background:
+            rgba(0, 0, 0, 0.2);
+
+        box-sizing:
+            border-box;
+    }
+
+
+    .battle-selected-magic-icon img {
+        width:
+            54px;
+
+        height:
+            54px;
+
+        object-fit:
+            contain;
+    }
+
+
+    .battle-selected-magic-icon > span {
+        display:
+            none;
+
+        font-size:
+            35px;
+    }
+
+
+    .battle-selected-magic-info {
+        min-width:
+            0;
+
+        flex:
+            1;
+
+        display:
+            grid;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            400px;
+
+        column-gap:
+            4px;
+
+        align-items:
+            center;
+    }
+
+
+    .battle-selected-magic-left {
+        min-width:
+            0;
+
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        justify-content:
+            center;
+    }
+
+
+    .battle-selected-magic-name {
+        min-width:
+            0;
+
+        font-size:
+            clamp(17px, 2.4vw, 23px);
+
+        font-weight:
+            900;
+
+        line-height:
+            1.2;
+
+        white-space:
+            nowrap;
+
+        overflow:
+            hidden;
+
+        text-overflow:
+            ellipsis;
+    }
+
+
+    .battle-selected-magic-effect {
+        min-width:
+            0;
+
+        margin-top:
+            5px;
+
+        font-size:
+            clamp(11px, 1.5vw, 14px);
+
+        line-height:
+            1.3;
+
+        opacity:
+            0.88;
+
+        white-space:
+            nowrap;
+
+        overflow:
+            hidden;
+
+        text-overflow:
+            ellipsis;
+    }
+
+
+    .battle-selected-magic-right {
+        min-width:
+            0;
+
+        width:
+            100%;
+
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        gap:
+            5px;
+
+        box-sizing:
+            border-box;
+    }
+
+
+    .battle-selected-magic-cost,
+    .battle-selected-magic-damage {
+        width:
+            100%;
+
+        display:
+            grid;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            78px;
+
+        align-items:
+            baseline;
+
+        column-gap:
+            8px;
+
+        white-space:
+            nowrap;
+    }
+
+
+    .battle-selected-magic-cost span:first-child,
+    .battle-selected-magic-damage span:first-child {
+        min-width:
+            0;
+
+        overflow:
+            hidden;
+
+        text-overflow:
+            ellipsis;
+    }
+
+
+    .battle-selected-magic-cost strong,
+    .battle-selected-magic-damage strong {
+        width:
+            78px;
+
+        display:
+            block;
+
+        font-size:
+            17px;
+
+        font-weight:
+            900;
+
+        line-height:
+            1.2;
+
+        text-align:
+            right;
+
+        white-space:
+            nowrap;
+    }
+
+
+    .battle-selected-magic-cost strong {
+        color:
+            #ffe17c;
+    }
+
+
+    .battle-selected-magic-damage strong {
+        color:
+            #ff5b5b;
+    }
+
+    .battle-new-message {
+        grid-area:
+            message;
+
+        width:
+            100%;
+
+        height:
+            100%;
+
+        min-width:
+            0;
+
+        min-height:
+            0;
+
+        box-sizing:
+            border-box;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        padding:
+            8px 16px;
+
+        border:
+            1px solid rgba(255, 255, 255, 0.35);
+
+        border-radius:
+            13px;
+
+        background:
+            rgba(16, 26, 45, 0.96);
+
+        box-shadow:
+            0 5px 18px rgba(0, 0, 0, 0.25);
+
+        text-align:
+            center;
+
+        font-size:
+            clamp(17px, 2vw, 22px);
+
+        font-weight:
+            900;
+
+        line-height:
+            1.3;
+
+        text-shadow:
+            0 2px 6px rgba(0, 0, 0, 0.95);
+
+        overflow:
+            hidden;
+
+        z-index:
+            10;
+
+        pointer-events:
+            none;
+
+        opacity:
+            0;
+
+        visibility:
+            hidden;
+
+        transition:
+            opacity 0.08s ease;
+    }
+
+    .battle-new-message.is-active {
+        opacity:
+            1;
+
+        visibility:
+            visible;
+    }
+
+    .battle-action-row {
+        grid-area:
+            actions;
+
+        display:
+            grid;
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap:
+            2px;
+
+        width:
+            100%;
+    }
+    .battle-new-action-button {
+        min-height:
+            64px;
+
+        border-radius:
+            13px;
+
+        border:
+            2px solid rgba(255, 255, 255, 0.4);
+
+        color:
+            #fff;
+
+        font-size:
+            18px;
+
+        font-weight:
+            900;
+
+        cursor:
+            pointer;
+
+        transition:
+            transform 0.1s ease,
+            filter 0.15s ease,
+            opacity 0.15s ease;
+
+        box-shadow:
+            0 5px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .battle-new-action-button:active:not(:disabled) {
+        transform: translateY(2px) scale(0.98);
+    }
+
+    .battle-new-action-button:disabled {
+        opacity: 0.42;
+        cursor: default;
+    }
+
+    .battle-new-attack-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: linear-gradient(180deg, rgba(205, 71, 56, 0.95), rgba(116, 35, 30, 0.96));
+        border-color: rgba(255, 220, 180, 0.68);
+    }
+
+    .battle-new-attack-button img {
+        width: 29px;
+        height: 29px;
+        object-fit: contain;
+    }
+
+    .battle-new-escape-button {
+        background: linear-gradient(180deg, rgba(80, 105, 145, 0.95), rgba(37, 53, 79, 0.96));
+        border-color: rgba(205, 220, 245, 0.55);
+    }
+
+
+
+
+
+    /* =========================================================
+    バトルUI：理想レイアウト調整（2026-09-26）
+    ・通常ゲーム画面/HUDを残したまま中央にバトルウィンドウを表示
+    ・既存のバトル内部ロジック／各種デザインは極力維持
+    ・バトルログは選択魔法詳細に重ねて表示
+    ========================================================= */
+
+    /* バトル中も通常ゲーム画面を背景として残す */
+    .battle-main-popup {
+        background:
+            rgba(5, 10, 18, 0.08);
+        padding:
+            0;
+    }
+
+    /* 上部ゲームHUDを残し、その下を大きく覆うバトルウィンドウ */
+    .battle-main-popup {
+        align-items:
+            flex-start;
+
+        justify-content:
+            center;
+
+        padding:
+            84px 12px 20px;
+
+        box-sizing:
+            border-box;
+    }
+
+    /* 大きな「一枚のバトルウィンドウ」 */
+    .battle-main-screen {
+        width:
+            min(90vw, 1450px);
+
+        height:
+            calc(100vh - 104px);
+
+        max-height:
+            calc(100vh - 104px);
+
+        padding:
+            6px;
+
+        border:
+            2px solid rgba(255, 218, 105, 0.82);
+
+        border-radius:
+            16px;
+
+        background:
+            linear-gradient(
+                rgba(5, 12, 22, 0.12),
+                rgba(5, 12, 22, 0.18)
+            ),
+            url("images/back-image/戦闘1.png")
+            center / cover
+            no-repeat;
+
+        box-shadow:
+            0 10px 34px rgba(0, 0, 0, 0.55),
+            0 0 0 1px rgba(50, 170, 255, 0.7),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+
+        transform:
+            none;
+    }
+
+    /* =========================================================
+    ボス戦：バトルウィンドウ背景
+    ========================================================= */
+
+    #battleMainPopup.boss-battle-mode .battle-main-screen {
+        background:
+            linear-gradient(
+                rgba(5, 12, 22, 0.12),
+                rgba(5, 12, 22, 0.18)
+            ),
+            url("images/back-image/魔王城.png")
+            center / cover
+            no-repeat;
+    }
+
+    /* 左の魔法欄を理想画像に合わせて少し広げる */
+    .battle-main-screen {
+        grid-template-columns:
+            205px
+            minmax(0, 1fr);
+    }
+
+    /* ROUNDは右側フィールドの中央上部 */
+    .battle-round-badge {
+        left:
+            205px;
+
+        right:
+            0;
+
+        top:
+            4px;
+    }
+
+    /* モンスターを現在より大きく表示 */
+    .battle-monster-visual-wrap {
+        height:
+            min(34vh, 290px);
+
+        width:
+            min(52vw, 410px);
+    }
+
+    /* バトルウィンドウ内ではHPバーもフィールド幅に合わせる */
+    .battle-hp-bar {
+        width:
+            min(48vw, 390px);
+    }
+
+    /* 選択中魔法の詳細枠は画像のようにコンパクトにする */
+    .battle-selected-magic {
+        min-height:
+            70px !important;
+
+        height:
+            70px !important;
+
+        padding:
+            6px 10px !important;
+
+        gap:
+            9px !important;
+
+        border-radius:
+            10px !important;
+    }
+
+    .battle-selected-magic-icon {
+        flex:
+            0 0 50px !important;
+
+        width:
+            50px !important;
+
+        height:
+            50px !important;
+    }
+
+    .battle-selected-magic-icon img {
+        width:
+            44px !important;
+
+        height:
+            44px !important;
+    }
+
+    .battle-selected-magic-info {
+        grid-template-columns:
+            minmax(0, 1fr)
+            150px !important;
+
+        column-gap:
+            8px !important;
+    }
+
+    .battle-selected-magic-name {
+        font-size:
+            16px !important;
+
+        line-height:
+            1.2 !important;
+    }
+
+    .battle-selected-magic-effect {
+        margin-top:
+            3px !important;
+
+        font-size:
+            10px !important;
+
+        line-height:
+            1.2 !important;
+    }
+
+    .battle-selected-magic-right {
+        gap:
+            2px !important;
+    }
+
+    .battle-selected-magic-cost,
+    .battle-selected-magic-damage {
+        font-size:
+            11px !important;
+
+        line-height:
+            1.2 !important;
+    }
+
+    .battle-selected-magic-cost strong,
+    .battle-selected-magic-damage strong {
+        font-size:
+            17px !important;
+
+        line-height:
+            1.15 !important;
+    }
+
+    /*
+    バトルログ
+    選択魔法詳細の枠そのものを隠すのではなく、
+    その上にログを重ねる。
+    */
+    .battle-new-message {
+        grid-area: detail;
+
+        position: relative;
+
+        width: 100%;
+        height: 100%;
+
+        box-sizing: border-box;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 8px 16px;
+
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        border-radius: 12px;
+
+        background: rgb(16, 26, 45);
+
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
+
+        font-size: clamp(17px, 2vw, 22px);
+        font-weight: 900;
+        line-height: 1.3;
+
+        text-align: center;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+
+        z-index: 5000;
+
+        pointer-events: none;
+
+        opacity: 0;
+        visibility: hidden;
+
+        transform: translateY(-20px);
+    }
+
+    .battle-new-message.is-active {
+        opacity:
+            1;
+
+        visibility:
+            visible;
+    }
+
+
+    .battle-new-attack-button img {
+        width:
+            20px;
+
+        height:
+            20px;
+    }
+
+    /* =========================================================
+    プレイヤーHPバー
+    ========================================================= */
+
+    .battle-player-hp {
+        position:
+            absolute;
+
+        left:
+        calc(50% - 300px);
+
+    bottom:
+        230px;
+
+        transform:
+            translateX(-50%);
+
+        width:
+            195px; 
+
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+        z-index:
+            99999;
+
+        pointer-events:
+            none;
+    }
+
+
+    /* =========================================================
+    HPバー
+    ========================================================= */
+
+    .battle-player-hp-bar {
+        width:
+            200px;
+
+        height:
+            13px;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.55);
+
+        border-radius:
+            999px;
+
+        background:
+            rgba(0, 0, 0, 0.5);
+
+        overflow:
+            hidden;
+
+        box-sizing:
+            border-box;
+
+        box-shadow:
+            inset 0 2px 5px
+            rgba(0, 0, 0, 0.45);
+    }
+
+
+    /* =========================================================
+    ゴールド色のHP
+    ========================================================= */
+
+    .battle-player-hp-fill {
+        width:
+            100%;
+
+        height:
+            100%;
+
+        background:
+            linear-gradient(
+                90deg,
+                #d99a18,
+                #ffd95a
+            );
+
+        border-radius:
+            999px;
+
+        transition:
+            width 0.25s ease;
+
+        box-shadow:
+            0 0 8px
+            rgba(255, 215, 80, 0.65);
+    }
+
+
+    /* =========================================================
+    アイコン ＋ 開始時ゴールド
+    ========================================================= */
+
+    .battle-player-hp-status {
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        gap:
+            5px;
+
+        margin-top:
+            3px;
+
+        height:
+            28px;
+    }
+
+
+    /* プレイヤーアイコン */
+
+    .battle-player-hp-icon {
+        width:
+            28px;
+
+        height:
+            28px;
+
+        object-fit:
+            contain;
+
+        flex-shrink:
+            0;
+    }
+
+
+    /* 開始時ゴールド */
+
+    .battle-player-hp-max {
+        font-size:
+            16px;
+
+        font-weight:
+            900;
+
+        color:
+            #ffe27a;
+
+        text-align:
+            left;
+
+        white-space:
+            nowrap;
+
+        text-shadow:
+            0 2px 5px
+            rgba(0, 0, 0, 0.9);
+    }
+
+    /* =========================================================
+    戦闘UI 微調整①
+    ・戦う／逃げるボタンを縦方向に拡大
+    ・魔法詳細パネルがボタンと被らないように調整
+    ========================================================= */
+
+    .battle-main-screen {
+        /*
+        * 上：モンスター
+        * 中：バトルログ
+        * 下：魔法詳細
+        * 最下段：戦う／逃げる
+        */
+        grid-template-rows:
+            minmax(0, 1fr)
+            0
+            70px
+            56px;
+    }
+
+
+    /* =========================
+    魔法詳細パネル
+    ========================= */
+
+    .battle-selected-magic {
+        height:
+            70px !important;
+
+        min-height:
+            70px !important;
+
+        margin:
+            0 !important;
+
+        box-sizing:
+            border-box;
+    }
+
+
+    /* =========================
+    戦う・逃げる
+    ========================= */
+
+    .battle-action-row {
+        grid-area:
+            actions;
+
+        width:
+            100%;
+
+        height:
+            56px;
+
+        gap:
+            4px;
+
+        align-self:
+            stretch;
+    }
+
+
+    .battle-new-action-button {
+        min-height:
+            56px !important;
+
+        height:
+            56px;
+
+        border-radius:
+            9px;
+
+        font-size:
+            16px;
+    }
+
+
+    /* 戦うアイコン */
+
+    .battle-new-attack-button img {
+        width:
+            23px;
+
+        height:
+            23px;
+    }
+
+
+
+    /* =========================================================
+    戦闘UI 微調整②
+    ・魔法詳細パネルを上へ
+    ・戦う／逃げるボタンを上へ
+    ========================================================= */
+
+    .battle-selected-magic {
+        transform:
+            translateY(-20px);
+    }
+
+    .battle-action-row {
+        transform:
+            translateY(-20px);
+    }
+    /* =========================================================
+    戦闘UI 微調整③
+    ・魔法一覧パネルの下端だけ下へ延長
+    ========================================================= */
+
+    .battle-magic-panel {
+        height:
+            calc(100% + 66px) !important;
+    }
+
+    /* =========================================================
+    戦闘UI 微調整④
+    ・魔法詳細枠の縦幅を約1.5倍
+    ・戦う／逃げるボタンの縦幅を約1.5倍
+    ========================================================= */
+
+
+    /* =========================
+    バトル画面の縦方向レイアウト
+    ========================= */
+
+    .battle-main-screen {
+        grid-template-rows:
+            minmax(0, 1fr)
+            0
+            105px
+            84px;
+    }
+
+
+    /* =========================
+    魔法詳細パネル
+    70px → 105px
+    ========================= */
+
+    .battle-selected-magic {
+        height:
+            105px !important;
+
+        min-height:
+            105px !important;
+
+        box-sizing:
+            border-box;
+    }
+
+
+    /* =========================
+    戦う・逃げるボタン
+    56px → 84px
+    ========================= */
+
+    .battle-action-row {
+        height:
+            84px;
+
+        align-self:
+            stretch;
+    }
+
+
+    .battle-new-action-button {
+        height:
+            84px;
+
+        min-height:
+            84px !important;
+
+        font-size:
+            18px;
+    }
+
+
+    /* 戦うアイコンも少し大きく */
+
+    .battle-new-attack-button img {
+        width:
+            30px;
+
+        height:
+            30px;
+    }
+
+    /* =========================================================
+    戦闘UI 微調整⑤
+    ・戦う／逃げるの文字を大きく
+    ・魔法詳細の文字も相対的に大きく
+    ・スマホでは自動的に縮小して画面内に収める
+    ========================================================= */
+
+
+    /* =========================
+    戦う・逃げる
+    ========================= */
+
+    .battle-new-action-button {
+        font-size:
+            clamp(16px, 2.2vw, 24px);
+
+        font-weight:
+            900;
+
+        white-space:
+            nowrap;
+
+        line-height:
+            1.1;
+
+        overflow:
+            hidden;
+
+        text-overflow:
+            ellipsis;
+    }
+
+
+    /* 戦うアイコン */
+
+    .battle-new-attack-button img {
+        width:
+            clamp(22px, 2.8vw, 32px);
+
+        height:
+            clamp(22px, 2.8vw, 32px);
+
+        flex:
+            0 0 auto;
+    }
+
+
+    /* =========================
+    魔法詳細
+    ========================= */
+
+    .battle-selected-magic-name {
+        font-size:
+            clamp(18px, 2.2vw, 26px) !important;
+
+        line-height:
+            1.15;
+
+        white-space:
+            nowrap;
+
+        overflow:
+            hidden;
+
+        text-overflow:
+            ellipsis;
+    }
+
+
+    .battle-selected-magic-effect {
+        font-size:
+            clamp(11px, 1.3vw, 16px) !important;
+
+        line-height:
+            1.2;
+
+        white-space:
+            nowrap;
+
+        overflow:
+            hidden;
+
+        text-overflow:
+            ellipsis;
+    }
+
+
+    /* =========================
+    コスト
+    ========================= */
+
+    .battle-selected-magic-cost {
+        font-size:
+            clamp(13px, 1.5vw, 19px) !important;
+
+        line-height:
+            1.15;
+    }
+
+
+    .battle-selected-magic-cost strong {
+        font-size:
+            clamp(20px, 2.2vw, 30px) !important;
+
+        line-height:
+            1.1;
+
+        white-space:
+            nowrap;
+    }
+
+
+    /* =========================
+    予測ダメージ
+    ========================= */
+
+    .battle-selected-magic-damage {
+        font-size:
+            clamp(13px, 1.5vw, 19px) !important;
+
+        line-height:
+            1.15;
+    }
+
+
+    .battle-selected-magic-damage strong {
+        font-size:
+            clamp(20px, 2.2vw, 30px) !important;
+
+        line-height:
+            1.1;
+
+        white-space:
+            nowrap;
+    }
+
+    /* =========================================================
+    戦闘UI 微調整⑥
+    ・コスト／予測ダメージを中央寄りへ
+    ・「予測ダメージ」の文字切れを防止
+    ========================================================= */
+
+
+    /* ラベル */
+
+    .battle-selected-magic-cost span:first-child,
+    .battle-selected-magic-damage span:first-child {
+        overflow:
+            visible;
+
+        text-overflow:
+            clip;
+
+        white-space:
+            nowrap;
+    }
+
+
+    /* 数値 */
+
+    .battle-selected-magic-cost strong,
+    .battle-selected-magic-damage strong {
+        width:
+            auto;
+
+        min-width:
+            60px;
+
+        text-align:
+            right;
+
+        white-space:
+            nowrap;
+    }
+
+
+    /* =========================================================
+    戦闘UI 微調整⑦
+    コスト・予測ダメージの位置を右端に固定
+    ========================================================= */
+
+
+    /* ========================================
+    PC
+    ======================================== */
+
+    .battle-selected-magic-info {
+        grid-template-columns:
+            minmax(0, 1fr)
+            190px;
+
+        min-width:
+            0;
+    }
+
+
+    .battle-selected-magic-right {
+        width: 200px !important;
+        min-width: 200px;
+        justify-self: end;
+        transform: translateX(-400px) !important;
+    }
+
+
+    .battle-selected-magic-cost,
+    .battle-selected-magic-damage {
+        width:
+            200px !important;
+
+        display:
+            grid;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            80px;
+
+        column-gap:
+            18px;
+
+        align-items:
+            baseline;
+
+        white-space:
+            nowrap;
+
+        box-sizing:
+            border-box;
+    }
+
+
+    .battle-selected-magic-cost span:first-child,
+    .battle-selected-magic-damage span:first-child {
+        min-width:
+            0;
+
+        overflow:
+            visible;
+
+        text-overflow:
+            clip;
+
+        white-space:
+            nowrap;
+    }
+
+    .battle-selected-magic-cost strong,
+    .battle-selected-magic-damage strong {
+        width: 80px !important;
+        min-width: 80px;
+
+        margin-left: 35px;
+
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    /* =========================================================
+    スマホ横向き：バトルUI
+    PC版の構造を維持して各パーツだけ縮小
+    ========================================================= */
+
+    @media (orientation: landscape)
+    and (max-width: 1000px)
+    and (max-height: 610px) {
+
+    
+    /* -----------------------------------------
+        戦闘画面の幅
+        ----------------------------------------- */
+
+        .battle-main-screen {
+            grid-template-columns:
+                120px
+                minmax(0, 1fr);
+
+            height:
+                calc(100vh - 74px) !important;
+
+            max-height:
+                calc(100vh - 74px) !important;
+        }
+
+    /* -----------------------------------------
+        魔法一覧の幅
+        ----------------------------------------- */
+
+        .battle-main-popup {
+            padding-top:
+                60px !important;
+        }
+
+    /* -----------------------------------------
+    ROUND
+    ----------------------------------------- */
+
+    .battle-round-badge {
+        left: 120px !important;
+        right: 0 !important;
+        top: 3px !important;
+        justify-content: center !important;
+        transform: translateX(180px) !important;
+    }
+
+
+    /* -----------------------------------------
+    モンスター表示領域
+    ----------------------------------------- */
+
+    .battle-field {
+        grid-area:
+            monster !important;
+
+        min-height:
+            0 !important;
+
+        overflow:
+            visible !important;
+    }
+
+    .battle-monster-image {
+        width: 130% !important;
+        height: 130% !important;
+        object-fit: contain;
+        transform: translate(-50px, 25px) !important;
+    }
+
+    .battle-monster-name {
+        position: absolute !important;
+
+        left: calc(50% + 100px) !important;
+        top: calc(50% - 40px) !important;
+
+        width: 180px !important;
+        margin: 0 !important;
+
+        text-align: left !important;
+        font-size: 14px !important;
+    }
+
+    .battle-monster-area {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        transform: translateY(20px) !important;
+
+        position: relative !important;
+    }
+
+    .battle-hp-bar {
+        position: absolute !important;
+
+        left: calc(50% + 100px) !important;
+        top: calc(50% - 5px) !important;
+
+        width: 150px !important;
+        height: 10px !important;
+        min-height: 10px !important;
+
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+
+        transform: translateY(-50%) !important;
+    }
+    .battle-monster-hp {
+        position: absolute !important;
+
+        left: calc(50% + 100px) !important;
+        top: calc(50% + 0px) !important;
+
+        width: 180px !important;
+        min-height: 18px !important;
+
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+
+        font-size: 12px !important;
+        text-align: left !important;
+    }
+
+
+        /* -----------------------------------------
+        魔法一覧パネル
+        ----------------------------------------- */
+
+            .battle-magic-panel {
+            height:
+            calc(100% + 88px) !important;
+
+            padding:
+                6px;
+
+            overflow:
+                hidden;
+        }
+
+
+        /* 魔法一覧 */
+
+        .battle-new-magic-list {
+            gap:
+                4px;
+
+            height:
+                calc(100% - 22px);
+
+            padding:
+                2px;
+        }
+
+
+        /* -----------------------------------------
+        魔法カード
+        ----------------------------------------- */
+
+        .battle-new-magic-item {
+            min-height:
+                78px;
+
+            padding:
+                4px;
+
+            border-radius:
+                9px;
+
+            gap:
+                0;
+        }
+
+
+        /* -----------------------------------------
+        魔法アイコン
+        ----------------------------------------- */
+
+        .battle-new-magic-icon-wrap {
+            width:
+                48px !important;
+
+            height:
+                48px !important;
+        }
+
+        .battle-new-magic-icon-wrap img {
+            width:
+                48px !important;
+
+            height:
+                48px !important;
+
+            max-width:
+                48px !important;
+
+            max-height:
+                48px !important;
+        }
+
+
+        /* -----------------------------------------
+        魔法名
+        ----------------------------------------- */
+
+        .battle-new-magic-name {
+            font-size:
+                12px;
+
+            line-height:
+                1.1;
+
+            white-space:
+                nowrap;
+
+            overflow:
+                hidden;
+
+            text-overflow:
+                ellipsis;
+        }
+
+
+        /* -----------------------------------------
+        選択中魔法
+        ----------------------------------------- */
+
+        .battle-selected-magic {
+            height:
+                70px !important;
+
+            min-height:
+                70px !important;
+
+            padding:
+                5px 8px !important;
+
+            gap:
+                10px !important;
+
+        transform: translateY(78px) !important;
+        }
+
+
+        .battle-selected-magic-icon {
+            flex:
+                0 0 44px !important;
+
+            width:
+                44px !important;
+
+            height:
+                44px !important;
+        }
+
+
+        .battle-selected-magic-icon img {
+            width:
+                38px !important;
+
+            height:
+                38px !important;
+        }
+
+
+        .battle-selected-magic-info {
+            grid-template-columns:
+                minmax(0, 1fr)
+                105px !important;
+
+            column-gap:
+                5px !important;
+        }
+
+
+        .battle-selected-magic-name {
+            font-size:
+                14px !important;
+        }
+
+
+        .battle-selected-magic-effect {
+            font-size:
+                12px !important;
+        }
+
+
+        .battle-selected-magic-right {
+            width:
+                85px !important;
+
+            min-width:
+                85px;
+
+            transform: translateX(-150px) !important;
+        }
+
+
+        .battle-selected-magic-cost,
+        .battle-selected-magic-damage {
+        width:
+            110px !important;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            42px;
+
+        column-gap:
+            21px !important;
+    }
+
+
+        .battle-selected-magic-cost strong,
+        .battle-selected-magic-damage strong {
+            width:
+                42px !important;
+
+            min-width:
+                42px;
+
+            margin-left: 10px !important;
+
+            font-size:
+                14px !important;
+
+            text-align: left !important;
+        }
+
+
+    /* -----------------------------------------
+    バトルログ
+    ----------------------------------------- */
+
+    .battle-new-message {
+        grid-area:
+            detail !important;
+
+        width:
+            100% !important;
+
+        height:
+            70px !important;
+
+        padding:
+            6px 10px;
+
+        font-size:
+            14px;
+
+        transform:
+            translateY(78px) !important;
+
+        z-index:
+            5001 !important;
+    }
+
+
+        /* -----------------------------------------
+        戦う・逃げる
+        ----------------------------------------- */
+
+        .battle-action-row {
+        height: 50px;
+        align-self: end;
+        transform: none !important;
+    }
+
+
+        .battle-new-action-button {
+            height:
+                40px;
+
+            min-height:
+                40px !important;
+
+            font-size:
+                20px;
+
+            transform: translateY(6px) !important;
+        }
+
+
+        .battle-new-attack-button img {
+            width:
+                24px;
+
+            height:
+                24px;
+        }
+
+    /* -----------------------------------------
+    プレイヤーHP
+    モンスターHPと縦並び
+    ----------------------------------------- */
+
+    .battle-player-hp {
+        left:
+            calc(50% + 240px) !important;
+
+        bottom:
+            calc(50% - 30px) !important;
+
+        width:
+            150px !important;
+
+        align-items:
+            flex-start !important;
+    }
+
+    .battle-player-hp-bar {
+        width:
+            150px !important;
+
+        height:
+            10px !important;
+    }
+
+    .battle-player-hp-status {
+        width:
+            180px !important;
+
+        margin-top:
+            4px !important;
+    }
+
+    .battle-player-hp-max {
+        font-size:
+            12px !important;
+    }
+
+    }
+
+    /* =========================================================
+    エンカウント直後
+    ・モンスターアイコン
+    ・バトルログ
+    だけを表示
+    ========================================================= */
+
+    .battle-main-popup.battle-intro-mode
+    .battle-round-badge,
+    .battle-main-popup.battle-intro-mode
+    .battle-monster-name,
+    .battle-main-popup.battle-intro-mode
+    .battle-hp-bar,
+    .battle-main-popup.battle-intro-mode
+    .battle-monster-hp,
+    .battle-main-popup.battle-intro-mode
+    .battle-action-row {
+
+        display:
+            none !important;
+    }
+
+    /* =========================================================
+    エンカウント中はプレイヤーHPを非表示
+    ========================================================= */
+
+    .battle-main-popup.battle-intro-mode
+    .battle-player-hp {
+        display:
+            none !important;
+    }
+
+    /* =========================================================
+    モンスター被ダメージ点滅
+    ========================================================= */
+
+    .monster-damage-flash {
+        animation:
+            monsterDamageFlash
+            0.4s
+            ease-in-out;
+    }
+
+    @keyframes monsterDamageFlash {
+
+        0% {
+            opacity: 1;
+        }
+
+        20% {
+            opacity: 0.15;
+        }
+
+        40% {
+            opacity: 1;
+        }
+
+        60% {
+            opacity: 0.15;
+        }
+
+        80% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 1;
+        }
+
+    }
+
+    /* =========================================================
+    キャラクター選択画面
+    ========================================================= */
+
+    .player-character-window {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        padding: 20px;
+
+        background: rgba(0, 0, 0, 0.75);
+
+        box-sizing: border-box;
+    }
+
+
+    /* タイトル */
+
+    .player-character-window-title {
+        margin-bottom: 20px;
+
+        color: #ffffff;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+
+    /* キャラクター一覧 */
+
+    .player-character-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+
+        gap: 15px;
+
+        width: 100%;
+        max-width: 650px;
+    }
+
+
+    /* キャラクター1人分 */
+
+    .player-character-option {
+        width: 110px;
+        height: 135px;
+
+        padding: 8px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        gap: 6px;
+
+        box-sizing: border-box;
+
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        border-radius: 12px;
+
+        background: rgba(255, 255, 255, 0.15);
+
+        color: #ffffff;
+
+        cursor: pointer;
+    }
+
+
+    /* キャラクター画像 */
+
+    .player-character-option img {
+        width: 85px;
+        height: 85px;
+
+        object-fit: contain;
+
+        display: block;
+    }
+
+
+    /* キャラクター名 */
+
+    .player-character-option span {
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1.2;
+    }
+    /* =========================================================
+    プレイヤー設定画面のキャラクター変更ボタン
+    ========================================================= */
+
+    .player-character-button {
+        width: 90px;
+        height: 90px;
+
+        padding: 5px;
+        margin: 8px auto;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        box-sizing: border-box;
+
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        border-radius: 12px;
+
+        background: rgba(255, 255, 255, 0.15);
+
+        cursor: pointer;
+    }
+
+
+    /* 選択中キャラクターのアイコン */
+
+    .player-character-preview {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        display: block;
+    }
+    /* =========================================================
+    キャラクター選択画面
+    スマホ用レイアウト
+    ========================================================= */
+
+    @media (max-width: 600px) {
+
+        .player-character-window {
+            padding: 10px;
+        }
+
+
+        /* タイトル */
+
+        .player-character-window-title {
+            margin-bottom: 12px;
+
+            font-size: 20px;
+        }
+
+
+        /* キャラクター一覧 */
+
+        .player-character-list {
+            width: 100%;
+            max-width: 360px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 8px;
+        }
+
+
+        /* キャラクター1人分 */
+
+        .player-character-option {
+            width: 100%;
+            height: 105px;
+
+            padding: 5px;
+
+            gap: 3px;
+        }
+
+
+        /* キャラクター画像 */
+
+        .player-character-option img {
+            width: 65px;
+            height: 65px;
+        }
+
+
+        /* キャラクター名 */
+
+        .player-character-option span {
+            font-size: 14px;
+        }
+
+    }   
+
+    /* =========================
+    魔法店カテゴリーアイコン
+    ========================= */
+
+    .shop-category-icon {
+
+        width: 32px;
+        height: 32px;
+
+        object-fit: contain;
+
+        vertical-align: middle;
+
+    }
+    /* 魔法店画面の所持金表示を非表示 */
+    .magic-shop-money {
+        display: none;
+    }
+    /* ショップ画面の所持金表示を非表示 */
+    #magicShopMoney {
+        display: none;
+    }
+
+    .magic-shop-title {
+        font-size: 20px;
+    }
+
+    .magicShopPopup .shop-name {
+        font-size: 20px;
+    }
+
+    /* =========================================
+    アイテムショップ画面
+    ========================================= */
+
+
+    /* 所持金は非表示 */
+    #shopPopup #shopMoney {
+        display:
+            none !important;
+    }
+
+
+    /* =========================================
+    最初のショップメニュー
+    ショップ名は非表示
+    ========================================= */
+
+    #shopPopup:has(#shopItemList[style*="display: none"])
+    .shop-name {
+        display:
+            none;
+    }
+
+    /* =========================
+    アイテムショップメニュー
+    ========================= */
+
+    #shopPopup .shop-title {
+        font-size: 20px;
+    }
+    #shopPopup .shop-name {
+        font-size: 20px;
+    }
+
+    /* =========================
+    アイテム購入ポップアップ
+    ========================= */
+
+    .event-popup.item-purchase-popup {
+        background:
+            rgba(20, 20, 35, 0.98);
+    }
+
+    .event-popup.item-purchase-popup
+    .event-popup-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .event-popup.item-purchase-popup
+    .event-popup-title::before {
+        content: "";
+        width: 30px;
+        height: 30px;
+        flex: 0 0 30px;
+
+        background:
+            url("images/ui-icons/item.png")
+            center / contain
+            no-repeat;
+    }
+
+    /* =========================
+    ゴールド不足ポップアップ
+    ========================= */
+
+    .event-popup.gold-insufficient-popup {
+        background:
+        rgba(20, 20, 35, 0.98);
+    }
+
+    /* =========================
+    魔力購入ポップアップ
+    ========================= */
+
+    .event-popup.power-purchase-popup {
+        background:
+            rgba(20, 20, 35, 0.98);
+    }
+
+    .event-popup.power-purchase-popup
+    .event-popup-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .event-popup.power-purchase-popup
+    .event-popup-title::before {
+        content: "";
+        width: 30px;
+        height: 30px;
+        flex: 0 0 30px;
+
+        background:
+            url("images/ui-icons/mana.png")
+            center / contain
+            no-repeat;
+    }
+    /* =========================
+    魔法習得ポップアップ
+    ========================= */
+
+    .event-popup.magic-purchase-popup {
+        background:
+            rgba(20, 20, 35, 0.98);
+    }
+
+    .event-popup.magic-purchase-popup
+    .event-popup-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .event-popup.magic-purchase-popup
+    .event-popup-title::before {
+        content: "";
+        width: 30px;
+        height: 30px;
+        flex: 0 0 30px;
+
+        background:
+            url("images/ui-icons/magic.png")
+            center / contain
+            no-repeat;
+    }
+
+    /* =========================
+    資産購入画面：バトル画面と高さを統一
+    ========================= */
+
+    #assetPurchasePopup {
+    top: 60px;
+
+    height:
+        calc(100vh - 70px);
+
+    max-height:
+        calc(100vh - 70px);
+}
+
+    /* 所持金は非表示 */
+
+    #assetPurchasePopup
+    .asset-purchase-money {
+        display: none !important;
+    }
+
+    /* =========================
+    資産購入タイトル：資産マスアイコン
+    ========================= */
+
+    .asset-purchase-title-icon {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+        vertical-align: middle;
+    }
+
+    .inventory-popup-title {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    /* =========================
+    報酬魔力icon
+    ========================= */
+
+    .reward-magic-icon {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+        vertical-align: middle;
+    }
+
+    /* =========================================================
+    ボス撃破報酬ポップアップ
+    ・モンスター戦闘エリア程度のサイズ
+    ・4段階すべて同じサイズ
+    ・最大6人の報酬表示に対応
+    ・ボス撃破専用の豪華なデザイン
+    ========================================================= */
+
+    .event-popup.boss-reward-popup {
+
+        position:
+            fixed;
+
+        top:
+            50%;
+
+        left:
+            50%;
+
+        transform:
+            translate(
+                -50%,
+                -50%
+            );
+
+        width:
+            min(78vw, 1100px);
+
+        height:
+            min(72vh, 650px);
+
+        max-width:
+            90vw;
+
+        max-height:
+            calc(100vh - 100px);
+
+        box-sizing:
+            border-box;
+
+        padding:
+            38px 42px;
+
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        justify-content:
+            center;
+
+        overflow:
+            hidden;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(32, 28, 18, 0.97),
+                rgba(18, 18, 30, 0.97)
+            );
+
+        border:
+            3px solid
+            rgba(255, 215, 90, 0.9);
+
+        border-radius:
+            20px;
+
+        box-shadow:
+            0 0 0 2px
+            rgba(255, 215, 90, 0.15),
+            0 0 30px
+            rgba(255, 200, 60, 0.35),
+            0 15px 50px
+            rgba(0, 0, 0, 0.6);
 
     }
 
 
-   // =========================
-// 次のROUND
-// =========================
+    /* =========================
+    タイトル
+    ========================= */
 
-activeBattle.busy =
-    false;
+    .event-popup.boss-reward-popup
+    .event-popup-title {
 
-activeBattle.phase =
-    "waitNextRound";
+        flex-shrink:
+            0;
 
-activeBattle.selectedMagic =
-    null;
+        color:
+            #ffe58a;
 
-console.log(
-    "【戦闘】次ROUND待機"
-);
+        font-size:
+            clamp(26px, 3vw, 36px);
 
-disableBattleActions();
+        font-weight:
+            900;
 
-showBattleMessage(
-    `${monster.name}の反撃！ ${damage}Gのダメージ！　次のROUNDへ　＞＞`
-);
+        letter-spacing:
+            0.08em;
 
+        text-shadow:
+            0 0 10px
+            rgba(255, 215, 90, 0.55);
+
+        margin-bottom:
+            22px;
+
+    }
+
+
+    /* =========================
+    メッセージ
+    ========================= */
+
+    .event-popup.boss-reward-popup
+    .event-popup-message {
+
+        flex:
+            1;
+
+        width:
+            100%;
+
+        min-height:
+            0;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        box-sizing:
+            border-box;
+
+        color:
+            #ffffff;
+
+        font-size:
+            clamp(18px, 2.2vw, 26px);
+
+        font-weight:
+            600;
+
+        line-height:
+            1.45;
+
+        text-align:
+            center;
+
+        margin-bottom:
+            20px;
+
+        overflow-y:
+            auto;
+
+    }
+
+
+    /* =========================
+    次へボタン
+    枠内の下部に固定
+    ========================= */
+
+    .event-popup.boss-reward-popup
+    .event-popup-button {
+
+        position:
+            absolute;
+
+        left:
+            50%;
+
+        bottom:
+            24px;
+
+        transform:
+            translateX(-50%);
+
+        flex-shrink:
+            0;
+
+        min-width:
+            100px;
+
+        padding:
+            10px 28px;
+
+    }
+
+
+    /* =========================
+    スマホ
+    ========================= */
+
+    @media (max-width: 700px) {
+
+        .event-popup.boss-reward-popup {
+
+            width:
+                90vw;
+
+            height:
+                min(
+                    72vh,
+                    600px
+                );
+
+            max-width:
+                90vw;
+
+            max-height:
+                calc(100dvh - 80px);
+
+            padding:
+                28px 22px;
+
+            border-width:
+                2px;
+
+            border-radius:
+                16px;
+
+        }
+
+
+        .event-popup.boss-reward-popup
+        .event-popup-title {
+
+            font-size:
+                clamp(
+                    23px,
+                    6vw,
+                    30px
+                );
+
+            margin-bottom:
+                16px;
+
+        }
+
+
+        .event-popup.boss-reward-popup
+        .event-popup-message {
+
+            font-size:
+                clamp(
+                    16px,
+                    4.5vw,
+                    21px
+                );
+
+            line-height:
+                1.4;
+
+            margin-bottom:
+                18px;
+
+        }
+
+
+        .event-popup.boss-reward-popup
+        .event-popup-button {
+
+            bottom:
+                18px;
+
+        }
+
+    }
+
+
+    /* =========================
+    スマホ横画面
+    ========================= */
+
+    @media (orientation: landscape) and (max-height: 500px) {
+
+    .event-popup.boss-reward-popup {
+    width: 82vw;
+    height:  270px;
+    max-width: 1100px;
+    max-height: calc(100dvh - 40px);
+    padding: 18px 30px;
+    border-radius: 14px;
 }
 
 
-    function performBossPass() {
+        .event-popup.boss-reward-popup
+        .event-popup-title {
 
-        if (!activeBattle || activeBattle.busy || !activeBattle.isBoss) {
-            return;
+            font-size:
+                24px;
+
+            margin-bottom:
+                8px;
+
         }
 
-        activeBattle.busy = true;
-        showBattleMessage("パスした！");
-        enemyCounterAttack();
 
-    }
+        .event-popup.boss-reward-popup
+        .event-popup-message {
 
+            font-size:
+                17px;
 
-    function attemptEscape() {
+            line-height:
+                1.3;
 
-    if (activeBattle && activeBattle.isBoss) {
-        performBossPass();
-        return;
-    }
+            margin-bottom:
+                10px;
 
-    // =========================
-    // 戦闘中・連打防止
-    // =========================
-
-    if (
-        !activeBattle ||
-        activeBattle.busy
-    ) {
-        return;
-    }
-
-
-    activeBattle.busy =
-        true;
-
-
-    const player =
-        activeBattle.player;
-
-    const monster =
-        activeBattle.monster;
-
-
-    // =========================
-    // 逃走判定
-    // =========================
-
-    const escaped =
-        Math.random() <
-        BATTLE_ESCAPE_RATE;
-
-
-    // =========================
-    // 逃走成功
-    // =========================
-
-    if (
-        escaped
-    ) {
-
-        showBattleMessage(
-            `${player.name}は ${monster.name}から逃げ切った！`
-        );
-
-
-        setTimeout(
-            function () {
-
-                activeBattle =
-                    null;
-
-
-                hideLayer(
-                    "battleMainPopup"
-                );
-
-
-                finishTurn(
-                    player
-                );
-
-            },
-            500
-        );
-
-
-        return;
-
-    }
-
-
-    // =========================
-    // 逃走失敗
-    // =========================
-
-    showBattleMessage(
-        "逃げられなかった！"
-    );
-
-
-    // 敵の反撃は画面タップ後に実行
-    activeBattle.busy =
-        false;
-
-    activeBattle.phase =
-        "waitEnemyCounter";
-
-    disableBattleActions();
-
-    showBattleMessage(
-        "逃げられなかったｗｗｗ　＞＞"
-    );
-
-}
-
-
-       function disableBattleActions() {
-
-        const attackButton =
-            document.getElementById("battleNewAttackButton");
-
-        const escapeButton =
-            document.getElementById("battleNewEscapeButton");
-
-        const magicList =
-            document.getElementById("battleNewMagicList");
-
-        if (attackButton) {
-            attackButton.disabled = true;
         }
 
-        if (escapeButton) {
-            escapeButton.disabled = true;
+
+        .event-popup.boss-reward-popup
+        .event-popup-button {
+
+            bottom:
+                12px;
+
+            padding:
+                7px 24px;
+
         }
 
-        if (magicList) {
-            magicList.style.pointerEvents = "none";
-            magicList.style.opacity = "0.5";
+    .event-popup.boss-reward-complete-popup {
+        width:        82vw;
+        height:270px;
+    }
+        }
+
+
+    @media (max-width: 700px) {
+
+        .event-popup.boss-reward-complete-popup {
+
+            width:
+                78vw;
+
+            height:
+                260px;
+
+        }
+
+    }
+
+    /* =========================================================
+    プレイヤー被ダメージ点滅
+    ========================================================= */
+
+    @keyframes playerDamageFlash {
+
+        0% {
+            opacity: 1;
+        }
+
+        25% {
+            opacity: 0.35;
+        }
+
+        50% {
+            opacity: 1;
+        }
+
+        75% {
+            opacity: 0.35;
+        }
+
+        100% {
+            opacity: 1;
         }
 
     }
 
 
-    function enableBattleActions() {
+    .player-damage-flash {
 
-        const attackButton =
-            document.getElementById("battleNewAttackButton");
-
-        const escapeButton =
-            document.getElementById("battleNewEscapeButton");
-
-        const magicList =
-            document.getElementById("battleNewMagicList");
-
-        if (attackButton) {
-            attackButton.disabled = false;
-        }
-
-        if (escapeButton) {
-            escapeButton.disabled = false;
-        }
-
-        if (magicList) {
-            magicList.style.pointerEvents = "auto";
-            magicList.style.opacity = "1";
-        }
+        animation:
+            playerDamageFlash
+            0.4s
+            ease-in-out;
 
     }
 
-
- function finishBattleNow(giveReward) {
-
-    if (!activeBattle) {
-        return;
-    }
-
-    const player =
-        activeBattle.player;
-
-
-    // =========================
-    // 通常モンスター撃破
-    // 報酬選択が終わるまで
-    // 戦闘画面を閉じない
-    // =========================
-
-    if (giveReward) {
-
-        showRewardPopup(
-            player,
-            function () {
-
-                // =========================
-                // 報酬選択完了後
-                // =========================
-
-                hideLayer(
-                    "battleMainPopup"
-                );
-
-                activeBattle =
-                    null;
-
-                window.finishTurn(
-                    player
-                );
-
-            },
-             window.getCurrentTurn()
-        );
-
-        return;
-
-    }
-
-
-    // =========================
-    // 報酬なしで戦闘終了
-    // =========================
-
-    hideLayer(
-        "battleMainPopup"
-    );
-
-    activeBattle =
-        null;
-
-    window.finishTurn(
-        player
-    );
-
-}
-
-
-    function showBattleEndButton(giveReward) {
-
-        const attackButton =
-            document.getElementById("battleNewAttackButton");
-
-        const escapeButton =
-            document.getElementById("battleNewEscapeButton");
-
-        if (!attackButton) {
-            return;
-        }
-
-        attackButton.disabled = true;
-        escapeButton.style.display = "none";
-
-        attackButton.innerHTML =
-            "<span>戦闘終了</span>";
-
-        attackButton.disabled = false;
-
-        attackButton.onclick =
-            function (event) {
-
-                event.stopPropagation();
-                attackButton.disabled = true;
-
-                finishBattleNow(giveReward);
-
-            };
-
-    }
-
-    function finishBattleWithReward() {
-
-        showBattleEndButton(true);
-
-    }
-
-
-    function getBossData() {
-
-        if (typeof BOSS_CONTENTS === "undefined" ||
-            typeof currentBossId === "undefined") {
-            return null;
-        }
-
-        return BOSS_CONTENTS[currentBossId] || null;
-
-    }
-
-
-   function finishBossBattle() {
-
-    if (!activeBattle) {
-        return;
-    }
-
-    // =========================
-    // ボス戦BGM停止
-    // =========================
-
-    bossBattleBGM.pause();
-
-    bossBattleBGM.currentTime = 0;
-
-    const player =
-        activeBattle.player;
-
-    const boss =
-        activeBattle.monster;
-
-
-   
-
-
-    // =========================
-    // 戦闘終了状態
-    // =========================
-
-    activeBattle.busy =
-        true;
-
-
-    // =========================
-    // ボス報酬メッセージ
-    // =========================
-
-    let bossRewardMessage =
-        `${boss.name}を倒した！<br>`;
-
-
-    bossRewardMessage +=
-        `🥇 先着報酬<br>`;
-
-
-    if (bossFirstPlayer) {
-
-        bossRewardMessage +=
-            `${bossFirstPlayer.name}：+${formatBattleNumber(boss.reward)}G<br>`;
-
-    }
-
-
-    bossRewardMessage +=
-        `⚔️ ダメージ報酬<br>`;
-
-
-    window.players.forEach(
-        function (p) {
-
-            const damageReward =
-                p.bossDamage *
-                BOSS_DAMAGE_MULTIPLIER;
-
-            bossRewardMessage +=
-                `${p.name}：+${formatBattleNumber(damageReward)}G<br>`;
-
-        }
-    );
-
-
-    bossRewardMessage +=
-        `👑 撃破報酬<br>`;
-
-
-    bossRewardMessage +=
-        `${player.name}：+${formatBattleNumber(boss.reward)}G`;
-
-
-       // =========================
-    // ボス撃破ログを表示
-    // =========================
-
-    activeBattle.phase =
-        "waitBossReward";
-
-    activeBattle.busy =
-        false;
-
-    activeBattle.bossRewardMessage =
-        bossRewardMessage;
-
-    showBattleMessage(
-        `${formatBattleNumber(activeBattle.lastDamage)}ダメージ！ ボスを撃破！　＞＞`
-    );
-
-    disableBattleActions();
-
-    return;
-
-}
-
-function showBossRewardPopup(
-    player,
-    boss,
-    bossRewardMessage
-) {
-
-    // =========================
-    // 凱旋BGM開始
-    // =========================
-
-    bossVictoryBGM.currentTime = 0;
-
-    bossVictoryBGM.play();
-
-
-    // =========================
-    // 報酬内容を作成
-    // =========================
-
-    let firstRewardMessage =
-        `🥇 先着報酬<br>`;
-
-    if (bossFirstPlayer) {
-
-        firstRewardMessage +=
-            `${bossFirstPlayer.name}：+${formatBattleNumber(boss.reward)}G`;
-
-    }
-
-
-    let damageRewardMessage =
-        `⚔️ ダメージ報酬<br>`;
-
-    window.players.forEach(
-        function (p) {
-
-            const damageReward =
-                p.bossDamage *
-                BOSS_DAMAGE_MULTIPLIER;
-
-            damageRewardMessage +=
-                `${p.name}：+${formatBattleNumber(damageReward)}G<br>`;
-
-        }
-    );
-
-
-    let defeatRewardMessage =
-        `👑 撃破報酬<br>`;
-
-    defeatRewardMessage +=
-        `${player.name}：+${formatBattleNumber(boss.reward)}G`;
-
-
-    // =========================
-    // 全報酬
-    // =========================
-
-    const allRewardMessage =
-        `${boss.name}を倒した！<br><br>` +
-        `${firstRewardMessage}<br>` +
-        `${damageRewardMessage}<br>` +
-        `${defeatRewardMessage}`;
-
-
-    // =========================
-    // ポップアップ取得
-    // =========================
-
-    const popup =
-        document.getElementById(
-            "eventPopup"
-        );
-
-    const popupTitle =
-        popup.querySelector(
-            ".event-popup-title"
-        );
-
-    const popupMessage =
-        document.getElementById(
-            "eventPopupMessage"
-        );
-
-    const popupButton =
-        document.getElementById(
-            "eventPopupButton"
-        );
-
-
-    // =========================
-    // ボス報酬専用クラス
-    // =========================
-
-    popup.classList.add(
-        "boss-reward-popup"
-    );
-
-
-    // =========================
-    // タイトル
-    // =========================
-
-    popupTitle.textContent =
-        "ボス撃破！";
-
-
-    // =========================
-    // 現在の表示段階
-    // =========================
-
-    let rewardStep = 0;
-
-
-    // =========================
-    // 報酬表示更新
-    // =========================
-
-    function renderRewardStep() {
-
-        if (rewardStep === 0) {
-
-            popupMessage.innerHTML =
-                `${boss.name}を倒した！<br><br>` +
-                `${firstRewardMessage}`;
-
-            popupButton.textContent =
-                "次へ";
-
-            return;
-
-        }
-
-
-        if (rewardStep === 1) {
-
-            popupMessage.innerHTML =
-                `${boss.name}を倒した！<br><br>` +
-                `${damageRewardMessage}`;
-
-            popupButton.textContent =
-                "次へ";
-
-            return;
-
-        }
-
-
-        if (rewardStep === 2) {
-
-            popupMessage.innerHTML =
-                `${boss.name}を倒した！<br><br>` +
-                `${defeatRewardMessage}`;
-
-            popupButton.textContent =
-                "次へ";
-
-            return;
-
-        }
-
-
-        // =========================
-        // 報酬を実際に加算
-        // =========================
-
-        if (
-            bossRewardGiven === false
-        ) {
-
-            window.players.forEach(
-                function (p) {
-
-                    const damageReward =
-                        p.bossDamage *
-                        BOSS_DAMAGE_MULTIPLIER;
-
-                    p.money +=
-                        damageReward;
-
-
-                    if (
-                        p ===
-                        bossFirstPlayer
-                    ) {
-
-                        p.money +=
-                            boss.reward;
-
-                    }
-
-
-                    if (
-                        typeof updatePlayerStatusUI ===
-                        "function"
-                    ) {
-
-                        updatePlayerStatusUI(
-                            p
-                        );
-
-                    }
-
-                }
-            );
-
-
-            player.money +=
-                boss.reward;
-
-
-            if (
-                typeof updatePlayerStatusUI ===
-                "function"
-            ) {
-
-                updatePlayerStatusUI(
-                    player
-                );
-
-            }
-
-
-            if (
-                typeof renderPlayers ===
-                "function"
-            ) {
-
-                renderPlayers();
-
-            }
-
-
-            bossRewardGiven =
-                true;
-
-        }
-
-
-        // =========================
-        // 報酬受け取り完了表示
-        // =========================
-
-        popupMessage.innerHTML =
-    `プレイヤー達は<br>` +
-    `報酬を受け取った！`;
-
-popup.classList.add(
-    "boss-reward-complete-popup"
-);
-
-popupButton.textContent =
-    "OK";
-
-    }
-
-
-    // =========================
-    // ポップアップ表示
-    // =========================
-
-    popup.style.display =
-        "block";
-
-    popup.style.zIndex =
-        "99999";
-
-
-    renderRewardStep();
-
-
-    // =========================
-    // タップ処理
-    // =========================
-
-    popupButton.onclick =
-        function () {
-
-            // =========================
-            // 最終表示
-            // =========================
-
-            if (rewardStep >= 3) {
-
-                popup.style.display =
-                    "none";
-
-                popup.classList.remove(
-                 "boss-reward-popup"
-                );
-
-                popup.classList.remove(
-                 "boss-reward-complete-popup"
-                );
-
-
-                // =========================
-                // 戦闘画面を閉じる
-                // =========================
-
-                hideLayer(
-                    "battleMainPopup"
-                );
-
-
-                // =========================
-                // 次のボスを設定
-                // =========================
-
-                previousBossSquareId =
-                    currentBossSquareId;
-
-
-                const bossIds =
-                    Object.keys(
-                        BOSS_CONTENTS
-                    )
-                    .map(Number)
-                    .sort(
-                        function (a, b) {
-                            return a - b;
-                        }
-                    );
-
-
-                const currentIndex =
-                    bossIds.indexOf(
-                        currentBossId
-                    );
-
-
-                if (
-                    currentIndex >= 0 &&
-                    currentIndex <
-                        bossIds.length - 1
-                ) {
-
-                    currentBossId =
-                        bossIds[
-                            currentIndex + 1
-                        ];
-
-                }
-
-
-                currentBossHP =
-                    BOSS_CONTENTS[
-                        currentBossId
-                    ].hp;
-
-
-                selectBossSquare();
-
-
-                // =========================
-                // ボス戦情報をリセット
-                // =========================
-
-                bossFirstPlayer =
-                    null;
-
-                bossRewardGiven =
-                    false;
-
-
-                window.players.forEach(
-                    function (p) {
-
-                        p.bossDamage =
-                            0;
-
-                    }
-                );
-
-
-                // =========================
-                // マップ更新
-                // =========================
-
-                window.renderMap();
-
-
-                // =========================
-                // 戦闘データを終了
-                // =========================
-
-                activeBattle =
-                    null;
-
-
-                // =========================
-                // 次のボス目的地を表示
-                // =========================
-
-                window.showBossDestinationPopup(
-                    function () {
-
-                        window.finishTurn(
-                            player
-                        );
-
-                    }
-                );
-
-                return;
-
-            }
-
-
-            // =========================
-            // 次の報酬へ
-            // =========================
-
-            rewardStep +=
-                1;
-
-
-            renderRewardStep();
-
-        };
-
-}
-
-
-    function startSharedBattle(player, enemy, isBoss) {
-
-       activeBattle = {
-    player: player,
-    monster: enemy,
-    monsterHP: isBoss 
-    ? currentBossHP 
-    : enemy.hp,
-
-    // =========================
-    // 戦闘開始時のゴールド
-    // HPバーの100%基準
-    // =========================
-
-    battleStartGold:
-        player.money,
-
-    round: 1,
-    selectedMagic: null,
-    busy: false,
-    phase: "playerAction",
-    isBoss: isBoss,
-    battleState: {
-        magicPowerRate: 1,
-        enemyAttackRate: 1
-    }
-};
-
-                ensureBattleUI();
-        bindMainButtons();
-
-        // =========================
-        // 戦闘背景切り替え
-        // =========================
-
-        const battleMainPopup =
-            document.getElementById(
-                "battleMainPopup"
-            );
-
-        if (battleMainPopup) {
-
-            battleMainPopup.classList.toggle(
-                "boss-battle-mode",
-                isBoss
-            );
-
-        }
-
-        const actionButton =
-            document.getElementById("battleNewEscapeButton");
-
-        if (actionButton) {
-            actionButton.textContent = isBoss ? "パス" : "逃げる";
-        }
-
-activeBattle.phase = "battleIntro";
-
-showBattleMain();
-
-document
-    .getElementById("battleMainPopup")
-    .classList.add("battle-intro-mode");
-
-showBattleMessage(
-    `${enemy.name}が現れた！　＞＞`
-);
-
-setBattleMagicPanelVisible(false);
-
-    }
-
-
-    function startBossBattle(player) {
-
-        const boss = getBossData();
-
-        if (!boss) {
-            console.error("BOSS_CONTENTS または currentBossId が見つかりません。");
-            return;
-        }
-
-        if (currentBossHP <= 0) {
-            currentBossHP = boss.hp;
-        }
-
-        startSharedBattle(player, boss, true);
-
-    }
-
-
-    function startNormalBattle(player, monster) {
-
-        startSharedBattle(player, monster, false);
-
-    }
-
-
-    window.startBossBattle =
-        function (player) {
-            startBossBattle(player);
-        };
-
-
-    window.startMonsterBattle =
-        function (player) {
-
-            const monsterIds =
-                Object.keys(MONSTER_CONTENTS);
-
-            const randomMonsterId =
-                monsterIds[
-                    Math.floor(
-                        Math.random() * monsterIds.length
-                    )
-                ];
-
-            const monster =
-                MONSTER_CONTENTS[randomMonsterId];
-
-            // 旧遭遇選択画面は使わない
-            const oldPopup =
-                document.getElementById("monsterChoicePopup");
-
-            if (oldPopup) {
-                oldPopup.style.display = "none";
-            }
-
-            startNormalBattle(
-                player,
-                monster
-            );
-
-        };
-
-
-    // 既存のHTMLを新UIに置き換え、旧バトル画面を非表示にします。
-    function init() {
-
-        ensureBattleUI();
-
-        const oldBattlePopup =
-            document.getElementById("battlePopup");
-
-        if (oldBattlePopup) {
-            oldBattlePopup.style.display = "none";
-        }
-
-        const oldMagicPopup =
-            document.getElementById("battleMagicPopup");
-
-        if (oldMagicPopup) {
-            oldMagicPopup.style.display = "none";
-        }
-
-    }
-
-
-    if (
-        document.readyState === "loading"
-    ) {
-        document.addEventListener("DOMContentLoaded", init);
-    } else {
-        init();
-    }
-
-})();
