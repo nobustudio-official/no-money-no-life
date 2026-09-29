@@ -531,25 +531,11 @@ function flashMonsterOnDamage(callback) {
 
 function flashPlayerOnDamage() {
 
-    const targets = [
-
-        document.getElementById(
-            "battleNewMagicList"
-        ),
-
-        document.querySelector(
-            "#battleMainPopup .battle-selected-magic"
-        ),
-
-        document.querySelector(
-            "#battleMainPopup .battle-action-row"
-        ),
-
-        document.getElementById(
-            "battleNewMessage"
-        )
-
-    ];
+   const targets = [
+    document.getElementById("battleNewMagicList"),
+    document.querySelector("#battleMainPopup .battle-selected-magic"),
+    document.querySelector("#battleMainPopup .battle-action-row")
+];
 
 
     targets.forEach(
