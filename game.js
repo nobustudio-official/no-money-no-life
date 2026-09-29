@@ -385,6 +385,8 @@ let bossFirstPlayer = null;
 
 let bossRewardGiven = false;
 
+let bossCounterEnabled = false;
+
 // ボス報酬設定
 
 const BOSS_DAMAGE_MULTIPLIER =
@@ -7017,6 +7019,8 @@ adventureBGM.pause();
 bossBattleBGM.currentTime = 0;
 bossBattleBGM.play();
 
+bossCounterEnabled = true;
+
     }
 
 
@@ -9039,7 +9043,7 @@ function checkPlayerRespawn(player) {
 
     // Gが0になったらSTARTへ戻る
     player.money = 500;
-    player.position = 0;
+    player.position = 17;
 
     updatePlayerStatusUI(player);
 
@@ -9570,16 +9574,165 @@ function finishTurn(
     showAssetRankingPopup(function () {
 
     // =========================
-    // 次のプレイヤーへ
-    // =========================
+// 次のプレイヤーへ
+// =========================
 
-    currentPlayer =
-        (currentPlayer + 1) %
-        players.length;
+currentPlayer =
+    (currentPlayer + 1) %
+    players.length;
 
-        //SE:プレイヤー切り替え
-        switchingSound.currentTime = 0;
-        switchingSound.play()
+// =========================
+// ボスカウンター判定
+// =========================
+
+if (
+    bossCounterEnabled &&
+    currentPlayer === 0
+) {
+
+    console.log(
+        "👹 ボスカウンター発動"
+    );
+    const boss =
+    BOSS_CONTENTS[currentBossId];
+
+    let counterMessage = `
+        <div class="boss-counter-image-wrap">
+            <img
+                src="${BOSS_MAP_ICON_PATH}"
+                alt="ボス"
+                class="boss-counter-popup-icon"
+            >
+        </div>
+
+        <div>
+            離れたマスに応じてダメージ！
+        </div>
+
+        <div class="boss-counter-player-list">
+    `;
+
+
+    players.forEach(
+        function (targetPlayer) {
+
+            const distance =
+                getShortestDistanceToBoss(
+                    targetPlayer.position
+                );
+
+            const damage =
+                distance * boss.counterDamage;
+
+
+            console.log(
+                "ボスカウンター:",
+                targetPlayer.name,
+                "現在地:",
+                targetPlayer.position,
+                "ボスまで:",
+                distance,
+                "マス",
+                "ダメージ:",
+                damage + "G"
+            );
+
+
+            if (
+                damage > 0
+            ) {
+
+                targetPlayer.money -=
+                    damage;
+
+            }
+
+
+            console.log(
+                "ボスカウンターG減少:",
+                targetPlayer.name,
+                "-" + damage + "G",
+                "残り:",
+                targetPlayer.money + "G"
+            );
+
+
+            counterMessage += `
+                <div class="boss-counter-player-row">
+
+                    <span>
+                        ${targetPlayer.name}
+                    </span>
+
+                    <span class="boss-counter-player-damage">
+                        −${damage}G
+                    </span>
+
+                </div>
+            `;
+
+        }
+    );
+
+
+    counterMessage += `
+        </div>
+    `;
+
+// =========================
+// ボスカウンターSE
+// =========================
+
+const bossCounterSE =
+    new Audio(
+        "sounds/戦闘/怪獣の足音.mp3"
+    );
+
+bossCounterSE.currentTime = 0;
+
+bossCounterSE.play().catch(
+    function (error) {
+
+        console.warn(
+            "【ボスカウンター】SE再生失敗：",
+            error
+        );
+
+    }
+);
+
+
+    showEventPopup(
+    "ボスカウンター発動！",
+    counterMessage,
+    function () {
+
+        players.forEach(
+            function (targetPlayer) {
+
+                if (
+                    targetPlayer.money <= 0
+                ) {
+
+                    checkPlayerRespawn(
+                        targetPlayer
+                    );
+
+                }
+
+            }
+        );
+
+        renderPlayers();
+
+    }
+);
+
+}
+
+//SE:プレイヤー切り替え
+switchingSound.currentTime = 0;
+switchingSound.play()
 
     inventoryButton.disabled =
         false;
@@ -9766,24 +9919,174 @@ if (
         }
 
 
-        // =========================
-        // 配当がない場合
-        // =========================
+       // =========================
+// 配当がない場合
+// =========================
 
-        // 次のプレイヤーへ
-        currentPlayer =
-            (
-                currentPlayer + 1
-            )
-            %
-            players.length;
+// 次のプレイヤーへ
+currentPlayer =
+    (
+        currentPlayer + 1
+    )
+    %
+    players.length;
 
-         //SE:プレイヤー切り替え
-        switchingSound.currentTime = 0;
-        switchingSound.play()
-        // アイテムボタンを再び有効化
-        inventoryButton.disabled =
-            false;
+
+// =========================
+// ボスカウンター判定
+// =========================
+
+if (
+    bossCounterEnabled &&
+    currentPlayer === 0
+) {
+
+    console.log(
+        "👹 ボスカウンター発動"
+    );
+    const boss =
+    BOSS_CONTENTS[currentBossId];
+    
+    let counterMessage = `
+        <div class="boss-counter-image-wrap">
+            <img
+                src="${BOSS_MAP_ICON_PATH}"
+                alt="ボス"
+                class="boss-counter-popup-icon"
+            >
+        </div>
+
+        <div>
+            離れたマスに応じてダメージ！
+        </div>
+
+        <div class="boss-counter-player-list">
+    `;
+
+
+    players.forEach(
+        function (targetPlayer) {
+
+            const distance =
+                getShortestDistanceToBoss(
+                    targetPlayer.position
+                );
+
+            const damage =
+                distance * boss.counterDamage;
+
+
+            console.log(
+                "ボスカウンター:",
+                targetPlayer.name,
+                "現在地:",
+                targetPlayer.position,
+                "ボスまで:",
+                distance,
+                "マス",
+                "ダメージ:",
+                damage + "G"
+            );
+
+
+            if (
+                damage > 0
+            ) {
+
+                targetPlayer.money -=
+                    damage;
+
+            }
+
+
+            console.log(
+                "ボスカウンターG減少:",
+                targetPlayer.name,
+                "-" + damage + "G",
+                "残り:",
+                targetPlayer.money + "G"
+            );
+
+
+            counterMessage += `
+                <div class="boss-counter-player-row">
+
+                    <span>
+                        ${targetPlayer.name}
+                    </span>
+
+                    <span class="boss-counter-player-damage">
+                        −${damage}G
+                    </span>
+
+                </div>
+            `;
+
+        }
+    );
+
+
+    counterMessage += `
+        </div>
+    `;
+
+    // =========================
+// ボスカウンターSE
+// =========================
+
+const bossCounterSE =
+    new Audio(
+        "sounds/戦闘/怪獣の足音.mp3"
+    );
+
+bossCounterSE.currentTime = 0;
+
+bossCounterSE.play().catch(
+    function (error) {
+
+        console.warn(
+            "【ボスカウンター】SE再生失敗：",
+            error
+        );
+
+    }
+);
+
+    showEventPopup(
+    "ボスカウンター発動！",
+    counterMessage,
+    function () {
+
+        players.forEach(
+            function (targetPlayer) {
+
+                if (
+                    targetPlayer.money <= 0
+                ) {
+
+                    checkPlayerRespawn(
+                        targetPlayer
+                    );
+
+                }
+
+            }
+        );
+
+        renderPlayers();
+
+    }
+);
+}
+
+
+//SE:プレイヤー切り替え
+switchingSound.currentTime = 0;
+switchingSound.play()
+
+// アイテムボタンを再び有効化
+inventoryButton.disabled =
+    false;
 
 
         // =========================
