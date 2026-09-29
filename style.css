@@ -10516,27 +10516,14 @@
 
     @media (orientation: landscape) and (max-height: 500px) {
 
-                .event-popup.boss-reward-popup {
-
-            width:
-                82vw;
-
-            height:
-                420px;
-
-            max-width:
-                1100px;
-
-            max-height:
-                calc(100dvh - 40px);
-
-            padding:
-                18px 30px;
-
-            border-radius:
-                14px;
-
-        }
+    .event-popup.boss-reward-popup {
+    width: 82vw;
+    height: 300px;
+    max-width: 1100px;
+    max-height: calc(100dvh - 40px);
+    padding: 18px 30px;
+    border-radius: 14px;
+}
 
 
         .event-popup.boss-reward-popup
