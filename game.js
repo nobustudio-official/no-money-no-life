@@ -9658,7 +9658,7 @@ bossCounterSE.play().catch(
 );
 
 
-    showEventPopup(
+   showEventPopup(
     "ボスカウンター発動！",
     counterMessage,
     function () {
@@ -9681,9 +9681,40 @@ bossCounterSE.play().catch(
 
         renderPlayers();
 
+        // =========================
+        // プレイヤー切り替えSE
+        // =========================
+
+        switchingSound.currentTime = 0;
+
+        switchingSound.play().catch(
+            function (error) {
+
+                console.warn(
+                    "【プレイヤー切り替えSE】再生失敗：",
+                    error
+                );
+
+            }
+        );
+
+        // =========================
+        // ボスカウンター終了後
+        // 次のプレイヤーのターンを開始
+        // =========================
+
+        renderTurn();
+        renderPlayers();
+        centerCurrentPlayerOnMap();
+
+        // ルーレット使用可能
+        rouletteButton.disabled =
+            false;
+
     }
 );
 
+return;
 
 }
 
@@ -10009,7 +10040,7 @@ bossCounterSE.play().catch(
     }
 );
 
-    showEventPopup(
+   showEventPopup(
     "ボスカウンター発動！",
     counterMessage,
     function () {
@@ -10032,8 +10063,40 @@ bossCounterSE.play().catch(
 
         renderPlayers();
 
+        // =========================
+        // プレイヤー切り替えSE
+        // =========================
+
+        switchingSound.currentTime = 0;
+
+        switchingSound.play().catch(
+            function (error) {
+
+                console.warn(
+                    "【プレイヤー切り替えSE】再生失敗：",
+                    error
+                );
+
+            }
+        );
+
+        // =========================
+        // ボスカウンター終了後
+        // 次のプレイヤーのターンを開始
+        // =========================
+
+        renderTurn();
+        renderPlayers();
+        centerCurrentPlayerOnMap();
+
+        // ルーレット使用可能
+        rouletteButton.disabled =
+            false;
+
     }
 );
+
+return;
 }
 
 
