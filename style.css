@@ -10745,34 +10745,33 @@
 
     .event-popup.boss-counter-popup {
 
-        width:
-            82vw;
+    width:
+        82vw;
 
-        height:
-            270px;
+    height:
+        200px;
 
-        max-width:
-            1100px;
+    max-width:
+        1100px;
 
-        max-height:
-            calc(100dvh - 40px);
+    max-height:
+        calc(100dvh - 40px);
 
-        padding:
-            18px 30px;
+    padding:
+        18px 30px;
 
-        border-radius:
-            14px;
+    border-radius:
+        14px;
 
-        top:
-            50%;
+    top:
+        50%;
 
-        left:
-            50%;
+    left:
+        50%;
 
-        transform:
-            translate(-50%, -50%);
-
-    }
+    transform:
+        translate(-50%, -50%);
+}
 
 
     .event-popup.boss-counter-popup
