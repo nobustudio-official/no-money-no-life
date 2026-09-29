@@ -9684,7 +9684,6 @@ bossCounterSE.play().catch(
     }
 );
 
-return;
 
 }
 
@@ -10035,9 +10034,6 @@ bossCounterSE.play().catch(
 
     }
 );
-
-return;
-
 }
 
 
