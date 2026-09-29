@@ -9432,7 +9432,7 @@
         position: absolute !important;
 
         left: calc(50% + 100px) !important;
-        top: calc(50% - 5px) !important;
+        top: calc(50% + 0px) !important;
 
         width: 180px !important;
         min-height: 18px !important;
