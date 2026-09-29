@@ -10768,9 +10768,8 @@
         padding: 5px 8px;
     }
 
-    .event-popup:has(.boss-counter-player-list) .boss-counter-player-list {
-    max-height: 120px;
+    .event-popup:has(.boss-counter-player-list) {
     overflow-y: auto;
-    }
+}
 
 }
