@@ -1152,7 +1152,7 @@ characterButtons.forEach(
     ),
     inventory: [],
     assets: [],
-    magic: [1],
+    magic: [1,8],
 
     // バイト関連
     jobTurnsRemaining: 0,
