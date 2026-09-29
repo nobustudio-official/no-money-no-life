@@ -9389,7 +9389,7 @@
         position: absolute !important;
 
         left: calc(50% + 100px) !important;
-        top: calc(50% - 5px) !important;
+        top: calc(50% - 30px) !important;
 
         width: 180px !important;
         margin: 0 !important;
@@ -9417,7 +9417,7 @@
         position: absolute !important;
 
         left: calc(50% + 100px) !important;
-        top: calc(50% - 15px) !important;
+        top: calc(50% - 5px) !important;
 
         width: 150px !important;
         height: 10px !important;
@@ -9432,7 +9432,7 @@
         position: absolute !important;
 
         left: calc(50% + 100px) !important;
-        top: calc(50% + 0px) !important;
+        top: calc(50% - 5px) !important;
 
         width: 180px !important;
         min-height: 18px !important;
@@ -9717,7 +9717,7 @@
 
     .battle-player-hp {
         left:
-            calc(50% + 230px) !important;
+            calc(50% + 240px) !important;
 
         bottom:
             calc(50% - 30px) !important;
