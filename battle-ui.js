@@ -2130,13 +2130,19 @@ showBattleMessage(
         return;
     }
 
-    // =========================
-    // ボス戦BGM停止
-    // =========================
+// =========================
+// ボス戦BGM停止
+// =========================
 
-    bossBattleBGM.pause();
+bossBattleBGM.pause();
 
-    bossBattleBGM.currentTime = 0;
+bossBattleBGM.currentTime = 0;
+
+// =========================
+// ボスカウンター停止
+// =========================
+
+bossCounterEnabled = false;
 
     const player =
         activeBattle.player;
@@ -2232,12 +2238,14 @@ function showBossRewardPopup(
 ) {
 
     // =========================
-    // 凱旋BGM開始
-    // =========================
+// 凱旋BGM開始
+// =========================
 
-    bossVictoryBGM.currentTime = 0;
+stopAllBGM();
 
-    bossVictoryBGM.play();
+bossVictoryBGM.currentTime = 0;
+
+bossVictoryBGM.play();
 
 
     // =========================
@@ -2724,20 +2732,54 @@ setBattleMagicPanelVisible(false);
 
     function startBossBattle(player) {
 
-        const boss = getBossData();
+    const boss = getBossData();
 
-        if (!boss) {
-            console.error("BOSS_CONTENTS または currentBossId が見つかりません。");
-            return;
-        }
-
-        if (currentBossHP <= 0) {
-            currentBossHP = boss.hp;
-        }
-
-        startSharedBattle(player, boss, true);
-
+    if (!boss) {
+        console.error("BOSS_CONTENTS または currentBossId が見つかりません。");
+        return;
     }
+
+    if (currentBossHP <= 0) {
+        currentBossHP = boss.hp;
+    }
+
+    // =========================
+// ボス戦BGM開始
+// まだ再生されていない場合だけ開始
+// =========================
+
+if (
+    bossBattleBGM.paused
+) {
+
+    stopAllBGM();
+
+    bossBattleBGM.play().catch(
+        function (error) {
+
+            console.warn(
+                "【ボス戦BGM】再生失敗：",
+                error
+            );
+
+        }
+    );
+
+}
+
+// =========================
+// ボスカウンター開始
+// =========================
+
+bossCounterEnabled = true;
+
+    startSharedBattle(
+        player,
+        boss,
+        true
+    );
+
+}
 
 
     function startNormalBattle(player, monster) {
