@@ -293,7 +293,7 @@ const MAGIC_CONTENTS = {
         name: "ダークスパイク",
         type: "attack",
         icon: "images/magic/ダークスパイク.png",
-        effect: "魔力の500％で攻撃",
+        effect: "魔力の300％で攻撃",
         sound: "sounds/戦闘/ダークスパイク.mp3",
         powerRate: 3.0,
         costRate: 4.0,
@@ -360,9 +360,9 @@ const MAGIC_CONTENTS = {
         name: "スピッファ",
         type: "attack",
         icon: "images/magic/スピファ.png",
-        effect: "魔力の1000％で攻撃",
+        effect: "魔力の800％で攻撃",
         sound: "sounds/戦闘/重機関銃を乱射1.mp3",
-        powerRate: 10.0,
+        powerRate: 8.0,
         costRate: 11.0,
         buffTarget: null,
         buffStat: null,
@@ -371,6 +371,23 @@ const MAGIC_CONTENTS = {
         price: 100000,
         actionAfterUse: "end",
         rank: 0
+    },
+
+    8: {
+        name: "クレーバー",
+        type: "attack",
+        icon: "images/magic/クレーバー.png",
+        effect: "魔力の1000％で攻撃",
+        sound: "sounds/戦闘/クレーバー.mp3",
+        powerRate: 10.0,
+        costRate: 1.0,
+        buffTarget: null,
+        buffStat: null,
+        buffRate: null,
+        buffDuration: null,
+        price: 0,
+        actionAfterUse: "end",
+        rank: 3
     }
     
 
