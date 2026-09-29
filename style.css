@@ -9710,6 +9710,26 @@ bottom:
             24px;
     }
 
+/* -----------------------------------------
+   プレイヤーHP
+----------------------------------------- */
+
+.battle-player-hp {
+    left:
+        calc(50% - 255px) !important;
+
+    bottom:
+        200px !important;
+
+    width:
+        195px !important;
+}
+
+.battle-player-hp-bar {
+    width:
+        195px !important;
+}
+
 }
 
 /* =========================================================
@@ -9730,6 +9750,16 @@ bottom:
 .battle-main-popup.battle-intro-mode
 .battle-action-row {
 
+    display:
+        none !important;
+}
+
+/* =========================================================
+   エンカウント中はプレイヤーHPを非表示
+========================================================= */
+
+.battle-main-popup.battle-intro-mode
+.battle-player-hp {
     display:
         none !important;
 }
@@ -10590,12 +10620,3 @@ bottom:
 
 }
 
-/* =========================================================
-   エンカウント中はプレイヤーHPを非表示
-========================================================= */
-
-.battle-main-popup.battle-intro-mode
-.battle-player-hp {
-    display:
-        none !important;
-}
