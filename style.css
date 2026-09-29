@@ -9717,7 +9717,7 @@
 
     .battle-player-hp {
         left:
-            calc(50% + 180px) !important;
+            calc(50% + 230px) !important;
 
         bottom:
             calc(50% - 30px) !important;
