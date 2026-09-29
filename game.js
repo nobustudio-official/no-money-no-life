@@ -582,34 +582,30 @@ function showBossDestinationPopup(
                     );
                 }
 
-/// =========================
-// 凱旋BGM停止
+// =========================
+// 凱旋BGMが流れている場合だけ
 // 冒険BGMを最初から再生
 // =========================
 
 if (
-    bossVictoryBGM.currentTime > 0 ||
-    !bossVictoryBGM.paused
+    !bossVictoryBGM.paused ||
+    bossVictoryBGM.currentTime > 0
 ) {
 
-    bossVictoryBGM.pause();
+    stopAllBGM();
 
-    bossVictoryBGM.currentTime = 0;
-
-    adventureBGM.currentTime = 0;
-
-    adventureBGM.play();
+    setupAdventureBGM();
 
 }
 
-                // =========================
-                // ボス撃破後など
-                // =========================
+// =========================
+// ボス撃破後など
+// =========================
 
-                if (callback) {
-                    callback();
-                    return;
-                }
+if (callback) {
+    callback();
+    return;
+}
 
   
                 
@@ -1359,36 +1355,6 @@ waitForGameAssets().then(function () {
 
 }
 
-// =========================
-// ボス戦BGM
-// =========================
-
-const bossBattleBGM =
-    new Audio(
-        "BGM/ボス戦.mp3"
-    );
-
-bossBattleBGM.loop =
-    true;
-
-bossBattleBGM.volume =
-    0.4;
-
-
-// =========================
-// ボス撃破後BGM
-// =========================
-
-const bossVictoryBGM =
-    new Audio(
-        "BGM/凱旋.mp3"
-    );
-
-bossVictoryBGM.loop =
-    false;
-
-bossVictoryBGM.volume =
-    0.4;
 
 // =========================
 // ゲーム画面
@@ -3805,34 +3771,9 @@ bgmVolumeSlider.oninput =
                 this.value
             ) / 100;
 
-        if (
-    location.protocol ===
-    "file:"
-) {
-
-    adventureBGM.volume =
-        volume;
-
-    bossBattleBGM.volume =
-        volume;
-
-    bossVictoryBGM.volume =
-        volume;
-
-} else if (
-    adventureBGMGain
-) {
-
-    adventureBGMGain.gain.value =
-        volume;
-
-    bossBattleBGM.volume =
-        volume;
-
-    bossVictoryBGM.volume =
-        volume;
-
-}
+        setBGMVolume(
+            volume
+        );
 
         bgmVolumeValue.textContent =
             `${this.value}%`;
@@ -7006,24 +6947,7 @@ function showBossChallengePopup(
        bossFirstPlayer =
     player;
 
-// =========================
-// 冒険BGM停止
-// =========================
 
-adventureBGM.pause();
-
-// =========================
-// ボス戦BGM開始
-// =========================
-
-bossBattleBGM.currentTime = 0;
-
-bossBattleBGM.volume =
-    Number(
-        bgmVolumeSlider.value
-    ) / 100;
-
-bossBattleBGM.play();
 
 bossCounterEnabled = true;
 
@@ -7378,21 +7302,47 @@ case "monster":
     // =========================
 
     if (
-        player.position ===
-        currentBossSquareId
+    player.position ===
+    currentBossSquareId
+) {
+
+    // =========================
+    // 初めてボスマスへ到着した時
+    // ボスBGMへ切り替える
+    // =========================
+
+    if (
+        bossBattleBGM.paused
     ) {
 
-        showBossChallengePopup(
-            player
-        );
+        stopAllBGM();
 
-    } else {
+        bossBattleBGM.currentTime = 0;
 
-        startMonsterBattle(
-            player
+        bossBattleBGM.play().catch(
+            function (error) {
+
+                console.warn(
+                    "【ボスBGM】再生失敗：",
+                    error
+                );
+
+            }
         );
 
     }
+
+    showBossChallengePopup(
+        player
+    );
+
+} else {
+
+    startMonsterBattle(
+        player
+    );
+
+}
 
     break;
 
