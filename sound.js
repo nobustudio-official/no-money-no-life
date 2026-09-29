@@ -70,10 +70,12 @@ adventureBGM.preload = "auto";
             BGM_VOLUME;
     }
 
-    adventureBGM.currentTime = 0;
+    stopAllBGM();
 
-    // 再生開始
-    adventureBGM.play();
+adventureBGM.currentTime = 0;
+
+// 再生開始
+adventureBGM.play();
 
     // AudioContextを再開
     if (
@@ -101,13 +103,75 @@ nobilityBGM.volume = BGM_VOLUME;
 nobilityBGM.preload = "auto";
 
 //凱旋
-const victoryBGM =
+const bossVictoryBGM =
     new Audio("BGM/凱旋.mp3");
+bossVictoryBGM.loop = true;
+bossVictoryBGM.volume = BGM_VOLUME;
+bossVictoryBGM.preload = "auto";
 
-victoryBGM.loop = true;
-victoryBGM.volume = BGM_VOLUME;
-victoryBGM.preload = "auto";
+//ボス戦
+const bossBattleBGM =
+    new Audio("BGM/ボス戦.mp3");
 
+bossBattleBGM.loop = true;
+bossBattleBGM.volume = BGM_VOLUME;
+bossBattleBGM.preload = "auto";
+
+
+// =========================
+// すべてのBGMを停止
+// =========================
+
+function stopAllBGM() {
+
+    adventureBGM.pause();
+    townBGM.pause();
+    nobilityBGM.pause();
+    bossVictoryBGM.pause();
+    bossBattleBGM.pause();
+
+}
+
+// =========================
+// すべてのBGMの音量を設定
+// =========================
+
+function setBGMVolume(volume) {
+
+    // =========================
+    // 冒険BGM
+    // =========================
+
+    if (adventureBGMGain) {
+
+        adventureBGMGain.gain.value =
+            volume;
+
+    } else {
+
+        adventureBGM.volume =
+            volume;
+
+    }
+
+
+    // =========================
+    // その他のBGM
+    // =========================
+
+    townBGM.volume =
+        volume;
+
+    nobilityBGM.volume =
+        volume;
+
+    bossVictoryBGM.volume =
+        volume;
+
+    bossBattleBGM.volume =
+        volume;
+
+}
 
 // =========================
 // SE
