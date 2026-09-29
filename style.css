@@ -10617,3 +10617,173 @@
 
     }
 
+/* =========================
+ボスカウンターポップアップ
+========================= */
+
+.event-popup.boss-counter-popup {
+
+    width:
+        90vw;
+
+    height:
+        80vh;
+
+    max-width:
+        900px;
+
+    max-height:
+        700px;
+
+    top:
+        50%;
+
+    left:
+        50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    box-sizing:
+        border-box;
+
+    background:
+        linear-gradient(
+            145deg,
+            #3a1015,
+            #160b0d
+        );
+
+    border:
+        3px solid
+        #b52b35;
+
+    overflow-y:
+        auto;
+}
+
+
+/* ボスアイコン */
+
+.boss-counter-image-wrap {
+
+    text-align:
+        center;
+
+    margin:
+        10px 0;
+
+}
+
+
+.boss-counter-popup-icon {
+
+    width:
+        100px;
+
+    height:
+        100px;
+
+    object-fit:
+        contain;
+
+}
+
+
+/* ダメージ一覧 */
+
+.boss-counter-player-list {
+
+    width:
+        100%;
+
+}
+
+
+.boss-counter-player-row {
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    padding:
+        10px 14px;
+
+    margin-bottom:
+        8px;
+
+    background:
+        rgba(0,0,0,0.35);
+
+    border:
+        1px solid
+        rgba(255,80,80,0.35);
+
+    border-radius:
+        8px;
+
+}
+
+
+.boss-counter-player-damage {
+
+    color:
+        #ff5555;
+
+    font-weight:
+        bold;
+
+}
+
+/* =========================
+   スマホ横画面
+========================= */
+
+@media (orientation: landscape) and (max-height: 500px) {
+
+    .event-popup.boss-counter-popup {
+
+        width:
+            82vw;
+
+        height:
+            270px;
+
+        max-width:
+            1100px;
+
+        max-height:
+            calc(100dvh - 40px);
+
+        padding:
+            18px 30px;
+
+        border-radius:
+            14px;
+
+        top:
+            50%;
+
+        left:
+            50%;
+
+        transform:
+            translate(-50%, -50%);
+
+    }
+
+
+    .event-popup.boss-counter-popup
+    .event-popup-title {
+
+        font-size:
+            24px;
+
+        margin-bottom:
+            8px;
+
+    }
+
+}
