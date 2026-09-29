@@ -9684,6 +9684,8 @@ bossCounterSE.play().catch(
     }
 );
 
+return;
+
 }
 
 //SE:プレイヤー切り替え
@@ -10033,6 +10035,9 @@ bossCounterSE.play().catch(
 
     }
 );
+
+return;
+
 }
 
 
