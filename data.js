@@ -287,7 +287,7 @@ const ITEM_CONTENTS = {
 
     10: {
         name: "ダンベル",
-        price: 10000,
+        price: 20000,
         category: "passive",
         effect: "相手に与えるダメージ＋100",
         effectType: "damageBonus",
@@ -383,7 +383,7 @@ const MAGIC_CONTENTS = {
     4: {
         name: "メテオ",
         type: "attack",
-        icon: "未設定",
+        icon: "images/magic/メテオ.png",
         effect: "魔力の500％で攻撃",
         icon: "images/magic/メテオ.png",
         sound: "sounds/戦闘/爆発1.mp3",
@@ -696,7 +696,7 @@ const BOSS_CONTENTS = {
         icon: "images/characters/enemy/boss/デビルロード.png",
         hp: 2000,
         attack: 1000,
-        counterDamage: 1000,
+        counterDamage: 500,
         reward: 10000
     },
 
@@ -705,7 +705,7 @@ const BOSS_CONTENTS = {
         icon: "images/characters/enemy/boss/アイスクイーン.png",
         hp: 5000,
         attack: 2500,
-        counterDamage: 1500,
+        counterDamage: 700,
         reward: 20000
     },
 
@@ -714,16 +714,16 @@ const BOSS_CONTENTS = {
         icon: "images/characters/enemy/boss/いただきリリィ.png",
         hp: 7000,
         attack: 3000,
-        counterDamage: 2000,
+        counterDamage: 1000,
         reward: 30000
     },
 
     4: {
         name: "スカルゴースト",
         icon: "images/characters/enemy/boss/スカルゴースト.png",
-        hp: 80000,
+        hp: 8000,
         attack: 4000,
-        counterDamage: 3000,
+        counterDamage: 1200,
         reward: 50000
     },
 
@@ -732,7 +732,7 @@ const BOSS_CONTENTS = {
         icon: "images/characters/enemy/boss/水原二平.png",
         hp: 10000,
         attack: 5000,
-        counterDamage: 4000,
+        counterDamage: 1500,
         reward: 80000
     },
 
@@ -741,7 +741,7 @@ const BOSS_CONTENTS = {
         icon: "images/characters/enemy/boss/ロックス.png",
         hp: 12000,
         attack: 7000,
-        counterDamage: 5000,
+        counterDamage: 1800,
         reward: 100000
     },
 
@@ -750,7 +750,7 @@ const BOSS_CONTENTS = {
         icon: "images/characters/enemy/boss/野々村.png",
         hp: 20000,
         attack: 10000,
-        counterDamage: 8000,
+        counterDamage: 2000,
         reward: 150000
     }
 
