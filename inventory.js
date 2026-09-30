@@ -179,45 +179,53 @@ function removeExpiredItems(
 
 
                 // =========================
-                // 5ターン効果
-                // =========================
+// ターン効果の期限管理
+// =========================
 
-                if (
-                    item.effectDuration ===
-                    "5turn"
-                ) {
+if (
+    item.effectDuration &&
+    item.effectDuration.endsWith("turn")
+) {
 
-                    const acquiredTurn =
-                        inventoryData.acquiredTurn;
+    const acquiredTurn =
+        inventoryData.acquiredTurn;
 
+    // 取得ターンが記録されていない
+    // データは残す
+    if (
+        acquiredTurn === undefined ||
+        acquiredTurn === null
+    ) {
 
-                    // 取得ターンが記録されていない
-                    // データは残す
-                    if (
-                        acquiredTurn === undefined ||
-                        acquiredTurn === null
-                    ) {
+        return true;
 
-                        return true;
+    }
 
-                    }
+    // 「5turn」「3turn」などから
+    // ターン数だけ取り出す
+    const duration =
+        Number(
+            item.effectDuration.replace(
+                "turn",
+                ""
+            )
+        );
 
+    // 取得から指定ターン数が経過したら削除
+    if (
+        currentTurn -
+        acquiredTurn >= duration
+    ) {
 
-                    // 取得から5ターン経過したら削除
-                    if (
-                        currentTurn -
-                        acquiredTurn >= 5
-                    ) {
+        console.log(
+            `${player.name}：${item.name}の効果が終了しました`
+        );
 
-                        console.log(
-                            `${player.name}：${item.name}の効果が終了しました`
-                        );
+        return false;
 
-                        return false;
+    }
 
-                    }
-
-                }
+}
 
 
                 return true;
@@ -288,39 +296,45 @@ function applyTurnStartItemEffects(
 
 
             // =========================
-            // 5ターン効果の有効期限確認
-            // =========================
+// ターン効果の有効期限確認
+// =========================
 
-            if (
-                item.effectDuration ===
-                "5turn"
-            ) {
+if (
+    item.effectDuration &&
+    item.effectDuration.endsWith("turn")
+) {
 
-                const acquiredTurn =
-                    inventoryData.acquiredTurn;
+    const acquiredTurn =
+        inventoryData.acquiredTurn;
 
+    if (
+        acquiredTurn === undefined ||
+        acquiredTurn === null
+    ) {
 
-                if (
-                    acquiredTurn === undefined ||
-                    acquiredTurn === null
-                ) {
+        return;
 
-                    return;
+    }
 
-                }
+    const duration =
+        Number(
+            item.effectDuration.replace(
+                "turn",
+                ""
+            )
+        );
 
+    if (
+        currentTurn !== undefined &&
+        currentTurn -
+        acquiredTurn >= duration
+    ) {
 
-                if (
-                    currentTurn !== undefined &&
-                    currentTurn -
-                    acquiredTurn >= 5
-                ) {
+        return;
 
-                    return;
+    }
 
-                }
-
-            }
+}
 
 
             // =========================
