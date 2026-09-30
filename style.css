@@ -6194,9 +6194,9 @@
         .game-hud .hud-icon-fallback,
         .game-hud .hud-destination-icon,
         .game-screen > .action-menu .action-menu-button img {
-            width: 28px;
-            height: 28px;
-            flex-basis: 28px;
+            width: 30px;
+            height: 30px;
+            flex-basis: 30px;
         }
 
         .game-screen > .action-menu .action-menu-button {
@@ -6214,9 +6214,9 @@
         .game-hud .hud-icon-fallback,
         .game-hud .hud-destination-icon,
         .game-screen > .action-menu .action-menu-button img {
-            width: 28px;
-            height: 28px;
-            flex-basis: 28px;
+            width: 30px;
+            height: 30px;
+            flex-basis: 30px;
         }
 
         .game-screen > .action-menu .action-menu-button {
@@ -9297,8 +9297,8 @@
     .battle-monster-hp {
         position: absolute !important;
 
-        left: calc(50% + 100px) !important;
-        top: calc(50% + 0px) !important;
+        left: calc(50% + 90px) !important;
+        top: calc(50% - 10x) !important;
 
         width: 180px !important;
         min-height: 18px !important;
@@ -9583,7 +9583,7 @@
 
     .battle-player-hp {
         left:
-            calc(50% + 240px) !important;
+            calc(50% + 140px) !important;
 
         bottom:
             calc(50% - 30px) !important;
@@ -10902,6 +10902,23 @@
         height: 28px;
 
         flex: 0 0 28px;
+
+    }
+
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+
+    .game-hud .hud-player-avatar {
+
+        width:
+            32px;
+
+        height:
+            32px;
+
+        flex:
+            0 0 32px;
 
     }
 
