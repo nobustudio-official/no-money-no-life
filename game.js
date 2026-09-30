@@ -336,10 +336,10 @@ function getRandomGoldReward() {
 
 // バイト単価の割増設定
 
-const JOB_WAGE_MAX_TURN = 8;
+const JOB_WAGE_MAX_TURN = 12;
 
 const JOB_WAGE_RATE_PER_TURN =
-    0.10;
+    0.05;
 
 // 現在のバイト単価割増率を取得
 
@@ -6707,13 +6707,22 @@ function showGoldRoulette(
         setInterval(
             function () {
 
-                const randomAmount =
-                    Math.floor(
-                        Math.random() * 10
-                    ) * 100;
+                const setting =
+    MONEY_CONTENTS[1];
 
-                number.textContent =
-                    `${randomAmount}G`;
+const candidates =
+    setting.rewards;
+
+const randomReward =
+    candidates[
+        Math.floor(
+            Math.random() *
+            candidates.length
+        )
+    ];
+
+number.textContent =
+    `${formatG(randomReward.amount)}G`;
 
                 count += 1;
 
