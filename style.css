@@ -9286,8 +9286,8 @@
         top: calc(50% - 5px) !important;
 
         width: 150px !important;
-        height: 10px !important;
-        min-height: 10px !important;
+        height: 13px !important;
+        min-height: 13px !important;
 
         margin: 0 !important;
         flex-shrink: 0 !important;
@@ -9297,7 +9297,7 @@
     .battle-monster-hp {
         position: absolute !important;
 
-        left: calc(50% + 90px) !important;
+        left: calc(50% + 100px) !important;
         top: calc(50% - 10x) !important;
 
         width: 180px !important;
@@ -9583,7 +9583,7 @@
 
     .battle-player-hp {
         left:
-            calc(50% + 140px) !important;
+            calc(50% + 160px) !important;
 
         bottom:
             calc(50% - 30px) !important;
@@ -10688,7 +10688,7 @@
 .game-hud .hud-turn {
 
     font-size:
-        20px;
+        16px;
 
     min-width:
         0;
@@ -10907,7 +10907,7 @@
 
     .game-hud .hud-destination-label, 
     .game-hud .hud-destination-value {
-        font-size: 16px !important;
+        font-size: 12px !important;
     }
 
 }
