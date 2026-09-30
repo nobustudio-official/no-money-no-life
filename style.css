@@ -10675,34 +10675,6 @@
 
 }
 
-/* =========================================================
-   HUD最終設定
-   全項目：最大20px
-   枠に収まらない場合だけJSで縮小
-========================================================= */
-
-.game-hud .hud-player-name,
-.game-hud .hud-value,
-.game-hud .hud-destination-label,
-.game-hud .hud-destination-value,
-.game-hud .hud-turn {
-
-    font-size:
-        20px;
-
-    min-width:
-        0;
-
-    max-width:
-        100%;
-
-    overflow:
-        hidden;
-
-    white-space:
-        nowrap;
-
-}
 
 
 /* =========================================================
@@ -10912,3 +10884,49 @@
 
 }
 
+/* =========================
+   PC版 HUD文字サイズ
+========================= */
+
+.game-hud .hud-player-name,
+.game-hud .hud-value,
+.game-hud .hud-destination-label,
+.game-hud .hud-destination-value,
+.game-hud .hud-turn {
+    font-size: 30px !important;
+}
+
+
+/* =========================
+   スマホ横画面
+   最大14px
+========================= */
+
+@media (orientation: landscape) and (max-height: 600px) {
+
+    .game-hud .hud-player-name,
+    .game-hud .hud-value,
+    .game-hud .hud-destination-label,
+    .game-hud .hud-destination-value,
+    .game-hud .hud-turn {
+        font-size: 14px !important;
+    }
+
+}
+
+/* =========================
+   PC版 HUD幅調整
+========================= */
+
+@media (min-width: 1101px) {
+
+    .game-hud {
+        grid-template-columns:
+            230px
+            minmax(250px, 1.35fr)
+            minmax(190px, 0.8fr)
+            minmax(320px, 1.25fr)
+            175px;
+    }
+
+}
