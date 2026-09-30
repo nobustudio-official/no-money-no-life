@@ -194,22 +194,14 @@ function fitHudText(
         return;
     }
 
-    element.style.fontSize = "";
+    // CSSで指定している最大20pxへ戻す
+    element.style.fontSize = "20px";
 
-    let fontSize =
-        parseFloat(
-            window.getComputedStyle(
-                element
-            ).fontSize
-        );
+    let fontSize = 20;
 
-    if (!Number.isFinite(fontSize)) {
-        return;
-    }
-
+    // レイアウトを確定させてから縮小
     while (
-        element.scrollWidth >
-        element.clientWidth &&
+        element.scrollWidth > element.clientWidth &&
         fontSize > 9
     ) {
 
@@ -4289,6 +4281,21 @@ updateDiceMovementCounter();
 
     fitHudText(
         hudDestinationValue
+    );
+
+    const destinationLabels =
+        document.querySelectorAll(
+            ".hud-destination-label"
+        );
+
+    destinationLabels.forEach(
+        function (label) {
+
+            fitHudText(
+                label
+            );
+
+        }
     );
 
 }
