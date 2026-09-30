@@ -5975,72 +5975,7 @@
 
     @media (orientation: landscape) and (max-height: 600px) {
 
-        .game-hud {
-            top: 4px;
-            left: 4px;
-            right: 4px;
-            height: 58px;
-
-            grid-template-columns:
-                minmax(100px, 1.0fr)
-                minmax(100px, 1.0fr)
-                minmax(75px, 0.75fr)
-                minmax(160px, 1.35fr)
-                minmax(88px, 0.85fr);
-
-            gap: 0;
-        }
-
-        .hud-box {
-            height: 58px;
-            padding: 4px 6px;
-            border-width: 1px;
-            border-radius: 8px;
-        }
-
-        .hud-player {
-            gap: 4px;
-            padding-left: 5px;
-        }
-
-        .hud-avatar-face {
-            width: 42px;
-            height: 42px;
-            flex: 0 0 42px;
-        }
-
-        .hud-player-name {
-            font-size: clamp(11px, 2.2vw, 20px);
-        }
-
-        .hud-icon {
-            width: 34px;
-            height: 34px;
-            flex-basis: 34px;
-            margin-right: 3px;
-        }
-
-        .hud-destination-icon {
-            width: 32px;
-            height: 32px;
-            flex-basis: 32px;
-        }
-
-        .hud-destination-label {
-            font-size: clamp(9px, 1.7vw, 15px);
-        }
-
-        .hud-destination-value {
-            font-size: clamp(22px, 4vw, 34px);
-        }
-
-        .hud-value {
-            font-size: clamp(15px, 2.5vw, 24px);
-        }
-
-        .hud-turn {
-            font-size: clamp(12px, 2.4vw, 22px);
-        }
+       
 
         /* 横持ちではマップを最大限確保 */
         .game-screen > .map-area {
@@ -6243,12 +6178,7 @@
 
     }
 
-    /* =========================================================
-    今回の追加修正：アイコンサイズ統一・文字のはみ出し防止
-    ・HUD内の全アイコンを同一サイズに統一
-    ・左側4ボタンのアイコンも同じサイズに統一
-    ・画面が狭くなった場合は全アイコンを同じ比率で縮小
-    ========================================================= */
+    
 
     /* ---------- PC標準 ---------- */
 
@@ -6329,39 +6259,13 @@
 
     }
 
-    /* ---------- スマホ横持ち ---------- */
-
-    @media (orientation: landscape) and (max-height: 600px) {
-
-        .game-hud .hud-player-avatar,
-        .game-hud .hud-icon,
-        .game-hud .hud-icon-fallback,
-        .game-hud .hud-destination-icon,
-        .game-screen > .action-menu .action-menu-button img {
-            width: 32px;
-            height: 32px;
-            flex-basis: 32px;
-        }
-
-        .game-screen > .action-menu .action-menu-button {
-            grid-template-columns: 32px minmax(0, 1fr);
-        }
-
-        .game-hud .hud-value,
-        .game-hud .hud-turn {
-            font-size: clamp(12px, 2.2vw, 22px);
-        }
-
-    }
+   
 
     /* ---------- 極端に低い横画面 ---------- */
 
     @media (orientation: landscape) and (max-height: 430px) {
 
-        .game-hud .hud-player-avatar,
-        .game-hud .hud-icon,
-        .game-hud .hud-icon-fallback,
-        .game-hud .hud-destination-icon,
+        
         .game-screen > .action-menu .action-menu-button img {
             width: 28px;
             height: 28px;
@@ -6378,10 +6282,6 @@
 
     @media (max-width: 380px) {
 
-        .game-hud .hud-player-avatar,
-        .game-hud .hud-icon,
-        .game-hud .hud-icon-fallback,
-        .game-hud .hud-destination-icon,
         .game-screen > .action-menu .action-menu-button img {
             width: 28px;
             height: 28px;
@@ -8711,38 +8611,37 @@
     プレイヤーHPバー
     ========================================================= */
 
-    .battle-player-hp {
-        position:
-            absolute;
+        .battle-player-hp {
+    position:
+        absolute;
 
-        left:
-        calc(50% - 300px);
+    left:
+        225px;
 
     bottom:
-        230px;
+        225px;
 
-        transform:
-            translateX(-50%);
+    transform:
+        none;
 
-        width:
-            195px; 
+    width:
+        195px;
 
-        display:
-            flex;
+    display:
+        flex;
 
-        flex-direction:
-            column;
+    flex-direction:
+        column;
 
-        align-items:
-            flex-start;
+    align-items:
+        flex-start;
 
-        z-index:
-            99999;
+    z-index:
+        99999;
 
-        pointer-events:
-            none;
-    }
-
+    pointer-events:
+        none;
+}
 
     /* =========================================================
     HPバー
@@ -10771,5 +10670,186 @@
     .event-popup:has(.boss-counter-player-list) {
     overflow-y: auto;
 }
+
+}
+
+/* =========================================================
+   ゲームクリア画面：スマホ横画面
+   枠内全体をスクロール可能にする
+========================================================= */
+
+@media (orientation: landscape) and (max-height: 500px) {
+
+    .result-popup {
+        width:
+            90vw;
+
+        max-width:
+            600px;
+
+        max-height:
+            90vh;
+
+        overflow-y:
+            auto;
+
+        overflow-x:
+            hidden;
+
+        box-sizing:
+            border-box;
+
+        padding:
+            20px 18px;
+    }
+
+}
+
+/* =========================================================
+   HUD最終設定
+   全項目：最大20px
+   枠に収まらない場合だけJSで縮小
+========================================================= */
+
+.game-hud .hud-player-name,
+.game-hud .hud-value,
+.game-hud .hud-destination-label,
+.game-hud .hud-destination-value,
+.game-hud .hud-turn {
+
+    font-size:
+        20px;
+
+    min-width:
+        0;
+
+    max-width:
+        100%;
+
+    overflow:
+        hidden;
+
+    white-space:
+        nowrap;
+
+}
+
+
+/* =========================================================
+   スマホ横画面
+========================================================= */
+
+@media (orientation: landscape) and (max-height: 600px) {
+
+    .game-hud {
+
+        top:
+            4px;
+
+        left:
+            4px;
+
+        right:
+            4px;
+
+        height:
+            58px;
+
+        grid-template-columns:
+            145px
+            minmax(190px, 1.7fr)
+            minmax(145px, 1.3fr)
+            125px
+            70px;
+
+        gap:
+            0;
+
+    }
+
+
+    .game-hud .hud-box {
+
+        height:
+            58px;
+
+        padding:
+            4px 6px;
+
+        min-width:
+            0;
+
+        overflow:
+            hidden;
+
+        border-width:
+            1px;
+
+        border-radius:
+            8px;
+
+    }
+
+
+    .game-hud .hud-player {
+
+        gap:
+            4px;
+
+        padding-left:
+            5px;
+
+        padding-right:
+            5px;
+
+        justify-content:
+            flex-start;
+
+    }
+
+
+    .game-hud .hud-destination {
+
+        gap:
+            2px;
+
+        padding-left:
+            4px;
+
+        padding-right:
+            4px;
+
+    }
+
+
+    .game-hud .hud-destination-icon {
+
+        width:
+            28px;
+
+        height:
+            28px;
+
+        flex:
+            0 0 28px;
+
+        object-fit:
+            contain;
+
+    }
+
+
+    .game-hud .hud-turn {
+
+        padding-left:
+            3px;
+
+        padding-right:
+            3px;
+
+        text-align:
+            center;
+
+    }
 
 }
