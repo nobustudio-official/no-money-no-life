@@ -123,8 +123,8 @@ const MONSTER_CONTENTS = {
         icon: "images/characters/enemy/normal/スライム.png",
         hp: 1100,
         attack: 1000,
-        magicReward: 50,
-        goldReward: 3000
+        magicReward: 20,
+        goldReward: 3500
     },
 
     2: {
@@ -132,7 +132,7 @@ const MONSTER_CONTENTS = {
         icon: "images/characters/enemy/normal/アンデット.png",
         hp: 1300,
         attack: 1800,
-        magicReward: 50,
+        magicReward: 20,
         goldReward: 4000
     },
 
@@ -141,7 +141,7 @@ const MONSTER_CONTENTS = {
         icon:  "images/characters/enemy/normal/デビルこうもり.png",
         hp: 2500,
         attack: 1500,
-        magicReward: 50,
+        magicReward: 40,
         goldReward: 8000
     },
     4: {
@@ -149,23 +149,23 @@ const MONSTER_CONTENTS = {
         icon:  "images/characters/enemy/normal/パックン.png",
         hp: 2000,
         attack: 1800,
-        magicReward: 50,
-        goldReward: 5500
+        magicReward: 30,
+        goldReward: 6000
     },
     5: {
         name: "マッシュル",
         icon:  "images/characters/enemy/normal/マッシュル.png",
         hp: 1700,
         attack: 1300,
-        magicReward: 60,
-        goldReward: 3000
+        magicReward: 20,
+        goldReward: 5000
     },
     6: {
         name: "ウッディオ",
         icon:  "images/characters/enemy/normal/ウッディオ.png",
         hp: 2200,
         attack: 1600,
-        magicReward: 50,
+        magicReward: 40,
         goldReward: 7000
     },
     7: {
@@ -173,24 +173,24 @@ const MONSTER_CONTENTS = {
         icon:  "images/characters/enemy/normal/チビリン.png",
         hp: 1900,
         attack: 1500,
-        magicReward: 50,
-        goldReward: 5000
+        magicReward: 30,
+        goldReward: 6000
     },
     8: {
         name: "メタルゴーレム",
         icon:  "images/characters/enemy/normal/メタルゴーレム.png",
         hp: 4000,
         attack: 3000,
-        magicReward: 70,
-        goldReward: 15000
+        magicReward: 60,
+        goldReward: 12000
     },
     9: {
         name: "アイソル",
         icon:  "images/characters/enemy/normal/アイソル.png",
         hp: 2300,
         attack: 1800,
-        magicReward: 60,
-        goldReward: 9000
+        magicReward: 40,
+        goldReward: 7000
     }
 
 };
@@ -693,8 +693,8 @@ const BOSS_CONTENTS = {
     3: {
         name: "いただきリリィ",
         icon: "images/characters/enemy/boss/いただきリリィ.png",
-        hp: 8000,
-        attack: 4000,
+        hp: 7000,
+        attack: 3000,
         counterDamage: 2000,
         reward: 30000
     },
@@ -702,8 +702,8 @@ const BOSS_CONTENTS = {
     4: {
         name: "スカルゴースト",
         icon: "images/characters/enemy/boss/スカルゴースト.png",
-        hp: 10000,
-        attack: 5000,
+        hp: 80000,
+        attack: 4000,
         counterDamage: 3000,
         reward: 50000
     },
@@ -711,19 +711,19 @@ const BOSS_CONTENTS = {
     5: {
         name: "水原二平",
         icon: "images/characters/enemy/boss/水原二平.png",
-        hp: 12000,
-        attack: 6000,
+        hp: 10000,
+        attack: 5000,
         counterDamage: 4000,
-        reward: 75000
+        reward: 80000
     },
 
     6: {
         name: "ロックス",
         icon: "images/characters/enemy/boss/ロックス.png",
-        hp: 14000,
+        hp: 12000,
         attack: 7000,
         counterDamage: 5000,
-        reward: 80000
+        reward: 100000
     },
 
     7: {
@@ -732,7 +732,7 @@ const BOSS_CONTENTS = {
         hp: 20000,
         attack: 10000,
         counterDamage: 8000,
-        reward: 100000
+        reward: 150000
     }
 
 };
