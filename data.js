@@ -79,20 +79,32 @@ const MONEY_CONTENTS = {
                 probability: 20
             },
             {
+                amount: 2000,
+                probability: 20
+            },
+            {
                 amount: 3000,
                 probability: 20
             },
             {
                 amount: 5000,
-                probability: 20
+                probability: 15
+            },
+            {
+                amount: 7000,
+                probability: 10
             },
             {
                 amount: 8000,
-                probability: 20
+                probability: 9
             },
             {
                 amount: 10000,
-                probability: 20
+                probability: 5
+            },
+            {
+                amount: 50000,
+                probability: 1
             }
         ]
 
@@ -392,19 +404,19 @@ const POWER_CONTENTS = {
     1: {
         effect: "魔力＋50",
         price: 10000,
-        rank: 1
+        rank: 0
     },
 
     2: {
         effect: "魔力＋500",
         price: 100000,
-        rank: 2
+        rank: 0
     },
 
     3: {
         effect: "魔力＋5000",
         price: 1000000,
-        rank: 3
+        rank: 0
     }
 
 };
