@@ -122,7 +122,7 @@ const MONSTER_CONTENTS = {
         name: "スライム",
         icon: "images/characters/enemy/normal/スライム.png",
         hp: 1100,
-        attack: 1000,
+        attack: 500,
         magicReward: 20,
         goldReward: 3500
     },
@@ -131,7 +131,7 @@ const MONSTER_CONTENTS = {
         name: "アンデット",
         icon: "images/characters/enemy/normal/アンデット.png",
         hp: 1300,
-        attack: 1800,
+        attack: 1000,
         magicReward: 20,
         goldReward: 4000
     },
@@ -139,8 +139,8 @@ const MONSTER_CONTENTS = {
     3: {
         name: "デビルこうもり",
         icon:  "images/characters/enemy/normal/デビルこうもり.png",
-        hp: 2500,
-        attack: 1500,
+        hp: 2100,
+        attack: 800,
         magicReward: 40,
         goldReward: 8000
     },
@@ -148,7 +148,7 @@ const MONSTER_CONTENTS = {
         name: "パックン",
         icon:  "images/characters/enemy/normal/パックン.png",
         hp: 2000,
-        attack: 1800,
+        attack: 1200,
         magicReward: 30,
         goldReward: 6000
     },
@@ -156,7 +156,7 @@ const MONSTER_CONTENTS = {
         name: "マッシュル",
         icon:  "images/characters/enemy/normal/マッシュル.png",
         hp: 1300,
-        attack: 1300,
+        attack: 1000,
         magicReward: 20,
         goldReward: 4500
     },
@@ -164,7 +164,7 @@ const MONSTER_CONTENTS = {
         name: "ウッディオ",
         icon:  "images/characters/enemy/normal/ウッディオ.png",
         hp: 2200,
-        attack: 1600,
+        attack: 1100,
         magicReward: 40,
         goldReward: 7000
     },
@@ -172,15 +172,15 @@ const MONSTER_CONTENTS = {
         name: "チビリン",
         icon:  "images/characters/enemy/normal/チビリン.png",
         hp: 1900,
-        attack: 1500,
+        attack: 900,
         magicReward: 30,
         goldReward: 6000
     },
     8: {
         name: "メタルゴーレム",
         icon:  "images/characters/enemy/normal/メタルゴーレム.png",
-        hp: 4000,
-        attack: 3000,
+        hp: 3500,
+        attack: 1500,
         magicReward: 60,
         goldReward: 12000
     },
@@ -188,7 +188,7 @@ const MONSTER_CONTENTS = {
         name: "アイソル",
         icon:  "images/characters/enemy/normal/アイソル.png",
         hp: 2300,
-        attack: 1800,
+        attack: 1000,
         magicReward: 40,
         goldReward: 7000
     },
@@ -196,7 +196,7 @@ const MONSTER_CONTENTS = {
         name: "ゴースハット",
         icon:  "images/characters/enemy/normal/ゴースハット.png",
         hp: 2000,
-        attack: 2500,
+        attack: 1200,
         magicReward: 30,
         goldReward: 7500
     }
@@ -697,61 +697,61 @@ const BOSS_CONTENTS = {
         hp: 2000,
         attack: 1000,
         counterDamage: 500,
-        reward: 10000
+        reward: 15000
     },
 
     2: {
         name: "アイスクイーン",
         icon: "images/characters/enemy/boss/アイスクイーン.png",
-        hp: 5000,
-        attack: 2500,
-        counterDamage: 700,
-        reward: 20000
+        hp: 4000,
+        attack: 1500,
+        counterDamage: 600,
+        reward: 25000
     },
 
     3: {
         name: "いただきリリィ",
         icon: "images/characters/enemy/boss/いただきリリィ.png",
-        hp: 7000,
-        attack: 3000,
-        counterDamage: 1000,
+        hp: 5000,
+        attack: 2000,
+        counterDamage: 700,
         reward: 30000
     },
 
     4: {
         name: "スカルゴースト",
         icon: "images/characters/enemy/boss/スカルゴースト.png",
-        hp: 8000,
-        attack: 4000,
-        counterDamage: 1200,
-        reward: 50000
+        hp: 6000,
+        attack: 2500,
+        counterDamage: 850,
+        reward: 40000
     },
 
     5: {
         name: "水原二平",
         icon: "images/characters/enemy/boss/水原二平.png",
-        hp: 10000,
-        attack: 5000,
-        counterDamage: 1500,
-        reward: 80000
+        hp: 8000,
+        attack: 3000,
+        counterDamage: 1000,
+        reward: 50000
     },
 
     6: {
         name: "ロックス",
         icon: "images/characters/enemy/boss/ロックス.png",
-        hp: 12000,
-        attack: 7000,
-        counterDamage: 1800,
-        reward: 100000
+        hp: 10000,
+        attack: 4000,
+        counterDamage: 1100,
+        reward: 70000
     },
 
     7: {
         name: "野々村",
         icon: "images/characters/enemy/boss/野々村.png",
-        hp: 20000,
-        attack: 10000,
-        counterDamage: 2000,
-        reward: 150000
+        hp: 12000,
+        attack: 5000,
+        counterDamage: 1300,
+        reward: 100000
     }
 
 };
