@@ -183,31 +183,58 @@ function updateHudPlayerAvatar(
 }
 
 // =========================
-// HUD用プレイヤー名サイズ
+// HUD文字サイズ自動調整
 // =========================
-// 6文字程度までは通常サイズ。
-// 長い名前ほど段階的に小さくして枠内へ収めます。
-function updateHudPlayerName(
-    element,
-    name
+
+function fitHudText(
+    element
 ) {
 
     if (!element) {
         return;
     }
 
-    const length =
-        Array.from(name || "").length;
+    element.style.fontSize = "";
 
-    let fontSize = 26;
+    let fontSize =
+        parseFloat(
+            window.getComputedStyle(
+                element
+            ).fontSize
+        );
 
-    if (length > 6) {
-        fontSize =
-            Math.max(14, 26 - ((length - 6) * 2));
+    if (!Number.isFinite(fontSize)) {
+        return;
     }
 
-    element.style.fontSize =
-        `${fontSize}px`;
+    while (
+        element.scrollWidth >
+        element.clientWidth &&
+        fontSize > 9
+    ) {
+
+        fontSize -= 1;
+
+        element.style.fontSize =
+            `${fontSize}px`;
+
+    }
+
+}
+
+
+// =========================
+// HUD用プレイヤー名サイズ
+// =========================
+
+function updateHudPlayerName(
+    element,
+    name
+) {
+
+    fitHudText(
+        element
+    );
 
 }
 
@@ -1139,10 +1166,10 @@ characterButtons.forEach(
 
   players.push({
     name: name,
-    money: 2000,
-    magicPower: 100,
+    money: 10000000000,
+    magicPower: 10000000,
     bossDamage: 0,
-    position: 17,
+    position: 17,   
     color: playerColors[index],
     characterId:
     Number(
@@ -1419,21 +1446,22 @@ function showGameScreen(
                 </div>
 
                 <div
-                    id="destinationInfo"
-                    class="hud-box hud-destination destination"
-                    title="ボスの位置へ移動"
-                >
-                    <img
-                        class="hud-icon hud-destination-icon"
-                        src="${BOSS_MAP_ICON_PATH}"
-                        alt="ボス"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';"
-                    >
-                    <span class="hud-icon-fallback"></span>
-                    <span class="hud-destination-label">目的地まで あと</span>
-                    <strong id="hudDestinationValue" class="hud-destination-value">0</strong>
-                    <span class="hud-destination-label">マス</span>
-                </div>
+    id="destinationInfo"
+    class="hud-box hud-destination destination"
+    title="ボスの位置へ移動"
+>
+    <img
+    class="hud-destination-icon"
+    src="${BOSS_MAP_ICON_PATH}"
+    alt="ボス"
+>
+<span class="hud-destination-label">まであと</span>
+<strong
+    id="hudDestinationValue"
+    class="hud-destination-value"
+>0</strong>
+<span class="hud-destination-label">マス</span>
+</div>
 
                 <div
                     id="turnDisplay"
@@ -3987,19 +4015,31 @@ function updatePlayerStatusUI(player) {
             );
 
         if (hudGoldValue) {
-            hudGoldValue.textContent =
-                `${formatG(player.money)}G`;
-        }
 
-        const hudMagicValue =
-            document.getElementById(
-                "hudMagicValue"
-            );
+    hudGoldValue.textContent =
+        `${formatG(player.money)}G`;
 
-        if (hudMagicValue) {
-            hudMagicValue.textContent =
-                formatG(player.magicPower);
-        }
+    fitHudText(
+        hudGoldValue
+    );
+
+}
+
+const hudMagicValue =
+    document.getElementById(
+        "hudMagicValue"
+    );
+
+if (hudMagicValue) {
+
+    hudMagicValue.textContent =
+        formatG(player.magicPower);
+
+    fitHudText(
+        hudMagicValue
+    );
+
+}
 
     }
 
@@ -4116,11 +4156,14 @@ function renderTurn() {
 
     if (turnDisplay) {
 
-        // 完成イメージに合わせて「Tern」表記を維持
-        turnDisplay.textContent =
-            `Tern ${currentTurn}/${maxTurns}`;
+    turnDisplay.textContent =
+        `Turn ${currentTurn}/${maxTurns}`;
 
-    }
+    fitHudText(
+        turnDisplay
+    );
+
+}
 
 
     // =========================
@@ -4239,12 +4282,16 @@ updateDiceMovementCounter();
             player.position
         );
 
-    if (hudDestinationValue) {
+   if (hudDestinationValue) {
 
-        hudDestinationValue.textContent =
-            bossDistance;
+    hudDestinationValue.textContent =
+        bossDistance;
 
-    }
+    fitHudText(
+        hudDestinationValue
+    );
+
+}
 
     if (destinationInfo) {
 
@@ -11356,18 +11403,51 @@ const goldReward =
 );
 
                     // =========================
-                    // 報酬画面を閉じて次へ
+                    // 報酬受け取りポップアップ
                     // =========================
 
                     rewardPopup.style.display =
                         "none";
 
 
-                    if (callback) {
+                    let receivedMessage = "";
 
-                        callback();
+                    if (
+                        reward.type ===
+                        "magicPower"
+                    ) {
+
+                        receivedMessage =
+                            `<img src="images/ui-icons/mana.png" class="reward-magic-icon" alt="魔力"> ` +
+                            `<strong>魔力 ${reward.value}</strong>を受け取った！`;
 
                     }
+
+
+                    if (
+                        reward.type ===
+                        "money"
+                    ) {
+
+                        receivedMessage =
+                            `💰 <strong>${formatG(reward.value)}G</strong>を受け取った！`;
+
+                    }
+
+
+                    showEventPopup(
+                        "報酬を受け取った！",
+                        receivedMessage,
+                        function () {
+
+                            if (callback) {
+
+                                callback();
+
+                            }
+
+                        }
+                    );
 
                 };
 
@@ -11936,3 +12016,44 @@ window.addEventListener("beforeunload", function (event) {
     event.preventDefault();
     event.returnValue = true;
 });
+
+// =========================
+// HUD：画面サイズ変更時の自動調整
+// =========================
+
+window.addEventListener(
+    "resize",
+    function () {
+
+        fitHudText(
+            document.getElementById(
+                "hudPlayerName"
+            )
+        );
+
+        fitHudText(
+            document.getElementById(
+                "hudGoldValue"
+            )
+        );
+
+        fitHudText(
+            document.getElementById(
+                "hudMagicValue"
+            )
+        );
+
+        fitHudText(
+            document.getElementById(
+                "hudDestinationValue"
+            )
+        );
+
+        fitHudText(
+            document.getElementById(
+                "turnDisplay"
+            )
+        );
+
+    }
+);
