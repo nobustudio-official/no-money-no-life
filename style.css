@@ -10723,7 +10723,7 @@
             4px;
 
         height:
-            52px;
+            48px;
 
         grid-template-columns:
     145px
@@ -10741,7 +10741,7 @@
     .game-hud .hud-box {
 
         height:
-            52px;
+            48px;
 
         padding:
             4px 6px;
@@ -10903,6 +10903,14 @@
 
         flex: 0 0 28px;
 
+    }
+
+    .game-hud .hud-destination-label {
+        font-size: 24px !important;
+    }
+
+    .game-hud .hud-destination-value {
+        font-size: 24px !important;
     }
 
 }
