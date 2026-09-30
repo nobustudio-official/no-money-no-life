@@ -155,10 +155,10 @@ const MONSTER_CONTENTS = {
     5: {
         name: "マッシュル",
         icon:  "images/characters/enemy/normal/マッシュル.png",
-        hp: 1700,
+        hp: 1300,
         attack: 1300,
         magicReward: 20,
-        goldReward: 5000
+        goldReward: 4500
     },
     6: {
         name: "ウッディオ",
@@ -191,6 +191,14 @@ const MONSTER_CONTENTS = {
         attack: 1800,
         magicReward: 40,
         goldReward: 7000
+    },
+    10: {
+        name: "ゴースハット",
+        icon:  "images/characters/enemy/normal/ゴースハット.png",
+        hp: 2000,
+        attack: 2500,
+        magicReward: 30,
+        goldReward: 7500
     }
 
 };
