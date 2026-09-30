@@ -4759,18 +4759,15 @@
     }
 
     .hud-destination-label {
-        white-space: nowrap;
-        font-size: clamp(14px, 1.35vw, 22px);
-        font-weight: 800;
-    }
+    white-space: nowrap;
+    font-weight: 800;
+}
 
-    .hud-destination-value {
-        margin: 0 2px;
-        color: #ffe83b;
-        font-size: clamp(30px, 3vw, 48px);
-        line-height: 1;
-    }
-
+.hud-destination-value {
+    margin: 0 2px;
+    color: #ffe83b;
+    line-height: 1;
+}
     .hud-turn {
         font-size: 30px;
         font-weight: 900;
@@ -5235,13 +5232,6 @@
             font-size: 19px;
         }
 
-        .hud-destination-label {
-            font-size: 12px;
-        }
-
-        .hud-destination-value {
-            font-size: 27px;
-        }
 
         .hud-turn {
             font-size: 16px;
@@ -5927,12 +5917,7 @@
             padding-right: 2px;
         }
 
-        .hud-destination-label {
-            font-size: clamp(8px, 2.7vw, 12px);
-        }
-
         .hud-destination-value {
-            font-size: clamp(20px, 7vw, 27px);
             margin: 0 1px;
         }
 
@@ -6053,14 +6038,7 @@
             flex-basis: 26px;
         }
 
-        .hud-destination-label {
-            font-size: 9px;
-        }
-
-        .hud-destination-value {
-            font-size: 22px;
-        }
-
+        
         .hud-value {
             font-size: 14px;
         }
@@ -6144,14 +6122,6 @@
             flex-basis: 24px;
         }
 
-        .hud-destination-label {
-            font-size: 8px;
-        }
-
-        .hud-destination-value {
-            font-size: 20px;
-        }
-
         .hud-value {
             font-size: 13px;
         }
@@ -6224,9 +6194,9 @@
         .game-hud .hud-icon-fallback,
         .game-hud .hud-destination-icon,
         .game-screen > .action-menu .action-menu-button img {
-            width: 40px;
-            height: 40px;
-            flex-basis: 40px;
+            width: 28px;
+            height: 28px;
+            flex-basis: 28px;
         }
 
         .game-screen > .action-menu .action-menu-button {
@@ -6244,9 +6214,9 @@
         .game-hud .hud-icon-fallback,
         .game-hud .hud-destination-icon,
         .game-screen > .action-menu .action-menu-button img {
-            width: 32px;
-            height: 32px;
-            flex-basis: 32px;
+            width: 28px;
+            height: 28px;
+            flex-basis: 28px;
         }
 
         .game-screen > .action-menu .action-menu-button {
@@ -10849,6 +10819,89 @@
 
         text-align:
             center;
+
+    }
+
+}
+
+/* =========================================================
+   ボスマス固定表示
+   2桁まで同じサイズで表示
+========================================================= */
+
+.game-hud .hud-destination {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 3px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+}
+
+
+/* ボスアイコン */
+
+.game-hud .hud-destination-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    flex: 0 0 48px;
+
+    object-fit: contain;
+
+    margin-right: 0;
+
+}
+
+/* 「まであと」「マス」 */
+
+.game-hud .hud-destination-label {
+
+    font-size: 20px;
+
+    flex: 0 0 auto;
+
+    white-space: nowrap;
+
+}
+
+
+/* 距離 */
+
+.game-hud .hud-destination-value {
+
+    font-size: 20px;
+
+    flex: 0 0 auto;
+
+    white-space: nowrap;
+
+    margin: 0;
+
+}
+
+/* =========================================================
+   ボスマスアイコン：スマホ横画面
+========================================================= */
+
+@media (orientation: landscape) and (max-height: 600px) {
+
+    .game-hud .hud-destination-icon {
+
+        width: 24px;
+
+        height: 28px;
+
+        flex: 0 0 28px;
 
     }
 
