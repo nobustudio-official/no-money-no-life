@@ -4274,7 +4274,7 @@ updateDiceMovementCounter();
             player.position
         );
 
-   if (hudDestinationValue) {
+  if (hudDestinationValue) {
 
     hudDestinationValue.textContent =
         bossDistance;
@@ -4283,22 +4283,9 @@ updateDiceMovementCounter();
         hudDestinationValue
     );
 
-    const destinationLabels =
-        document.querySelectorAll(
-            ".hud-destination-label"
-        );
-
-    destinationLabels.forEach(
-        function (label) {
-
-            fitHudText(
-                label
-            );
-
-        }
-    );
-
 }
+
+fitHudDestinationLabels();
 
     if (destinationInfo) {
 
@@ -12064,3 +12051,61 @@ window.addEventListener(
 
     }
 );
+
+// =========================
+// HUD：ボス距離ラベルの自動調整
+// 「まであと」と「マス」を同じサイズで縮小
+// 距離の数字は固定
+// =========================
+
+function fitHudDestinationLabels() {
+
+    const destinationInfo =
+        document.getElementById(
+            "destinationInfo"
+        );
+
+    if (!destinationInfo) {
+        return;
+    }
+
+    const labels =
+        destinationInfo.querySelectorAll(
+            ".hud-destination-label"
+        );
+
+    if (labels.length === 0) {
+        return;
+    }
+
+    let fontSize = 20;
+
+    labels.forEach(
+        function (label) {
+
+            label.style.fontSize =
+                `${fontSize}px`;
+
+        }
+    );
+
+    while (
+        destinationInfo.scrollWidth >
+        destinationInfo.clientWidth &&
+        fontSize > 9
+    ) {
+
+        fontSize -= 1;
+
+        labels.forEach(
+            function (label) {
+
+                label.style.fontSize =
+                    `${fontSize}px`;
+
+            }
+        );
+
+    }
+
+}
