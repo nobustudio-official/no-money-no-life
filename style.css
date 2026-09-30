@@ -9283,7 +9283,7 @@
         position: absolute !important;
 
         left: calc(50% + 100px) !important;
-        top: calc(50% - 20px) !important;
+        top: calc(50% - 15px) !important;
 
         width: 150px !important;
         height: 13px !important;
@@ -9298,7 +9298,7 @@
         position: absolute !important;
 
         left: calc(50% + 100px) !important;
-        top: calc(50% - 10x) !important;
+        top: calc(50% - 8x) !important;
 
         width: 180px !important;
         min-height: 18px !important;
