@@ -1158,8 +1158,8 @@ characterButtons.forEach(
 
   players.push({
     name: name,
-    money: 1000000,
-    magicPower: 100,
+    money: 10000,
+    magicPower: 1000,
     bossDamage: 0,
     position: 17,   
     color: playerColors[index],
@@ -10989,11 +10989,6 @@ renderTurn();
 // =========================
 
 setTimeout(function () {
-
-    if (window.innerWidth <= 700) {
-        mapZoom = 0.8;
-        applyMapZoom();
-    }
 
     centerCurrentPlayerOnMap();
 
