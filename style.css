@@ -10906,11 +10906,11 @@
     }
 
     .game-hud .hud-destination-label {
-        font-size: 24px !important;
+        font-size: 20px !important;
     }
 
     .game-hud .hud-destination-value {
-        font-size: 24px !important;
+        font-size: 20px !important;
     }
 
 }
