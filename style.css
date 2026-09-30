@@ -10932,3 +10932,194 @@
     }
 
 }
+
+/* =========================
+   ロスノート
+   プレイヤー選択ポップアップ
+   ========================= */
+
+.loss-note-player-popup {
+    width: min(90%, 420px);
+    max-height: 80vh;
+    box-sizing: border-box;
+}
+
+
+/* =========================
+   説明文
+   ========================= */
+
+.loss-note-description {
+    margin: 0 0 14px;
+    padding: 0 4px;
+
+    color: rgba(255,255,255,0.9);
+
+    font-size: 15px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+
+/* =========================
+   プレイヤー一覧
+   ========================= */
+
+.loss-note-player-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    max-height: 52vh;
+    overflow-y: auto;
+
+    padding-right: 4px;
+    margin-bottom: 14px;
+
+    box-sizing: border-box;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+
+/* =========================
+   プレイヤー1人分
+   ========================= */
+
+.loss-note-player-row {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 10px;
+
+    min-height: 52px;
+
+    padding: 8px 10px;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.16);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,0.06);
+}
+
+
+/* =========================
+   プレイヤー名
+   ========================= */
+
+.loss-note-player-name {
+    min-width: 0;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: white;
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+
+/* =========================
+   使用するボタン
+   ========================= */
+
+.loss-note-use-button {
+    min-width: 90px;
+
+    padding: 9px 12px;
+
+    border: none;
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #d84a4a,
+            #a92f2f
+        );
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    touch-action: manipulation;
+}
+
+
+/* =========================
+   ボタン押下時
+   ========================= */
+
+.loss-note-use-button:active {
+    transform: scale(0.96);
+}
+
+
+/* =========================
+   無効化
+   ========================= */
+
+.loss-note-use-button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+
+/* =========================
+   スマホ
+   ========================= */
+
+@media (max-width: 700px) {
+
+    .loss-note-player-popup {
+        width: min(92%, 420px);
+    }
+
+    .loss-note-player-list {
+        max-height: 55vh;
+    }
+
+    .loss-note-player-row {
+        min-height: 50px;
+        padding: 7px 9px;
+    }
+
+    .loss-note-player-name {
+        font-size: 16px;
+    }
+
+    .loss-note-use-button {
+        min-width: 84px;
+        padding: 9px 10px;
+        font-size: 13px;
+    }
+
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+    #monsterChoicePopup {
+        width: 82vw;
+        height: 270px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-sizing: border-box;
+    }
+}
