@@ -309,6 +309,17 @@ const ITEM_CONTENTS = {
         rank: 1
     },
 
+    12: {
+        name: "免罪符（笑）",
+        price: 20000,
+        category: "passive",
+        effect: "3ターンの間ボスカウンター無効化",
+        effectType: "bossCounterImmunity",
+        effectTarget: "self",
+        effectDuration: "3turn",
+        rank: 1
+    },
+
 
 };
 
@@ -783,21 +794,21 @@ const SHOP_BOXES = {
         name: "タカツ警察署",
         magicContents: [2, 3, 4, 7],
         powerContents: [1, 2, 3],
-        itemContents: [1, 2, 3, 9, 10]
+        itemContents: [1, 2, 3, 9, 10, 12]
     },
 
     2: {
         name: "鷹島屋",
-        magicContents: [5, 6],
+        magicContents: [2, 5, 6],
         powerContents: [1, 2, 3],
-        itemContents: [4, 5, 6, 9, 10]
+        itemContents: [4, 5, 6, 9, 10, 12]
     },
 
     3: {
         name: "スターバック",
         magicContents: [2, 3, 4, 7],
         powerContents: [1, 2, 3],
-        itemContents: [1, 2, 3, 9, 10]
+        itemContents: [1, 2, 3, 9, 10, 12]
     }
 
 };
