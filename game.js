@@ -391,6 +391,21 @@ function getJobData(jobId) {
 let currentBossSquareId = null;
 let previousBossSquareId = null;
 
+// ボス撃破数
+let bossDefeatedCount = 0;
+
+// =========================
+// 通常モンスターのインフレ倍率
+// =========================
+
+function getMonsterInflationMultiplier() {
+
+    return Math.pow(
+        1.2,
+        bossDefeatedCount
+    );
+
+}
 // 現在のボスID
 let currentBossId = 1;
 
@@ -9457,6 +9472,13 @@ function finishTurn(
         currentPlayer
     );
 
+        // =========================
+    // ターン終了時にアイテムボタンを再有効化
+    // =========================
+
+    inventoryButton.disabled =
+        false;
+
 
     // =========================
     // 資産0Gならリスポーン
@@ -11249,7 +11271,8 @@ function startJob(
 function showRewardPopup(
     player,
     callback,
-    turn
+    turn,
+    monster
 ) {
 
     const rewardPopup =
@@ -11262,27 +11285,48 @@ function showRewardPopup(
             "rewardChoices"
         );
 
+// =========================
+// ボス撃破数に応じた
+// モンスター報酬インフレ
+// =========================
 
-    // =========================
-    // 現在のターン数に応じて
-    // 報酬をインフレさせる
-    // =========================
+const monsterInflationMultiplier =
+    getMonsterInflationMultiplier();
 
-    const magicReward =
-    10 +
-    (
-        (turn - 1) *
-        10
-    );
+
+// =========================
+// モンスターの基礎報酬
+// =========================
+
+const baseMagicReward =
+    monster?.magicReward || 0;
+
+const baseGoldReward =
+    monster?.goldReward || 0;
+
+
+// =========================
+// 魔力報酬
+// 1の位を切り捨て
+// =========================
+
+const magicReward =
+    Math.floor(
+        (
+            baseMagicReward *
+            monsterInflationMultiplier
+        ) / 10
+    ) * 10;
+
+
+// =========================
+// ゴールド報酬
+// =========================
 
 const goldReward =
-    1000 +
-    (
-        (turn - 1) *
-        500
-    );
-
-
+    baseGoldReward *
+    monsterInflationMultiplier;
+    
     // =========================
     // 報酬候補
     // =========================
