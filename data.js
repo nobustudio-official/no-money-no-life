@@ -122,21 +122,75 @@ const MONSTER_CONTENTS = {
         name: "スライム",
         icon: "images/characters/enemy/normal/スライム.png",
         hp: 1100,
-        attack: 1000
+        attack: 1000,
+        magicReward: 50,
+        goldReward: 3000
     },
 
     2: {
         name: "アンデット",
         icon: "images/characters/enemy/normal/アンデット.png",
         hp: 1300,
-        attack: 1800
+        attack: 1800,
+        magicReward: 50,
+        goldReward: 4000
     },
 
     3: {
         name: "デビルこうもり",
         icon:  "images/characters/enemy/normal/デビルこうもり.png",
         hp: 2500,
-        attack: 1500
+        attack: 1500,
+        magicReward: 50,
+        goldReward: 8000
+    },
+    4: {
+        name: "パックン",
+        icon:  "images/characters/enemy/normal/パックン.png",
+        hp: 2000,
+        attack: 1800,
+        magicReward: 50,
+        goldReward: 5500
+    },
+    5: {
+        name: "マッシュル",
+        icon:  "images/characters/enemy/normal/マッシュル.png",
+        hp: 1700,
+        attack: 1300,
+        magicReward: 60,
+        goldReward: 3000
+    },
+    6: {
+        name: "ウッディオ",
+        icon:  "images/characters/enemy/normal/ウッディオ.png",
+        hp: 2200,
+        attack: 1600,
+        magicReward: 50,
+        goldReward: 7000
+    },
+    7: {
+        name: "チビリン",
+        icon:  "images/characters/enemy/normal/チビリン.png",
+        hp: 1900,
+        attack: 1500,
+        magicReward: 50,
+        goldReward: 5000
+    },
+    8: {
+        name: "メタルゴーレム",
+        icon:  "images/characters/enemy/normal/メタルゴーレム.png",
+        hp: 4000,
+        attack: 3000,
+        magicReward: 70,
+        goldReward: 15000
+    },
+    9: {
+        name: "アイソル",
+        icon:  "images/characters/enemy/normal/アイソル.png",
+        hp: 2300,
+        attack: 1800,
+        magicReward: 60,
+        goldReward: 9000
     }
 
 };
@@ -149,7 +203,7 @@ const ITEM_CONTENTS = {
 
      1: {
         name: "人力車",
-        price: 1000,
+        price: 10000,
         category: "move",
         effect: "サイコロを2個振れる",
         rank: 1
@@ -157,7 +211,7 @@ const ITEM_CONTENTS = {
 
     2: {
         name: "タクシーチケット",
-        price: 5000,
+        price: 40000,
         category: "move",
         effect: "サイコロを3個振れる",
         rank: 1
@@ -165,7 +219,7 @@ const ITEM_CONTENTS = {
 
     3: {
         name: "グリーン車",
-        price: 8000,
+        price: 70000,
         category: "move",
         effect: "サイコロを4個振れる",
         rank: 1
@@ -173,7 +227,7 @@ const ITEM_CONTENTS = {
 
     4: {
         name: "ビジネスクラス",
-        price: 15000,
+        price: 100000,
         category: "move",
         effect: "サイコロを5個振れる",
         rank: 2
@@ -181,7 +235,7 @@ const ITEM_CONTENTS = {
 
     5: {
         name: "ファーストクラス",
-        price: 25000,
+        price: 150000,
         category: "move",
         effect: "サイコロを6個振れる",
         rank: 2
@@ -189,7 +243,7 @@ const ITEM_CONTENTS = {
 
     6: {
         name: "プライベートジェット",
-        price: 50000,
+        price: 300000,
         category: "move",
         effect: "サイコロを8個振れる",
         rank: 3
@@ -197,7 +251,7 @@ const ITEM_CONTENTS = {
 
     7: {
         name: "走れ、メロス",
-        price: 80000,
+        price: 500000,
         category: "move",
         effect: "サイコロを10個振れる",
         rank: 3
@@ -213,31 +267,31 @@ const ITEM_CONTENTS = {
 
     9: {
         name: "お守り",
-        price: 1000,
+        price: 10000,
         category: "passive",
-        effect: "相手から受けるダメージ－10",
+        effect: "相手から受けるダメージ－100",
         effectType: "damageReduction",
         effectTarget: "self",
-        effectValue: 10,
+        effectValue: 100,
         effectDuration: "permanent",
         rank: 1
     },
 
     10: {
         name: "ダンベル",
-        price: 500,
+        price: 10000,
         category: "passive",
-        effect: "相手に与えるダメージ＋10",
+        effect: "相手に与えるダメージ＋100",
         effectType: "damageBonus",
         effectTarget: "self",
-        effectValue: 10,
+        effectValue: 100,
         effectDuration: "permanent",
         rank: 1
     },
 
     11: {
         name: "幸運の財布",
-        price: 800,
+        price: 0,
         category: "passive",
         effect: "ターン開始時に3000G獲(5ターンで消滅)",
         effectType: "goldGain",
@@ -389,7 +443,7 @@ const MAGIC_CONTENTS = {
         buffDuration: null,
         price: 0,
         actionAfterUse: "end",
-        rank: 1
+        rank: 4
     }
     
 
@@ -697,12 +751,16 @@ const TREASURE_BOXES = {
 
     2: {
         name: "銀の宝箱",
-        rank: 2
+        rank: [2]
     },
 
     3: {
         name: "金の宝箱",
-        rank: 3
+        rank: [3]
+    },
+    4: {
+        name: "ミシックの宝箱",
+        rank: 4
     }
 
 };
@@ -715,23 +773,23 @@ const SHOP_BOXES = {
 
     1: {
         name: "タカツ警察署",
-        magicContents: [1, 2, 3, 4],
+        magicContents: [2, 3, 4, 7],
         powerContents: [1, 2, 3],
-        itemContents: [1, 2, 3, 10, 11]
+        itemContents: [1, 2, 3, 9, 10]
     },
 
     2: {
         name: "鷹島屋",
         magicContents: [5, 6],
         powerContents: [1, 2, 3],
-        itemContents: [1, 2, 3, 10, 11]
+        itemContents: [4, 5, 6, 9, 10]
     },
 
     3: {
         name: "スターバック",
-        magicContents: [6],
+        magicContents: [2, 3, 4, 7],
         powerContents: [1, 2, 3],
-        itemContents: [4, 5, 6]
+        itemContents: [1, 2, 3, 9, 10]
     }
 
 };
