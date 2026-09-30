@@ -75,23 +75,23 @@ const MONEY_CONTENTS = {
 
         rewards: [
             {
-                amount: 100,
-                probability: 20
-            },
-            {
-                amount: 300,
-                probability: 20
-            },
-            {
-                amount: 500,
-                probability: 20
-            },
-            {
-                amount: 800,
-                probability: 20
-            },
-            {
                 amount: 1000,
+                probability: 20
+            },
+            {
+                amount: 3000,
+                probability: 20
+            },
+            {
+                amount: 5000,
+                probability: 20
+            },
+            {
+                amount: 8000,
+                probability: 20
+            },
+            {
+                amount: 10000,
                 probability: 20
             }
         ]
@@ -109,22 +109,22 @@ const MONSTER_CONTENTS = {
    1: {
         name: "スライム",
         icon: "images/characters/enemy/normal/スライム.png",
-        hp: 150,
-        attack: 120
+        hp: 1100,
+        attack: 1000
     },
 
     2: {
         name: "アンデット",
         icon: "images/characters/enemy/normal/アンデット.png",
-        hp: 110,
-        attack: 180
+        hp: 1300,
+        attack: 1800
     },
 
     3: {
         name: "デビルこうもり",
         icon:  "images/characters/enemy/normal/デビルこうもり.png",
-        hp: 300,
-        attack: 250
+        hp: 2500,
+        attack: 1500
     }
 
 };
@@ -227,25 +227,14 @@ const ITEM_CONTENTS = {
         name: "幸運の財布",
         price: 800,
         category: "passive",
-        effect: "ターン開始時に500G獲(5ターンで消滅)",
+        effect: "ターン開始時に3000G獲(5ターンで消滅)",
         effectType: "goldGain",
         effectTarget: "self",
-        effectValue: 500,
+        effectValue: 3000,
         effectDuration: "5turn",
         rank: 1
     },
 
-    12: {
-        name: "魔法の靴",
-        price: 1200,
-        category: "passive",
-        effect: "サイコロの出目＋1",
-        effectType: "diceBonus",
-        effectTarget: "self",
-        effectValue: 1,
-        effectDuration: "5turn",
-        rank: 1
-    }
 
 };
 
@@ -284,7 +273,7 @@ const MAGIC_CONTENTS = {
         buffStat: null,
         buffRate: null,
         buffDuration: null,
-        price: 200,
+        price: 2000,
         actionAfterUse: "end",
         rank: 0
     },
@@ -301,7 +290,7 @@ const MAGIC_CONTENTS = {
         buffStat: null,
         buffRate: null,
         buffDuration: null,
-        price: 5000,
+        price: 50000,
         actionAfterUse: "end",
         rank: 0
     },
@@ -311,6 +300,7 @@ const MAGIC_CONTENTS = {
         type: "attack",
         icon: "未設定",
         effect: "魔力の500％で攻撃",
+        icon: "images/magic/メテオ.png",
         sound: "sounds/戦闘/爆発1.mp3",
         powerRate: 5.0,
         costRate: 6.0,
@@ -326,16 +316,16 @@ const MAGIC_CONTENTS = {
     5: {
         name: "パワアプ",
         type: "buff",
-        icon: "未設定",
-        effect: "戦闘中の魔法の威力が1.6倍になる",
+        icon: "images/magic/パワアプ.png",
+        effect: "戦闘中の魔法の威力が2倍になる",
         sound: "sounds/戦闘/パワーチャージ.mp3",
         powerRate: null,
-        costRate: 2,
+        costRate: 2.0,
         buffTarget: "self",
         buffStat: "magicPower",
-        buffRate: 1.6,
+        buffRate: 2.0,
         buffDuration: "1turn",
-        price: 500,
+        price: 100000,
         actionAfterUse: "continue",
         rank: 0
     },
@@ -343,16 +333,16 @@ const MAGIC_CONTENTS = {
     6: {
         name: "ディフェアプ",
         type: "buff",
-        icon: "未設定",
+        icon: "images/magic/ディフェアプ.png",
         effect: "戦闘中の相手の攻撃力を半分",
         sound: "sounds/戦闘/詠唱1.mp3",
         powerRate: null,
-        costRate: 1.5,
+        costRate: 0.5,
         buffTarget: "enemy",
         buffStat: "attackPower",
         buffRate: 0.5,
         buffDuration: "1turn",
-        price: 500,
+        price: 100000,
         actionAfterUse: "continue",
         rank: 0
     },
@@ -387,7 +377,7 @@ const MAGIC_CONTENTS = {
         buffDuration: null,
         price: 0,
         actionAfterUse: "end",
-        rank: 3
+        rank: 1
     }
     
 
@@ -400,20 +390,20 @@ const MAGIC_CONTENTS = {
 const POWER_CONTENTS = {
 
     1: {
-        effect: "魔力＋10",
-        price: 1000,
+        effect: "魔力＋50",
+        price: 10000,
         rank: 1
     },
 
     2: {
-        effect: "魔力＋100",
-        price: 10000,
+        effect: "魔力＋500",
+        price: 100000,
         rank: 2
     },
 
     3: {
-        effect: "魔力＋1000",
-        price: 100000,
+        effect: "魔力＋5000",
+        price: 1000000,
         rank: 3
     }
 
@@ -427,155 +417,155 @@ const ASSET_CONTENTS = {
 
     1: {
         name: "キャサリン",
-        price: 1000,
-        yield: 100,
+        price: 10000,
+        yield: 25,
         owner: null
     },
 
     2: {
         name: "キャサリン",
-        price: 1000,
-        yield: 100,
+        price: 10000,
+        yield: 25,
         owner: null
     },
 
     3: {
         name: "キャサリン",
-        price: 1000,
-        yield: 100,
+        price: 10000,
+        yield: 25,
         owner: null
     },
 
     4: {
         name: "ナンシー",
-        price: 5000,
-        yield: 100,
+        price: 50000,
+        yield: 25,
         owner: null
     },
 
     5: {
         name: "ロシシー",
-        price: 20000,
-        yield: 100,
+        price: 200000,
+        yield: 20,
         owner: null
     },
 
     6: {
         name: "エシス",
-        price: 40000,
-        yield: 100,
+        price: 400000,
+        yield: 25,
         owner: null
     },
 
     7: {
         name: "シルフィネット",
-        price: 50000,
-        yield: 100,
+        price: 500000,
+        yield: 20,
         owner: null
     },
 
     8: {
         name: "足立",
-        price: 3000,
-        yield: 100,
+        price: 30000,
+        yield: 25,
         owner: null
     },
 
     9: {
         name: "市原",
-        price: 10000,
-        yield: 80,
+        price: 100000,
+        yield: 20,
         owner: null
     },
 
     10: {
         name: "山田",
-        price: 10000,
-        yield: 80,
+        price: 100000,
+        yield: 20,
         owner: null
     },
 
     11: {
         name: "笑みリア",
-        price: 5000000000,
+        price: 50000000,
         yield: 1,
         owner: null
     },
 
     12: {
         name: "檸夢",
-        price: 30000000,
+        price: 300000,
         yield: 1,
         owner: null
     },
 
     13: {
         name: "羅夢",
-        price: 30000000,
+        price: 300000,
         yield: 1,
         owner: null
     },
 
     14: {
         name: "ベアトニス",
-        price: 20000000,
-        yield: 1,
+        price: 200000,
+        yield: 10,
         owner: null
     },
 
     15: {
         name: "ヌバル",
-        price: 1000000,
-        yield: 5,
+        price: 100000,
+        yield: 20,
         owner: null
     },
 
     16: {
         name: "ガーフィーヌ",
-        price: 80000000,
-        yield: 1,
+        price: 800000,
+        yield: 10,
         owner: null
     },
 
     17: {
         name: "オズワーリ",
-        price: 4000000,
-        yield: 1,
+        price: 40000,
+        yield: 50,
         owner: null
     },
 
     18: {
         name: "ヤニ猫",
         price: 200000,
-        yield: 5,
+        yield: 20,
         owner: null
     },
 
     19: {
         name: "ヤク猫",
-        price: 10000,
-        yield: 5,
+        price: 100000,
+        yield: 20,
         owner: null
     },
 
     20: {
         name: "ハメ猫",
-        price: 8000,
-        yield: 5,
+        price: 80000,
+        yield: 20,
         owner: null
     },
 
     21: {
         name: "アル猫",
         price: 40000,
-        yield: 5,
+        yield: 20,
         owner: null
     },
 
     22: {
         name: "かんさい",
-        price: 500,
-        yield: 2000,
+        price: 5000,
+        yield: 200,
         owner: null
     }
 
@@ -589,23 +579,23 @@ const JOB_CONTENTS = {
 
     1: {
         name: "居酒屋",
-        unitPrice: 30000
+        unitPrice: 13000
     },
 
     2: {
         name: "叩き",
-        unitPrice: 50000,
+        unitPrice: 80000,
         specialEffect: "arrest"
     },
 
     3: {
         name: "パン屋",
-        unitPrice: 40000
+        unitPrice: 15000
     },
 
     4: {
         name: "引っ越し",
-        unitPrice: 20000
+        unitPrice: 18000
     }
 
 };
@@ -619,64 +609,64 @@ const BOSS_CONTENTS = {
     1: {
         name: "デビルロード",
         icon: "images/characters/enemy/boss/デビルロード.png",
-        hp: 200,
-        attack: 100,
-        counterDamage: 100,
-        reward: 5000
+        hp: 2000,
+        attack: 1000,
+        counterDamage: 1000,
+        reward: 10000
     },
 
     2: {
         name: "アイスクイーン",
         icon: "images/characters/enemy/boss/アイスクイーン.png",
-        hp: 500,
-        attack: 500,
-        counterDamage: 150,
-        reward: 8000
+        hp: 5000,
+        attack: 2500,
+        counterDamage: 1500,
+        reward: 20000
     },
 
     3: {
         name: "いただきリリィ",
         icon: "images/characters/enemy/boss/いただきリリィ.png",
-        hp: 2000,
-        attack: 1000,
-        counterDamage: 200,
-        reward: 15000
+        hp: 8000,
+        attack: 4000,
+        counterDamage: 2000,
+        reward: 30000
     },
 
     4: {
         name: "スカルゴースト",
         icon: "images/characters/enemy/boss/スカルゴースト.png",
-        hp: 3000,
-        attack: 2000,
-        counterDamage: 300,
-        reward: 20000
+        hp: 10000,
+        attack: 5000,
+        counterDamage: 3000,
+        reward: 50000
     },
 
     5: {
         name: "水原二平",
         icon: "images/characters/enemy/boss/水原二平.png",
-        hp: 5000,
-        attack: 2500,
-        counterDamage: 400,
-        reward: 25000
+        hp: 12000,
+        attack: 6000,
+        counterDamage: 4000,
+        reward: 75000
     },
 
     6: {
         name: "ロックス",
         icon: "images/characters/enemy/boss/ロックス.png",
-        hp: 6000,
-        attack: 3000,
-        counterDamage: 500,
-        reward: 30000
+        hp: 14000,
+        attack: 7000,
+        counterDamage: 5000,
+        reward: 80000
     },
 
     7: {
         name: "野々村",
         icon: "images/characters/enemy/boss/野々村.png",
-        hp: 8000,
-        attack: 5000,
-        counterDamage: 600,
-        reward: 50000
+        hp: 20000,
+        attack: 10000,
+        counterDamage: 8000,
+        reward: 100000
     }
 
 };
