@@ -1252,7 +1252,7 @@ characterButtons.forEach(
 // 初期アイテム
 // =========================
 
-players[index].inventory = [1, 8];
+players[index].inventory = [1, 8, 13];
 
 
 // =========================
@@ -4054,6 +4054,8 @@ playerCards.forEach(
 
 }
 
+window.renderPlayers = renderPlayers;
+window.renderMap = renderMap;
 
 // =========================
 // プレイヤーステータス表示更新
@@ -7484,11 +7486,7 @@ case "monster":
 
 case "worst":
 
-    player.money -= 10000;
-
-    if (player.money < 0) {
-        player.money = 0;
-    }
+    player.money = 0;
 
     updatePlayerStatusUI(player);
 
@@ -7497,10 +7495,18 @@ case "worst":
     showEventPopup(
         "💀 最悪マス",
         `${player.name}は最悪のマスに止まってしまった……。<br><br>
-        💸 <strong>10,000G</strong>を失った！<br>
-        💰 残り ${formatG(player.money)}G`,
+         <strong>所持ゴールドが0Gになった…</strong>`,
         function () {
-            finishTurn(player);
+
+            checkPlayerRespawn(
+                player,
+                function () {
+
+                    finishTurn(player);
+
+                }
+            );
+
         }
     );
 
@@ -9869,27 +9875,162 @@ bossCounterSE.play().catch(
             }
         );
 
-       // =========================
+// =========================
 // ボスカウンター終了後
 // 次のプレイヤーのターンを開始
+// =========================
+
+const nextPlayerAfterCounter =
+    players[currentPlayer];
+
+
+// =========================
+// ターン開始時のアイテム効果
+// =========================
+
+console.log(
+    "【ボスカウンター後・アイテム効果チェック】",
+    nextPlayerAfterCounter.name,
+    nextPlayerAfterCounter.inventory,
+    nextPlayerAfterCounter.money
+);
+
+removeExpiredItems(
+    nextPlayerAfterCounter,
+    currentTurn
+);
+
+applyTurnStartItemEffects(
+    nextPlayerAfterCounter,
+    currentTurn
+);
+
+
+// =========================
+// 次のプレイヤーが
+// バイト中か確認
+// =========================
+
+if (
+    nextPlayerAfterCounter.jobTurnsRemaining > 0
+) {
+
+    // =========================
+    // バイトのターンを1つ消費
+    // =========================
+
+    nextPlayerAfterCounter.jobTurnsRemaining -=
+        1;
+
+
+    renderTurn();
+    renderPlayers();
+    centerCurrentPlayerOnMap();
+
+
+    // =========================
+    // バイト終了
+    // =========================
+
+    if (
+        nextPlayerAfterCounter.jobTurnsRemaining === 0
+    ) {
+
+        const reward =
+            nextPlayerAfterCounter.jobReward;
+
+
+        nextPlayerAfterCounter.money +=
+            reward;
+
+        updatePlayerStatusUI(
+            nextPlayerAfterCounter
+        );
+
+
+        nextPlayerAfterCounter.jobReward =
+            0;
+
+
+        renderPlayers();
+
+
+        showEventPopup(
+            "💰 バイト終了！",
+
+            `${nextPlayerAfterCounter.name}は<br>` +
+            `<strong>${formatG(reward)}G</strong>を獲得！`,
+
+            function () {
+
+                renderTurn();
+                renderPlayers();
+                centerCurrentPlayerOnMap();
+
+                // ルーレット使用可能
+                rouletteButton.disabled =
+                    false;
+
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    // =========================
+    // まだバイト中
+    // =========================
+
+    showEventPopup(
+        "💼 バイト中",
+
+        `${nextPlayerAfterCounter.name}は現在バイト中です。<br>` +
+        `残り ${nextPlayerAfterCounter.jobTurnsRemaining} ターン`,
+
+        function () {
+
+            // =========================
+            // このターンは休み
+            // 次のプレイヤーへ進む
+            // =========================
+
+            finishTurn(
+                nextPlayerAfterCounter
+            );
+
+        }
+    );
+
+
+    return;
+
+}
+
+
+// =========================
+// 通常プレイヤー
 // =========================
 
 renderTurn();
 renderPlayers();
 centerCurrentPlayerOnMap();
 
+
 // =========================
-// 次のプレイヤーがボスマスにいる場合
-// 再挑戦確認
+// ボスマスにいる場合
+// 再戦確認
 // =========================
 
 if (
-    players[currentPlayer].position ===
+    nextPlayerAfterCounter.position ===
     currentBossSquareId
 ) {
 
     showBossChallengePopup(
-        players[currentPlayer],
+        nextPlayerAfterCounter,
         true
     );
 
@@ -9897,7 +10038,11 @@ if (
 
 }
 
+
+// =========================
 // ルーレット使用可能
+// =========================
+
 rouletteButton.disabled =
     false;
 
@@ -10344,27 +10489,162 @@ bossCounterSE.play().catch(
             }
         );
 
-        // =========================
+// =========================
 // ボスカウンター終了後
 // 次のプレイヤーのターンを開始
+// =========================
+
+const nextPlayerAfterCounter =
+    players[currentPlayer];
+
+
+// =========================
+// ターン開始時のアイテム効果
+// =========================
+
+console.log(
+    "【ボスカウンター後・アイテム効果チェック】",
+    nextPlayerAfterCounter.name,
+    nextPlayerAfterCounter.inventory,
+    nextPlayerAfterCounter.money
+);
+
+removeExpiredItems(
+    nextPlayerAfterCounter,
+    currentTurn
+);
+
+applyTurnStartItemEffects(
+    nextPlayerAfterCounter,
+    currentTurn
+);
+
+
+// =========================
+// 次のプレイヤーが
+// バイト中か確認
+// =========================
+
+if (
+    nextPlayerAfterCounter.jobTurnsRemaining > 0
+) {
+
+    // =========================
+    // バイトのターンを1つ消費
+    // =========================
+
+    nextPlayerAfterCounter.jobTurnsRemaining -=
+        1;
+
+
+    renderTurn();
+    renderPlayers();
+    centerCurrentPlayerOnMap();
+
+
+    // =========================
+    // バイト終了
+    // =========================
+
+    if (
+        nextPlayerAfterCounter.jobTurnsRemaining === 0
+    ) {
+
+        const reward =
+            nextPlayerAfterCounter.jobReward;
+
+
+        nextPlayerAfterCounter.money +=
+            reward;
+
+        updatePlayerStatusUI(
+            nextPlayerAfterCounter
+        );
+
+
+        nextPlayerAfterCounter.jobReward =
+            0;
+
+
+        renderPlayers();
+
+
+        showEventPopup(
+            "💰 バイト終了！",
+
+            `${nextPlayerAfterCounter.name}は<br>` +
+            `<strong>${formatG(reward)}G</strong>を獲得！`,
+
+            function () {
+
+                renderTurn();
+                renderPlayers();
+                centerCurrentPlayerOnMap();
+
+                // ルーレット使用可能
+                rouletteButton.disabled =
+                    false;
+
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    // =========================
+    // まだバイト中
+    // =========================
+
+    showEventPopup(
+        "💼 バイト中",
+
+        `${nextPlayerAfterCounter.name}は現在バイト中です。<br>` +
+        `残り ${nextPlayerAfterCounter.jobTurnsRemaining} ターン`,
+
+        function () {
+
+            // =========================
+            // このターンは休み
+            // 次のプレイヤーへ進む
+            // =========================
+
+            finishTurn(
+                nextPlayerAfterCounter
+            );
+
+        }
+    );
+
+
+    return;
+
+}
+
+
+// =========================
+// 通常プレイヤー
 // =========================
 
 renderTurn();
 renderPlayers();
 centerCurrentPlayerOnMap();
 
+
 // =========================
-// 次のプレイヤーがボスマスにいる場合
-// 再挑戦確認
+// ボスマスにいる場合
+// 再戦確認
 // =========================
 
 if (
-    players[currentPlayer].position ===
+    nextPlayerAfterCounter.position ===
     currentBossSquareId
 ) {
 
     showBossChallengePopup(
-        players[currentPlayer],
+        nextPlayerAfterCounter,
         true
     );
 
@@ -10372,7 +10652,11 @@ if (
 
 }
 
+
+// =========================
 // ルーレット使用可能
+// =========================
+
 rouletteButton.disabled =
     false;
 
@@ -11676,6 +11960,246 @@ const goldReward =
 }
 
 // =========================
+// ロスノート対象プレイヤー選択
+// =========================
+
+function showLossNotePlayerPopup(
+    usingPlayer
+) {
+
+    let popup =
+        document.getElementById(
+            "lossNotePlayerPopup"
+        );
+
+    if (!popup) {
+
+        popup =
+            document.createElement(
+                "div"
+            );
+
+        popup.id =
+            "lossNotePlayerPopup";
+
+        popup.className =
+            "magic-shop-popup loss-note-player-popup";
+
+        popup.innerHTML = `
+            <div class="magic-shop-title">
+                ロスノート
+            </div>
+
+            <div class="loss-note-description">
+                名前を書くプレイヤーを選択
+            </div>
+
+            <div class="loss-note-player-list"></div>
+
+            <button
+                class="magic-shop-close-button loss-note-close-button"
+                type="button"
+            >
+                キャンセル
+            </button>
+        `;
+
+        document.body.appendChild(
+            popup
+        );
+
+    }
+
+    const playerList =
+        popup.querySelector(
+            ".loss-note-player-list"
+        );
+
+    const closeButton =
+        popup.querySelector(
+            ".loss-note-close-button"
+        );
+
+    playerList.innerHTML =
+        "";
+
+    players.forEach(
+        function (targetPlayer) {
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+            row.className =
+                "loss-note-player-row";
+
+            row.innerHTML = `
+                <span class="loss-note-player-name">
+                    ${targetPlayer.name}
+                </span>
+
+                <button
+                    class="loss-note-use-button"
+                    type="button"
+                >
+                    使用する
+                </button>
+            `;
+
+            const useButton =
+                row.querySelector(
+                    ".loss-note-use-button"
+                );
+
+            useButton.addEventListener(
+                "click",
+                function () {
+
+                    useButton.disabled =
+                        true;
+
+                    const inventoryIndex =
+                        usingPlayer.inventory.findIndex(
+                            function (inventoryData) {
+
+                                const id =
+                                    typeof inventoryData ===
+                                    "object"
+                                        ? inventoryData.id
+                                        : Number(
+                                            inventoryData
+                                        );
+
+                                return (
+                                    Number(id) ===
+                                    13
+                                );
+
+                            }
+                        );
+
+                    if (
+                        inventoryIndex === -1
+                    ) {
+
+                        popup.style.display =
+                            "none";
+
+                        return;
+
+                    }
+
+                    // =========================
+                    // ロスノートを消費
+                    // =========================
+
+                    usingPlayer.inventory.splice(
+                        inventoryIndex,
+                        1
+                    );
+
+                    popup.style.display =
+                        "none";
+
+                    // =========================
+                    // 対象プレイヤーを0Gにする
+                    // =========================
+
+                    targetPlayer.money =
+                        0;
+
+                    updatePlayerStatusUI(
+                        targetPlayer
+                    );
+
+                    
+
+// =========================
+// リスポーン
+// =========================
+
+const respawnGold =
+    10000 + (bossDefeatedCount * 5000);
+
+targetPlayer.money =
+    respawnGold;
+
+targetPlayer.position =
+    17;
+
+// =========================
+// リスポーン時の固定アイテム
+// =========================
+
+addItem(
+    targetPlayer,
+    1,
+    window.getCurrentTurn()
+);
+
+addItem(
+    targetPlayer,
+    12,
+    window.getCurrentTurn()
+);
+
+updatePlayerStatusUI(
+    targetPlayer
+);
+
+// =========================
+// 移動履歴をリセット
+// =========================
+
+movementPath = [];
+
+renderPlayers();
+renderMap();
+
+// =========================
+// リスポーン結果
+// =========================
+
+showEventPopup(
+    "ロスノート",
+    `${targetPlayer.name}はゴールドをすべて失った……。<br><br>
+    スタート地点へリスポーン！<br>
+    💰 <strong>${formatG(respawnGold)}G</strong>を手に入れた！<br>
+    アイテムを2個手に入れた！`,
+    function () {
+
+        finishTurn(
+            usingPlayer
+        );
+
+    }
+);
+
+                }
+            );
+
+            playerList.appendChild(
+                row
+            );
+
+        }
+    );
+
+    closeButton.onclick =
+        function () {
+
+            popup.style.display =
+                "none";
+
+        };
+
+    popup.style.display =
+        "block";
+
+}
+
+// =========================
 // アイテム画面
 // =========================
 
@@ -11838,6 +12362,25 @@ function showInventoryPopup(
             useButton.addEventListener(
                 "click",
                 function () {
+                
+// =========================
+// ロスノート
+// =========================
+
+if (
+    Number(itemId) === 13
+) {
+
+    inventoryPopup.style.display =
+        "none";
+
+    showLossNotePlayerPopup(
+        player
+    );
+
+    return;
+
+}
 
                     // =========================
                     // どんぴ車
