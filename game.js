@@ -1158,8 +1158,8 @@ characterButtons.forEach(
 
   players.push({
     name: name,
-    money: 10000000000,
-    magicPower: 10000000,
+    money: 1000000,
+    magicPower: 100,
     bossDamage: 0,
     position: 17,   
     color: playerColors[index],
