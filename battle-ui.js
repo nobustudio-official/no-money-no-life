@@ -2028,27 +2028,24 @@ showBattleMessage(
     if (giveReward) {
 
         showRewardPopup(
-            player,
-            function () {
+    player,
+    function () {
 
-                // =========================
-                // 報酬選択完了後
-                // =========================
-
-                hideLayer(
-                    "battleMainPopup"
-                );
-
-                activeBattle =
-                    null;
-
-                window.finishTurn(
-                    player
-                );
-
-            },
-             window.getCurrentTurn()
+        hideLayer(
+            "battleMainPopup"
         );
+
+        activeBattle =
+            null;
+
+        window.finishTurn(
+            player
+        );
+
+    },
+    window.getCurrentTurn(),
+    activeBattle.monster
+);
 
         return;
 
@@ -2538,24 +2535,30 @@ popupButton.textContent =
                 );
 
 
-                // =========================
-                // 次のボスを設定
-                // =========================
+// =========================
+// ボス撃破数を更新
+// =========================
 
-                previousBossSquareId =
-                    currentBossSquareId;
+bossDefeatedCount += 1;
 
 
-                const bossIds =
-                    Object.keys(
-                        BOSS_CONTENTS
-                    )
-                    .map(Number)
-                    .sort(
-                        function (a, b) {
-                            return a - b;
-                        }
-                    );
+// =========================
+// 次のボスを設定
+// =========================
+
+previousBossSquareId =
+    currentBossSquareId;
+
+const bossIds =
+    Object.keys(
+        BOSS_CONTENTS
+    )
+    .map(Number)
+    .sort(
+        function (a, b) {
+            return a - b;
+        }
+    );
 
 
                 const currentIndex =
@@ -2795,36 +2798,75 @@ bossCounterEnabled = true;
         };
 
 
-    window.startMonsterBattle =
-        function (player) {
+   window.startMonsterBattle =
+    function (player) {
 
-            const monsterIds =
-                Object.keys(MONSTER_CONTENTS);
+        const monsterIds =
+            Object.keys(MONSTER_CONTENTS);
 
-            const randomMonsterId =
-                monsterIds[
-                    Math.floor(
-                        Math.random() * monsterIds.length
-                    )
-                ];
+        const randomMonsterId =
+            monsterIds[
+                Math.floor(
+                    Math.random() * monsterIds.length
+                )
+            ];
 
-            const monster =
-                MONSTER_CONTENTS[randomMonsterId];
+        const baseMonster =
+            MONSTER_CONTENTS[
+                randomMonsterId
+            ];
 
-            // 旧遭遇選択画面は使わない
-            const oldPopup =
-                document.getElementById("monsterChoicePopup");
 
-            if (oldPopup) {
-                oldPopup.style.display = "none";
-            }
+        // =========================
+        // ボス撃破数に応じた
+        // モンスターステータス倍率
+        // =========================
 
-            startNormalBattle(
-                player,
-                monster
-            );
+        const monsterInflationMultiplier =
+            getMonsterInflationMultiplier();
+
+
+        // =========================
+        // 基礎データをコピーして
+        // 今回の戦闘用モンスターを作成
+        // =========================
+
+        const monster = {
+
+            ...baseMonster,
+
+            hp:
+                Math.floor(
+                    baseMonster.hp *
+                    monsterInflationMultiplier
+                ),
+
+            attack:
+                Math.floor(
+                    baseMonster.attack *
+                    monsterInflationMultiplier
+                )
 
         };
+
+
+        // 旧遭遇選択画面は使わない
+        const oldPopup =
+            document.getElementById(
+                "monsterChoicePopup"
+            );
+
+        if (oldPopup) {
+            oldPopup.style.display = "none";
+        }
+
+
+        startNormalBattle(
+            player,
+            monster
+        );
+
+    };
 
 
     // 既存のHTMLを新UIに置き換え、旧バトル画面を非表示にします。
