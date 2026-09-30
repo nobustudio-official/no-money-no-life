@@ -319,6 +319,16 @@ const ITEM_CONTENTS = {
         effectDuration: "3turn",
         rank: 1
     },
+    13: {
+        name: "ロスノート",
+        price: 200000,
+        category: "special",
+        effect: "このノートに名前を書かれた者は〇ぬ",
+        effectType: "bossCounterImmunity",
+        effectTarget: "lossNote",
+        effectDuration: "playe",
+        rank: 4
+    },
 
 
 };
@@ -770,12 +780,12 @@ const TREASURE_BOXES = {
 
     2: {
         name: "銀の宝箱",
-        rank: [2]
+        rank: 2
     },
 
     3: {
         name: "金の宝箱",
-        rank: [3]
+        rank: 3
     },
     4: {
         name: "ミシックの宝箱",
