@@ -6189,20 +6189,15 @@
 
     @media (max-width: 1100px) {
 
-    .game-hud .hud-player-avatar {
-        width: 32px;
-        height: 32px;
-        flex-basis: 32px;
-    }
-
-    .game-hud .hud-icon,
-    .game-hud .hud-icon-fallback,
-    .game-hud .hud-destination-icon,
-    .game-screen > .action-menu .action-menu-button img {
-        width: 30px;
-        height: 30px;
-        flex-basis: 30px;
-    }
+        .game-hud .hud-player-avatar,
+        .game-hud .hud-icon,
+        .game-hud .hud-icon-fallback,
+        .game-hud .hud-destination-icon,
+        .game-screen > .action-menu .action-menu-button img {
+            width: 30px;
+            height: 30px;
+            flex-basis: 30px;
+        }
 
         .game-screen > .action-menu .action-menu-button {
             grid-template-columns: 40px minmax(0, 1fr);
@@ -6235,6 +6230,40 @@
     }
 
    
+
+    /* ---------- 極端に低い横画面 ---------- */
+
+    @media (orientation: landscape) and (max-height: 430px) {
+
+        
+        .game-screen > .action-menu .action-menu-button img {
+            width: 28px;
+            height: 28px;
+            flex-basis: 28px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            grid-template-columns: 28px minmax(0, 1fr);
+        }
+
+    }
+
+    /* ---------- 極端に狭い縦画面 ---------- */
+
+    @media (max-width: 380px) {
+
+        .game-screen > .action-menu .action-menu-button img {
+            width: 28px;
+            height: 28px;
+            flex-basis: 28px;
+        }
+
+        .game-screen > .action-menu .action-menu-button {
+            grid-template-columns: 28px minmax(0, 1fr);
+        }
+
+    }
+
     /* =========================================================
     ボス決定ポップアップ専用
     ・3行構成
