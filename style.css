@@ -10907,9 +10907,11 @@
     .game-hud .hud-player-name,
     .game-hud .hud-value,
     .game-hud .hud-destination-label,
-    .game-hud .hud-destination-value,
-    .game-hud .hud-turn {
+    .game-hud .hud-destination-value {
         font-size: 14px !important;
+    }
+     .game-hud .hud-turn {
+        font-size: 11px !important;
     }
 
 }
