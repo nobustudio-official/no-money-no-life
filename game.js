@@ -291,7 +291,10 @@ function getRandomGoldReward() {
             random < total
         ) {
 
-            return reward.amount;
+            return Math.floor(
+    reward.amount *
+    getMonsterInflationMultiplier()
+);
 
         }
 
@@ -426,7 +429,59 @@ let bossCounterEnabled = false;
 const BOSS_DAMAGE_MULTIPLIER =
     3;
 
+// =========================
+// ボスカウンター無効判定
+// =========================
 
+function hasBossCounterImmunity(
+    player
+) {
+
+    if (player.jobTurnsRemaining > 0) {
+    return true;
+}
+
+    if (
+        !player.inventory
+    ) {
+
+        return false;
+
+    }
+
+    return player.inventory.some(
+        function (inventoryData) {
+
+            // 通常アイテムは対象外
+            if (
+                typeof inventoryData !==
+                "object"
+            ) {
+
+                return false;
+
+            }
+
+            const item =
+                ITEM_CONTENTS[
+                    inventoryData.id
+                ];
+
+            if (!item) {
+
+                return false;
+
+            }
+
+            return (
+                item.effectType ===
+                "bossCounterImmunity"
+            );
+
+        }
+    );
+
+}
 
 
 // =========================
@@ -9051,43 +9106,6 @@ showEventPopup(
 }
 
 
-
-// =========================
-// 資産0時のリスポーン
-// =========================
-
-function checkPlayerRespawn(player) {
-
-    if (player.money > 0) {
-        return false;
-    }
-
-    // Gが0になったらSTARTへ戻る
-    player.money = 500;
-    player.position = 17;
-
-    updatePlayerStatusUI(player);
-
-    // 移動履歴をリセット
-    movementPath = [];
-
-    renderPlayers();
-    renderMap();
-
-    showEventPopup(
-        "💀 力尽きた！",
-        `${player.name}は資産をすべて失った……。<br><br>
-        🏕️ START地点へリスポーン！<br>
-        💰 500Gを手に入れた！`,
-        function () {
-            updateTurnDisplay();
-        }
-    );
-
-    return true;
-}
-
-
 // =========================
 // 0G時のリスポーン
 // =========================
@@ -9101,9 +9119,18 @@ function checkPlayerRespawn(player, callback) {
         return;
     }
 
-    // 1番のマスへリスポーン
-    player.money = 500;
-    player.position = 0;
+    // ボス撃破数に応じてリスポーン時の所持金を決定
+    const respawnGold =
+        10000 + (bossDefeatedCount * 5000);
+
+    // リスポーン
+    player.money = respawnGold;
+    player.position = 17;
+
+    // 固定アイテム「12」を付与
+    // リスポーン時の固定アイテム
+    addItem(player, 1, currentTurn);
+    addItem(player, 12, currentTurn);
 
     updatePlayerStatusUI(player);
 
@@ -9114,10 +9141,11 @@ function checkPlayerRespawn(player, callback) {
     renderMap();
 
     showEventPopup(
-        "💀 資産0G",
-        `${player.name}は資産をすべて失った……。<br><br>
-        🏕️ 1番のマスへリスポーン！<br>
-        💰 <strong>500G</strong>を手に入れた！`,
+    "💀 資産0G",
+    `${player.name}はゴールドをすべて失った……。<br><br>
+    スタート地点へリスポーン！<br>
+    💰 <strong>${respawnGold.toLocaleString()}G</strong>を手に入れた！<br>
+    アイテムを2個手に入れた！`,
         function () {
 
             if (callback) {
@@ -9601,6 +9629,22 @@ function finishTurn(
                 function () {
     showAssetRankingPopup(function () {
 
+                // =========================
+                // 最大ターン数終了
+                // 配当・ランキング終了後に判定
+                // =========================
+
+                if (
+                    currentTurn >
+                    maxTurns
+                ) {
+
+                    showGameResult();
+
+                    return;
+
+                }
+
     // =========================
 // 次のプレイヤーへ
 // =========================
@@ -9643,6 +9687,61 @@ if (
 
     players.forEach(
         function (targetPlayer) {
+
+            // =========================
+// ボスカウンター無効
+// =========================
+
+if (
+    hasBossCounterImmunity(
+        targetPlayer
+    )
+) {
+
+    // =========================
+    // バイト中による無効
+    // =========================
+
+    if (
+        targetPlayer.jobTurnsRemaining > 0
+    ) {
+
+        counterMessage += `
+            <div class="boss-counter-player-row">
+                <span>
+                    ${targetPlayer.name}
+                </span>
+
+                <span>
+                    🛡️ バイト中は無効
+                </span>
+            </div>
+        `;
+
+    }
+
+    // =========================
+    // アイテムによる無効
+    // =========================
+
+    else {
+
+        counterMessage += `
+            <div class="boss-counter-player-row">
+                <span>
+                    ${targetPlayer.name}
+                </span>
+
+                <span>
+                    🛡️ 免罪符により無効
+                </span>
+            </div>
+        `;
+
+    }
+
+    return;
+}
 
             const distance =
                 getShortestDistanceToBoss(
@@ -9998,11 +10097,30 @@ if (
         }
 
 
-       // =========================
+// =========================
 // 配当がない場合
 // =========================
 
+// =========================
+// 最大ターン数終了
+// =========================
+
+if (
+    currentTurn >
+    maxTurns
+) {
+
+    showGameResult();
+
+    return;
+
+}
+
+
+// =========================
 // 次のプレイヤーへ
+// =========================
+
 currentPlayer =
     (
         currentPlayer + 1
@@ -10045,6 +10163,61 @@ if (
 
     players.forEach(
         function (targetPlayer) {
+
+            // =========================
+// ボスカウンター無効
+// =========================
+
+if (
+    hasBossCounterImmunity(
+        targetPlayer
+    )
+) {
+
+    // =========================
+    // バイト中による無効
+    // =========================
+
+    if (
+        targetPlayer.jobTurnsRemaining > 0
+    ) {
+
+        counterMessage += `
+            <div class="boss-counter-player-row">
+                <span>
+                    ${targetPlayer.name}
+                </span>
+
+                <span>
+                    🛡️ バイト中は無効
+                </span>
+            </div>
+        `;
+
+    }
+
+    // =========================
+    // アイテムによる無効
+    // =========================
+
+    else {
+
+        counterMessage += `
+            <div class="boss-counter-player-row">
+                <span>
+                    ${targetPlayer.name}
+                </span>
+
+                <span>
+                    🛡️ 免罪符により無効
+                </span>
+            </div>
+        `;
+
+    }
+
+    return;
+}
 
             const distance =
                 getShortestDistanceToBoss(
@@ -10219,20 +10392,6 @@ inventoryButton.disabled =
     false;
 
 
-        // =========================
-        // 最大ターン数終了
-        // =========================
-
-        if (
-            currentTurn >
-            maxTurns
-        ) {
-
-            showGameResult();
-
-            return;
-
-        }
 
 
         // =========================
