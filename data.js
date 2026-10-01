@@ -75,11 +75,7 @@ const MONEY_CONTENTS = {
 
         rewards: [
             {
-                amount: 1000,
-                probability: 20
-            },
-            {
-                amount: 2000,
+                amount: 1500,
                 probability: 20
             },
             {
@@ -88,18 +84,22 @@ const MONEY_CONTENTS = {
             },
             {
                 amount: 5000,
-                probability: 15
+                probability: 20
             },
             {
                 amount: 7000,
-                probability: 10
+                probability: 15
             },
             {
                 amount: 8000,
-                probability: 9
+                probability: 10
             },
             {
                 amount: 10000,
+                probability: 9
+            },
+            {
+                amount: 15000,
                 probability: 5
             },
             {
@@ -124,7 +124,7 @@ const MONSTER_CONTENTS = {
         hp: 1100,
         attack: 500,
         magicReward: 20,
-        goldReward: 3500
+        goldReward: 4000
     },
 
     2: {
@@ -133,7 +133,7 @@ const MONSTER_CONTENTS = {
         hp: 1300,
         attack: 1000,
         magicReward: 20,
-        goldReward: 4000
+        goldReward: 5000
     },
 
     3: {
@@ -142,23 +142,23 @@ const MONSTER_CONTENTS = {
         hp: 2100,
         attack: 800,
         magicReward: 40,
-        goldReward: 8000
+        goldReward: 9000
     },
     4: {
         name: "パックン",
         icon:  "images/characters/enemy/normal/パックン.png",
         hp: 2000,
         attack: 1200,
-        magicReward: 30,
-        goldReward: 6000
+        magicReward: 40,
+        goldReward: 8000
     },
     5: {
         name: "マッシュル",
         icon:  "images/characters/enemy/normal/マッシュル.png",
         hp: 1300,
         attack: 1000,
-        magicReward: 20,
-        goldReward: 4500
+        magicReward: 30,
+        goldReward: 6000
     },
     6: {
         name: "ウッディオ",
@@ -166,7 +166,7 @@ const MONSTER_CONTENTS = {
         hp: 2200,
         attack: 1100,
         magicReward: 40,
-        goldReward: 7000
+        goldReward: 9000
     },
     7: {
         name: "チビリン",
@@ -174,15 +174,15 @@ const MONSTER_CONTENTS = {
         hp: 1900,
         attack: 900,
         magicReward: 30,
-        goldReward: 6000
+        goldReward: 7000
     },
     8: {
         name: "メタルゴーレム",
         icon:  "images/characters/enemy/normal/メタルゴーレム.png",
         hp: 3500,
         attack: 1500,
-        magicReward: 60,
-        goldReward: 12000
+        magicReward: 70,
+        goldReward: 15000
     },
     9: {
         name: "アイソル",
@@ -190,15 +190,15 @@ const MONSTER_CONTENTS = {
         hp: 2300,
         attack: 1000,
         magicReward: 40,
-        goldReward: 7000
+        goldReward: 9000
     },
     10: {
         name: "ゴースハット",
         icon:  "images/characters/enemy/normal/ゴースハット.png",
         hp: 2000,
         attack: 1200,
-        magicReward: 30,
-        goldReward: 7500
+        magicReward: 40,
+        goldReward: 8500
     },
     11: {
         name: "きっくん",
@@ -540,7 +540,7 @@ const ASSET_CONTENTS = {
     },
 
     4: {
-        name: "ナンシー",
+        name: "ナナボシ",
         price: 50000,
         yield: 25,
         owner: null
@@ -569,7 +569,7 @@ const ASSET_CONTENTS = {
 
     8: {
         name: "足立",
-        price: 30000,
+        price: 10000,
         yield: 25,
         owner: null
     },
@@ -682,23 +682,23 @@ const JOB_CONTENTS = {
 
     1: {
         name: "居酒屋",
-        unitPrice: 13000
+        unitPrice: 17000
     },
 
     2: {
-        name: "叩き",
-        unitPrice: 80000,
+        name: "ガスト",
+        unitPrice: 20000,
         specialEffect: "arrest"
     },
 
     3: {
         name: "パン屋",
-        unitPrice: 15000
+        unitPrice: 18000
     },
 
     4: {
         name: "引っ越し",
-        unitPrice: 18000
+        unitPrice: 22000
     }
 
 };
