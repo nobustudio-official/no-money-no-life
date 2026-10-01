@@ -513,28 +513,50 @@ const POWER_CONTENTS = {
 };
 
 // =========================
+// モブ資産生成
+// =========================
+
+function createMobAssets(startId, endId) {
+
+    const assets = {};
+
+    for (let id = startId; id <= endId; id++) {
+
+        assets[id] = {
+            name: "モブ",
+            price: 10000,
+            yield: 25,
+            owner: null
+        };
+
+    }
+
+    return assets;
+}
+
+// =========================
 // 資産 contents
 // =========================
 
 const ASSET_CONTENTS = {
 
     1: {
-        name: "キャサリン",
-        price: 10000,
+        name: "フリーレソ",
+        price: 50000,
         yield: 25,
         owner: null
     },
 
     2: {
-        name: "キャサリン",
-        price: 10000,
+        name: "フェルソ",
+        price: 30000,
         yield: 25,
         owner: null
     },
 
     3: {
-        name: "キャサリン",
-        price: 10000,
+        name: "ショタルク",
+        price: 20000,
         yield: 25,
         owner: null
     },
@@ -598,14 +620,14 @@ const ASSET_CONTENTS = {
     12: {
         name: "檸夢",
         price: 300000,
-        yield: 1,
+        yield: 10,
         owner: null
     },
 
     13: {
         name: "羅夢",
         price: 300000,
-        yield: 1,
+        yield: 10,
         owner: null
     },
 
@@ -619,14 +641,14 @@ const ASSET_CONTENTS = {
     15: {
         name: "ヌバル",
         price: 100000,
-        yield: 20,
+        yield: 10,
         owner: null
     },
 
     16: {
         name: "ガーフィーヌ",
         price: 800000,
-        yield: 10,
+        yield: 5,
         owner: null
     },
 
@@ -670,7 +692,10 @@ const ASSET_CONTENTS = {
         price: 5000,
         yield: 200,
         owner: null
-    }
+    },
+
+    ...createMobAssets(5000, 5999)
+
 
 };
 
@@ -838,28 +863,33 @@ const SHOP_BOXES = {
 const ASSET_BOXES = {
 
     1: {
-        name: "エイフル",
-        contents: [1, 2, 3]
+        name: "曹操のフリーレソ",
+        contents: [1, 2, 3,5001,5002,5003,5004,5005]
     },
 
     2: {
-        name: "タウンハウシング",
-        contents: [4, 5, 6, 7]
+        name: "無職確定",
+        contents: [4, 5, 6, 7, 5006, 5007, 5008, 5009, 5010]
     },
 
     3: {
-        name: "西急リバブル",
-        contents: [8, 9, 10]
+        name: "ぼくヤババ",
+        contents: [8, 9, 10, 5011, 5012, 5013, 5014, 5015]
     },
 
     4: {
         name: "Re:０から始まる異世界ライフ",
-        contents: [11, 12, 13, 14, 15, 16, 17]
+        contents: [11, 12, 13, 14, 15, 16, 17,5016, 5017, 5018, 5019, 5020]
     },
     
     5: {
-        name: "西急ストア",
-        contents: [18, 19, 20, 21, 22]
+        name: "ボキバキメキ",
+        contents: [18, 19, 20, 21, 22,5021, 5022, 5023, 5024, 5025]
+    },
+
+    6: {
+        name: "ダインー",
+        contents: [5026, 5027, 5028, 5029, 5030]
     }
 
 };
