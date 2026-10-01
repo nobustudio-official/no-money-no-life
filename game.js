@@ -714,7 +714,10 @@ if (callback) {
 const GAME_LOADING_MIN_TIME = 1200;
 
 const GAME_LOADING_ASSETS = [
-    "images/map2.png",
+    "images/map-background/map-bg-01.png",
+    "images/map-background/map-bg-02.png",
+    "images/map-background/map-bg-03.png",
+    "images/map-background/map-bg-04.png",
     "images/map-icons/start.png",
     "images/map-icons/gold.png",
     "images/map-icons/job.png",
@@ -2488,7 +2491,57 @@ buttonSound.play()
             );
 
 
-        mapBoard.innerHTML = "";
+                mapBoard.innerHTML = "";
+
+
+        // =========================
+        // マップ背景
+        // =========================
+
+        const background =
+            document.createElement(
+                "div"
+            );
+
+        background.className =
+            "map-background";
+
+
+        const backgroundImages = [
+            "images/map-background/①左上.png",
+            "images/map-background/②右上.png",
+            "images/map-background/③左下.png",
+            "images/map-background/④右下.png"
+        ];
+
+
+        backgroundImages.forEach(
+            function (imagePath) {
+
+                const image =
+                    document.createElement(
+                        "img"
+                    );
+
+                image.className =
+                    "map-background-tile";
+
+                image.src =
+                    imagePath;
+
+                image.alt = "";
+
+                background.appendChild(
+                    image
+                );
+
+            }
+        );
+
+
+        mapBoard.appendChild(
+            background
+        );
 
 
         // =========================
@@ -2508,8 +2561,8 @@ buttonSound.play()
 
 
         svg.setAttribute(
-            "viewBox",
-            "0 0 100 100"
+         "viewBox",
+         `0 0 ${mapBoard.clientWidth} ${mapBoard.clientHeight}`
         );
 
 
@@ -2547,45 +2600,82 @@ buttonSound.play()
                         }
 
 
-                        const line =
-                            document.createElementNS(
-                                "http://www.w3.org/2000/svg",
-                                "line"
-                            );
+                        // =========================
+// 道の枠線
+// =========================
+
+const border =
+    document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "line"
+    );
+
+border.setAttribute(
+    "x1",
+    square.x
+);
+
+border.setAttribute(
+    "y1",
+    square.y
+);
+
+border.setAttribute(
+    "x2",
+    nextSquare.x
+);
+
+border.setAttribute(
+    "y2",
+    nextSquare.y
+);
+
+border.classList.add(
+    "map-line-border"
+);
+
+svg.appendChild(
+    border
+);
 
 
-                        line.setAttribute(
-                            "x1",
-                            square.x
-                        );
+// =========================
+// 道本体
+// =========================
 
+const line =
+    document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "line"
+    );
 
-                        line.setAttribute(
-                            "y1",
-                            square.y
-                        );
+line.setAttribute(
+    "x1",
+    square.x
+);
 
+line.setAttribute(
+    "y1",
+    square.y
+);
 
-                        line.setAttribute(
-                            "x2",
-                            nextSquare.x
-                        );
+line.setAttribute(
+    "x2",
+    nextSquare.x
+);
 
+line.setAttribute(
+    "y2",
+    nextSquare.y
+);
 
-                        line.setAttribute(
-                            "y2",
-                            nextSquare.y
-                        );
+line.classList.add(
+    "map-line"
+);
 
-
-                        line.classList.add(
-                            "map-line"
-                        );
-
-
-                        svg.appendChild(
-                            line
-                        );
+svg.appendChild(
+    line
+);
 
                     }
                 );
@@ -2618,12 +2708,12 @@ buttonSound.play()
                 node.dataset.squareId = square.id;
                 node.dataset.mapType = square.type;
 
-                node.style.left =
-                    `${square.x}%`;
+    node.style.left =
+    `${square.x}px`;
 
 
-                node.style.top =
-                    `${square.y}%`;
+    node.style.top =
+    `${square.y}px`;
 
 
 // =========================
@@ -4617,11 +4707,10 @@ fitHudDestinationLabels();
 
 
                 arrow.style.left =
-                    `${arrowX}%`;
+                `${arrowX}px`;
 
-
-                arrow.style.top =
-                    `${arrowY}%`;
+               arrow.style.top =
+                `${arrowY}px`;
 
 
                 arrow.style.transform =
@@ -6318,10 +6407,10 @@ function finishDiceMovement(
                     dy * arrowPosition;
 
                 arrow.style.left =
-                    `${arrowX}%`;
+                 `${arrowX}px`;
 
                 arrow.style.top =
-                    `${arrowY}%`;
+                 `${arrowY}px`;
 
                 arrow.style.transform =
                     `translate(-50%, -50%) rotate(${angle + 90}deg)`;
