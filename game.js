@@ -1252,7 +1252,7 @@ characterButtons.forEach(
 // 初期アイテム
 // =========================
 
-players[index].inventory = [1, 8, 13];
+players[index].inventory = [1, 8];
 
 
 // =========================
