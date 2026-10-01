@@ -1102,6 +1102,50 @@ function setBattleMagicPanelVisible(visible) {
 
         }
 
+        if (
+    activeBattle.phase === "waitRespawn"
+) {
+
+    const player =
+        activeBattle.player;
+
+    hideLayer(
+        "battleMainPopup"
+    );
+
+    if (
+        typeof checkPlayerRespawn === "function"
+    ) {
+
+        checkPlayerRespawn(
+            player,
+            function () {
+
+                activeBattle =
+                    null;
+
+                finishTurn(
+                    player
+                );
+
+            }
+        );
+
+    } else {
+
+        activeBattle =
+            null;
+
+        finishTurn(
+            player
+        );
+
+    }
+
+    return;
+
+}
+
         if (activeBattle.phase === "waitNextRound") {
 
             activeBattle.round += 1;
@@ -1729,60 +1773,36 @@ flashPlayerOnDamage();
 
 
     // =========================
-    // プレイヤー0G
+// プレイヤー0G
+// =========================
+
+if (
+    player.money <= 0
+) {
+
+    // =========================
+    // ダメージ表示
     // =========================
 
-    if (
-        player.money <= 0
-    ) {
-
-        showBattleMessage(
-            `${monster.name}の反撃！ ${damage}Gのダメージ！`
-        );
+    showBattleMessage(
+        `${monster.name}の反撃！ ${damage}Gのダメージ！　＞＞`
+    );
 
 
-        activeBattle.busy =
-            false;
+    activeBattle.busy =
+        false;
 
 
-        hideLayer(
-            "battleMainPopup"
-        );
+    activeBattle.phase =
+        "waitRespawn";
 
 
-        if (
-            typeof checkPlayerRespawn === "function"
-        ) {
-
-            checkPlayerRespawn(
-                player,
-                function () {
-
-                    activeBattle =
-                        null;
-
-                    finishTurn(
-                        player
-                    );
-
-                }
-            );
-
-        } else {
-
-            activeBattle =
-                null;
-
-            finishTurn(
-                player
-            );
-
-        }
+    disableBattleActions();
 
 
-        return;
+    return;
 
-    }
+}
 
 
     // =========================
