@@ -11115,11 +11115,31 @@
 
 @media (orientation: landscape) and (max-height: 500px) {
     #monsterChoicePopup {
-        width: 82vw;
-        height: 270px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        box-sizing: border-box;
+        height: 190px;
+        padding: 10px 16px;
+    }
+
+    #monsterChoiceMessage {
+        font-size: 14px;
+    }
+
+    #monsterChoiceMessage > div:first-child {
+        font-size: 1.5em !important;
+        margin-bottom: 4px !important;
+    }
+
+    #monsterChoiceMessage > div:nth-child(2) {
+        font-size: 1em !important;
+    }
+
+    #monsterChoiceMessage > div:nth-child(3) {
+        font-size: 0.85em !important;
+        margin-top: 4px !important;
+    }
+
+    #monsterFightButton,
+    #monsterEscapeButton {
+        height: 36px;
+        font-size: 13px;
     }
 }
