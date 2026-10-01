@@ -9175,16 +9175,17 @@ function showGameResult() {
         document.getElementById("resultRanking");
 
 
-    // =========================
-    // Gの多い順に並べる
-    // =========================
+// =========================
+// 総資産の多い順に並べる
+// =========================
 
-    const ranking =
-        [...players].sort(function (a, b) {
+const ranking =
+    [...players].sort(function (a, b) {
 
-            return b.money - a.money;
+        return calculateTotalAssetValue(b)
+            - calculateTotalAssetValue(a);
 
-        });
+    });
 
 
     resultRanking.innerHTML = "";
@@ -9233,8 +9234,8 @@ function showGameResult() {
             </span>
 
             <span class="result-rank-money">
-                💰 ${formatG(player.money)}G
-            </span>
+    💰 ${formatG(calculateTotalAssetValue(player))}G
+</span>
 
         `;
 
@@ -11768,11 +11769,15 @@ const magicReward =
 
 // =========================
 // ゴールド報酬
+// 1の位を切り捨て
 // =========================
 
 const goldReward =
-    baseGoldReward *
-    monsterInflationMultiplier;
+    Math.floor(
+        baseGoldReward *
+        monsterInflationMultiplier
+        / 10
+    ) * 10;
     
     // =========================
     // 報酬候補
