@@ -360,17 +360,23 @@
         width: 100%;
         height: 100%;
 
-        z-index: 0;
+        z-index: 1;
 
         pointer-events: none;
     }
 
+    .map-line-border {
+    stroke: rgba(70, 70, 70, 0.8);
+    stroke-width: 20;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
 
     .map-line {
         stroke:
             rgba(231, 168, 108, 0.9);
 
-        stroke-width: 1.2;
+       stroke-width: 18;
 
         stroke-linecap: round;
     }
@@ -3761,8 +3767,8 @@
             padding-right: 8px;
         }
 
-        .map-board {
-            height: 850px;
+            .map-board {
+            height: 2400px;
             padding: 0;
         }
 
@@ -4811,21 +4817,66 @@
     }
 
     .map-board {
-        width: 1800px;
-        height: 1200px;
-        max-width: none;
-        margin: 0;
-        padding: 0;
-        flex-shrink: 0;
+    position: relative;
 
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+    width: 3600px;
+    height: 2400px;
 
-        transform-origin: center center;
-        will-change: transform;
-    }
+    max-width: none;
+    margin: 0;
+    padding: 0;
 
+    flex-shrink: 0;
+
+    overflow: hidden;
+}
+
+.map-background {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 3600px;
+    height: 2400px;
+
+    z-index: 0;
+
+    pointer-events: none;
+}
+.map-background-tile:nth-child(1) {
+    left: 0;
+    top: 0;
+}
+
+.map-background-tile:nth-child(2) {
+    left: 1800px;
+    top: 0;
+}
+
+.map-background-tile:nth-child(3) {
+    left: 0;
+    top: 1200px;
+}
+
+.map-background-tile:nth-child(4) {
+    left: 1800px;
+    top: 1200px;
+}
+
+.map-background-tile {
+    position: absolute;
+
+    width: 1800px;
+    height: 1200px;
+
+    max-width: none;
+
+    display: block;
+
+    margin: 0;
+    padding: 0;
+}
     /* =========================
     マス
     ========================= */
@@ -5269,8 +5320,8 @@
         }
 
         .map-board {
-            width: 1500px;
-            height: 1000px;
+        width: 3600px;
+        height: 2400px;
         }
 
         .map-node {
