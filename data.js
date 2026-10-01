@@ -199,6 +199,14 @@ const MONSTER_CONTENTS = {
         attack: 1200,
         magicReward: 30,
         goldReward: 7500
+    },
+    11: {
+        name: "きっくん",
+        icon:  "images/characters/enemy/normal/きっくん.png",
+        hp: 1000000,
+        attack: 50000,
+        magicReward: 1000,
+        goldReward: 5000000
     }
 
 };
