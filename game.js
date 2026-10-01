@@ -10406,18 +10406,22 @@ if (
 
 
             counterMessage += `
-                <div class="boss-counter-player-row">
+    <div class="boss-counter-player-row">
 
-                    <span>
-                        ${targetPlayer.name}
-                    </span>
+        <span class="boss-counter-player-name">
+            ${targetPlayer.name}
+        </span>
 
-                    <span class="boss-counter-player-damage">
-                        −${damage}G
-                    </span>
+        <span class="boss-counter-player-distance">
+            距離${distance}マス
+        </span>
 
-                </div>
-            `;
+        <span class="boss-counter-player-damage">
+            −${damage}G
+        </span>
+
+    </div>
+`;
 
         }
     );
