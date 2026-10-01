@@ -2,347 +2,155 @@ const mapData = [
 
     {
         id: 0,
-        type: "money",
-        next: [1, 6, 30, 134],
+        type: "asset",
+        typeIds: [0],
+        next: [30],
         x: 1080,
-        y: 900
+        y: 945
     },
 
     {
         id: 1,
         type: "money",
-        next: [2, 7],
-        x: 1224,
-        y: 900
-    },
-
-    {
-        id: 2,
-        type: "job",
-        jobId: 1,
         next: [3],
-        x: 1368,
-        y: 900
+        x: 1200,
+        y: 945
     },
 
     {
         id: 3,
         type: "asset",
-        typeIds: [4],
-        next: [4],
+        typeIds: [2],
+        next: [137, 5],
         x: 1512,
-        y: 900
-    },
-
-    {
-        id: 4,
-        type: "worst",
-        next: [5],
-        x: 1656,
-        y: 900
+        y: 945
     },
 
     {
         id: 5,
-        type: "monster",
-        next: [11, 89, 139],
-        x: 1800,
-        y: 900
-    },
-
-    {
-        id: 6,
-        type: "monster",
-        next: [17],
-        x: 1080,
-        y: 780
+        type: "treasure",
+        treasureBoxId: 0,
+        next: [89, 12],
+        x: 1730,
+        y: 945
     },
 
     {
         id: 7,
-        type: "magic_shop",
-        typeId: 1,
-        next: [8],
-        x: 1224,
-        y: 780
-    },
-
-    {
-        id: 8,
         type: "monster",
-        next: [9],
-        x: 1368,
-        y: 780
-    },
-
-    {
-        id: 9,
-        type: "shop",
-        typeId: 1,
-        next: [10],
-        x: 1512,
-        y: 780
-    },
-
-    {
-        id: 10,
-        type: "treasure",
-        treasureBoxId: 1,
-        next: [11],
-        x: 1656,
-        y: 780
-    },
-
-    {
-        id: 11,
-        type: "asset",
-        typeIds: [3],
-        next: [12],
-        x: 1800,
+        next: [1, 16],
+        x: 1200,
         y: 780
     },
 
     {
         id: 12,
-        type: "monster",
-        next: [13, 23],
-        x: 1800,
-        y: 660
-    },
-
-    {
-        id: 13,
-        type: "money",
-        next: [14],
-        x: 1656,
-        y: 660
+        type: "treasure",
+        treasureBoxId: 0,
+        next: [14, 95, 22],
+        x: 1730,
+        y: 700
     },
 
     {
         id: 14,
-        type: "job",
-        jobId: 2,
-        next: [15, 21],
-        x: 1512,
-        y: 660
-    },
-
-    {
-        id: 15,
-        type: "money",
-        next: [16],
-        x: 1368,
-        y: 660
+        type: "monster",
+        next: [21],
+        x: 1565,
+        y: 700
     },
 
     {
         id: 16,
-        type: "shop",
-        typeId: 2,
-        next: [17],
-        x: 1224,
+        type: "asset",
+        typeIds: [0],
+        next: [44],
+        x: 1200,
         y: 660
-    },
-
-    {
-        id: 17,
-        type: "start",
-        next: [18, 44],
-        x: 1080,
-        y: 660
-    },
-
-    {
-        id: 18,
-        type: "monster",
-        next: [19, 24],
-        x: 1080,
-        y: 540
-    },
-
-    {
-        id: 19,
-        type: "magic_shop",
-        typeId: 2,
-        next: [20, 25],
-        x: 1224,
-        y: 540
-    },
-
-    {
-        id: 20,
-        type: "treasure",
-        treasureBoxId: 1,
-        next: [21],
-        x: 1368,
-        y: 540
     },
 
     {
         id: 21,
-        type: "job",
-        jobId: 3,
-        next: [22],
-        x: 1512,
-        y: 540
+        type: "money",
+        next: [22, 27],
+        x: 1565,
+        y: 545
     },
 
     {
         id: 22,
-        type: "money",
-        next: [23],
-        x: 1656,
-        y: 540
-    },
-
-    {
-        id: 23,
-        type: "monster",
-        next: [29],
-        x: 1800,
-        y: 540
+        type: "asset",
+        typeIds: [0],
+        next: [],
+        x: 1730,
+        y: 545
     },
 
     {
         id: 24,
-        type: "treasure",
-        treasureBoxId: 1,
-        next: [25, 50],
+        type: "asset",
+        typeIds: [0],
+        next: [25],
         x: 1080,
-        y: 420
+        y: 436
     },
 
     {
         id: 25,
-        type: "money",
+        type: "asset",
+        typeIds: [0],
         next: [26],
-        x: 1224,
-        y: 420
+        x: 1231,
+        y: 436
     },
 
     {
         id: 26,
-        type: "shop",
-        typeId: 1,
+        type: "treasure",
+        treasureBoxId: 0,
         next: [27],
-        x: 1368,
-        y: 420
+        x: 1402,
+        y: 436
     },
 
     {
         id: 27,
         type: "monster",
-        next: [28],
-        x: 1512,
-        y: 420
-    },
-
-    {
-        id: 28,
-        type: "shop",
-        typeId: 2,
-        next: [29],
-        x: 1656,
-        y: 420
-    },
-
-    {
-        id: 29,
-        type: "job",
-        jobId: 4,
-        next: [79],
-        x: 1800,
-        y: 420
+        next: [],
+        x: 1565,
+        y: 436
     },
 
     {
         id: 30,
-        type: "money",
-        next: [31, 35],
-        x: 936,
-        y: 900
-    },
-
-    {
-        id: 31,
-        type: "monster",
-        next: [32],
-        x: 792,
-        y: 900
-    },
-
-    {
-        id: 32,
-        type: "job",
-        jobId: 1,
-        next: [33, 37],
-        x: 648,
-        y: 900
-    },
-
-    {
-        id: 33,
         type: "shop",
-        typeId: 1,
-        next: [34],
-        x: 504,
-        y: 900
+        typeId: 0,
+        next: [35],
+        x: 936,
+        y: 945
     },
 
     {
         id: 34,
         type: "monster",
-        next: [39],
+        next: [40, 159],
         x: 360,
         y: 900
     },
 
     {
         id: 35,
-        type: "monster",
-        next: [36, 44],
+        type: "asset",
+        typeIds: [0],
+        next: [44],
         x: 936,
         y: 780
     },
 
     {
-        id: 36,
-        type: "magic_shop",
-        typeId: 1,
-        next: [37],
-        x: 792,
-        y: 780
-    },
-
-    {
-        id: 37,
-        type: "money",
-        next: [38],
-        x: 648,
-        y: 780
-    },
-
-    {
-        id: 38,
-        type: "asset",
-        typeIds: [2],
-        next: [39],
-        x: 504,
-        y: 780
-    },
-
-    {
-        id: 39,
+        id: 40,
         type: "treasure",
         treasureBoxId: 1,
-        next: [40],
-        x: 360,
-        y: 780
-    },
-
-    {
-        id: 40,
-        type: "money",
         next: [41, 49],
         x: 360,
         y: 660
@@ -350,7 +158,8 @@ const mapData = [
 
     {
         id: 41,
-        type: "monster",
+        type: "treasure",
+        treasureBoxId: 0,
         next: [42, 48],
         x: 504,
         y: 660
@@ -367,8 +176,7 @@ const mapData = [
 
     {
         id: 43,
-        type: "shop",
-        typeId: 1,
+        type: "money",
         next: [44],
         x: 792,
         y: 660
@@ -377,40 +185,32 @@ const mapData = [
     {
         id: 44,
         type: "money",
-        next: [45],
+        next: [],
         x: 936,
         y: 660
     },
 
     {
         id: 45,
-        type: "magic_shop",
-        typeId: 1,
-        next: [46, 50],
+        type: "treasure",
+        treasureBoxId: 4,
+        next: [50],
         x: 936,
         y: 540
     },
 
     {
-        id: 46,
-        type: "money",
-        next: [47, 51],
-        x: 792,
-        y: 540
-    },
-
-    {
         id: 47,
-        type: "asset",
-        typeIds: [1],
-        next: [48],
+        type: "monster",
+        next: [48, 52],
         x: 648,
         y: 540
     },
 
     {
         id: 48,
-        type: "worst",
+        type: "asset",
+        typeIds: [0],
         next: [49],
         x: 504,
         y: 540
@@ -418,16 +218,16 @@ const mapData = [
 
     {
         id: 49,
-        type: "monster",
-        next: [54],
+        type: "asset",
+        typeIds: [0],
+        next: [],
         x: 360,
         y: 540
     },
 
     {
         id: 50,
-        type: "treasure",
-        treasureBoxId: 4,
+        type: "worst",
         next: [51],
         x: 936,
         y: 420
@@ -435,8 +235,7 @@ const mapData = [
 
     {
         id: 51,
-        type: "job",
-        jobId: 1,
+        type: "monster",
         next: [52],
         x: 792,
         y: 420
@@ -444,27 +243,9 @@ const mapData = [
 
     {
         id: 52,
-        type: "asset",
-        typeIds: [5],
-        next: [53],
-        x: 648,
-        y: 420
-    },
-
-    {
-        id: 53,
-        type: "shop",
-        typeId: 1,
-        next: [54],
-        x: 504,
-        y: 420
-    },
-
-    {
-        id: 54,
-        type: "monster",
+        type: "worst",
         next: [],
-        x: 360,
+        x: 648,
         y: 420
     },
 
@@ -496,7 +277,7 @@ const mapData = [
     {
         id: 58,
         type: "asset",
-        typeIds: [1],
+        typeIds: [0],
         next: [59],
         x: 3096,
         y: 900
@@ -564,7 +345,7 @@ const mapData = [
     {
         id: 66,
         type: "asset",
-        typeIds: [1],
+        typeIds: [0],
         next: [67],
         x: 3384,
         y: 780
@@ -614,7 +395,7 @@ const mapData = [
 
     {
         id: 72,
-        type: "start",
+        type: "money",
         next: [73, 99],
         x: 2664,
         y: 660
@@ -743,42 +524,25 @@ const mapData = [
         id: 87,
         type: "job",
         jobId: 1,
-        next: [88, 92],
+        next: [92],
         x: 2232,
         y: 900
     },
 
     {
-        id: 88,
-        type: "shop",
-        typeId: 1,
-        next: [89],
-        x: 2088,
-        y: 900
-    },
-
-    {
         id: 89,
-        type: "monster",
-        next: [94],
+        type: "job",
+        jobId: 0,
+        next: [219],
         x: 1944,
-        y: 900
+        y: 945
     },
 
     {
         id: 90,
         type: "monster",
-        next: [91, 99],
+        next: [99],
         x: 2520,
-        y: 780
-    },
-
-    {
-        id: 91,
-        type: "magic_shop",
-        typeId: 1,
-        next: [92],
-        x: 2376,
         y: 780
     },
 
@@ -793,35 +557,19 @@ const mapData = [
     {
         id: 93,
         type: "asset",
-        typeIds: [1],
-        next: [94],
+        typeIds: [0],
+        next: [],
         x: 2088,
-        y: 780
-    },
-
-    {
-        id: 94,
-        type: "treasure",
-        treasureBoxId: 1,
-        next: [95],
-        x: 1944,
         y: 780
     },
 
     {
         id: 95,
-        type: "money",
-        next: [96, 104],
+        type: "asset",
+        typeIds: [0],
+        next: [104],
         x: 1944,
-        y: 660
-    },
-
-    {
-        id: 96,
-        type: "monster",
-        next: [97, 103],
-        x: 2088,
-        y: 660
+        y: 700
     },
 
     {
@@ -870,24 +618,17 @@ const mapData = [
     {
         id: 102,
         type: "asset",
-        typeIds: [1],
-        next: [103],
+        typeIds: [0],
+        next: [104],
         x: 2232,
         y: 540
     },
 
     {
-        id: 103,
-        type: "worst",
-        next: [104],
-        x: 2088,
-        y: 540
-    },
-
-    {
         id: 104,
-        type: "monster",
-        next: [109],
+        type: "asset",
+        typeIds: [0],
+        next: [],
         x: 1944,
         y: 540
     },
@@ -896,7 +637,7 @@ const mapData = [
         id: 105,
         type: "treasure",
         treasureBoxId: 1,
-        next: [106],
+        next: [79],
         x: 2520,
         y: 420
     },
@@ -905,41 +646,15 @@ const mapData = [
         id: 106,
         type: "job",
         jobId: 1,
-        next: [107],
+        next: [105],
         x: 2376,
-        y: 420
-    },
-
-    {
-        id: 107,
-        type: "asset",
-        typeIds: [1],
-        next: [108],
-        x: 2232,
-        y: 420
-    },
-
-    {
-        id: 108,
-        type: "shop",
-        typeId: 1,
-        next: [109],
-        x: 2088,
-        y: 420
-    },
-
-    {
-        id: 109,
-        type: "monster",
-        next: [],
-        x: 1944,
         y: 420
     },
 
     {
         id: 110,
         type: "money",
-        next: [111, 116, 140, 244],
+        next: [116, 140, 244],
         x: 1080,
         y: 1500
     },
@@ -947,43 +662,41 @@ const mapData = [
     {
         id: 111,
         type: "money",
-        next: [112, 117],
+        next: [112, 245, 334],
         x: 1224,
-        y: 1500
+        y: 1460
     },
 
     {
         id: 112,
-        type: "job",
-        jobId: 1,
+        type: "monster",
         next: [113],
-        x: 1368,
-        y: 1500
+        x: 1370,
+        y: 1460
     },
 
     {
         id: 113,
-        type: "asset",
-        typeIds: [1],
+        type: "monster",
         next: [114],
         x: 1512,
-        y: 1500
+        y: 1460
     },
 
     {
         id: 114,
-        type: "worst",
+        type: "money",
         next: [115],
-        x: 1656,
-        y: 1500
+        x: 1662,
+        y: 1460
     },
 
     {
         id: 115,
-        type: "monster",
-        next: [121, 199, 249],
+        type: "money",
+        next: [249, 133],
         x: 1800,
-        y: 1500
+        y: 1459
     },
 
     {
@@ -995,224 +708,86 @@ const mapData = [
     },
 
     {
-        id: 117,
-        type: "magic_shop",
-        typeId: 1,
-        next: [118],
-        x: 1224,
-        y: 1380
-    },
-
-    {
-        id: 118,
-        type: "monster",
-        next: [119],
-        x: 1368,
-        y: 1380
-    },
-
-    {
-        id: 119,
-        type: "shop",
-        typeId: 1,
-        next: [120],
-        x: 1512,
-        y: 1380
-    },
-
-    {
-        id: 120,
-        type: "treasure",
-        treasureBoxId: 1,
-        next: [121],
-        x: 1656,
-        y: 1380
-    },
-
-    {
-        id: 121,
-        type: "asset",
-        typeIds: [1],
-        next: [122],
-        x: 1800,
-        y: 1380
-    },
-
-    {
-        id: 122,
-        type: "monster",
-        next: [123, 133],
-        x: 1800,
-        y: 1260
-    },
-
-    {
-        id: 123,
-        type: "money",
-        next: [124],
-        x: 1656,
-        y: 1260
-    },
-
-    {
-        id: 124,
-        type: "job",
-        jobId: 1,
-        next: [125, 131],
-        x: 1512,
-        y: 1260
-    },
-
-    {
-        id: 125,
-        type: "money",
-        next: [126],
-        x: 1368,
-        y: 1260
-    },
-
-    {
-        id: 126,
-        type: "shop",
-        typeId: 1,
-        next: [127],
-        x: 1224,
-        y: 1260
-    },
-
-    {
         id: 127,
-        type: "start",
+        type: "money",
         next: [128, 154],
-        x: 1080,
-        y: 1260
+        x: 1053,
+        y: 1252
     },
 
     {
         id: 128,
         type: "monster",
-        next: [129, 134],
-        x: 1080,
-        y: 1140
+        next: [129],
+        x: 1054,
+        y: 1100
     },
 
     {
         id: 129,
         type: "magic_shop",
         typeId: 1,
-        next: [130, 135],
-        x: 1224,
-        y: 1140
-    },
-
-    {
-        id: 130,
-        type: "treasure",
-        treasureBoxId: 1,
-        next: [131],
-        x: 1368,
-        y: 1140
-    },
-
-    {
-        id: 131,
-        type: "job",
-        jobId: 1,
-        next: [132],
-        x: 1512,
-        y: 1140
+        next: [137],
+        x: 1228,
+        y: 1100
     },
 
     {
         id: 132,
         type: "money",
-        next: [133],
+        next: [133, 138],
         x: 1656,
-        y: 1140
+        y: 1210
     },
 
     {
         id: 133,
-        type: "monster",
-        next: [139],
+        type: "job",
+        jobId: 1,
+        next: [139, 214],
         x: 1800,
-        y: 1140
-    },
-
-    {
-        id: 134,
-        type: "treasure",
-        treasureBoxId: 1,
-        next: [135, 160],
-        x: 1080,
-        y: 1020
-    },
-
-    {
-        id: 135,
-        type: "money",
-        next: [136],
-        x: 1224,
-        y: 1020
-    },
-
-    {
-        id: 136,
-        type: "shop",
-        typeId: 1,
-        next: [137],
-        x: 1368,
-        y: 1020
+        y: 1210
     },
 
     {
         id: 137,
-        type: "monster",
-        next: [138],
+        type: "job",
+        jobId: 0,
+        next: [],
         x: 1512,
-        y: 1020
+        y: 1100
     },
 
     {
         id: 138,
         type: "shop",
         typeId: 1,
-        next: [139],
+        next: [139, 137],
         x: 1656,
-        y: 1020
+        y: 1100
     },
 
     {
         id: 139,
-        type: "job",
-        jobId: 1,
-        next: [189],
+        type: "start",
+        next: [219],
         x: 1800,
-        y: 1020
+        y: 1100
     },
 
     {
         id: 140,
         type: "money",
-        next: [141, 145],
+        next: [145, 142],
         x: 936,
         y: 1500
     },
 
     {
-        id: 141,
-        type: "monster",
-        next: [142],
-        x: 792,
-        y: 1500
-    },
-
-    {
         id: 142,
-        type: "job",
-        jobId: 1,
+        type: "monster",
         next: [143, 147],
-        x: 648,
+        x: 691,
         y: 1500
     },
 
@@ -1220,15 +795,15 @@ const mapData = [
         id: 143,
         type: "shop",
         typeId: 1,
-        next: [144],
-        x: 504,
+        next: [144, 273],
+        x: 500,
         y: 1500
     },
 
     {
         id: 144,
         type: "monster",
-        next: [149],
+        next: [269],
         x: 360,
         y: 1500
     },
@@ -1236,43 +811,16 @@ const mapData = [
     {
         id: 145,
         type: "monster",
-        next: [146, 154],
+        next: [154],
         x: 936,
-        y: 1380
-    },
-
-    {
-        id: 146,
-        type: "magic_shop",
-        typeId: 1,
-        next: [147],
-        x: 792,
         y: 1380
     },
 
     {
         id: 147,
         type: "money",
-        next: [148],
-        x: 648,
-        y: 1380
-    },
-
-    {
-        id: 148,
-        type: "asset",
-        typeIds: [1],
-        next: [149],
-        x: 504,
-        y: 1380
-    },
-
-    {
-        id: 149,
-        type: "treasure",
-        treasureBoxId: 1,
-        next: [150],
-        x: 360,
+        next: [152],
+        x: 691,
         y: 1380
     },
 
@@ -1288,7 +836,7 @@ const mapData = [
         id: 151,
         type: "monster",
         next: [152, 158],
-        x: 504,
+        x: 500,
         y: 1260
     },
 
@@ -1296,24 +844,15 @@ const mapData = [
         id: 152,
         type: "job",
         jobId: 1,
-        next: [153],
-        x: 648,
-        y: 1260
-    },
-
-    {
-        id: 153,
-        type: "shop",
-        typeId: 1,
-        next: [154],
-        x: 792,
+        next: [157],
+        x: 691,
         y: 1260
     },
 
     {
         id: 154,
         type: "money",
-        next: [155],
+        next: [],
         x: 936,
         y: 1260
     },
@@ -1322,92 +861,39 @@ const mapData = [
         id: 155,
         type: "magic_shop",
         typeId: 1,
-        next: [156, 160],
+        next: [157],
         x: 936,
-        y: 1140
-    },
-
-    {
-        id: 156,
-        type: "money",
-        next: [157, 161],
-        x: 792,
-        y: 1140
+        y: 1100
     },
 
     {
         id: 157,
-        type: "asset",
-        typeIds: [1],
+        type: "money",
         next: [158],
-        x: 648,
-        y: 1140
+        x: 691,
+        y: 1100
     },
 
     {
         id: 158,
         type: "worst",
         next: [159],
-        x: 504,
-        y: 1140
+        x: 500,
+        y: 1100
     },
 
     {
         id: 159,
         type: "monster",
-        next: [164],
-        x: 360,
-        y: 1140
-    },
-
-    {
-        id: 160,
-        type: "treasure",
-        treasureBoxId: 1,
-        next: [161],
-        x: 936,
-        y: 1020
-    },
-
-    {
-        id: 161,
-        type: "job",
-        jobId: 1,
-        next: [162],
-        x: 792,
-        y: 1020
-    },
-
-    {
-        id: 162,
-        type: "asset",
-        typeIds: [1],
-        next: [163],
-        x: 648,
-        y: 1020
-    },
-
-    {
-        id: 163,
-        type: "shop",
-        typeId: 1,
-        next: [164],
-        x: 504,
-        y: 1020
-    },
-
-    {
-        id: 164,
-        type: "monster",
         next: [],
         x: 360,
-        y: 1020
+        y: 1100
     },
 
     {
         id: 165,
         type: "money",
-        next: [166, 171, 195, 299],
+        next: [166, 171, 195],
         x: 2664,
         y: 1500
     },
@@ -1550,7 +1036,7 @@ const mapData = [
 
     {
         id: 182,
-        type: "start",
+        type: "money",
         next: [183, 209],
         x: 2664,
         y: 1260
@@ -1688,16 +1174,8 @@ const mapData = [
         id: 198,
         type: "shop",
         typeId: 1,
-        next: [199],
+        next: [],
         x: 2088,
-        y: 1500
-    },
-
-    {
-        id: 199,
-        type: "monster",
-        next: [204],
-        x: 1944,
         y: 1500
     },
 
@@ -1739,25 +1217,9 @@ const mapData = [
         id: 204,
         type: "treasure",
         treasureBoxId: 1,
-        next: [205],
+        next: [],
         x: 1944,
         y: 1380
-    },
-
-    {
-        id: 205,
-        type: "money",
-        next: [206, 214],
-        x: 1944,
-        y: 1260
-    },
-
-    {
-        id: 206,
-        type: "monster",
-        next: [207, 213],
-        x: 2088,
-        y: 1260
     },
 
     {
@@ -1798,41 +1260,25 @@ const mapData = [
     {
         id: 211,
         type: "money",
-        next: [212, 216],
+        next: [216],
         x: 2376,
         y: 1140
     },
 
     {
-        id: 212,
-        type: "asset",
-        typeIds: [1],
-        next: [213],
-        x: 2232,
-        y: 1140
-    },
-
-    {
-        id: 213,
-        type: "worst",
-        next: [214],
-        x: 2088,
-        y: 1140
-    },
-
-    {
         id: 214,
-        type: "monster",
+        type: "magic_shop",
+        typeId: 1,
         next: [219],
         x: 1944,
-        y: 1140
+        y: 1210
     },
 
     {
         id: 215,
         type: "treasure",
         treasureBoxId: 1,
-        next: [216],
+        next: [189],
         x: 2520,
         y: 1020
     },
@@ -1841,7 +1287,7 @@ const mapData = [
         id: 216,
         type: "job",
         jobId: 1,
-        next: [217],
+        next: [215],
         x: 2376,
         y: 1020
     },
@@ -1850,39 +1296,41 @@ const mapData = [
         id: 217,
         type: "asset",
         typeIds: [1],
-        next: [218],
-        x: 2232,
-        y: 1020
+        next: [216],
+        x: 2258,
+        y: 1096
     },
 
     {
         id: 218,
-        type: "shop",
-        typeId: 1,
-        next: [219],
-        x: 2088,
-        y: 1020
+        type: "job",
+        jobId: 3,
+        next: [217],
+        x: 2098,
+        y: 1102
     },
 
     {
         id: 219,
-        type: "monster",
-        next: [],
+        type: "money",
+        next: [218],
         x: 1944,
-        y: 1020
+        y: 1100
     },
 
     {
         id: 220,
-        type: "money",
-        next: [221, 226, 250],
+        type: "asset",
+        typeIds: [0],
+        next: [221, 226],
         x: 1080,
         y: 2100
     },
 
     {
         id: 221,
-        type: "money",
+        type: "asset",
+        typeIds: [0],
         next: [222, 227],
         x: 1224,
         y: 2100
@@ -1924,7 +1372,8 @@ const mapData = [
 
     {
         id: 226,
-        type: "monster",
+        type: "shop",
+        typeId: 0,
         next: [237],
         x: 1080,
         y: 1980
@@ -1941,7 +1390,8 @@ const mapData = [
 
     {
         id: 228,
-        type: "monster",
+        type: "asset",
+        typeIds: [0],
         next: [229],
         x: 1368,
         y: 1980
@@ -2018,7 +1468,7 @@ const mapData = [
 
     {
         id: 237,
-        type: "start",
+        type: "money",
         next: [238, 264],
         x: 1080,
         y: 1860
@@ -2120,53 +1570,27 @@ const mapData = [
 
     {
         id: 249,
-        type: "job",
-        jobId: 1,
-        next: [299],
+        type: "shop",
+        typeId: 0,
+        next: [329],
         x: 1800,
         y: 1620
     },
 
     {
-        id: 250,
-        type: "money",
-        next: [251, 255],
-        x: 936,
-        y: 2100
-    },
-
-    {
-        id: 251,
-        type: "monster",
-        next: [252],
-        x: 792,
-        y: 2100
-    },
-
-    {
-        id: 252,
-        type: "job",
-        jobId: 1,
-        next: [253, 257],
-        x: 648,
-        y: 2100
-    },
-
-    {
         id: 253,
-        type: "shop",
-        typeId: 1,
-        next: [254],
-        x: 504,
-        y: 2100
+        type: "worst",
+        next: [254, 257],
+        x: 500,
+        y: 1980
     },
 
     {
         id: 254,
         type: "monster",
-        next: [259],
+        next: [260],
         x: 360,
-        y: 2100
+        y: 1980
     },
 
     {
@@ -2189,32 +1613,15 @@ const mapData = [
     {
         id: 257,
         type: "money",
-        next: [258],
+        next: [],
         x: 648,
         y: 1980
     },
 
     {
-        id: 258,
-        type: "asset",
-        typeIds: [1],
-        next: [259],
-        x: 504,
-        y: 1980
-    },
-
-    {
-        id: 259,
-        type: "treasure",
-        treasureBoxId: 1,
-        next: [260],
-        x: 360,
-        y: 1980
-    },
-
-    {
         id: 260,
-        type: "money",
+        type: "job",
+        jobId: 3,
         next: [261, 269],
         x: 360,
         y: 1860
@@ -2224,24 +1631,24 @@ const mapData = [
         id: 261,
         type: "monster",
         next: [262, 268],
-        x: 504,
+        x: 500,
         y: 1860
     },
 
     {
         id: 262,
-        type: "job",
-        jobId: 1,
-        next: [263],
+        type: "treasure",
+        treasureBoxId: 1,
+        next: [263, 257],
         x: 648,
         y: 1860
     },
 
     {
         id: 263,
-        type: "shop",
-        typeId: 1,
-        next: [264],
+        type: "treasure",
+        treasureBoxId: 1,
+        next: [264, 266],
         x: 792,
         y: 1860
     },
@@ -2266,32 +1673,23 @@ const mapData = [
     {
         id: 266,
         type: "money",
-        next: [267, 271],
+        next: [271, 268],
         x: 792,
-        y: 1740
-    },
-
-    {
-        id: 267,
-        type: "asset",
-        typeIds: [1],
-        next: [268],
-        x: 648,
         y: 1740
     },
 
     {
         id: 268,
         type: "worst",
-        next: [269],
-        x: 504,
+        next: [269, 273],
+        x: 500,
         y: 1740
     },
 
     {
         id: 269,
         type: "monster",
-        next: [274],
+        next: [],
         x: 360,
         y: 1740
     },
@@ -2327,32 +1725,16 @@ const mapData = [
         id: 273,
         type: "shop",
         typeId: 1,
-        next: [274],
-        x: 504,
-        y: 1620
-    },
-
-    {
-        id: 274,
-        type: "monster",
         next: [],
-        x: 360,
+        x: 500,
         y: 1620
     },
 
     {
         id: 275,
         type: "money",
-        next: [276, 281, 305],
+        next: [281, 305],
         x: 2664,
-        y: 2100
-    },
-
-    {
-        id: 276,
-        type: "money",
-        next: [277, 282],
-        x: 2808,
         y: 2100
     },
 
@@ -2360,25 +1742,8 @@ const mapData = [
         id: 277,
         type: "job",
         jobId: 1,
-        next: [278],
+        next: [],
         x: 2952,
-        y: 2100
-    },
-
-    {
-        id: 278,
-        type: "asset",
-        typeIds: [1],
-        next: [279],
-        x: 3096,
-        y: 2100
-    },
-
-    {
-        id: 279,
-        type: "worst",
-        next: [280],
-        x: 3240,
         y: 2100
     },
 
@@ -2435,8 +1800,7 @@ const mapData = [
 
     {
         id: 286,
-        type: "asset",
-        typeIds: [1],
+        type: "money",
         next: [287],
         x: 3384,
         y: 1980
@@ -2486,7 +1850,7 @@ const mapData = [
 
     {
         id: 292,
-        type: "start",
+        type: "money",
         next: [293, 319],
         x: 2664,
         y: 1860
@@ -2495,7 +1859,7 @@ const mapData = [
     {
         id: 293,
         type: "monster",
-        next: [294, 299],
+        next: [294],
         x: 2664,
         y: 1740
     },
@@ -2544,15 +1908,6 @@ const mapData = [
     },
 
     {
-        id: 299,
-        type: "treasure",
-        treasureBoxId: 1,
-        next: [300, 325],
-        x: 2664,
-        y: 1620
-    },
-
-    {
         id: 300,
         type: "money",
         next: [301],
@@ -2564,16 +1919,8 @@ const mapData = [
         id: 301,
         type: "shop",
         typeId: 1,
-        next: [302],
+        next: [],
         x: 2952,
-        y: 1620
-    },
-
-    {
-        id: 302,
-        type: "monster",
-        next: [303],
-        x: 3096,
         y: 1620
     },
 
@@ -2598,34 +1945,8 @@ const mapData = [
     {
         id: 305,
         type: "money",
-        next: [306, 310],
+        next: [310],
         x: 2520,
-        y: 2100
-    },
-
-    {
-        id: 306,
-        type: "monster",
-        next: [307],
-        x: 2376,
-        y: 2100
-    },
-
-    {
-        id: 307,
-        type: "job",
-        jobId: 1,
-        next: [308, 312],
-        x: 2232,
-        y: 2100
-    },
-
-    {
-        id: 308,
-        type: "shop",
-        typeId: 1,
-        next: [309],
-        x: 2088,
         y: 2100
     },
 
@@ -2664,8 +1985,7 @@ const mapData = [
 
     {
         id: 313,
-        type: "asset",
-        typeIds: [1],
+        type: "money",
         next: [314],
         x: 2088,
         y: 1980
@@ -2734,15 +2054,14 @@ const mapData = [
     {
         id: 321,
         type: "money",
-        next: [322, 326],
+        next: [322],
         x: 2376,
         y: 1740
     },
 
     {
         id: 322,
-        type: "asset",
-        typeIds: [1],
+        type: "money",
         next: [323],
         x: 2232,
         y: 1740
@@ -2768,25 +2087,15 @@ const mapData = [
         id: 325,
         type: "treasure",
         treasureBoxId: 1,
-        next: [326],
+        next: [],
         x: 2520,
         y: 1620
     },
 
     {
-        id: 326,
-        type: "job",
-        jobId: 1,
-        next: [327],
-        x: 2376,
-        y: 1620
-    },
-
-    {
         id: 327,
-        type: "asset",
-        typeIds: [1],
-        next: [328],
+        type: "money",
+        next: [],
         x: 2232,
         y: 1620
     },
@@ -2795,7 +2104,7 @@ const mapData = [
         id: 328,
         type: "shop",
         typeId: 1,
-        next: [329],
+        next: [327],
         x: 2088,
         y: 1620
     },
@@ -2803,9 +2112,18 @@ const mapData = [
     {
         id: 329,
         type: "monster",
-        next: [],
+        next: [328],
         x: 1944,
         y: 1620
+    },
+
+    {
+        id: 334,
+        type: "job",
+        jobId: 4,
+        next: [],
+        x: 1224,
+        y: 1331
     }
 
 ];
