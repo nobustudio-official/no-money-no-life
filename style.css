@@ -11116,7 +11116,7 @@
 @media (orientation: landscape) and (max-height: 500px) {
 
     #monsterChoicePopup {
-        height: 330px;
+        height: 310px;
         padding: 15px 20px;
         box-sizing: border-box;
     }
@@ -11142,7 +11142,7 @@
 
     #monsterFightButton,
     #monsterEscapeButton {
-        background: #174d8c !important;
+        background: transparent !important;
         color: #fff !important;
         height: 42px !important;
         font-size: 15px !important;
