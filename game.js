@@ -404,7 +404,7 @@ let bossDefeatedCount = 0;
 function getMonsterInflationMultiplier() {
 
     return Math.pow(
-        1.2,
+        1.1,
         bossDefeatedCount
     );
 
