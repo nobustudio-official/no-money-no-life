@@ -10572,10 +10572,18 @@
 .boss-counter-player-row {
 
     display:
-        flex;
+        grid;
 
-    justify-content:
-        space-between;
+    grid-template-columns:
+        minmax(0, 1fr)
+        90px
+        90px;
+
+    align-items:
+        center;
+
+    column-gap:
+        12px;
 
     padding:
         10px 14px;
@@ -10595,6 +10603,12 @@
 
 }
 
+.boss-counter-player-row > span:first-child {
+
+    white-space:
+        nowrap;
+
+}
 
 .boss-counter-player-damage {
 
