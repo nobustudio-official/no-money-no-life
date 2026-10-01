@@ -11114,32 +11114,40 @@
 }
 
 @media (orientation: landscape) and (max-height: 500px) {
+
     #monsterChoicePopup {
-        height: 190px;
-        padding: 10px 16px;
+        height: 330px;
+        padding: 15px 20px;
+        box-sizing: border-box;
     }
 
     #monsterChoiceMessage {
-        font-size: 14px;
+        font-size: 16px;
     }
 
     #monsterChoiceMessage > div:first-child {
-        font-size: 1.5em !important;
-        margin-bottom: 4px !important;
+        font-size: 2.5em !important;
+        margin-bottom: 8px !important;
     }
 
     #monsterChoiceMessage > div:nth-child(2) {
-        font-size: 1em !important;
+        font-size: 1.2em !important;
     }
 
     #monsterChoiceMessage > div:nth-child(3) {
-        font-size: 0.85em !important;
-        margin-top: 4px !important;
+        font-size: 0.95em !important;
+        margin-top: 8px !important;
+        line-height: 1.4 !important;
     }
 
     #monsterFightButton,
     #monsterEscapeButton {
-        height: 36px;
-        font-size: 13px;
+        background: #174d8c !important;
+        color: #fff !important;
+        height: 42px !important;
+        font-size: 15px !important;
+        border: 2px solid #fff !important;
+        border-radius: 10px !important;
+        opacity: 1 !important;
     }
 }
