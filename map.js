@@ -1,4 +1,4 @@
-const mapData = [
+window.mapData = [
 
     {
         id: 0,
@@ -249,7 +249,8 @@ const mapData = [
 
     {
         id: 55,
-        type: "money",
+        type: "treasure",
+        treasureBoxId: 1,
         next: [61, 85],
         x: 2710,
         y: 950
@@ -988,7 +989,7 @@ const mapData = [
     {
         id: 204,
         type: "treasure",
-        treasureBoxId: 3,
+        treasureBoxId: 2,
         next: [],
         x: 1944,
         y: 1380
@@ -1567,7 +1568,8 @@ const mapData = [
 
     {
         id: 322,
-        type: "money",
+        type: "magic_shop",
+        typeId: 1,
         next: [323, 327],
         x: 2232,
         y: 1740
