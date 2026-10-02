@@ -329,7 +329,7 @@ const ITEM_CONTENTS = {
     },
     13: {
         name: "ロスノート",
-        price: 200000,
+        price: 50000,
         category: "special",
         effect: "このノートに名前を書かれた者は〇ぬ",
         effectType: "bossCounterImmunity",
@@ -867,7 +867,7 @@ const JOB_CONTENTS = {
 
     4: {
         name: "引っ越し",
-        unitPrice: 22000
+        unitPrice: 32000
     }
 
 };
@@ -888,8 +888,8 @@ const BOSS_CONTENTS = {
     },
 
     2: {
-        name: "アイスクイーン",
-        icon: "images/characters/enemy/boss/アイスクイーン.png",
+        name: "野々村",
+        icon: "images/characters/enemy/boss/野々村.png",
         hp: 4000,
         attack: 1500,
         counterDamage: 300,
@@ -897,8 +897,8 @@ const BOSS_CONTENTS = {
     },
 
     3: {
-        name: "いただきリリィ",
-        icon: "images/characters/enemy/boss/いただきリリィ.png",
+        name: "アイスクイーン",
+        icon: "images/characters/enemy/boss/アイスクイーン.png",
         hp: 5000,
         attack: 2000,
         counterDamage: 400,
@@ -915,8 +915,8 @@ const BOSS_CONTENTS = {
     },
 
     5: {
-        name: "野々村",
-        icon: "images/characters/enemy/boss/野々村.png",
+        name: "いただきリリィ",
+        icon: "images/characters/enemy/boss/いただきリリィ.png",
         hp: 8000,
         attack: 3000,
         counterDamage: 800,
@@ -963,7 +963,48 @@ const BOSS_CONTENTS = {
         attack: 10000,
         counterDamage: 1300,
         reward: 200000
-    }
+    },
+    11: {
+        name: "オクトパン",
+        icon: "images/characters/enemy/boss/オクトパン.png",
+        hp: 22000,
+        attack: 11000,
+        counterDamage: 1350,
+        reward: 220000
+    },
+    12: {
+        name: "フレイムナイト",
+        icon: "images/characters/enemy/boss/フレイムナイト.png",
+        hp: 24000,
+        attack: 12000,
+        counterDamage: 1500,
+        reward: 250000
+    },
+    13: {
+        name: "リーフウィッチ",
+        icon: "images/characters/enemy/boss/リーフウィッチ.png",
+        hp: 27000,
+        attack: 14000,
+        counterDamage: 1600,
+        reward: 280000
+    },
+    14: {
+        name: "メタルスカイ",
+        icon: "images/characters/enemy/boss/メタルスカイ.png",
+        hp: 30000,
+        attack: 15000,
+        counterDamage: 1700,
+        reward: 300000
+    },
+    15: {
+        name: "魔王",
+        icon: "images/characters/enemy/boss/魔王.png",
+        hp: 100000,
+        attack: 25000,
+        counterDamage: 2000,
+        reward: 1000000
+    },
+
 
 };
 
