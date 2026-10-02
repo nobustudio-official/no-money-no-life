@@ -1148,11 +1148,11 @@ const BOSS_CONTENTS = {
     },
     15: {
         name: "魔王",
-        icon: "images/characters/enemy/boss/魔王.png",
-        hp: 100000,
-        attack: 25000,
+        icon: "images/characters/enemy/boss/デビルロード.png",
+        hp: 50000,
+        attack: 20000,
         counterDamage: 2000,
-        reward: 1000000
+        reward: 500000
     },
 
 
