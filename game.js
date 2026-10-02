@@ -4988,13 +4988,12 @@ fitHudDestinationLabels();
 
         }
 
-        player.position =
+            player.position =
             nextPosition;
 
-
-        renderMap();
-
         renderPlayers();
+
+        refreshShortestPathToBoss();
 
     }
 
@@ -6286,6 +6285,36 @@ function getShortestPathToBoss(
 }
 
 // =========================
+// 最短ルートだけ再描画
+// マップ本体は再描画しない
+// =========================
+
+function refreshShortestPathToBoss() {
+
+    const svg =
+        document.querySelector(
+            "#mapBoard .map-lines"
+        );
+
+    if (!svg) {
+        return;
+    }
+
+    svg
+        .querySelectorAll(
+            ".map-shortest-path-line"
+        )
+        .forEach(
+            function (line) {
+                line.remove();
+            }
+        );
+
+    drawShortestPathToBoss(svg);
+
+}
+
+// =========================
 // ボスまでの最短ルートを
 // マップ上に描画
 // =========================
@@ -6629,14 +6658,15 @@ function setupDiceMovementReturnButton() {
                 totalSteps;
 
             // =========================
-            // マップ・プレイヤー・残り歩数を更新
+            // プレイヤー・残り歩数を更新
+            // マップ本体は再描画しない
             // =========================
-
-            renderMap();
 
             renderPlayers();
 
             renderTurn();
+
+            refreshShortestPathToBoss();
 
             // =========================
             // 改めて矢印と停止候補を表示
@@ -9744,7 +9774,7 @@ function checkPlayerRespawn(player, callback) {
     movementPath = [];
 
     renderPlayers();
-    renderMap();
+    refreshShortestPathToBoss();
 
     showEventPopup(
     "💀 資産0G",
@@ -12777,7 +12807,7 @@ updatePlayerStatusUI(
 movementPath = [];
 
 renderPlayers();
-renderMap();
+refreshShortestPathToBoss();
 
 // =========================
 // リスポーン結果
