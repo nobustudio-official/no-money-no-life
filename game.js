@@ -432,7 +432,7 @@ let bossCounterEnabled = false;
 // ボス報酬設定
 
 const BOSS_DAMAGE_MULTIPLIER =
-    6;
+    5;
 
 // =========================
 // ボスカウンター無効判定
