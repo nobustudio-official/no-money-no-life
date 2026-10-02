@@ -46,7 +46,7 @@ const mapData = [
     {
         id: 12,
         type: "treasure",
-        treasureBoxId: 0,
+        treasureBoxId: 1,
         next: [14, 95, 22],
         x: 1730,
         y: 700
@@ -106,7 +106,7 @@ const mapData = [
     {
         id: 26,
         type: "treasure",
-        treasureBoxId: 0,
+        treasureBoxId: 1,
         next: [27],
         x: 1402,
         y: 436
@@ -157,7 +157,7 @@ const mapData = [
     {
         id: 41,
         type: "treasure",
-        treasureBoxId: 0,
+        treasureBoxId: 1,
         next: [42],
         x: 504,
         y: 660
@@ -183,7 +183,7 @@ const mapData = [
     {
         id: 44,
         type: "treasure",
-        treasureBoxId: 0,
+        treasureBoxId: 1,
         next: [],
         x: 930,
         y: 660
@@ -292,7 +292,7 @@ const mapData = [
     {
         id: 63,
         type: "treasure",
-        treasureBoxId: 0,
+        treasureBoxId: 1,
         next: [64],
         x: 2952,
         y: 780
@@ -589,7 +589,7 @@ const mapData = [
     {
         id: 112,
         type: "treasure",
-        treasureBoxId: 0,
+        treasureBoxId: 1,
         next: [113],
         x: 1370,
         y: 1460
@@ -646,7 +646,7 @@ const mapData = [
     {
         id: 129,
         type: "treasure",
-        treasureBoxId: 0,
+        treasureBoxId: 1,
         next: [137],
         x: 1228,
         y: 1100
@@ -953,7 +953,7 @@ const mapData = [
     {
         id: 200,
         type: "treasure",
-        treasureBoxId: 0,
+        treasureBoxId: 1,
         next: [201, 209],
         x: 2520,
         y: 1380
@@ -1022,7 +1022,7 @@ const mapData = [
     {
         id: 210,
         type: "treasure",
-        treasureBoxId: 0,
+        treasureBoxId: 1,
         next: [211],
         x: 2520,
         y: 1140
@@ -1600,7 +1600,7 @@ const mapData = [
     {
         id: 328,
         type: "treasure",
-        treasureBoxId: 0,
+        treasureBoxId: 1,
         next: [327],
         x: 2088,
         y: 1620
