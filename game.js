@@ -8060,31 +8060,22 @@ case "monster":
     currentBossSquareId
 ) {
 
-    // =========================
-    // 初めてボスマスへ到着した時
-    // ボスBGMへ切り替える
-    // =========================
+   // =========================
+// 初めてボスマスへ到着した時
+// ボスBGMへ切り替える
+// =========================
 
-    if (
-        bossBattleBGM.paused
-    ) {
+if (
+    bossBattleBGM.paused
+) {
 
-        stopAllBGM();
+    setupBGM(
+        bossBattleBGM,
+        bossBattleBGMGain,
+        setBossBattleBGMGain
+    );
 
-        bossBattleBGM.currentTime = 0;
-
-        bossBattleBGM.play().catch(
-            function (error) {
-
-                console.warn(
-                    "【ボスBGM】再生失敗：",
-                    error
-                );
-
-            }
-        );
-
-    }
+}
 
     showBossChallengePopup(
         player
