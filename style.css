@@ -340,11 +340,6 @@
 
         flex-shrink: 0;
 
-        background-image: url("images/map2.png");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-
     }
 
     /* =========================================================
@@ -374,7 +369,7 @@
 
     .map-line {
         stroke:
-            rgba(231, 168, 108, 0.9);
+            rgba(236, 212, 132, 0.9);
 
        stroke-width: 18;
 
@@ -11215,4 +11210,17 @@
         border-radius: 10px !important;
         opacity: 1 !important;
     }
+}
+
+/* =========================
+   ボスまでの最短ルート
+========================= */
+
+.map-shortest-path-line {
+    stroke: #fa94cc;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.75;
+    pointer-events: none;
 }
