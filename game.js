@@ -339,40 +339,45 @@ function getRandomGoldReward() {
 
 // バイト単価の割増設定
 
-const JOB_WAGE_MAX_TURN = 12;
+const JOB_WAGE_RATE_PER_BOSS =
+    0.20;
 
-const JOB_WAGE_RATE_PER_TURN =
-    0.05;
+const JOB_WAGE_MAX_BOSS_COUNT =
+    5;
+
 
 // 現在のバイト単価割増率を取得
 
-function getJobWageRate(turn) {
-    const wageTurn =
+function getJobWageRate() {
+
+    const wageBossCount =
         Math.min(
-            Math.max(turn - 1, 0),
-            JOB_WAGE_MAX_TURN
+            bossDefeatedCount,
+            JOB_WAGE_MAX_BOSS_COUNT
         );
 
-    return wageTurn * JOB_WAGE_RATE_PER_TURN;
+    return (
+        wageBossCount *
+        JOB_WAGE_RATE_PER_BOSS
+    );
+
 }
+
 
 // 現在のバイト単価を取得
 
 function getCurrentJobWage(
-    baseWage,
-    turn
+    baseWage
 ) {
 
     const wageRate =
-        getJobWageRate(
-            turn
-        );
-
+        getJobWageRate();
 
     return Math.floor(
         baseWage *
         (1 + wageRate)
     );
+
 }
 
 
@@ -427,7 +432,7 @@ let bossCounterEnabled = false;
 // ボス報酬設定
 
 const BOSS_DAMAGE_MULTIPLIER =
-    3;
+    5;
 
 // =========================
 // ボスカウンター無効判定
@@ -714,10 +719,10 @@ if (callback) {
 const GAME_LOADING_MIN_TIME = 1200;
 
 const GAME_LOADING_ASSETS = [
-    "images/map-background/map-bg-01.png",
-    "images/map-background/map-bg-02.png",
-    "images/map-background/map-bg-03.png",
-    "images/map-background/map-bg-04.png",
+    "images/map-background/①左上.png",
+    "images/map-background/②右上.png",
+    "images/map-background/③左下.png",
+    "images/map-background/④右下.png",
     "images/map-icons/start.png",
     "images/map-icons/gold.png",
     "images/map-icons/job.png",
@@ -763,6 +768,70 @@ function preloadGameImage(path) {
         image.src = path;
 
     });
+}
+
+// =========================
+// マップデータ読み込み
+// =========================
+
+function loadMapData() {
+
+    return new Promise(function (resolve, reject) {
+
+        // すでに読み込み済みなら何もしない
+        if (
+            Array.isArray(window.mapData) &&
+            window.mapData.length > 0
+        ) {
+
+            resolve();
+
+            return;
+
+        }
+
+        const script =
+            document.createElement("script");
+
+        script.src = "map.js";
+
+        script.onload =
+            function () {
+
+                if (
+                    !Array.isArray(window.mapData) ||
+                    window.mapData.length === 0
+                ) {
+
+                    reject(
+                        new Error(
+                            "マップデータが空です。"
+                        )
+                    );
+
+                    return;
+
+                }
+
+                resolve();
+
+            };
+
+        script.onerror =
+            function () {
+
+                reject(
+                    new Error(
+                        "map.js の読み込みに失敗しました。"
+                    )
+                );
+
+            };
+
+        document.head.appendChild(script);
+
+    });
+
 }
 
 function showGameLoadingScreen() {
@@ -1405,20 +1474,12 @@ function showTurnSelectScreen(
                 );
 
 
-            // =========================
-            // ゲーム開始
-            // =========================
-            gameStarted = true;
+// =========================
+// ゲーム開始
+// =========================
 
-// 冒険BGM開始
-setupAdventureBGM();
+gameStarted = true;
 
-// 最初のボスを決定
-selectBossSquare();
-
-// 開始音
-startSound.currentTime = 0;
-startSound.play();
 
 // =========================
 // 読み込み画面を表示
@@ -1426,21 +1487,116 @@ startSound.play();
 
 showGameLoadingScreen();
 
-// マップ画像などを先に読み込み、
-// 最低1.2秒は読み込み画面を表示する
-waitForGameAssets().then(function () {
 
-    showGameScreen(
-        players,
-        maxTurns
+// =========================
+// マップデータを読み込む
+// =========================
+
+loadMapData()
+
+    .then(function () {
+
+        // =========================
+        // マップデータ読み込み確認
+        // =========================
+
+        if (
+            !Array.isArray(window.mapData) ||
+            window.mapData.length === 0
+        ) {
+
+            throw new Error(
+                "マップデータを確認できませんでした。"
+            );
+
+        }
+
+
+        // =========================
+        // 冒険BGM開始
+        // =========================
+
+        setupAdventureBGM();
+
+
+        // =========================
+        // 最初のボスを決定
+        // =========================
+
+        selectBossSquare();
+
+
+        // =========================
+        // 開始音
+        // =========================
+
+        startSound.currentTime = 0;
+        startSound.play();
+
+
+        // =========================
+        // マップ画像などを読み込む
+        // =========================
+
+        return waitForGameAssets();
+
+    })
+
+    .then(function () {
+
+        // =========================
+        // ゲーム画面表示
+        // =========================
+
+        showGameScreen(
+            players,
+            maxTurns
+        );
+
+
+// =========================
+// ボス決定演出
+// =========================
+
+setTimeout(function () {
+
+    showBossDestinationPopup(
+
+        function () {
+
+            // =========================
+            // 初回ボス決定演出終了後
+            // プレイヤーの位置へカメラを戻す
+            // =========================
+
+            setTimeout(function () {
+
+                window.centerCurrentPlayerOnMap();
+
+            }, 100);
+
+        }
+
     );
 
-    // ボス決定演出
-    setTimeout(function () {
-        showBossDestinationPopup();
-    }, 500);
+}, 500);
 
-});
+    })
+
+    .catch(function (error) {
+
+        console.error(
+            "ゲーム開始時の読み込みに失敗しました。",
+            error
+        );
+
+
+        alert(
+            "ゲームの読み込みに失敗しました。\n" +
+            "ページを再読み込みして、もう一度お試しください。"
+        );
+
+    });
             
         }
     );
@@ -2684,9 +2840,14 @@ svg.appendChild(
         );
 
 
-        mapBoard.appendChild(
-            svg
-        );
+drawShortestPathToBoss(
+    svg
+);
+
+
+mapBoard.appendChild(
+    svg
+);
 
 
         // =========================
@@ -5963,6 +6124,356 @@ function getShortestDistanceToBoss(
 
 }
 
+// =========================
+// ボスマスまでの最短ルートを取得
+// =========================
+
+function getShortestPathToBoss(
+    startPosition
+) {
+
+    if (
+        currentBossSquareId === null ||
+        currentBossSquareId === undefined
+    ) {
+
+        return [];
+
+    }
+
+
+    if (
+        startPosition ===
+        currentBossSquareId
+    ) {
+
+        return [
+            startPosition
+        ];
+
+    }
+
+
+    const queue = [
+        startPosition
+    ];
+
+
+    const visited =
+        new Set();
+
+    visited.add(
+        startPosition
+    );
+
+
+    const previous =
+        new Map();
+
+
+    while (
+        queue.length > 0
+    ) {
+
+        const currentPosition =
+            queue.shift();
+
+
+        const options =
+            getConnectedOptions(
+                currentPosition
+            );
+
+
+        for (
+            let i = 0;
+            i < options.length;
+            i++
+        ) {
+
+            const nextPosition =
+                options[i];
+
+
+            if (
+                visited.has(
+                    nextPosition
+                )
+            ) {
+
+                continue;
+
+            }
+
+
+            visited.add(
+                nextPosition
+            );
+
+
+            previous.set(
+                nextPosition,
+                currentPosition
+            );
+
+
+            // =========================
+            // ボス到達
+            // =========================
+
+            if (
+                nextPosition ===
+                currentBossSquareId
+            ) {
+
+                const path = [];
+
+                let position =
+                    currentBossSquareId;
+
+
+                path.push(
+                    position
+                );
+
+
+                while (
+                    position !==
+                    startPosition
+                ) {
+
+                    position =
+                        previous.get(
+                            position
+                        );
+
+
+                    if (
+                        position === undefined
+                    ) {
+
+                        return [];
+
+                    }
+
+
+                    path.push(
+                        position
+                    );
+
+                }
+
+
+                path.reverse();
+
+
+                return path;
+
+            }
+
+
+            queue.push(
+                nextPosition
+            );
+
+        }
+
+    }
+
+
+    return [];
+
+}
+
+// =========================
+// ボスまでの最短ルートを
+// マップ上に描画
+// =========================
+
+function drawShortestPathToBoss(
+    svg
+) {
+
+    if (!svg) {
+
+        return;
+
+    }
+
+
+    if (
+        typeof currentPlayer !==
+        "number"
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        !players ||
+        !players[currentPlayer]
+    ) {
+
+        return;
+
+    }
+
+
+    const player =
+        players[currentPlayer];
+
+
+    const path =
+        getShortestPathToBoss(
+            player.position
+        );
+
+
+    if (
+        path.length < 2
+    ) {
+
+        return;
+
+    }
+
+
+    // =========================
+    // 最短ルートの各区間を描画
+    // =========================
+
+    for (
+        let i = 0;
+        i < path.length - 1;
+        i++
+    ) {
+
+        const fromSquare =
+            mapData.find(
+                function (square) {
+
+                    return square.id ===
+                        path[i];
+
+                }
+            );
+
+
+        const toSquare =
+            mapData.find(
+                function (square) {
+
+                    return square.id ===
+                        path[i + 1];
+
+                }
+            );
+
+
+        if (
+            !fromSquare ||
+            !toSquare
+        ) {
+
+            continue;
+
+        }
+
+
+        const line =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "line"
+            );
+
+
+        line.setAttribute(
+            "x1",
+            fromSquare.x
+        );
+
+
+        line.setAttribute(
+            "y1",
+            fromSquare.y
+        );
+
+
+        line.setAttribute(
+            "x2",
+            toSquare.x
+        );
+
+
+        line.setAttribute(
+            "y2",
+            toSquare.y
+        );
+
+
+        line.classList.add(
+            "map-shortest-path-line"
+        );
+
+
+        svg.appendChild(
+            line
+        );
+
+    }
+
+}
+
+
+// =========================
+// 現在プレイヤーの
+// 最短ルートだけを更新
+// =========================
+
+function refreshShortestPathToBoss() {
+
+    const svg =
+        document.querySelector(
+            "#mapBoard .map-lines"
+        );
+
+
+    if (!svg) {
+
+        return;
+
+    }
+
+
+    // =========================
+    // 前プレイヤーのルートを削除
+    // =========================
+
+    svg
+        .querySelectorAll(
+            ".map-shortest-path-line"
+        )
+        .forEach(
+            function (line) {
+
+                line.remove();
+
+            }
+        );
+
+
+    // =========================
+    // 現在プレイヤーのルートを描画
+    // =========================
+
+    drawShortestPathToBoss(
+        svg
+    );
+
+}
+
     // =========================
     // サイコロ移動中の矢印を削除
     // =========================
@@ -9216,7 +9727,7 @@ function checkPlayerRespawn(player, callback) {
 
     // ボス撃破数に応じてリスポーン時の所持金を決定
     const respawnGold =
-        10000 + (bossDefeatedCount * 5000);
+        10000 + (bossDefeatedCount * 2500);
 
     // リスポーン
     player.money = respawnGold;
@@ -10107,6 +10618,7 @@ if (
 renderTurn();
 renderPlayers();
 centerCurrentPlayerOnMap();
+refreshShortestPathToBoss();
 
 
 // =========================
@@ -10362,6 +10874,14 @@ currentPlayer =
     )
     %
     players.length;
+
+
+// =========================
+// 最短ルートを
+// 新しいプレイヤー用に更新
+// =========================
+
+refreshShortestPathToBoss();
 
 
 // =========================
@@ -10725,6 +11245,7 @@ if (
 renderTurn();
 renderPlayers();
 centerCurrentPlayerOnMap();
+refreshShortestPathToBoss();
 
 
 // =========================
@@ -11105,7 +11626,7 @@ if (
 }
 
 // =========================
-// 戦闘UIから呼び出すため公開
+// 戦闘UI・ゲーム開始処理から呼び出すため公開
 // =========================
 
 window.renderMap =
@@ -11116,6 +11637,9 @@ window.showBossDestinationPopup =
 
 window.finishTurn =
     finishTurn;
+
+window.centerCurrentPlayerOnMap =
+    centerCurrentPlayerOnMap;
 
 // =========================
 // 指定プレイヤーのいるマスを
@@ -12218,13 +12742,13 @@ function showLossNotePlayerPopup(
 // =========================
 
 const respawnGold =
-    10000 + (bossDefeatedCount * 5000);
+    10000 + (bossDefeatedCount * 2500);
 
 targetPlayer.money =
     respawnGold;
 
 targetPlayer.position =
-    17;
+    139;
 
 // =========================
 // リスポーン時の固定アイテム
