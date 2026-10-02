@@ -2254,15 +2254,15 @@ function showBossRewardPopup(
     bossRewardMessage
 ) {
 
-    // =========================
+// =========================
 // 凱旋BGM開始
 // =========================
 
-stopAllBGM();
-
-bossVictoryBGM.currentTime = 0;
-
-bossVictoryBGM.play();
+setupBGM(
+    bossVictoryBGM,
+    bossVictoryBGMGain,
+    setBossVictoryBGMGain
+);
 
 
     // =========================
