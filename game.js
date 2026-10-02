@@ -9767,6 +9767,7 @@ function checkPlayerRespawn(player, callback) {
     movementPath = [];
 
     renderPlayers();
+    renderMap();
     refreshShortestPathToBoss();
 
     showEventPopup(
