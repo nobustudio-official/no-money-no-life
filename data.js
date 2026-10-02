@@ -204,7 +204,7 @@ const MONSTER_CONTENTS = {
         name: "きっくん",
         icon:  "images/characters/enemy/normal/きっくん.png",
         hp: 1000000,
-        attack: 50000,
+        attack: 900000,
         magicReward: 1000,
         goldReward: 5000000
     }
@@ -227,7 +227,7 @@ const ITEM_CONTENTS = {
 
     2: {
         name: "タクシーチケット",
-        price: 40000,
+        price: 20000,
         category: "move",
         effect: "サイコロを3個振れる",
         rank: 1
@@ -235,7 +235,7 @@ const ITEM_CONTENTS = {
 
     3: {
         name: "グリーン車",
-        price: 70000,
+        price: 30000,
         category: "move",
         effect: "サイコロを4個振れる",
         rank: 1
@@ -243,7 +243,7 @@ const ITEM_CONTENTS = {
 
     4: {
         name: "ビジネスクラス",
-        price: 100000,
+        price: 40000,
         category: "move",
         effect: "サイコロを5個振れる",
         rank: 2
@@ -251,7 +251,7 @@ const ITEM_CONTENTS = {
 
     5: {
         name: "ファーストクラス",
-        price: 150000,
+        price: 60000,
         category: "move",
         effect: "サイコロを6個振れる",
         rank: 2
@@ -259,7 +259,7 @@ const ITEM_CONTENTS = {
 
     6: {
         name: "プライベートジェット",
-        price: 300000,
+        price: 80000,
         category: "move",
         effect: "サイコロを8個振れる",
         rank: 3
@@ -267,7 +267,7 @@ const ITEM_CONTENTS = {
 
     7: {
         name: "走れ、メロス",
-        price: 500000,
+        price: 100000,
         category: "move",
         effect: "サイコロを10個振れる",
         rank: 3
@@ -285,10 +285,10 @@ const ITEM_CONTENTS = {
         name: "お守り",
         price: 10000,
         category: "passive",
-        effect: "相手から受けるダメージ－500",
+        effect: "相手から受けるダメージ－200",
         effectType: "damageReduction",
         effectTarget: "self",
-        effectValue: 500,
+        effectValue: 200,
         effectDuration: "permanent",
         rank: 1
     },
@@ -297,10 +297,10 @@ const ITEM_CONTENTS = {
         name: "ダンベル",
         price: 10000,
         category: "passive",
-        effect: "相手に与えるダメージ＋500",
+        effect: "相手に与えるダメージ＋100",
         effectType: "damageBonus",
         effectTarget: "self",
-        effectValue: 500,
+        effectValue: 100,
         effectDuration: "permanent",
         rank: 1
     },
@@ -388,12 +388,12 @@ const MAGIC_CONTENTS = {
         effect: "魔力の300％で攻撃",
         sound: "sounds/戦闘/ダークスパイク.mp3",
         powerRate: 3.0,
-        costRate: 4.0,
+        costRate: 3.2,
         buffTarget: null,
         buffStat: null,
         buffRate: null,
         buffDuration: null,
-        price: 50000,
+        price: 10000,
         actionAfterUse: "end",
         rank: 0
     },
@@ -406,12 +406,12 @@ const MAGIC_CONTENTS = {
         icon: "images/magic/メテオ.png",
         sound: "sounds/戦闘/爆発1.mp3",
         powerRate: 5.0,
-        costRate: 6.0,
+        costRate: 5.5,
         buffTarget: null,
         buffStat: null,
         buffRate: null,
         buffDuration: null,
-        price: 100000,
+        price: 30000,
         actionAfterUse: "end",
         rank: 0
     },
@@ -456,12 +456,12 @@ const MAGIC_CONTENTS = {
         effect: "魔力の800％で攻撃",
         sound: "sounds/戦闘/重機関銃を乱射1.mp3",
         powerRate: 8.0,
-        costRate: 11.0,
+        costRate: 10.0,
         buffTarget: null,
         buffStat: null,
         buffRate: null,
         buffDuration: null,
-        price: 100000,
+        price: 50000,
         actionAfterUse: "end",
         rank: 0
     },
@@ -473,7 +473,7 @@ const MAGIC_CONTENTS = {
         effect: "魔力の1000％で攻撃",
         sound: "sounds/戦闘/クレーバー.mp3",
         powerRate: 10.0,
-        costRate: 1.0,
+        costRate: 2.0,
         buffTarget: null,
         buffStat: null,
         buffRate: null,
@@ -481,6 +481,38 @@ const MAGIC_CONTENTS = {
         price: 0,
         actionAfterUse: "end",
         rank: 4
+    },
+    9: {
+        name: "サンダー",
+        type: "attack",
+        icon: "images/magic/サンダー.png",
+        effect: "魔力の250％で攻撃",
+        sound: "sounds/戦闘/雷魔法2.mp3",
+        powerRate: 2.5,
+        costRate: 2.5,
+        buffTarget: null,
+        buffStat: null,
+        buffRate: null,
+        buffDuration: null,
+        price: 5000,
+        actionAfterUse: "end",
+        rank: 0
+    },
+    10: {
+        name: "トルネード",
+        type: "attack",
+        icon: "images/magic/トルネード.png",
+        effect: "魔力の400％で攻撃",
+        sound: "sounds/戦闘/風魔法1.mp3",
+        powerRate: 4.0,
+        costRate: 4.0,
+        buffTarget: null,
+        buffStat: null,
+        buffRate: null,
+        buffDuration: null,
+        price: 5000,
+        actionAfterUse: "end",
+        rank: 1
     }
     
 
@@ -694,6 +726,118 @@ const ASSET_CONTENTS = {
         owner: null
     },
 
+    23: {
+        name: "アクア",
+        price: 20000,
+        yield: 20,
+        owner: null
+    },
+    24: {
+        name: "ルビー",
+        price: 20000,
+        yield: 20,
+        owner: null
+    },
+    25: {
+        name: "あれまかな",
+        price: 50000,
+        yield: 20,
+        owner: null
+    },
+    26: {
+        name: "黒河あかね",
+        price: 40000,
+        yield: 20,
+        owner: null
+    },
+    27: {
+        name: "Mちょ",
+        price: 20000,
+        yield: 20,
+        owner: null
+    },
+    28: {
+        name: "ルフィ",
+        price: 300000000,
+        yield: 1,
+        owner: null
+    },
+    29: {
+        name: "ゾロ",
+        price: 100000000,
+        yield: 1,
+        owner: null
+    },
+    30: {
+        name: "ナミ",
+        price: 100000000,
+        yield: 1,
+        owner: null
+    },
+    31: {
+        name: "サンジ",
+        price: 100000000,
+        yield: 1,
+        owner: null
+    },
+    32: {
+        name: "ウソップ",
+       price: 100000000,
+        yield: 1,
+        owner: null
+    },
+    33: {
+        name: "ロビン",
+        price: 100000000,
+        yield: 1,
+        owner: null
+    },
+    34: {
+        name: "ハンコック",
+        price: 100000000,
+        yield: 1,
+        owner: null
+    },
+    35: {
+        name: "ブルック",
+        price: 100000,
+        yield: 10,
+        owner: null
+    },
+    36: {
+        name: "ナルト",
+        price: 200000,
+        yield: 10,
+        owner: null
+    },
+    37: {
+        name: "サスケ",
+        price: 200000,
+        yield: 10,
+        owner: null
+    },
+    38: {
+        name: "サクラ",
+        price: 100000,
+        yield: 10,
+        owner: null
+    },
+    39: {
+        name: "カカシ",
+        price: 100000,
+        yield: 10,
+        owner: null
+    },
+    40: {
+        name: "我愛羅",
+        price: 100000,
+        yield: 10,
+        owner: null
+    },
+
+
+
+
     ...createMobAssets(5000, 5999)
 
 
@@ -707,18 +851,18 @@ const JOB_CONTENTS = {
 
     1: {
         name: "居酒屋",
-        unitPrice: 19000
+        unitPrice: 30000
     },
 
     2: {
         name: "ガスト",
-        unitPrice: 20000,
+        unitPrice: 35000,
         specialEffect: "arrest"
     },
 
     3: {
         name: "パン屋",
-        unitPrice: 18000
+        unitPrice: 33000
     },
 
     4: {
@@ -859,21 +1003,21 @@ const SHOP_BOXES = {
 
     1: {
         name: "タカツ警察署",
-        magicContents: [2, 3, 4, 7],
+        magicContents: [2, 9, 3, 4, 7],
         powerContents: [1, 2, 3],
         itemContents: [1, 2, 3, 9, 10, 12]
     },
 
     2: {
         name: "鷹島屋",
-        magicContents: [2, 3, 5, 6],
+        magicContents: [2, 9, 3, 5, 6],
         powerContents: [1, 2, 3],
         itemContents: [4, 5, 6, 9, 10, 12]
     },
 
     3: {
         name: "スターバック",
-        magicContents: [2, 3, 4, 7],
+        magicContents: [2, 9, 3, 4, 7],
         powerContents: [1, 2, 3],
         itemContents: [1, 2, 3, 9, 10, 12]
     }
@@ -912,16 +1056,16 @@ const ASSET_BOXES = {
     },
 
     6: {
-        name: "ダインー",
-        contents: [5026, 5027, 5028, 5029, 5030]
+        name: "押忍の子",
+        contents: [23, 24, 25, 26, 27,  5026, 5027, 5028, 5029, 5030]
     },
     7: {
-        name: "○○店",
-        contents: [5031, 5032, 5033, 5034, 5035]
+        name: "サニー号",
+        contents: [28,29,30,31,32,33,34,35,5031, 5032, 5033, 5034, 5035]
     },
     8: {
-        name: "○○店",
-        contents: [5036, 5037, 5038, 5039, 5040]
+        name: "木の葉の里",
+        contents: [36,37,38,39,40, 5036, 5037, 5038, 5039, 5040]
     },
     9: {
         name: "○○店",
@@ -951,7 +1095,7 @@ const ASSET_BOXES = {
         name: "○○店",
         contents: [5071, 5072, 5073, 5074, 5075]
     },
-    16: {
+    16: {   
         name: "○○店",
         contents: [5076, 5077, 5078, 5079, 5080]
     },
