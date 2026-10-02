@@ -5,7 +5,7 @@
 const　PLAYER_CONTENTS = {
 
    1: {
-        name: "かずま",
+        name: "戦士",
         icon: "images/characters/player-male-icon.png",
         sprite: "images/characters/player-male.png"
     },
@@ -393,7 +393,7 @@ const MAGIC_CONTENTS = {
         buffStat: null,
         buffRate: null,
         buffDuration: null,
-        price: 10000,
+        price: 30000,
         actionAfterUse: "end",
         rank: 0
     },
@@ -411,7 +411,7 @@ const MAGIC_CONTENTS = {
         buffStat: null,
         buffRate: null,
         buffDuration: null,
-        price: 30000,
+        price: 50000,
         actionAfterUse: "end",
         rank: 0
     },
@@ -461,7 +461,7 @@ const MAGIC_CONTENTS = {
         buffStat: null,
         buffRate: null,
         buffDuration: null,
-        price: 50000,
+        price: 80000,
         actionAfterUse: "end",
         rank: 0
     },
@@ -494,7 +494,7 @@ const MAGIC_CONTENTS = {
         buffStat: null,
         buffRate: null,
         buffDuration: null,
-        price: 5000,
+        price: 10000,
         actionAfterUse: "end",
         rank: 0
     },
@@ -512,7 +512,7 @@ const MAGIC_CONTENTS = {
         buffDuration: null,
         price: 5000,
         actionAfterUse: "end",
-        rank: 1
+        rank: 2
     }
     
 
@@ -645,7 +645,7 @@ const ASSET_CONTENTS = {
     11: {
         name: "笑みリア",
         price: 50000000,
-        yield: 1,
+        yield: 2,
         owner: null
     },
 
@@ -687,40 +687,40 @@ const ASSET_CONTENTS = {
     17: {
         name: "オズワーリ",
         price: 40000,
-        yield: 50,
+        yield: 25,
         owner: null
     },
 
     18: {
-        name: "ヤニ猫",
+        name: "煙猫",
         price: 200000,
         yield: 20,
         owner: null
     },
 
     19: {
-        name: "ヤク猫",
+        name: "薬猫",
         price: 100000,
         yield: 20,
         owner: null
     },
 
     20: {
-        name: "ハメ猫",
+        name: "＊猫",
         price: 80000,
         yield: 20,
         owner: null
     },
 
     21: {
-        name: "アル猫",
+        name: "酒猫",
         price: 40000,
         yield: 20,
         owner: null
     },
 
     22: {
-        name: "かんさい",
+        name: "笑猫",
         price: 5000,
         yield: 200,
         owner: null
@@ -745,7 +745,7 @@ const ASSET_CONTENTS = {
         owner: null
     },
     26: {
-        name: "黒河あかね",
+        name: "白川あかね",
         price: 40000,
         yield: 20,
         owner: null
@@ -757,84 +757,234 @@ const ASSET_CONTENTS = {
         owner: null
     },
     28: {
-        name: "ルフィ",
+        name: "ルフェ",
         price: 300000000,
         yield: 1,
         owner: null
     },
     29: {
-        name: "ゾロ",
+        name: "ゾノ",
         price: 100000000,
         yield: 1,
         owner: null
     },
     30: {
-        name: "ナミ",
+        name: "ナミィ",
         price: 100000000,
         yield: 1,
         owner: null
     },
     31: {
-        name: "サンジ",
+        name: "サンシ",
         price: 100000000,
         yield: 1,
         owner: null
     },
     32: {
-        name: "ウソップ",
+        name: "ウンップ",
        price: 100000000,
         yield: 1,
         owner: null
     },
     33: {
-        name: "ロビン",
+        name: "ロビソ",
         price: 100000000,
         yield: 1,
         owner: null
     },
     34: {
-        name: "ハンコック",
+        name: "ハソコック",
         price: 100000000,
         yield: 1,
         owner: null
     },
     35: {
-        name: "ブルック",
+        name: "ブルッブル",
         price: 100000,
         yield: 10,
         owner: null
     },
     36: {
-        name: "ナルト",
+        name: "ナルコ",
         price: 200000,
         yield: 10,
         owner: null
     },
     37: {
-        name: "サスケ",
+        name: "サステ",
         price: 200000,
         yield: 10,
         owner: null
     },
     38: {
-        name: "サクラ",
+        name: "サクハ",
         price: 100000,
         yield: 10,
         owner: null
     },
     39: {
-        name: "カカシ",
+        name: "かかし",
         price: 100000,
         yield: 10,
         owner: null
     },
     40: {
-        name: "我愛羅",
+        name: "我愛裸",
         price: 100000,
         yield: 10,
         owner: null
     },
-
+    41: {
+        name: "デクノボウ",
+        price: 300000,
+        yield: 10,
+        owner: null
+    },
+    42: {
+        name: "お茶の子",
+        price: 300000,
+        yield: 10,
+        owner: null
+    },
+    43: {
+        name: "爆音",
+        price: 300000,
+        yield: 10,
+        owner: null
+    },
+    44: {
+        name: "轟消灯",
+        price: 300000,
+        yield: 10,
+        owner: null
+    },
+    45: {
+        name: "オールナイト",
+        price: 5000000,
+        yield: 1,
+        owner: null
+    },
+    46: {
+        name: "坂田銀",
+        price: 1000000,
+        yield: 1,
+        owner: null
+    },
+    47: {
+        name: "KAGURA",
+        price: 500000,
+        yield: 1,
+        owner: null
+    },
+    48: {
+        name: "めがね",
+        price: 1000,
+        yield: 500,
+        owner: null
+    },
+    49: {
+        name: "ズラ",
+        price: 50000,
+        yield: 20,
+        owner: null
+    },
+    50: {
+        name: "まるでダメなおっさん",
+        price: 2000,
+        yield: 300,
+        owner: null
+    },
+    51: {
+        name: "エレ",
+        price: 50000,
+        yield: 20,
+        owner: null
+    },
+    52: {
+        name: "ミサカ",
+        price: 80000,
+        yield: 20,
+        owner: null
+    },
+    53: {
+        name: "ナイミン",
+        price: 40000,
+        yield: 20,
+        owner: null
+    },
+    54: {
+        name: "リヴァイアサン",
+        price: 10000000,
+        yield: 1,
+        owner: null
+    },
+    55: {
+        name: "芋喰女",
+        price: 10000,
+        yield: 50,
+        owner: null
+    },
+    56: {
+        name: "青狸",
+        price: 100000,
+        yield: 10,
+        owner: null
+    },
+    57: {
+        name: "0点",
+        price: 50000,
+        yield: 20,
+        owner: null
+    },
+    58: {
+        name: "風呂好き",
+        price: 40000,
+        yield: 20,
+        owner: null
+    },
+    59: {
+        name: "小金持ち",
+        price: 30000,
+        yield: 20,
+        owner: null
+    },
+    60: {
+        name: "映画版",
+        price: 200000,
+        yield: 5,
+        owner: null
+    },
+    61: {
+        name: "サーニャ",
+        price: 100000,
+        yield: 10,
+        owner: null
+    },
+    62: {
+        name: "ロイホ",
+        price: 200000,
+        yield: 8,
+        owner: null
+    },
+    63: {
+        name: "夜",
+        price: 200000,
+        yield: 8,
+        owner: null
+    },
+    64: {
+        name: "ポンド",
+        price: 50000,
+        yield: 10,
+        owner: null
+    },
+    65: {
+        name: "エレガント",
+        price: 20000,
+        yield: 20,
+        owner: null
+    },
+    
 
 
 
@@ -1101,32 +1251,32 @@ const ASSET_BOXES = {
         contents: [23, 24, 25, 26, 27,  5026, 5027, 5028, 5029, 5030]
     },
     7: {
-        name: "サニー号",
+        name: "太陽号",
         contents: [28,29,30,31,32,33,34,35,5031, 5032, 5033, 5034, 5035]
     },
     8: {
-        name: "木の葉の里",
+        name: "葉の里",
         contents: [36,37,38,39,40, 5036, 5037, 5038, 5039, 5040]
     },
     9: {
-        name: "○○店",
-        contents: [5041, 5042, 5043, 5044, 5045]
+        name: "アカデミア",
+        contents: [41,42,43,44,45,5041, 5042, 5043, 5044, 5045]
     },
     10: {
-        name: "○○店",
-        contents: [5046, 5047, 5048, 5049, 5050]
+        name: "銀多摩",
+        contents: [46,47,48,49,50,5046, 5047, 5048, 5049, 5050]
     },
     11: {
-        name: "○○店",
-        contents: [5051, 5052, 5053, 5054, 5055]
+        name: "進撃の人",
+        contents: [51,52,53,54,55, 5051, 5052, 5053, 5054, 5055]
     },
     12: {
-        name: "○○店",
-        contents: [5056, 5057, 5058, 5059, 5060]
+        name: "SFアニメ",
+        contents: [56,57,58,59,60, 5056, 5057, 5058, 5059, 5060]
     },
     13: {
-        name: "○○店",
-        contents: [5061, 5062, 5063, 5064, 5065]
+        name: "スパイアクション",
+        contents: [61,62,63,64,65, 5061, 5062, 5063, 5064, 5065]
     },
     14: {
         name: "○○店",
