@@ -4811,7 +4811,7 @@
         display: none;
     }
 
-    .map-board {
+   .map-board {
     position: relative;
 
     width: 3600px;
@@ -4824,6 +4824,11 @@
     flex-shrink: 0;
 
     overflow: hidden;
+
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+
+    contain: layout paint;
 }
 
 .map-background {
@@ -4838,7 +4843,11 @@
     z-index: 0;
 
     pointer-events: none;
+
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
+
 .map-background-tile:nth-child(1) {
     left: 0;
     top: 0;
