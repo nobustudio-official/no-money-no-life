@@ -432,7 +432,7 @@ let bossCounterEnabled = false;
 // ボス報酬設定
 
 const BOSS_DAMAGE_MULTIPLIER =
-    5;
+    6;
 
 // =========================
 // ボスカウンター無効判定
@@ -4990,6 +4990,8 @@ fitHudDestinationLabels();
 
             player.position =
             nextPosition;
+
+        renderMap();
 
         renderPlayers();
 
@@ -11490,6 +11492,12 @@ if (
         players.length;
 
 
+    // =========================
+    // プレイヤー切り替え直後に
+    // ボスまでのガイド線を更新
+    // =========================
+
+    refreshShortestPathToBoss();
 
 
 //SE:プレイヤー切り替え
