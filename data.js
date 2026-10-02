@@ -204,9 +204,9 @@ const MONSTER_CONTENTS = {
         name: "きっくん",
         icon:  "images/characters/enemy/normal/きっくん.png",
         hp: 1000000,
-        attack: 900000,
+        attack: 30000,
         magicReward: 1000,
-        goldReward: 5000000
+        goldReward: 2500000
     }
 
 };
@@ -227,7 +227,7 @@ const ITEM_CONTENTS = {
 
     2: {
         name: "タクシーチケット",
-        price: 20000,
+        price: 30000,
         category: "move",
         effect: "サイコロを3個振れる",
         rank: 1
@@ -235,7 +235,7 @@ const ITEM_CONTENTS = {
 
     3: {
         name: "グリーン車",
-        price: 30000,
+        price: 50000,
         category: "move",
         effect: "サイコロを4個振れる",
         rank: 1
@@ -243,7 +243,7 @@ const ITEM_CONTENTS = {
 
     4: {
         name: "ビジネスクラス",
-        price: 40000,
+        price: 70000,
         category: "move",
         effect: "サイコロを5個振れる",
         rank: 2
@@ -251,7 +251,7 @@ const ITEM_CONTENTS = {
 
     5: {
         name: "ファーストクラス",
-        price: 60000,
+        price: 100000,
         category: "move",
         effect: "サイコロを6個振れる",
         rank: 2
@@ -259,7 +259,7 @@ const ITEM_CONTENTS = {
 
     6: {
         name: "プライベートジェット",
-        price: 80000,
+        price: 150000,
         category: "move",
         effect: "サイコロを8個振れる",
         rank: 3
@@ -267,7 +267,7 @@ const ITEM_CONTENTS = {
 
     7: {
         name: "走れ、メロス",
-        price: 100000,
+        price: 200000,
         category: "move",
         effect: "サイコロを10個振れる",
         rank: 3
@@ -295,12 +295,12 @@ const ITEM_CONTENTS = {
 
     10: {
         name: "ダンベル",
-        price: 10000,
+        price: 20000,
         category: "passive",
-        effect: "相手に与えるダメージ＋100",
+        effect: "相手に与えるダメージ＋50",
         effectType: "damageBonus",
         effectTarget: "self",
-        effectValue: 100,
+        effectValue: 50,
         effectDuration: "permanent",
         rank: 1
     },
@@ -393,7 +393,7 @@ const MAGIC_CONTENTS = {
         buffStat: null,
         buffRate: null,
         buffDuration: null,
-        price: 30000,
+        price: 50000,
         actionAfterUse: "end",
         rank: 0
     },
@@ -411,7 +411,7 @@ const MAGIC_CONTENTS = {
         buffStat: null,
         buffRate: null,
         buffDuration: null,
-        price: 50000,
+        price: 80000,
         actionAfterUse: "end",
         rank: 0
     },
@@ -461,7 +461,7 @@ const MAGIC_CONTENTS = {
         buffStat: null,
         buffRate: null,
         buffDuration: null,
-        price: 80000,
+        price: 100000,
         actionAfterUse: "end",
         rank: 0
     },
@@ -1043,7 +1043,7 @@ const BOSS_CONTENTS = {
         hp: 4000,
         attack: 1500,
         counterDamage: 300,
-        reward: 25000
+        reward: 20000
     },
 
     3: {
@@ -1052,7 +1052,7 @@ const BOSS_CONTENTS = {
         hp: 5000,
         attack: 2000,
         counterDamage: 400,
-        reward: 30000
+        reward: 25000
     },
 
     4: {
@@ -1061,7 +1061,7 @@ const BOSS_CONTENTS = {
         hp: 6000,
         attack: 2500,
         counterDamage: 500,
-        reward: 40000
+        reward: 30000
     },
 
     5: {
@@ -1070,7 +1070,7 @@ const BOSS_CONTENTS = {
         hp: 8000,
         attack: 3000,
         counterDamage: 800,
-        reward: 50000
+        reward: 40000
     },
 
     6: {
@@ -1079,7 +1079,7 @@ const BOSS_CONTENTS = {
         hp: 10000,
         attack: 4000,
         counterDamage: 900,
-        reward: 70000
+        reward: 50000
     },
 
     7: {
@@ -1088,7 +1088,7 @@ const BOSS_CONTENTS = {
         hp: 12000,
         attack: 5000,
         counterDamage: 1000,
-        reward: 100000
+        reward:60000
     },
     8: {
         name: "ダークドラゴン",
@@ -1096,7 +1096,7 @@ const BOSS_CONTENTS = {
         hp: 15000,
         attack: 6000,
         counterDamage: 1100,
-        reward: 120000
+        reward: 80000
     },
     9: {
         name: "シャイニングナイト",
@@ -1104,7 +1104,7 @@ const BOSS_CONTENTS = {
         hp: 17000,
         attack: 8000,
         counterDamage: 1200,
-        reward: 150000
+        reward: 120000
     },
     10: {
         name: "水原二平",
@@ -1112,7 +1112,7 @@ const BOSS_CONTENTS = {
         hp: 20000,
         attack: 10000,
         counterDamage: 1300,
-        reward: 200000
+        reward: 150000
     },
     11: {
         name: "オクトパン",
@@ -1120,7 +1120,7 @@ const BOSS_CONTENTS = {
         hp: 22000,
         attack: 11000,
         counterDamage: 1350,
-        reward: 220000
+        reward: 180000
     },
     12: {
         name: "フレイムナイト",
@@ -1128,15 +1128,15 @@ const BOSS_CONTENTS = {
         hp: 24000,
         attack: 12000,
         counterDamage: 1500,
-        reward: 250000
+        reward: 200000
     },
     13: {
         name: "リーフウィッチ",
         icon: "images/characters/enemy/boss/リーフウィッチ.png",
-        hp: 27000,
+        hp: 25000,
         attack: 14000,
         counterDamage: 1600,
-        reward: 280000
+        reward: 220000
     },
     14: {
         name: "メタルスカイ",
@@ -1144,15 +1144,31 @@ const BOSS_CONTENTS = {
         hp: 30000,
         attack: 15000,
         counterDamage: 1700,
-        reward: 300000
+        reward: 250000
     },
     15: {
-        name: "魔王",
-        icon: "images/characters/enemy/boss/デビルロード.png",
-        hp: 50000,
-        attack: 20000,
+        name: "ライオンナイト",
+        icon: "images/characters/enemy/boss/ライオンナイト.png",
+        hp: 33000,
+        attack: 18000,
         counterDamage: 2000,
-        reward: 500000
+        reward: 280000
+    },
+     16: {
+        name: "少林パンダ",
+        icon: "images/characters/enemy/boss/少林パンダ.png",
+        hp: 36000,
+        attack: 20000,
+        counterDamage: 2200,
+        reward: 300000
+    },
+    17: {
+        name: "クリスタルウルフ",
+        icon: "images/characters/enemy/boss/クリスタルウルフ.png",
+        hp: 40000,
+        attack: 24000,
+        counterDamage: 2400,
+        reward: 330000
     },
 
 
