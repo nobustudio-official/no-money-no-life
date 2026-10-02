@@ -11,14 +11,32 @@ const adventureBGM =
     new Audio("BGM/冒険.mp3");
 
 let bgmAudioContext = null;
+
 let adventureBGMGain = null;
+let townBGMGain = null;
+let nobilityBGMGain = null;
+let bossVictoryBGMGain = null;
+let bossBattleBGMGain = null;
 
 adventureBGM.loop = true;
 adventureBGM.volume = 1.0;
 adventureBGM.preload = "auto";
 
-        // 冒険BGM 音量コントロール
-        function setupAdventureBGM() {
+// =========================
+// BGM共通再生処理
+// Web / スマホ対応
+// =========================
+
+// =========================
+// BGM共通再生処理
+// Web / スマホ対応
+// =========================
+
+function setupBGM(
+    bgm,
+    gainNode,
+    gainSetter
+) {
 
     // =========================
     // ローカル環境
@@ -26,12 +44,23 @@ adventureBGM.preload = "auto";
 
     if (location.protocol === "file:") {
 
-        adventureBGM.volume =
+        stopAllBGM();
+
+        bgm.volume =
             BGM_VOLUME;
 
-        adventureBGM.currentTime = 0;
+        bgm.currentTime = 0;
 
-        adventureBGM.play();
+        bgm.play().catch(
+            function (error) {
+
+                console.warn(
+                    "【BGM】再生失敗：",
+                    error
+                );
+
+            }
+        );
 
         return;
     }
@@ -49,6 +78,187 @@ adventureBGM.preload = "auto";
 
         bgmAudioContext =
             new AudioContext();
+
+    }
+
+
+    // =========================
+    // GainNode作成
+    // =========================
+
+    if (!gainNode) {
+
+        gainNode =
+            bgmAudioContext.createGain();
+
+        const source =
+            bgmAudioContext.createMediaElementSource(
+                bgm
+            );
+
+        source.connect(
+            gainNode
+        );
+
+        gainNode.connect(
+            bgmAudioContext.destination
+        );
+
+        gainNode.gain.value =
+            BGM_VOLUME;
+
+        gainSetter(
+            gainNode
+        );
+
+    }
+
+
+    // =========================
+    // 現在のBGMを停止
+    // =========================
+
+    stopAllBGM();
+
+
+    // =========================
+    // BGMを最初から再生
+    // =========================
+
+    bgm.currentTime = 0;
+
+    bgm.play().catch(
+        function (error) {
+
+            console.warn(
+                "【BGM】再生失敗：",
+                error
+            );
+
+        }
+    );
+
+
+    // =========================
+    // AudioContextを再開
+    // =========================
+
+    if (
+        bgmAudioContext.state ===
+        "suspended"
+    ) {
+
+        bgmAudioContext.resume();
+
+    }
+
+}
+
+// =========================
+// BGM GainNode設定
+// =========================
+
+function setAdventureBGMGain(
+    gain
+) {
+
+    adventureBGMGain =
+        gain;
+
+}
+
+
+function setTownBGMGain(
+    gain
+) {
+
+    townBGMGain =
+        gain;
+
+}
+
+
+function setNobilityBGMGain(
+    gain
+) {
+
+    nobilityBGMGain =
+        gain;
+
+}
+
+
+function setBossVictoryBGMGain(
+    gain
+) {
+
+    bossVictoryBGMGain =
+        gain;
+
+}
+
+
+function setBossBattleBGMGain(
+    gain
+) {
+
+    bossBattleBGMGain =
+        gain;
+
+}
+
+
+// =========================
+// 冒険BGM
+// =========================
+
+function setupAdventureBGM() {
+
+    // =========================
+    // ローカル環境
+    // =========================
+
+    if (location.protocol === "file:") {
+
+        stopAllBGM();
+
+        adventureBGM.volume =
+            BGM_VOLUME;
+
+        adventureBGM.currentTime = 0;
+
+        adventureBGM.play().catch(
+            function (error) {
+
+                console.warn(
+                    "【冒険BGM】再生失敗：",
+                    error
+                );
+
+            }
+        );
+
+        return;
+    }
+
+
+    // =========================
+    // Web環境
+    // =========================
+
+    if (!bgmAudioContext) {
+
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        bgmAudioContext =
+            new AudioContext();
+
+    }
+
+
+    if (!adventureBGMGain) {
 
         adventureBGMGain =
             bgmAudioContext.createGain();
@@ -68,24 +278,95 @@ adventureBGM.preload = "auto";
 
         adventureBGMGain.gain.value =
             BGM_VOLUME;
+
     }
+
 
     stopAllBGM();
 
-adventureBGM.currentTime = 0;
+    adventureBGM.currentTime = 0;
 
-// 再生開始
-adventureBGM.play();
+    adventureBGM.play().catch(
+        function (error) {
 
-    // AudioContextを再開
+            console.warn(
+                "【冒険BGM】再生失敗：",
+                error
+            );
+
+        }
+    );
+
+
     if (
         bgmAudioContext.state ===
         "suspended"
     ) {
+
         bgmAudioContext.resume();
+
     }
+
 }
-        
+
+// =========================
+// 各BGMのWeb / スマホ用設定
+// =========================
+
+function setupBGMGain(
+    bgm,
+    gainNode
+) {
+
+    if (location.protocol === "file:") {
+
+        return;
+
+    }
+
+
+    if (!bgmAudioContext) {
+
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        bgmAudioContext =
+            new AudioContext();
+
+    }
+
+
+    if (gainNode) {
+
+        return gainNode;
+
+    }
+
+
+    const newGain =
+        bgmAudioContext.createGain();
+
+    const source =
+        bgmAudioContext.createMediaElementSource(
+            bgm
+        );
+
+    source.connect(
+        newGain
+    );
+
+    newGain.connect(
+        bgmAudioContext.destination
+    );
+
+    newGain.gain.value =
+        BGM_VOLUME;
+
+    return newGain;
+
+}
+
 //街
 const townBGM =
     new Audio("BGM/街.mp3");
@@ -156,20 +437,71 @@ function setBGMVolume(volume) {
 
 
     // =========================
-    // その他のBGM
+    // 街BGM
     // =========================
 
-    townBGM.volume =
-        volume;
+    if (townBGMGain) {
 
-    nobilityBGM.volume =
-        volume;
+        townBGMGain.gain.value =
+            volume;
 
-    bossVictoryBGM.volume =
-        volume;
+    } else {
 
-    bossBattleBGM.volume =
-        volume;
+        townBGM.volume =
+            volume;
+
+    }
+
+
+    // =========================
+    // 貴族BGM
+    // =========================
+
+    if (nobilityBGMGain) {
+
+        nobilityBGMGain.gain.value =
+            volume;
+
+    } else {
+
+        nobilityBGM.volume =
+            volume;
+
+    }
+
+
+    // =========================
+    // 凱旋BGM
+    // =========================
+
+    if (bossVictoryBGMGain) {
+
+        bossVictoryBGMGain.gain.value =
+            volume;
+
+    } else {
+
+        bossVictoryBGM.volume =
+            volume;
+
+    }
+
+
+    // =========================
+    // ボス戦BGM
+    // =========================
+
+    if (bossBattleBGMGain) {
+
+        bossBattleBGMGain.gain.value =
+            volume;
+
+    } else {
+
+        bossBattleBGM.volume =
+            volume;
+
+    }
 
 }
 
