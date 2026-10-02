@@ -278,29 +278,29 @@ const ITEM_CONTENTS = {
         price: 100000,
         category: "move",
         effect: "6マス以内の好きなマスに止まれる",
-        rank: 3
+        rank: 1
     },
 
     9: {
         name: "お守り",
         price: 10000,
         category: "passive",
-        effect: "相手から受けるダメージ－100",
+        effect: "相手から受けるダメージ－500",
         effectType: "damageReduction",
         effectTarget: "self",
-        effectValue: 100,
+        effectValue: 500,
         effectDuration: "permanent",
         rank: 1
     },
 
     10: {
         name: "ダンベル",
-        price: 20000,
+        price: 10000,
         category: "passive",
-        effect: "相手に与えるダメージ＋100",
+        effect: "相手に与えるダメージ＋500",
         effectType: "damageBonus",
         effectTarget: "self",
-        effectValue: 100,
+        effectValue: 500,
         effectDuration: "permanent",
         rank: 1
     },
@@ -309,23 +309,23 @@ const ITEM_CONTENTS = {
         name: "幸運の財布",
         price: 0,
         category: "passive",
-        effect: "ターン開始時に3000G獲(5ターンで消滅)",
+        effect: "5ターンの間、開始時8000G獲得",
         effectType: "goldGain",
         effectTarget: "self",
-        effectValue: 3000,
+        effectValue: 8000,
         effectDuration: "5turn",
         rank: 1
     },
 
     12: {
-        name: "免罪符（笑）",
+        name: "免罪符",
         price: 20000,
         category: "passive",
         effect: "3ターンの間ボスカウンター無効化",
         effectType: "bossCounterImmunity",
         effectTarget: "self",
         effectDuration: "3turn",
-        rank: 1
+        rank: 2
     },
     13: {
         name: "ロスノート",
@@ -707,7 +707,7 @@ const JOB_CONTENTS = {
 
     1: {
         name: "居酒屋",
-        unitPrice: 17000
+        unitPrice: 19000
     },
 
     2: {
@@ -739,7 +739,7 @@ const BOSS_CONTENTS = {
         icon: "images/characters/enemy/boss/デビルロード.png",
         hp: 2000,
         attack: 1000,
-        counterDamage: 500,
+        counterDamage: 200,
         reward: 15000
     },
 
@@ -748,7 +748,7 @@ const BOSS_CONTENTS = {
         icon: "images/characters/enemy/boss/アイスクイーン.png",
         hp: 4000,
         attack: 1500,
-        counterDamage: 600,
+        counterDamage: 300,
         reward: 25000
     },
 
@@ -757,7 +757,7 @@ const BOSS_CONTENTS = {
         icon: "images/characters/enemy/boss/いただきリリィ.png",
         hp: 5000,
         attack: 2000,
-        counterDamage: 700,
+        counterDamage: 400,
         reward: 30000
     },
 
@@ -766,16 +766,16 @@ const BOSS_CONTENTS = {
         icon: "images/characters/enemy/boss/スカルゴースト.png",
         hp: 6000,
         attack: 2500,
-        counterDamage: 850,
+        counterDamage: 500,
         reward: 40000
     },
 
     5: {
-        name: "水原二平",
-        icon: "images/characters/enemy/boss/水原二平.png",
+        name: "野々村",
+        icon: "images/characters/enemy/boss/野々村.png",
         hp: 8000,
         attack: 3000,
-        counterDamage: 1000,
+        counterDamage: 800,
         reward: 50000
     },
 
@@ -784,17 +784,41 @@ const BOSS_CONTENTS = {
         icon: "images/characters/enemy/boss/ロックス.png",
         hp: 10000,
         attack: 4000,
-        counterDamage: 1100,
+        counterDamage: 900,
         reward: 70000
     },
 
     7: {
-        name: "野々村",
-        icon: "images/characters/enemy/boss/野々村.png",
+        name: "ウッドビット",
+        icon: "images/characters/enemy/boss/ウッドビット.png",
         hp: 12000,
         attack: 5000,
-        counterDamage: 1300,
+        counterDamage: 1000,
         reward: 100000
+    },
+    8: {
+        name: "ダークドラゴン",
+        icon: "images/characters/enemy/boss/ダークドラゴン.png",
+        hp: 15000,
+        attack: 6000,
+        counterDamage: 1100,
+        reward: 120000
+    },
+    9: {
+        name: "シャイニングナイト",
+        icon: "images/characters/enemy/boss/シャイニングナイト.png",
+        hp: 17000,
+        attack: 8000,
+        counterDamage: 1200,
+        reward: 150000
+    },
+    10: {
+        name: "水原二平",
+        icon: "images/characters/enemy/boss/水原二平.png",
+        hp: 20000,
+        attack: 10000,
+        counterDamage: 1300,
+        reward: 200000
     }
 
 };
@@ -842,7 +866,7 @@ const SHOP_BOXES = {
 
     2: {
         name: "鷹島屋",
-        magicContents: [2, 5, 6],
+        magicContents: [2, 3, 5, 6],
         powerContents: [1, 2, 3],
         itemContents: [4, 5, 6, 9, 10, 12]
     },
@@ -890,6 +914,102 @@ const ASSET_BOXES = {
     6: {
         name: "ダインー",
         contents: [5026, 5027, 5028, 5029, 5030]
+    },
+    7: {
+        name: "○○店",
+        contents: [5031, 5032, 5033, 5034, 5035]
+    },
+    8: {
+        name: "○○店",
+        contents: [5036, 5037, 5038, 5039, 5040]
+    },
+    9: {
+        name: "○○店",
+        contents: [5041, 5042, 5043, 5044, 5045]
+    },
+    10: {
+        name: "○○店",
+        contents: [5046, 5047, 5048, 5049, 5050]
+    },
+    11: {
+        name: "○○店",
+        contents: [5051, 5052, 5053, 5054, 5055]
+    },
+    12: {
+        name: "○○店",
+        contents: [5056, 5057, 5058, 5059, 5060]
+    },
+    13: {
+        name: "○○店",
+        contents: [5061, 5062, 5063, 5064, 5065]
+    },
+    14: {
+        name: "○○店",
+        contents: [5066, 5067, 5068, 5069, 5070]
+    },
+    15: {
+        name: "○○店",
+        contents: [5071, 5072, 5073, 5074, 5075]
+    },
+    16: {
+        name: "○○店",
+        contents: [5076, 5077, 5078, 5079, 5080]
+    },
+    17: {
+        name: "○○店",
+        contents: [5081, 5082, 5083, 5084, 5085]
+    },
+    18: {
+        name: "○○店",
+        contents: [5086, 5087, 5088, 5089, 5090]
+    },
+    19: {
+        name: "○○店",
+        contents: [5091, 5092, 5093, 5094, 5095]
+    },
+    20: {
+        name: "○○店",
+        contents: [5096, 5097, 5098, 5099, 5100]
+    },
+    21: {
+        name: "○○店",
+        contents: [5101, 5102, 5103, 5104, 5105]
+    },
+    22: {
+        name: "○○店",
+        contents: [5106, 5107, 5108, 5109, 5110]
+    },
+    23: {
+        name: "○○店",
+        contents: [5111, 5112, 5113, 5114, 5115]
+    },
+    24: {
+        name: "○○店",
+        contents: [5116, 5117, 5118, 5119, 5120]
+    },
+    25: {
+        name: "○○店",
+        contents: [5121, 5122, 5123, 5124, 5125]
+    },
+    26: {
+        name: "○○店",
+        contents: [5126, 5127, 5128, 5129, 5130]
+    },
+    27: {
+        name: "○○店",
+        contents: [5131, 5132, 5133, 5134, 5135]
+    },
+    28: {
+        name: "○○店",
+        contents: [5136, 5137, 5138, 5139, 5140]
+    },
+    29: {
+        name: "○○店",
+        contents: [5141, 5142, 5143, 5144, 5145]
+    },
+    30: {
+        name: "○○店",
+        contents: [5146, 5147, 5148, 5149, 5150]
     }
 
 };
