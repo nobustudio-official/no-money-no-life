@@ -1234,7 +1234,7 @@ characterButtons.forEach(
     money: 10000,
     magicPower: 1000,
     bossDamage: 0,
-    position: 17,   
+    position: 139,   
     color: playerColors[index],
     characterId:
     Number(
@@ -9220,7 +9220,7 @@ function checkPlayerRespawn(player, callback) {
 
     // リスポーン
     player.money = respawnGold;
-    player.position = 17;
+    player.position = 139;
 
     // 固定アイテム「12」を付与
     // リスポーン時の固定アイテム
