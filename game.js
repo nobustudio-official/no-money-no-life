@@ -2998,7 +2998,7 @@ node.appendChild(
 
 
                 playersHere.forEach(
-                    function (
+                                       function (
                         player,
                         index
                     ) {
@@ -3009,13 +3009,42 @@ node.appendChild(
                             );
 
 
-                        piece.className =
-    "player-piece player-sprite";
+                        const playerIndex =
+                            players.indexOf(player);
 
 
-//現在プレイヤー番号を保持
+// =========================
+// プレイヤーの表示状態
+// =========================
+//
+// 現在ターンのプレイヤー
+// → 通常表示
+//
+// それ以外
+// → 薄く・小さく表示
+//
+
+if (
+    playerIndex === currentPlayer
+) {
+
+    piece.className =
+        "player-piece player-sprite player-piece-current";
+
+} else {
+
+    piece.className =
+        "player-piece player-sprite player-piece-other";
+
+}
+
+
+// =========================
+// 現在プレイヤー番号を保持
+// =========================
+
 piece.dataset.playerIndex =
-    players.indexOf(player);
+    playerIndex;
 
 
 piece.setAttribute(
@@ -3027,7 +3056,7 @@ piece.setAttribute(
 
                         updatePlayerSprite(
                             piece,
-                            players.indexOf(player),
+                            playerIndex,
                             player
                         );
 
@@ -3037,6 +3066,7 @@ piece.setAttribute(
                         // =========================
                         // 1人なら完全中央。
                         // 複数人の場合だけ左右対称に分散します。
+
                         const playerCount =
                             playersHere.length;
 
@@ -3063,8 +3093,8 @@ piece.setAttribute(
 
 
                         node.appendChild(
-    piece
-);
+                            piece
+                        );
 
 
 // =========================
@@ -3073,11 +3103,11 @@ piece.setAttribute(
 //
 // 現在ターンのプレイヤーだけに表示します。
 // renderMap() は移動のたびにプレイヤーを
-// 作り直すため、ここでもUIを復元します。
+// 作り直すため、ここでもUIを復元します.
 //
 
 if (
-    players.indexOf(player) ===
+    playerIndex ===
         currentPlayer &&
     diceMovementState.active &&
     remainingSteps > 0
@@ -5862,15 +5892,6 @@ function moveDicePlayerToSquare(
 
 
         // =========================
-        // 残り歩数
-        // =========================
-
-        remainingSteps =
-            remainingPath.length -
-            index;
-
-
-        // =========================
         // 1マス移動
         // =========================
 
@@ -5879,14 +5900,18 @@ function moveDicePlayerToSquare(
             remainingPath[index]
         );
 
-
         diceMovementState.history.push(
             remainingPath[index]
         );
 
-
         index += 1;
 
+        // =========================
+        // 1マス移動した後の残り歩数
+        // =========================
+
+        remainingSteps =
+            remainingPath.length - index;
 
         renderTurn();
 
@@ -6586,6 +6611,7 @@ function hideDiceMovementReturnButton() {
 // 同じ出目の歩数で移動をやり直します。
 // =========================
 
+
 function setupDiceMovementReturnButton() {
 
     const button =
@@ -6660,9 +6686,10 @@ function setupDiceMovementReturnButton() {
                 totalSteps;
 
             // =========================
-            // プレイヤー・残り歩数を更新
-            // マップ本体は再描画しない
+            // マップ・プレイヤー・残り歩数を更新
             // =========================
+
+            renderMap();
 
             renderPlayers();
 
@@ -6681,7 +6708,6 @@ function setupDiceMovementReturnButton() {
         };
 
 }
-
 
 // =========================
 // サイコロ移動の終了
