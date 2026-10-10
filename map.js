@@ -49,7 +49,7 @@ window.mapData = [
         x: 1730,
         y: 700
     },
-
+ 
     {
         id: 14,
         type: "job",
