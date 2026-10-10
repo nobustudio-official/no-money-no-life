@@ -1654,6 +1654,9 @@ loadMapData()
             maxTurns
         );
 
+        if (window.onlineGame?.isOnline && typeof window.onlineGame.submitInitialState === 'function') {
+            window.onlineGame.submitInitialState();
+        }
 
 // =========================
 // ボス決定演出
@@ -1923,9 +1926,382 @@ function showGameScreen(
     let remainingSteps = 0;
     let currentTurn = 1;
 
+    // Online bootstrap: the server stores one canonical initial state (host wins).
+    // The browser only applies the server's snapshot; this does not yet move all game rules server-side.
+    if (window.onlineGame?.isOnline && window.onlineGame.socket) {
+        const onlineSocket = window.onlineGame.socket;
+        let applyingOnlineInitialState = false;
+        let lastAppliedOnlineRevision = 0;
+        // Serialize every plain-data field on each player, not only the fields
+        // that happened to be needed by the first synchronization patch.
+        // Identity and presentation fields remain local/canonical.
+        const cloneOnlineData = value => {
+            try {
+                const json = JSON.stringify(value);
+                return json && json.length <= 30000 ? JSON.parse(json) : null;
+            } catch (_) { return null; }
+        };
+        const buildOnlineSnapshot = () => ({
+            players: players.map(player => {
+                const data = cloneOnlineData(player) || {};
+                delete data.color;
+                delete data.id;
+                return data;
+            }),
+            currentBossSquareId, previousBossSquareId, bossDefeatedCount, currentBossId,
+            currentBossHP, bossRewardGiven, bossCounterEnabled, gameStarted,
+            bossFirstPlayerIndex: players.indexOf(bossFirstPlayer),
+            maouState: typeof window.getMaouOnlineState === 'function' ? window.getMaouOnlineState() : null,
+            assetOwners: (typeof ASSET_CONTENTS !== 'undefined')
+                ? Object.fromEntries(Object.entries(ASSET_CONTENTS).map(([id, asset]) => [id, asset?.owner ?? null]))
+                : {}
+        });
+        const publishOnlineSnapshot = () => {
+            if (!window.onlineGame?.isOnline || !onlineSocket.connected || applyingOnlineInitialState) return;
+            // A movement path is already committed on the server. Do not let the
+            // periodic compatibility snapshot overwrite its destination with an
+            // intermediate animation position while the piece is moving.
+            if (window.onlineGame._movementRequestPending || (typeof diceMovementState !== 'undefined' && diceMovementState.autoMoving)) return;
+            onlineSocket.emit('game:state:publish', buildOnlineSnapshot(), response => {
+                if (response && !response.ok && !response.error?.includes('自分の手番以外')) console.warn('[online] 状態同期:', response.error);
+            });
+        };
+        window.onlineGame.publishSnapshot = publishOnlineSnapshot;
+        const applyCanonicalInitialState = function (state) {
+            if (!state || !Array.isArray(state.players) || state.players.length !== players.length) return;
+            applyingOnlineInitialState = true;
+            lastAppliedOnlineRevision = Number(state.revision) || lastAppliedOnlineRevision;
+            state.players.forEach((source, index) => {
+                const target = players[index];
+                if (!target || !source) return;
+                // Keep room identity and local rendering color stable, while applying
+                // all JSON-safe gameplay fields (including newer fields added later).
+                for (const [key, value] of Object.entries(source)) {
+                    if (['id', 'name', 'characterId', 'color'].includes(key)) continue;
+                    const cloned = cloneOnlineData(value);
+                    if (cloned !== null) target[key] = cloned;
+                }
+                if (source.name) target.name = source.name;
+                if (source.characterId != null) target.characterId = source.characterId;
+            });
+            currentBossSquareId = Number.isInteger(state.currentBossSquareId) ? state.currentBossSquareId : null;
+            previousBossSquareId = Number.isInteger(state.previousBossSquareId) ? state.previousBossSquareId : null;
+            if (Number.isInteger(state.bossFirstPlayerIndex) && state.bossFirstPlayerIndex >= 0 && state.bossFirstPlayerIndex < players.length) {
+                bossFirstPlayer = players[state.bossFirstPlayerIndex];
+            } else if (state.bossFirstPlayerIndex === -1) {
+                bossFirstPlayer = null;
+            }
+            if (typeof state.gameStarted === 'boolean') gameStarted = state.gameStarted;
+            bossDefeatedCount = Number(state.bossDefeatedCount) || 0;
+            currentBossId = Number(state.currentBossId) || 1;
+            currentBossHP = Number(state.currentBossHP) || 0;
+            bossRewardGiven = Boolean(state.bossRewardGiven);
+            bossCounterEnabled = Boolean(state.bossCounterEnabled);
+            if (state.maouState && typeof window.applyMaouOnlineState === 'function') {
+                window.applyMaouOnlineState(state.maouState);
+            }
+            if (typeof ASSET_CONTENTS !== 'undefined' && state.assetOwners && typeof state.assetOwners === 'object') {
+                Object.entries(state.assetOwners).forEach(([id, owner]) => {
+                    if (ASSET_CONTENTS[id]) ASSET_CONTENTS[id].owner = owner ?? null;
+                });
+            }
+            currentPlayer = Number.isInteger(state.activePlayerIndex) ? state.activePlayerIndex : 0;
+            currentTurn = Number(state.currentTurn) || 1;
+            maxTurns = Number(state.maxTurns) || maxTurns;
+            if (typeof renderMap === 'function') renderMap();
+            if (typeof renderPlayers === 'function') renderPlayers();
+            if (typeof renderTurn === 'function') renderTurn();
+            players.forEach(player => { if (typeof updatePlayerStatusUI === 'function') updatePlayerStatusUI(player); });
+            applyingOnlineInitialState = false;
+            window.onlineGame.refreshTurnLock?.();
+            console.info('[online] サーバーの初期ゲーム状態を適用しました。revision:', state.revision);
+        };
+        onlineSocket.on('game:state:init', applyCanonicalInitialState);
+        onlineSocket.on('game:state:snapshot', state => {
+            if (!state || !Array.isArray(state.players) || state.players.length !== players.length) return;
+            const revision = Number(state.revision) || 0;
+            if (revision && revision <= lastAppliedOnlineRevision) return;
+            applyCanonicalInitialState(state);
+            lastAppliedOnlineRevision = revision;
+        });
+        onlineSocket.on('connect', () => {
+            if (!window.onlineGame?.isOnline) return;
+            onlineSocket.emit('game:state:request', {}, response => {
+                if (response?.ok && response.state) applyCanonicalInitialState(response.state);
+            });
+            window.onlineGame.refreshTurnLock?.();
+        });
+        window.onlineGame.submitInitialState = function () {
+            const payload = {
+                maxTurns,
+                currentBossSquareId,
+                previousBossSquareId,
+                bossDefeatedCount,
+                currentBossId,
+                currentBossHP,
+                bossRewardGiven,
+                bossCounterEnabled,
+                gameStarted,
+                bossFirstPlayerIndex: players.indexOf(bossFirstPlayer),
+                maouState: typeof window.getMaouOnlineState === 'function' ? window.getMaouOnlineState() : null,
+                assetOwners: (typeof ASSET_CONTENTS !== 'undefined')
+                    ? Object.fromEntries(Object.entries(ASSET_CONTENTS).map(([id, asset]) => [id, asset?.owner ?? null]))
+                    : {},
+                players: players.map(player => {
+                    const data = cloneOnlineData(player) || {};
+                    delete data.color;
+                    delete data.id;
+                    return data;
+                })
+            };
+            let attempts = 0;
+            const send = () => {
+                if (!onlineSocket.connected) {
+                    if (attempts++ < 40) return setTimeout(send, 250);
+                    console.error('[online] 初期状態を送信できませんでした: サーバー未接続');
+                    return;
+                }
+                onlineSocket.emit('game:state:initialize', payload, response => {
+                    if (response?.ok && response.state) return applyCanonicalInitialState(response.state);
+                    if (response?.waiting && attempts++ < 40) return setTimeout(send, 250);
+                    console.error('[online] 初期状態の同期に失敗:', response?.error || '不明なエラー');
+                });
+            };
+            send();
+        };
+    }
+
+    // Online sync hooks: server-authoritative dice and movement-path replication.
+    if (window.onlineGame && window.onlineGame.isOnline && window.onlineGame.socket) {
+        const onlineSocket = window.onlineGame.socket;
+        window.onlineGame.applyRemoteMove = function (path, playerIndex = currentPlayer, tries = 25) {
+            const targetPlayer = players[playerIndex];
+            if (!targetPlayer || !Array.isArray(path) || !path.length) {
+                console.warn('[online] 不正な移動経路を受信しました。');
+                return;
+            }
+            // Remote clients do not run the local interactive path-selection flow.
+            // Apply the confirmed server path directly so a missing local diceMovementState
+            // cannot prevent another player's move from appearing.
+            window.onlineGame._applyingRemoteMove = true;
+            targetPlayer.position = path[path.length - 1];
+            // The remote client has no local route-selection flow to consume these steps.
+            // Clear them as soon as the server-confirmed movement is applied.
+            remainingSteps = 0;
+            if (Number.isInteger(playerIndex)) currentPlayer = playerIndex;
+            if (typeof renderMap === 'function') renderMap();
+            if (typeof renderPlayers === 'function') renderPlayers();
+            if (typeof updatePlayerStatusUI === 'function') updatePlayerStatusUI(targetPlayer);
+            if (typeof renderTurn === 'function') renderTurn();
+            if (typeof window.centerCurrentPlayerOnMap === 'function') {
+                try { window.centerCurrentPlayerOnMap(targetPlayer); } catch (_) {}
+            }
+            window.onlineGame._applyingRemoteMove = false;
+            window.onlineGame.refreshTurnLock?.();
+        };
+        let remoteDiceRoll = null;
+        onlineSocket.on('game:dice:rolling', data => {
+            if (!data || data.playerId === onlineSocket.id || data.playerIndex !== currentPlayer) return;
+            // 出目はまだ受信せず、数字が回る演出だけを開始する。
+            remoteDiceRoll = { playerId: data.playerId, playerIndex: data.playerIndex };
+            showDiceRoulette(null, null, { waitForReveal: true });
+        });
+        onlineSocket.on('game:dice:result', data => {
+            if (!data || data.playerId === onlineSocket.id) return;
+            if (!remoteDiceRoll || remoteDiceRoll.playerId !== data.playerId) return;
+            revealRemoteDiceRoulette(data.result, () => {
+                // The active player's client selects the route. Other clients wait for
+                // the server-confirmed game:move:path instead of opening a second route UI.
+                remainingSteps = data.result;
+                renderTurn();
+                remoteDiceRoll = null;
+            });
+        });
+        onlineSocket.on('game:turn:update', data => {
+            if (!data || !Number.isInteger(data.activePlayerIndex)) return;
+            currentPlayer = data.activePlayerIndex;
+            currentTurn = Number(data.currentTurn) || currentTurn;
+            remainingSteps = 0;
+            if (typeof renderTurn === 'function') renderTurn();
+            if (typeof renderMap === 'function') renderMap();
+            players.forEach(player => { if (typeof updatePlayerStatusUI === 'function') updatePlayerStatusUI(player); });
+            window.onlineGame.refreshTurnLock?.();
+        });
+        onlineSocket.on('game:move:path', data => {
+            if (!data || data.playerId === onlineSocket.id) return;
+            window.onlineGame.applyRemoteMove(data.path, data.playerIndex);
+        });
+    }
+
+    // Online turn lock: only the socket owning the active player may interact.
+    // This UI guard complements server-side turn validation; it is not the security boundary.
+    if (window.onlineGame?.isOnline && window.onlineGame.socket) {
+        const onlineSocket = window.onlineGame.socket;
+        let turnLockBanner = null;
+        const isLocalActivePlayer = () => {
+            const online = window.onlineGame;
+            const active = online?.startData?.players?.[currentPlayer];
+            return Boolean(online?.isOnline && onlineSocket.connected && active?.id === onlineSocket.id);
+        };
+        const refreshTurnLock = () => {
+            const allowed = isLocalActivePlayer();
+            document.documentElement.classList.toggle('online-not-my-turn', !allowed);
+            if (!turnLockBanner) {
+                turnLockBanner = document.createElement('div');
+                turnLockBanner.id = 'onlineTurnLockBanner';
+                turnLockBanner.textContent = 'ほかのプレイヤーの手番です';
+                turnLockBanner.style.cssText = 'position:fixed;z-index:99990;top:8px;left:50%;transform:translateX(-50%);padding:8px 14px;border-radius:8px;background:#202a38;color:#fff;border:1px solid #d5b76b;font-weight:700;box-shadow:0 3px 12px #0005;pointer-events:none;display:none';
+                document.body.appendChild(turnLockBanner);
+            }
+            turnLockBanner.style.display = allowed ? 'none' : 'block';
+        };
+        window.onlineGame.refreshTurnLock = refreshTurnLock;
+
+        // Mirror visible modal/popup markup so every participant sees the same
+        // decision screen. Replicas are read-only; the global turn lock prevents
+        // non-active clients from interacting with them.
+        const getVisibleOnlinePopupMarkup = () => {
+            // Capture top-level overlays as well as known nested game dialogs. This
+            // covers the inventory, asset/magic shops, event prompts and the newer
+            // battle UI without duplicating a popup that is already inside a captured root.
+            const selector = [
+                'body > *', '#inventoryPopup', '#battlePopup', '#magicShopPopup',
+                '#battleUIRoot', '.inventory-popup', '.other-menu-popup',
+                '.item-action-popup', '.popup-overlay', '.event-popup', '.game-popup',
+                '.battle-popup', '.battle-new-popup', '.magic-shop-popup',
+                '.asset-popup', '.shop-popup', '.boss-counter-popup',
+                '.boss-destination-popup', '[role="dialog"]', '[aria-modal="true"]'
+            ].join(',');
+            const seen = new Set();
+            const roots = [];
+            const candidates = [...document.querySelectorAll(selector)];
+            for (const element of candidates) {
+                if (element.id === 'onlineTurnLockBanner' || element.id === 'onlineRemoteUiMirror' ||
+                    element.closest('#onlineRemoteUiMirror') || seen.has(element)) continue;
+                const style = window.getComputedStyle(element);
+                if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) continue;
+                const looksLikePopup = element.matches('body > *')
+                    ? (style.position === 'fixed' && Number(style.zIndex || 0) >= 10)
+                    : true;
+                if (!looksLikePopup) continue;
+                // If a parent overlay is already selected, its clone includes this node.
+                if (candidates.some(parent => parent !== element && parent.contains(element) && seen.has(parent))) continue;
+                seen.add(element);
+                const clone = element.cloneNode(true);
+                const originalFields = element.querySelectorAll('input, textarea, select');
+                const clonedFields = clone.querySelectorAll('input, textarea, select');
+                originalFields.forEach((field, index) => {
+                    const copy = clonedFields[index];
+                    if (!copy) return;
+                    if (field.tagName === 'SELECT') {
+                        [...copy.options].forEach((option, i) => option.selected = Boolean(field.options[i]?.selected));
+                    } else if (field.type === 'checkbox' || field.type === 'radio') {
+                        copy.checked = field.checked;
+                        if (field.checked) copy.setAttribute('checked', 'checked'); else copy.removeAttribute('checked');
+                    } else {
+                        copy.setAttribute('value', field.value);
+                        if (field.tagName === 'TEXTAREA') copy.textContent = field.value;
+                    }
+                });
+                clone.querySelectorAll('script, iframe, object, embed').forEach(node => node.remove());
+                clone.querySelectorAll('*').forEach(node => {
+                    [...node.attributes].forEach(attr => {
+                        if (/^on/i.test(attr.name) || ((attr.name === 'href' || attr.name === 'src') && /^\s*javascript:/i.test(attr.value))) node.removeAttribute(attr.name);
+                    });
+                });
+                [...clone.attributes].forEach(attr => {
+                    if (/^on/i.test(attr.name) || ((attr.name === 'href' || attr.name === 'src') && /^\s*javascript:/i.test(attr.value))) clone.removeAttribute(attr.name);
+                });
+                roots.push(clone.outerHTML);
+            }
+            return roots.join('');
+        };
+        let lastPublishedUiMarkup = null;
+        let uiPublishQueued = false;
+        const publishUiSnapshot = () => {
+            uiPublishQueued = false;
+            if (!isLocalActivePlayer() || !onlineSocket.connected) return;
+            const html = getVisibleOnlinePopupMarkup();
+            if (html === lastPublishedUiMarkup) return;
+            if (html.length > 100000) {
+                console.warn('[online] ポップアップが大きすぎるため画面同期を省略しました。');
+                return;
+            }
+            lastPublishedUiMarkup = html;
+            onlineSocket.emit('game:ui:sync', { html }, response => {
+                if (response && !response.ok) console.warn('[online] 画面同期:', response.error);
+            });
+        };
+        const queueUiSnapshot = () => {
+            if (uiPublishQueued) return;
+            uiPublishQueued = true;
+            setTimeout(publishUiSnapshot, 80);
+        };
+        const uiObserver = new MutationObserver(queueUiSnapshot);
+        uiObserver.observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+        onlineSocket.on('game:ui:sync', payload => {
+            if (!payload || typeof payload.html !== 'string' || payload.html.length > 100000 || payload.playerId === onlineSocket.id) return;
+            let mirror = document.getElementById('onlineRemoteUiMirror');
+            if (!mirror) {
+                mirror = document.createElement('div');
+                mirror.id = 'onlineRemoteUiMirror';
+                mirror.style.cssText = 'position:fixed;inset:0;z-index:99989;pointer-events:none;overflow:visible';
+                document.body.appendChild(mirror);
+            }
+            mirror.replaceChildren();
+            if (!payload.html) return;
+            const template = document.createElement('template');
+            template.innerHTML = payload.html;
+            template.content.querySelectorAll('script, iframe, object, embed').forEach(node => node.remove());
+            template.content.querySelectorAll('*').forEach(node => {
+                [...node.attributes].forEach(attr => {
+                    if (/^on/i.test(attr.name) || ((attr.name === 'href' || attr.name === 'src') && /^\s*javascript:/i.test(attr.value))) node.removeAttribute(attr.name);
+                });
+            });
+            mirror.appendChild(template.content.cloneNode(true));
+        });
+        onlineSocket.on('game:turn:update', () => {
+            lastPublishedUiMarkup = null;
+            const mirror = document.getElementById('onlineRemoteUiMirror');
+            if (mirror) mirror.replaceChildren();
+            queueUiSnapshot();
+        });
+        onlineSocket.on('connect', queueUiSnapshot);
+
+        const blockedTarget = () => !isLocalActivePlayer();
+        ['click', 'dblclick', 'pointerdown', 'change', 'submit', 'keydown'].forEach(type => {
+            document.addEventListener(type, event => {
+                if (!blockedTarget(event.target)) return;
+                event.preventDefault();
+                event.stopPropagation();
+                if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+            }, true);
+        });
+        onlineSocket.on('connect', refreshTurnLock);
+        onlineSocket.on('disconnect', refreshTurnLock);
+        setTimeout(refreshTurnLock, 0);
+    }
+
+    // Compatibility snapshot heartbeat: reflects local game mutations to every peer.
+    // The server rejects publications from clients that do not own the active turn.
+    if (window.onlineGame?.isOnline && window.onlineGame.socket) {
+        setInterval(() => window.onlineGame?.publishSnapshot?.(), 500);
+    }
+
     window.getCurrentTurn = function () {
     return currentTurn;
     };
+
+    function notifyOnlineTurnAdvanced() {
+        const online = window.onlineGame;
+        if (!online?.isOnline || !online.socket?.connected || !Array.isArray(online.startData?.players) || !players.length) return;
+        const previousIndex = (currentPlayer + players.length - 1) % players.length;
+        const previousOnlinePlayer = online.startData.players[previousIndex];
+        if (previousOnlinePlayer?.id !== online.socket.id) return;
+        online.socket.emit('game:turn:end', {}, response => {
+            if (!response?.ok) console.warn('[online] ターン同期に失敗:', response?.error);
+        });
+    }
 
     // =========================
     // サイコロ移動状態
@@ -5706,10 +6082,21 @@ function highlightDiceReachableSquares(
                     // 自動移動
                     // =========================
 
-                    moveDicePlayerToSquare(
-                        player,
-                        path
-                    );
+                    if (window.onlineGame?.isOnline && window.onlineGame.socket?.connected &&
+                        !window.onlineGame._applyingRemoteMove) {
+                        window.onlineGame._movementRequestPending = true;
+                        window.onlineGame.socket.emit('game:move:request', { path }, response => {
+                            window.onlineGame._movementRequestPending = false;
+                            if (!response?.ok) {
+                                alert(response?.error || '移動を同期できませんでした。');
+                                showDiceMovementArrows();
+                                return;
+                            }
+                            moveDicePlayerToSquare(player, path);
+                        });
+                    } else {
+                        moveDicePlayerToSquare(player, path);
+                    }
 
                 };
 
@@ -7595,51 +7982,36 @@ inventoryButton.disabled =
             // 1〜6
             // =========================
 
-            const number =
-                Math.floor(
-                    Math.random() * 6
-                ) + 1;
-
-            // =========================
-            // 現在のプレイヤー
-            // =========================
-
-            const player =
-                players[currentPlayer];
-
+            const player = players[currentPlayer];
+            const beginDiceRoll = function (number, onReveal) {
                 // 魔王出現条件を確認
-               window.updateEncounterCondition();
+                window.updateEncounterCondition();
+                showDiceRoulette(number, function () {
+                    remainingSteps = number;
+                    renderTurn();
+                    movePlayer(player, number);
+                }, { onReveal });
+            };
 
+            if (window.onlineGame?.isOnline && window.onlineGame.socket?.connected) {
+                window.onlineGame.socket.emit('game:dice:request', {}, response => {
+                    if (!response?.ok) {
+                        rouletteButton.disabled = false;
+                        inventoryButton.disabled = false;
+                        alert(response?.error || 'サイコロ結果を取得できませんでした。');
+                        return;
+                    }
+                    beginDiceRoll(response.result, () => {
+                        window.onlineGame.socket.emit('game:dice:reveal', {}, revealResponse => {
+                            if (!revealResponse?.ok) console.warn('[online] サイコロ結果の公開に失敗:', revealResponse?.error);
+                        });
+                    });
+                });
+                return;
+            }
+
+            beginDiceRoll(Math.floor(Math.random() * 6) + 1);
 // =========================
-// サイコロ演出
-// =========================
-
-showDiceRoulette(
-    number,
-    function () {
-
-        // =========================
-        // 残りマス表示
-        // =========================
-
-        remainingSteps = number;
-
-        renderTurn();
-
-        
-
-        // =========================
-        // 移動開始
-        // =========================
-
-        movePlayer(
-            player,
-            number
-        );
-
-    }
-);
-        // =========================
         // マスイベント
         // =========================
 
@@ -7948,8 +8320,10 @@ roulettestopSound
 
 function showDiceRoulette(
     result,
-    callback
+    callback,
+    options = {}
 ) {
+    let finalResult = result;
 
     const roulette =
         document.getElementById(
@@ -8042,10 +8416,15 @@ function showDiceRoulette(
     // =========================
 
     function stopRoulette() {
+        if (finalResult === null || finalResult === undefined) return;
 
         clearInterval(
             interval
         );
+
+        if (typeof options.onReveal === "function") {
+            options.onReveal();
+        }
 
 
         roulette.onclick =
@@ -8073,7 +8452,7 @@ function showDiceRoulette(
         // =========================
 
         number.textContent =
-            result;
+            finalResult;
 
 
         // =========================
@@ -8137,9 +8516,27 @@ function showDiceRoulette(
     }
 
 
-    roulette.onclick =
-        stopRoulette;
+    if (options.waitForReveal) {
+        // 振った本人がクリックするまでは、他プレイヤー側で停止できない。
+        roulette.onclick = null;
+        window._revealActiveRemoteDiceRoulette = function (revealedResult, revealedCallback) {
+            finalResult = revealedResult;
+            callback = revealedCallback;
+            roulette.onclick = stopRoulette;
+        };
+    } else {
+        roulette.onclick = stopRoulette;
+    }
 
+}
+
+function revealRemoteDiceRoulette(result, callback) {
+    if (typeof window._revealActiveRemoteDiceRoulette === "function") {
+        window._revealActiveRemoteDiceRoulette(result, callback);
+        // 振った本人がクリックした通知を受けた時点で、他画面も同時に停止・公開する。
+        document.getElementById("diceRoulette")?.click();
+        window._revealActiveRemoteDiceRoulette = null;
+    }
 }
 
 
@@ -12030,6 +12427,7 @@ currentPlayer =
     (currentPlayer + 1) %
     players.length;
 
+notifyOnlineTurnAdvanced();
 
 // =========================
 // 次のプレイヤー表示へ切り替え
@@ -12137,6 +12535,7 @@ currentPlayer =
     %
     players.length;
 
+notifyOnlineTurnAdvanced();
 
 // =========================
 // ボスカウンター判定
