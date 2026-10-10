@@ -288,7 +288,7 @@ const ITEM_CONTENTS = {
         price: 100000,
         category: "move",
         effect: "6マス以内の好きなマスに止まれる",
-        rank: 2
+        rank: 1
     },
 
     9: {
@@ -345,7 +345,7 @@ const ITEM_CONTENTS = {
         effectType: "bossCounterImmunity",
         effectTarget: "lossNote",
         effectDuration: "playe",
-        rank: 2
+        rank: 1
     },
     14: {
     name: "瞬間移動",
@@ -378,7 +378,7 @@ const ITEM_CONTENTS = {
         effectTarget: "self",
         effectValue: 20000,
         effectDuration: "3turn",
-        rank: 2
+        rank: 1
     },
     17: {
         name: "叩き派遣",
@@ -388,7 +388,7 @@ const ITEM_CONTENTS = {
         effectType: "destroyItems",
         effectTarget: "others",
         effectDuration: "instant",
-        rank: 2
+        rank: 1
     },
     18: {
         name: "ロストマジック",
@@ -398,7 +398,7 @@ const ITEM_CONTENTS = {
         effectType: "magicLoss",
         effectTarget: "otherPlayer",
         effectDuration: "instant",
-        rank: 2
+        rank: 1
     },
     19: {
         name: "闇みずほ",
@@ -408,7 +408,7 @@ const ITEM_CONTENTS = {
         effectType: "moneyTransfer",
         effectTarget: "otherPlayer",
         effectDuration: "instant",
-        rank: 2
+        rank: 1
     },
      20: {
         name: "飛んできマス",
@@ -429,7 +429,7 @@ const ITEM_CONTENTS = {
         effectType: "itemTransfer",
         effectTarget: "otherPlayer",
         effectDuration: "instant",
-        rank: 2
+        rank: 1
     },
     22: {
         name: "闇スーモ",
@@ -439,7 +439,7 @@ const ITEM_CONTENTS = {
         effectType: "assetTransfer",
         effectTarget: "otherPlayer",
         effectDuration: "instant",
-        rank: 2
+        rank: 1
     },
      23: {
         name: "ふっとばしマス",
