@@ -3,8 +3,6 @@ window.mapData = [
     {
         id: 0,
         type: "asset",
-        typeIds: [6],
-        next: [30, 337, 128],
         x: 1054,
         y: 945
     },
@@ -107,7 +105,7 @@ window.mapData = [
     {
         id: 26,
         type: "treasure",
-        treasureBoxId: 2,
+        treasureBoxId: 1,
         next: [27],
         x: 1402,
         y: 436
@@ -158,7 +156,7 @@ window.mapData = [
     {
         id: 41,
         type: "treasure",
-        treasureBoxId: 2,
+        treasureBoxId: 1,
         next: [42],
         x: 504,
         y: 660
@@ -413,7 +411,7 @@ window.mapData = [
     {
         id: 80,
         type: "treasure",
-        treasureBoxId: 2,
+        treasureBoxId: 1,
         next: [81],
         x: 2808,
         y: 420
