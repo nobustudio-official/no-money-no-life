@@ -1414,7 +1414,7 @@ characterButtons.forEach(
     ),
     inventory: [],
     assets: [],
-    magic: [1, 5, 6],
+    magic: [1],
 
     // バイト関連
     jobTurnsRemaining: 0,
@@ -1425,7 +1425,7 @@ characterButtons.forEach(
 // 初期アイテム
 // =========================
 
-players[index].inventory = [1,8,14];
+players[index].inventory = [1];
 
 
 // =========================
