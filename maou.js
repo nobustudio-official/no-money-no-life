@@ -18,15 +18,15 @@
     // 魔王登場条件の設定
     const MAOU_CONFIG = {
         //これまでに倒したボスの数
-        requiredBossDefeatedCount: 0,
+        requiredBossDefeatedCount: 10,
         //プレイヤー全員の総資産額の平均
-        requiredAverageAssetValue: 10000,
+        requiredAverageAssetValue: 300000,
         //「めぐみ」のキャラクターID
         megumiCharacterId: 2,
         // モブ資産の購入数
-        requiredMobAssetCount: 0,
+        requiredMobAssetCount: 5,
         // モブ以外の資産の購入数
-        requiredNonMobAssetCount: 0,
+        requiredNonMobAssetCount: 5,
 
 
         // 魔王を「次のボス」にするための内部ID。
@@ -38,17 +38,17 @@
         firstForm: {
             name: "魔王",
             icon: "images/characters/enemy/魔王/魔王-1.png",
-            hp: 5000,
-            attack: 1000,
-            counterDamage: 0,
+            hp: 30000,
+            attack: 15000,
+            counterDamage: 2500,
             reward: 0
         },
 
        secondForm: {
     name: "魔王",
     icon: "images/characters/enemy/魔王/魔王-2.png",
-    hp: 30000,
-    magicPower: 1000,
+    hp: 300000,
+    magicPower: 4000,
     reward: 0
 },
 
@@ -1679,6 +1679,30 @@ window.startMaouBattle =
 
    window.updateEncounterCondition =
     updateEncounterCondition;
+
+// Expose only the persistent gameplay flags needed by online state sync.
+// Animation timers and dialogue counters remain local presentation state.
+window.getMaouOnlineState = function () {
+    return {
+        assetConditionReached,
+        encounterPending,
+        maouActive,
+        maouDefeated,
+        maouPreviousBossId,
+        maouFirstEncountered,
+        maouCurrentForm
+    };
+};
+window.applyMaouOnlineState = function (state) {
+    if (!state || typeof state !== 'object') return;
+    if (typeof state.assetConditionReached === 'boolean') assetConditionReached = state.assetConditionReached;
+    if (typeof state.encounterPending === 'boolean') encounterPending = state.encounterPending;
+    if (typeof state.maouActive === 'boolean') maouActive = state.maouActive;
+    if (typeof state.maouDefeated === 'boolean') maouDefeated = state.maouDefeated;
+    if (state.maouPreviousBossId === null || Number.isFinite(Number(state.maouPreviousBossId))) maouPreviousBossId = state.maouPreviousBossId;
+    if (typeof state.maouFirstEncountered === 'boolean') maouFirstEncountered = state.maouFirstEncountered;
+    if (Number.isInteger(Number(state.maouCurrentForm)) && Number(state.maouCurrentForm) >= 1) maouCurrentForm = Number(state.maouCurrentForm);
+};
 
 window.MAOU_CONFIG = MAOU_CONFIG;
 
