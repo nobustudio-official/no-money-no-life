@@ -3,7 +3,7 @@
 // =========================
 
 // 基本音量
-const BGM_VOLUME = 0.25;
+const BGM_VOLUME = 0.4;
 const SE_VOLUME = 0.7;
 
 //冒険
@@ -22,7 +22,7 @@ let maouFinalBGMGain = null;
 let maouEndBGMGain = null;
 
 adventureBGM.loop = true;
-adventureBGM.volume = 1.0;
+adventureBGM.volume = 0.4;
 adventureBGM.preload = "auto";
 
 
