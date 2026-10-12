@@ -18,15 +18,15 @@
     // 魔王登場条件の設定
     const MAOU_CONFIG = {
         //これまでに倒したボスの数
-        requiredBossDefeatedCount: 10,
+        requiredBossDefeatedCount: 0,
         //プレイヤー全員の総資産額の平均
-        requiredAverageAssetValue: 300000,
+        requiredAverageAssetValue: 10000,
         //「めぐみ」のキャラクターID
         megumiCharacterId: 2,
         // モブ資産の購入数
-        requiredMobAssetCount: 5,
+        requiredMobAssetCount: 0,
         // モブ以外の資産の購入数
-        requiredNonMobAssetCount: 5,
+        requiredNonMobAssetCount: 0,
 
 
         // 魔王を「次のボス」にするための内部ID。
@@ -38,17 +38,17 @@
         firstForm: {
             name: "魔王",
             icon: "images/characters/enemy/魔王/魔王-1.png",
-            hp: 30000,
-            attack: 15000,
-            counterDamage: 2500,
+            hp: 3000,
+            attack: 1000,
+            counterDamage: 500,
             reward: 0
         },
 
        secondForm: {
     name: "魔王",
     icon: "images/characters/enemy/魔王/魔王-2.png",
-    hp: 300000,
-    magicPower: 4000,
+    hp: 10000,
+    magicPower: 1000,
     reward: 0
 },
 
