@@ -20,7 +20,7 @@
         //これまでに倒したボスの数
         requiredBossDefeatedCount: 0,
         //プレイヤー全員の総資産額の平均
-        requiredAverageAssetValue: 10000,
+        requiredAverageAssetValue: 1000,
         //「めぐみ」のキャラクターID
         megumiCharacterId: 2,
         // モブ資産の購入数
